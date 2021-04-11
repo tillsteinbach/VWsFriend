@@ -1,0 +1,63 @@
+version: '3.8'
+services:
+
+  iobroker:
+    image: buanet/iobroker::v5.1.0
+    networks:
+      bridge:
+      backend:
+    volumes:
+      - iobroker_data:/opt/iobroker
+    ports:
+      - 8081:8081
+    environment:
+      - AVAHI=true
+
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - '8086:8086'
+    networks:
+      backend:
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+    environment:
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=secret
+      - INFLUXDB_DB=iobroker
+    healthcheck:
+      test: (wget -qO- http://localhost:8086/metrics | grep "# HELP" -q) || exit 1
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:7.5.3
+    ports:
+      - 3001:3000
+    networks:
+      - bridge
+      - backend
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning/:/etc/grafana/provisioning/
+      - ./config/grafana/images/:/usr/share/grafana/public/img/custom/:ro
+    env_file:
+      - ./config/grafana/config.env
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=natel-discrete-panel,pierosavi-imageit-panel
+    healthcheck:
+      test: (wget -qO- http://localhost:3000 | grep "<title>Grafana</title>" -q) || exit 1
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+networks:
+  bridge:
+  backend:
+
+volumes:
+  iobroker_data:
+  influxdb_data:
