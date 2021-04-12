@@ -15,4 +15,6 @@ jobs:
     - name: Check running containers
       run: docker ps -a
     - name: Check logs
-      run: docker logs backend
+      run: docker logs vwsfriend_iobroker_1
+      run: docker logs vwsfriend_influxdb_1
+      run: docker logs vwsfriend_grafana_1
