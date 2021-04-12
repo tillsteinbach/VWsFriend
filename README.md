@@ -1,4 +1,6 @@
 # VWsFriend
+[![Docker Image CI](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml/badge.svg)](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml)
+
 VW WeConnect visualization and control inspired by TeslaMate https://docs.teslamate.org/
 
 ## Requirements
