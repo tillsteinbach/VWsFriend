@@ -31,4 +31,4 @@ docker-compose --env-file ./config up
 
 
 ## Other
-We Connect© ist eine Marke der Volkswagen AG
+We Connect© Volkswagen AG
