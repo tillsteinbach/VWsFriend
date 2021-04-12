@@ -1,7 +1,7 @@
 # VWsFriend
 [![Docker Image CI](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml/badge.svg)](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml)
 
-VW WeConnect visualization and control inspired by TeslaMate https://docs.teslamate.org/
+Volkswagen WeConnect© API visualization and control inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
 ![ID3](./screenshots/id3.png)
@@ -28,3 +28,7 @@ docker-compose --env-file ./config up
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
 * 
+
+
+## Other
+We Connect© ist eine Marke der Volkswagen AG
