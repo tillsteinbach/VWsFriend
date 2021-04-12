@@ -1,0 +1,2231 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "limit": 100,
+        "name": "Annotations & Alerts",
+        "showIn": 0,
+        "type": "dashboard"
+      },
+      {
+        "datasource": "influxdb",
+        "enable": true,
+        "hide": false,
+        "iconColor": "#8F3BB8",
+        "name": "state",
+        "query": "SELECT * FROM vw_connect_events WHERE $timeFilter AND value='$VIN' AND tags=~/state/",
+        "showIn": 0,
+        "tagsColumn": "tags",
+        "textColumn": "text"
+      },
+      {
+        "datasource": "influxdb",
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(255, 96, 96, 1)",
+        "name": "climatization",
+        "query": "SELECT * FROM vw_connect_events WHERE $timeFilter AND value='$VIN' AND tags=~/climatization/",
+        "showIn": 0,
+        "tagsColumn": "tags",
+        "textColumn": "text"
+      },
+      {
+        "datasource": "influxdb",
+        "enable": true,
+        "hide": false,
+        "iconColor": "#37872D",
+        "name": "charging",
+        "query": "SELECT * FROM vw_connect_events WHERE $timeFilter AND value='$VIN' AND tags=~/charging/",
+        "showIn": 0,
+        "tagsColumn": "tags",
+        "textColumn": "text"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": 2,
+  "iteration": 1618207359848,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Battery",
+      "type": "gauge"
+    },
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 390,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "lengthkm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Projected Range",
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "interval": "5m",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Projected Range",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Battery SoC",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Projected Range",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Battery Level",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": "SoC",
+          "logBase": 1,
+          "max": "100",
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "lengthkm",
+          "label": "Range",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 40,
+          "valueSize": 40
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "alias": "Car is online",
+          "groupBy": [],
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.online",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.online\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Car Online State",
+      "type": "stat"
+    },
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 18,
+        "y": 2
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "alias": "Letzter Abruf",
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.carCapturedTimestamp",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.carCapturedTimestamp\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Last Data from Car",
+      "type": "stat"
+    },
+    {
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 4
+      },
+      "id": 17,
+      "options": {
+        "forceImageRefresh": false,
+        "imageUrl": "/public/img/custom/id3.jpeg",
+        "lockSensors": false,
+        "mappings": [
+          {
+            "compareTo": "on",
+            "description": "",
+            "id": "on-color",
+            "operator": "equal",
+            "values": {
+              "backgroundBlink": false,
+              "backgroundColor": "rgb(0, 0, 0)",
+              "bold": true,
+              "fontColor": "red",
+              "valueBlink": false,
+              "visible": true
+            }
+          },
+          {
+            "compareTo": "heating",
+            "description": "",
+            "id": "heating-color",
+            "operator": "equal",
+            "values": {
+              "backgroundBlink": false,
+              "backgroundColor": "#000",
+              "bold": true,
+              "fontColor": "red",
+              "valueBlink": false,
+              "visible": true
+            }
+          }
+        ],
+        "sensors": [
+          {
+            "backgroundBlink": false,
+            "backgroundColor": "#000",
+            "bold": false,
+            "decimals": 2,
+            "fontColor": "#FFF",
+            "link": "",
+            "mappingId": "on-color",
+            "name": "Window",
+            "position": {
+              "x": 15.341881108222005,
+              "y": 39.00582524271845
+            },
+            "query": {
+              "alias": "",
+              "id": "A"
+            },
+            "unit": "string",
+            "valueBlink": false,
+            "visible": true
+          },
+          {
+            "backgroundBlink": false,
+            "backgroundColor": "#000",
+            "bold": false,
+            "decimals": 2,
+            "fontColor": "#FFF",
+            "link": "",
+            "mappingId": "on-color",
+            "name": "Window",
+            "position": {
+              "x": 83.99440089585666,
+              "y": 39.22626262626262
+            },
+            "query": {
+              "alias": "",
+              "id": "B"
+            },
+            "unit": "string",
+            "valueBlink": false,
+            "visible": true
+          },
+          {
+            "backgroundBlink": false,
+            "backgroundColor": "#000",
+            "bold": false,
+            "decimals": 1,
+            "fontColor": "#FFF",
+            "link": "",
+            "mappingId": "",
+            "name": "Temperature",
+            "position": {
+              "x": 54.89753639417694,
+              "y": 30.575757575757574
+            },
+            "query": {
+              "alias": "",
+              "id": "C"
+            },
+            "unit": "celsius",
+            "valueBlink": false,
+            "visible": true
+          },
+          {
+            "backgroundBlink": false,
+            "backgroundColor": "#000",
+            "bold": false,
+            "decimals": 2,
+            "fontColor": "#FFF",
+            "link": "",
+            "mappingId": "heating-color",
+            "name": "AC",
+            "position": {
+              "x": 54.89753639417694,
+              "y": 47.49696969696969
+            },
+            "query": {
+              "alias": "",
+              "id": "D"
+            },
+            "unit": "string",
+            "valueBlink": false,
+            "visible": true
+          },
+          {
+            "backgroundBlink": false,
+            "backgroundColor": "#000",
+            "bold": false,
+            "decimals": null,
+            "fontColor": "#FFF",
+            "link": "",
+            "mappingId": "",
+            "name": "Plug",
+            "position": {
+              "x": 64.42128864762802,
+              "y": 0.3404255319148938
+            },
+            "query": {
+              "alias": "",
+              "id": "E"
+            },
+            "unit": "string",
+            "valueBlink": false,
+            "visible": true
+          },
+          {
+            "backgroundBlink": false,
+            "backgroundColor": "#000",
+            "bold": false,
+            "decimals": 2,
+            "fontColor": "#FFF",
+            "link": "",
+            "mappingId": "",
+            "name": "Plug",
+            "position": {
+              "x": 84.42105263157895,
+              "y": 0.15319148936169996
+            },
+            "query": {
+              "alias": "",
+              "id": "F"
+            },
+            "unit": "string",
+            "valueBlink": false,
+            "visible": true
+          }
+        ],
+        "sensorsTextSize": 15
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.front",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.front\"",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.rear",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.rear\"",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C\"",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.climatisationState",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationStatus.climatisationState\"",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.plugStatus.plugConnectionState\"",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.plugStatus.plugLockState\"",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Quick View",
+      "type": "pierosavi-imageit-panel"
+    },
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 25,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 15
+              },
+              {
+                "color": "orange",
+                "value": 18
+              },
+              {
+                "color": "red",
+                "value": 21
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C\" ",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Target Temperature",
+      "type": "gauge"
+    },
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 30,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "m"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 3,
+        "y": 8
+      },
+      "id": 19,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Remaining Climatization Time",
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 14,
+      "interval": "5m",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Consumption",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Current Range at 100%",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.currentTotalRange_km",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.currentTotalRange_km\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Consumption",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.currentConsumption_kwhp100km",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.currentConsumption_kwhp100km\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Verbrauch und Max Reichweite",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "lengthkm",
+          "label": "Current Range at 100%",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "kWh/100km",
+          "label": "Consumption",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "influxdb",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 11
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 16
+      },
+      "id": 9,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Charging Speed",
+      "type": "gauge"
+    },
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "m"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 3,
+        "y": 16
+      },
+      "id": 20,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.chargingStatus.remainingChargingTimeToComplete_min\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Remaining Charging Time",
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 15,
+      "interval": "5m",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Temperature",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Efficiency",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.efficiency_pct",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.efficiency_pct\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Temperature",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "daswetter.0.NextHours.Location_1.Day_1.current.temp_value",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"daswetter.0.NextHours.Location_1.Day_1.current.temp_value\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Efficiency",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": "Efficiency",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "decimals": null,
+          "format": "celsius",
+          "label": "Temperature",
+          "logBase": 1,
+          "max": "40",
+          "min": "-15",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 18,
+      "interval": "5m",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Charge Rate",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Charge Power",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Charge Rate",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargeRate_kmph\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Charging",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "kwatt",
+          "label": "Charge Power",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "velocitykmh",
+          "label": "Charge Rate",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "backgroundColor": "rgba(128,128,128,0.1)",
+      "colorMaps": [
+        {
+          "color": "#CCC",
+          "text": "N/A"
+        },
+        {
+          "color": "#73BF69",
+          "text": "online"
+        },
+        {
+          "color": "rgb(103, 103, 103)",
+          "text": "offline"
+        }
+      ],
+      "crosshairColor": "#8F070C",
+      "datasource": "influxdb",
+      "description": "",
+      "display": "timeline",
+      "expandFromQueryS": 0,
+      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 6,
+        "y": 32
+      },
+      "highlightOnMouseover": true,
+      "id": 21,
+      "interval": "5m",
+      "legendSortBy": "-ms",
+      "lineColor": "rgba(0,0,0,0.1)",
+      "metricNameColor": "#FFFFFF",
+      "pluginVersion": "7.5.2",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "rowHeight": 50,
+      "showDistinctCount": false,
+      "showLegend": true,
+      "showLegendCounts": false,
+      "showLegendNames": true,
+      "showLegendPercent": true,
+      "showLegendTime": true,
+      "showLegendValues": true,
+      "showTimeAxis": true,
+      "showTransitionCount": true,
+      "targets": [
+        {
+          "alias": "Car state",
+          "groupBy": [],
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.online",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"value\" FROM \"0_userdata.0.vw-connect.0.$VIN.online\" WHERE $timeFilter",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "textSize": 24,
+      "textSizeTime": 12,
+      "timeFrom": null,
+      "timeOptions": [
+        {
+          "name": "Years",
+          "value": "years"
+        },
+        {
+          "name": "Months",
+          "value": "months"
+        },
+        {
+          "name": "Weeks",
+          "value": "weeks"
+        },
+        {
+          "name": "Days",
+          "value": "days"
+        },
+        {
+          "name": "Hours",
+          "value": "hours"
+        },
+        {
+          "name": "Minutes",
+          "value": "minutes"
+        },
+        {
+          "name": "Seconds",
+          "value": "seconds"
+        },
+        {
+          "name": "Milliseconds",
+          "value": "milliseconds"
+        }
+      ],
+      "timePrecision": {
+        "name": "Minutes",
+        "value": "minutes"
+      },
+      "timeShift": null,
+      "timeTextColor": "#d8d9da",
+      "title": "Online State",
+      "type": "natel-discrete-panel",
+      "units": "none",
+      "useTimePrecision": false,
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "online",
+          "value": "true"
+        },
+        {
+          "op": "=",
+          "text": "offline",
+          "value": "false"
+        }
+      ],
+      "valueTextColor": "#000000",
+      "writeAllValues": true,
+      "writeLastValue": true,
+      "writeMetricNames": false
+    },
+    {
+      "backgroundColor": "rgba(128,128,128,0.1)",
+      "colorMaps": [
+        {
+          "color": "#CCC",
+          "text": "N/A"
+        },
+        {
+          "color": "#73BF69",
+          "text": "off"
+        },
+        {
+          "color": "#F2495C",
+          "text": "heating"
+        },
+        {
+          "color": "#F2495C",
+          "text": "on"
+        }
+      ],
+      "crosshairColor": "#8F070C",
+      "datasource": "influxdb",
+      "description": "",
+      "display": "timeline",
+      "expandFromQueryS": 0,
+      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 36
+      },
+      "highlightOnMouseover": true,
+      "id": 7,
+      "interval": "5m",
+      "legendSortBy": "-ms",
+      "lineColor": "rgba(0,0,0,0.1)",
+      "metricNameColor": "#FFFFFF",
+      "pluginVersion": "7.5.2",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "rowHeight": 50,
+      "showLegend": true,
+      "showLegendNames": true,
+      "showLegendPercent": true,
+      "showLegendTime": true,
+      "showLegendValues": true,
+      "showTimeAxis": true,
+      "showTransitionCount": true,
+      "targets": [
+        {
+          "alias": "Climatization",
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.climatisationState",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.climatisationStatus.climatisationState\" WHERE $timeFilter",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Front Window Heating",
+          "groupBy": [],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.front",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.front\" WHERE $timeFilter",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Rear Window Heating",
+          "groupBy": [],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.rear",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.rear\" WHERE $timeFilter",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "textSize": 24,
+      "textSizeTime": 12,
+      "timeFrom": null,
+      "timeOptions": [
+        {
+          "name": "Years",
+          "value": "years"
+        },
+        {
+          "name": "Months",
+          "value": "months"
+        },
+        {
+          "name": "Weeks",
+          "value": "weeks"
+        },
+        {
+          "name": "Days",
+          "value": "days"
+        },
+        {
+          "name": "Hours",
+          "value": "hours"
+        },
+        {
+          "name": "Minutes",
+          "value": "minutes"
+        },
+        {
+          "name": "Seconds",
+          "value": "seconds"
+        },
+        {
+          "name": "Milliseconds",
+          "value": "milliseconds"
+        }
+      ],
+      "timePrecision": {
+        "name": "Minutes",
+        "value": "minutes"
+      },
+      "timeShift": null,
+      "timeTextColor": "#d8d9da",
+      "title": "Climatization",
+      "type": "natel-discrete-panel",
+      "units": "short",
+      "useTimePrecision": false,
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueTextColor": "#000000",
+      "writeAllValues": true,
+      "writeLastValue": true,
+      "writeMetricNames": false
+    },
+    {
+      "backgroundColor": "rgba(128,128,128,0.1)",
+      "colorMaps": [
+        {
+          "color": "#CCC",
+          "text": "N/A"
+        },
+        {
+          "color": "#7EB26D",
+          "text": "readyForCharging"
+        },
+        {
+          "color": "#F2495C",
+          "text": "error"
+        },
+        {
+          "color": "#5794F2",
+          "text": "charging"
+        }
+      ],
+      "crosshairColor": "#8F070C",
+      "datasource": "influxdb",
+      "description": "",
+      "display": "timeline",
+      "expandFromQueryS": 0,
+      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 6,
+        "y": 44
+      },
+      "highlightOnMouseover": true,
+      "id": 10,
+      "interval": "5m",
+      "legendSortBy": "-ms",
+      "lineColor": "rgba(0,0,0,0.1)",
+      "metricNameColor": "#000000",
+      "pluginVersion": "7.5.2",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "rowHeight": 75,
+      "showLegend": true,
+      "showLegendNames": true,
+      "showLegendPercent": true,
+      "showLegendTime": true,
+      "showLegendValues": true,
+      "showTimeAxis": true,
+      "showTransitionCount": true,
+      "targets": [
+        {
+          "alias": "Charging State",
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.chargingStatus.chargingState",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.chargingStatus.chargingState\" WHERE $timeFilter",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "textSize": 24,
+      "textSizeTime": 12,
+      "timeFrom": null,
+      "timeOptions": [
+        {
+          "name": "Years",
+          "value": "years"
+        },
+        {
+          "name": "Months",
+          "value": "months"
+        },
+        {
+          "name": "Weeks",
+          "value": "weeks"
+        },
+        {
+          "name": "Days",
+          "value": "days"
+        },
+        {
+          "name": "Hours",
+          "value": "hours"
+        },
+        {
+          "name": "Minutes",
+          "value": "minutes"
+        },
+        {
+          "name": "Seconds",
+          "value": "seconds"
+        },
+        {
+          "name": "Milliseconds",
+          "value": "milliseconds"
+        }
+      ],
+      "timePrecision": {
+        "name": "Minutes",
+        "value": "minutes"
+      },
+      "timeShift": null,
+      "timeTextColor": "#d8d9da",
+      "title": "Charging State",
+      "type": "natel-discrete-panel",
+      "units": "short",
+      "useTimePrecision": false,
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueTextColor": "#000000",
+      "writeAllValues": true,
+      "writeLastValue": true,
+      "writeMetricNames": false
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "datasource": "influxdb",
+        "definition": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /^vw-connect\\.\\d+\\.[A-Z0-9]+.*/",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "VIN",
+        "multi": false,
+        "name": "VIN",
+        "options": [
+          {
+            "selected": true,
+            "text": "$VIN",
+            "value": "$VIN"
+          }
+        ],
+        "query": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /^vw-connect\\.\\d+\\.[A-Z0-9]+.*/",
+        "refresh": 0,
+        "regex": "/^vw-connect\\.\\d+\\.(?<value>[A-Z0-9]+).*/",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-12h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Electric Car Overview",
+  "uid": "bLpiaT_Mk",
+  "version": 84
+}
