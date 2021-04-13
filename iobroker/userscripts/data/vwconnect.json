@@ -1,0 +1,10 @@
+{"system.adapter.vw-connect.0":{
+	"native":{
+		"interval": $VWCONNECT_INTERVAL,
+		"user": "$VWCONNECT_USER",
+		"password": "$VWCONNECT_PASSWORD",
+		"pin": "$VWCONNECT_PIN",
+		"type": "$VWCONNECT_TYPE"
+                }
+	}
+}
