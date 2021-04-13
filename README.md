@@ -22,7 +22,7 @@ docker-compose --env-file ./config up
 * Open a browser to configure grafana on http://IP-ADDRESS:3001 with the user and password you selected
 
 ## What is missing
-* In the current state ioBroker is not configured automatically
+* In the current state ioBroker is not configured completly automatically
 
 ## Open improvements
 * Deploy datasource and dashboard as grafana app (allows better control)

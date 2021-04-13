@@ -12,7 +12,9 @@ services:
       - 8081:8081
     environment:
       - AVAHI=true
-
+      - INFLUXDB_ADMIN_USER=${DB_USER}
+      - INFLUXDB_ADMIN_PASSWORD=${DB_PASSWORD}
+      - INFLUXDB_DB=iobroker
   influxdb:
     image: influxdb:1.8
     expose:

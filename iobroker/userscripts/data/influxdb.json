@@ -1,0 +1,9 @@
+{"system.adapter.influxdb.0":{
+	"native":{
+		"host": "influxdb",
+		"password": "$INFLUXDB_ADMIN_PASSWORD",
+		"user": "$INFLUXDB_ADMIN_USER",
+		"dbname": "$INFLUXDB_DB"
+		}
+	}
+}
