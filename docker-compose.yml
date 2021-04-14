@@ -15,6 +15,11 @@ services:
       - INFLUXDB_ADMIN_USER=${DB_USER}
       - INFLUXDB_ADMIN_PASSWORD=${DB_PASSWORD}
       - INFLUXDB_DB=iobroker
+      - VWCONNECT_USER
+      - VWCONNECT_PASSWORD
+      - VWCONNECT_PIN
+      - VWCONNECT_TYPE=id
+      - VWCONNECT_INTERVAL
   influxdb:
     image: influxdb:1.8
     expose:
@@ -23,8 +28,6 @@ services:
       backend:
     volumes:
       - influxdb_data:/var/lib/influxdb
-    env_file:
-      - config.env
     environment:
       - INFLUXDB_ADMIN_USER=${DB_USER}
       - INFLUXDB_ADMIN_PASSWORD=${DB_PASSWORD}
