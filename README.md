@@ -22,12 +22,13 @@ docker-compose --env-file ./myconfig.env up
 * Open a browser to configure ioBroker on http://IP-ADDRESS:8081
 * Open a browser to configure grafana on http://IP-ADDRESS:3001 with the user and password you selected
 
-
 ## Open improvements
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
-* Also add Homekit configuration to ioBroker 
+* Also add Homekit configuration to ioBroker
 
+## Known Issues
+* Does not show the nice picture of the car due to unclear license. Need to make a picture on my own when having time
 
 ## Other
 We Connect© Volkswagen AG
