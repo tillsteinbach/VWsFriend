@@ -2191,25 +2191,19 @@
       {
         "allValue": null,
         "datasource": "influxdb",
-        "definition": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /^vw-connect\\.\\d+\\.[A-Z0-9]+.*/",
-        "description": null,
+        "definition": "SELECT \"value\"  FROM /0_userdata\\.\\d+\\.vw-connect\\.0\\.([A-Z0-9]+)\\.nickname_vin/",
+	"description": "Select Car if you have multiple cars in your account",
         "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": "VIN",
+        "label": "Car",
         "multi": false,
         "name": "VIN",
-        "options": [
-          {
-            "selected": true,
-            "text": "$VIN",
-            "value": "$VIN"
-          }
-        ],
-        "query": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /^vw-connect\\.\\d+\\.[A-Z0-9]+.*/",
-        "refresh": 0,
-        "regex": "/^vw-connect\\.\\d+\\.(?<value>[A-Z0-9]+).*/",
-        "skipUrlSync": false,
+        "options": [],
+        "query": "SELECT \"value\"  FROM /0_userdata\\.\\d+\\.vw-connect\\.0\\.([A-Z0-9]+)\\.nickname_vin/",
+	"refresh": 1,
+        "regex": "/(?<text>.*):(?<value>[A-Z0-9]+)/",
+	"skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],

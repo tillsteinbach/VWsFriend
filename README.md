@@ -14,20 +14,19 @@ Volkswagen WeConnect© API visualization and control inspired by TeslaMate https
 ## How to start
 * Clone or download the repository
 * Change the configuration in [config.env](./config.env)
-* Start the stack using the configuration
+* Start the stack using your configuration. To create myconfig.env copy .env file
 ```bash
-docker-compose --env-file ./config up
+docker-compose --env-file ./myconfig.env up
 ```
+* The first startup can take several minutes because of all the initial settings. Please be patient!
 * Open a browser to configure ioBroker on http://IP-ADDRESS:8081
 * Open a browser to configure grafana on http://IP-ADDRESS:3001 with the user and password you selected
 
-## What is missing
-* In the current state ioBroker is not configured completly automatically
 
 ## Open improvements
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
-* 
+* Also add Homekit configuration to ioBroker 
 
 
 ## Other
