@@ -84,7 +84,7 @@ const storageConfiguration = {
         }
     },
     'chargePower_kW': {
-        'regex': /^vw-connect\.\d+.([A-Z0-9]+)\.status\.chargingStatus\.cruisingRangeElectric_km$/,
+        'regex': /^vw-connect\.\d+.([A-Z0-9]+)\.status\.chargingStatus\.chargePower_kW$/,
         'options': {
             'retention': 0
         }
