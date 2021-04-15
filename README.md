@@ -26,6 +26,7 @@ docker-compose --env-file ./myconfig.env up
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
 * Also add Homekit configuration to ioBroker
+* Change update frequency based on the cars state (more often when car is online)
 
 ## Known Issues
 * Does not show the nice picture of the car due to unclear license. Need to make a picture on my own when having time
