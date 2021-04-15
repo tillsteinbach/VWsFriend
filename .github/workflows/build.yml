@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the docker-compose stack
-      run: docker-compose --env-file ./config.env up -d
+      run: docker-compose --env-file .env up -d
     - name: Check running containers
       run: docker ps -a
     - name: Check logs for iobroker
