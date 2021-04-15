@@ -108,7 +108,7 @@ const storageConfiguration = {
         }
     },
     'targetTemperature_C': {
-        'regex': /^vw-connect\.\d+.([A-Z0-9]+)\.status\.chargingStatus\.targetTemperature_C$/,
+        'regex': /^vw-connect\.\d+.([A-Z0-9]+)\.status\.climatisationSettings\.targetTemperature_C$/,
         'options': {
             'retention': 0
         }
