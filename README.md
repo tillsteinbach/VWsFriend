@@ -30,5 +30,13 @@ docker-compose --env-file ./myconfig.env up
 ## Known Issues
 * Does not show the nice picture of the car due to unclear license. Need to make a picture on my own when having time
 
+## Credits
+* Software used in VWsFriend:
+    * [Docker and Docker compose](https://www.docker.com/community/open-source)
+    * [ioBroker](https://www.iobroker.net)
+    * [ioBroker.vw-connect](https://github.com/TA2k/ioBroker.vw-connect)
+    * [InfluxDB](https://www.influxdata.com)
+    * [Grafana](https://grafana.com)
+
 ## Other
 We Connect© Volkswagen AG
