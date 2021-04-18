@@ -1,20 +1,18 @@
 version: '3.8'
 services:
   iobroker:
-    #image: buanet/iobroker:v5.1.0
     build: iobroker/.
-    networks:
-      bridge:
-      backend:
-        aliases:
-          - iobrokerbackend
+    network_mode: host
+    extra_hosts:
+      - "influxdbbackend:127.0.0.1"
+      - "influxdb:127.0.0.1"
+      - "grafanabackend:127.0.0.1"
+      - "grafana:127.0.0.1"
     volumes:
       - iobroker_data:/opt/iobroker
-    ports:
-      - 8081:8081
     environment:
-      - AVAHI=false
-      - HOMEKIT=false
+      - AVAHI=true
+      - HOMEKIT=true
       - INFLUXDB_ADMIN_USER=${DB_USER}
       - INFLUXDB_ADMIN_PASSWORD=${DB_PASSWORD}
       - INFLUXDB_DB=iobroker
@@ -23,6 +21,9 @@ services:
       - VWCONNECT_PIN
       - VWCONNECT_TYPE=id
       - VWCONNECT_INTERVAL
+      - HOMEKIT_IP=0.0.0.0
+      - HOMEKIT_USERNAME
+      - HOMEKIT_PIN
   influxdb:
     image: influxdb:1.8
     expose:
@@ -69,8 +70,8 @@ services:
       retries: 3
 
 networks:
-  bridge:
   backend:
+  bridge:
 
 volumes:
   iobroker_data:

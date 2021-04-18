@@ -2,7 +2,8 @@
 	"native":{
 		"mirrorPath": "/opt/javascript",
 		"mirrorInstance": "0",
-		"enableSetObject": true
+		"enableSetObject": true,
+		"libraries": "process"
 		}
 	}
 }

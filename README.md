@@ -22,6 +22,18 @@ docker-compose --env-file ./myconfig.env up
 * Open a browser to configure ioBroker on http://IP-ADDRESS:8081
 * Open a browser to configure grafana on http://IP-ADDRESS:3001 with the user and password you selected
 
+## VWsFriend with Apple Homekit support
+* Replace the docker-compose command by this to use the homekit override
+```bash
+docker-compose -f docker-compose-homekit-host.yml
+```
+This will use host mode for iobroker. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
+If you do not like to share the host network with iobroker you can use macvlan mode:
+```bash
+docker-compose -f docker-compose-homekit-macvlan.yml
+```
+Macvlan needs the variables for the IP to choose, the subnetmask and the gateway to be set in your configuration.
+
 ## Open improvements
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
