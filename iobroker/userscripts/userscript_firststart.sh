@@ -8,6 +8,10 @@ iobroker start
 iobroker add vw-connect 0
 iobroker add javascript 0
 iobroker add influxdb 0
+
+if [ "$HOMEKIT" = true ] ; then
+    iobroker add yahka 0
+fi
 iobroker stop
 
 mv /opt/iobroker/iobroker-data/objects.json /opt/iobroker/iobroker-data/objects.json.bak
@@ -23,6 +27,9 @@ sleep 30
 iobroker state set javascript.0.scriptEnabled.VWsFriendStates true
 iobroker state set javascript.0.scriptEnabled.VWsFriendGrafanaAnnotations true
 iobroker state set javascript.0.scriptEnabled.VWsFriendStorageConfig true
+if [ "$HOMEKIT" = true ] ; then
+iobroker state set javascript.0.scriptEnabled.HomekitConfig true
+fi
 sleep 30
 iobroker logs javascript
 iobroker stop

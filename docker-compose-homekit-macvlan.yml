@@ -4,7 +4,8 @@ services:
     #image: buanet/iobroker:v5.1.0
     build: iobroker/.
     networks:
-      bridge:
+      homekit-network:
+        ipv4_address: ${HOMEKIT_IP}
       backend:
         aliases:
           - iobrokerbackend
@@ -13,8 +14,8 @@ services:
     ports:
       - 8081:8081
     environment:
-      - AVAHI=false
-      - HOMEKIT=false
+      - AVAHI=true
+      - HOMEKIT=true
       - INFLUXDB_ADMIN_USER=${DB_USER}
       - INFLUXDB_ADMIN_PASSWORD=${DB_PASSWORD}
       - INFLUXDB_DB=iobroker
@@ -23,6 +24,9 @@ services:
       - VWCONNECT_PIN
       - VWCONNECT_TYPE=id
       - VWCONNECT_INTERVAL
+      - HOMEKIT_IP
+      - HOMEKIT_USERNAME
+      - HOMEKIT_PIN
   influxdb:
     image: influxdb:1.8
     expose:
@@ -70,6 +74,15 @@ services:
 
 networks:
   bridge:
+  homekit-network:
+    driver: macvlan
+    driver_opts:
+      parent: ${HOMEKIT_INTERFACE}
+    ipam:
+      config:
+        - subnet: ${HOMEKIT_MASK}
+          ip_range: ${HOMEKIT_IP}/32
+          gateway: ${HOMEKIT_GW}
   backend:
 
 volumes:

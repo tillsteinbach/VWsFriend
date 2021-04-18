@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  iobroker:
+    networks:
+      homekit-network:
+        ipv4_address: ${HOMEKIT_IP}
+
+networks:
+  homekit-network:
+    external: true
+    name: global-macvlan-network

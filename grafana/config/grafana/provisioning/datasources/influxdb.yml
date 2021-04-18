@@ -9,6 +9,6 @@ datasources:
     database: iobroker
     user: $DB_USER
     password: $DB_PASSWORD
-    url: http://influxdb:8086
+    url: http://influxdbbackend:8086
     isDefault: false
     editable: false
