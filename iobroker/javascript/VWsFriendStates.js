@@ -1,3 +1,5 @@
+const process = require("process");
+
 var carGeneralRegex = /(vw-connect\.\d+\.[A-Z0-9]+)/;
 var carCapturedTimestampRegex = /^(vw-connect\.\d+\.[A-Z0-9]+)\.status\.(.*)\.carCapturedTimestamp$/;
 var carCapturedTimestampName = 'carCapturedTimestamp';
@@ -230,17 +232,30 @@ function setConsumptionAndRangeStates(car, changedId=null) {
     }
 
     if(!existsState(capacityId)){
-        console.log(car + ': has no state ' + capacityId + ': will create it with default of 58kWh, you have to change it for your car', 'debug');
-        createStateFromTemplate(stateTemplates['batteryCapacity_kwh'], capacityId, 58, false);
-        var capacity = 58;
+        if(process.env.CAR_BATTERYSIZE_KWH){
+            var capacity = process.env.CAR_BATTERYSIZE_KWH
+            console.log(car + ': has no state ' + capacityId + ': will create it from CAR_BATTERYSIZE_KWH variable with '+wltp+'kWh', 'debug');
+        }
+        else{
+            var capacity = 58
+            console.log(car + ': has no state ' + capacityId + ': will create it with default of '+capacity+'kWh, you have to change it for your car in the config setting CAR_BATTERYSIZE_KWH', 'debug');
+        }
+        createStateFromTemplate(stateTemplates['batteryCapacity_kwh'], capacityId, capacity, false);
     }
     else {
         var capacity = getState(capacityId).val; // capacity auslesen
     }
     if(!existsState(wltpId)){
-        console.log(car + ': has no state ' + wltpId + ': will create it with default of 419km, you have to change it for your car', 'debug');
-        createStateFromTemplate(stateTemplates['wltp_km'], wltpId, 416, false);
-        var wltp = 416;
+        if(process.env.CAR_ELECTRIC_RANGE_KM){
+            var wltp = process.env.CAR_ELECTRIC_RANGE_KM
+            console.log(car + ': has no state ' + wltpId + ': will create it from CAR_ELECTRIC_RANGE_KM variable with '+wltp+'km', 'debug');
+        }
+        else{
+            var wltp = 416
+            console.log(car + ': has no state ' + wltpId + ': will create it with default of '+wltp+'km, you have to change it for your car in the config setting CAR_ELECTRIC_RANGE_KM', 'debug');
+            
+        }
+        createStateFromTemplate(stateTemplates['wltp_km'], wltpId, wltp, false);
     }
     else {
         var wltp = getState(wltpId).val; // wltp auslesen
@@ -314,5 +329,6 @@ on({id: [cruisingRangeElectricRegex, currentSOCRegex, batteryCapacityRegex], cha
 });
 
 setTimeout(main,    500);   // Zum Skriptstart ausführen
+
 
 
