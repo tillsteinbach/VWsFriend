@@ -189,13 +189,15 @@ function enableInflux(id, options){//{changesOnly: true, debounce: 0, retention:
 function checkall(){
     for ([statename, config] of Object.entries(storageConfiguration)){
         var ids = getIdByName(statename, true);
-        for (id of ids){
-            const match = id.match(config['regex']);
-            if(match){
-                const obj = getObject(id)
-                if (!('common' in obj) || !('custom' in obj.common) || !(influxInstance in obj.common.custom)){
-                    enableInflux(id, config['options']);
-                }
+        if(ids){
+            for (id of ids){
+                const match = id.match(config['regex']);
+                if(match){
+                    const obj = getObject(id)
+                    if (!('common' in obj) || !('custom' in obj.common) || !(influxInstance in obj.common.custom)){
+                        enableInflux(id, config['options']);
+                    }
+	        }
             }
         }
     }
