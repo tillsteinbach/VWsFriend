@@ -23,6 +23,7 @@ docker-compose --env-file ./myconfig.env up
 * Open a browser to configure grafana on http://IP-ADDRESS:3001 with the user and password you selected
 
 ## VWsFriend with Apple Homekit support
+![ID3](./screenshots/homekit.jpg)
 * Replace the docker-compose command by this to use the homekit override
 ```bash
 docker-compose -f docker-compose-homekit-host.yml
@@ -37,7 +38,6 @@ Macvlan needs the variables for the IP to choose, the subnetmask and the gateway
 ## Open improvements
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
-* Also add Homekit configuration to ioBroker
 * Change update frequency based on the cars state (more often when car is online)
 
 ## Known Issues
