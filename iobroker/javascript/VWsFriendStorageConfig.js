@@ -212,7 +212,8 @@ schedule({minute: 0}, function () {
 });
 
 //Schedule when connector goes online
-on({id: /^vw-connec^\.\d+\.info\.connection$/, change:'ne', val:true}, function (obj) {
+on({id: /^vw-connect\.\d+\.info\.connection$/, change:'ne', val:true}, function (obj) {
+    console.log("VW-Connect went online, checking storage configuration ","debug");
     setTimeout(checkall, connectFetchTimout);
 });
 
