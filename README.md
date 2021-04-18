@@ -38,9 +38,18 @@ Macvlan needs the variables for the IP to choose, the subnetmask and the gateway
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
 * Also add Homekit configuration to ioBroker
+* Change update frequency based on the cars state (more often when car is online)
 
 ## Known Issues
 * Does not show the nice picture of the car due to unclear license. Need to make a picture on my own when having time
+
+## Credits
+* Software used in VWsFriend:
+    * [Docker and Docker compose](https://www.docker.com/community/open-source)
+    * [ioBroker](https://www.iobroker.net)
+    * [ioBroker.vw-connect](https://github.com/TA2k/ioBroker.vw-connect)
+    * [InfluxDB](https://www.influxdata.com)
+    * [Grafana](https://grafana.com)
 
 ## Other
 We Connect© Volkswagen AG
