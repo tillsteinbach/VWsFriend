@@ -8,7 +8,7 @@ function findCars(){
     var enrollmentStatuses = getIdByName('enrollmentStatus', true);
     if(enrollmentStatuses){
         for (enrollmentStatus of enrollmentStatuses){
-	    if (getState(enrollmentStatus).val == 'COMPLETED'){
+            if (getState(enrollmentStatus).val == 'COMPLETED'){
                 const match = enrollmentStatus.match(enrollmentStatusRegex);
                 var car = match[1];
                 cars.push(car)
@@ -57,15 +57,16 @@ function updateConfig(yahkainstance){
     var cars = findCars()
     console.log('Found the following cars: '+ cars,"debug");
     cars.forEach(function(car){
+        //Device Climatization
         if(existsState(car + '.status.climatisationStatus.climatisationState')
                 && existsState(car + '.status.climatisationSettings.targetTemperature_C')
                 && existsState(car + '.remote.climatisation')
                 && existsState(car + '.general.nickname')
                 && existsState(car + '.general.vin')){
-            var name = getState(car + '.general.nickname').val + ' Climate';
+            var deviceName = getState(car + '.general.nickname').val + ' Climate';
             var device = null;
             for(existingDevice of devices){
-                if (existingDevice["name"] == name){
+                if (existingDevice["name"] == deviceName){
                     console.log('Car '+car+' has climatisationState, climatization device already exsisting, updating it',"debug");
                     device = existingDevice;
                     break;
@@ -79,17 +80,22 @@ function updateConfig(yahkainstance){
             device["configType"]= "customdevice";
             device["manufacturer"] = "unknown";
             device["model"] = "unknown";
-            device["name"] = name;
+            device["name"] = deviceName;
             device["serial"] = getState(car + '.general.vin').val;
             device["firmware"] = "";
             device["enabled"] = true;
             device["category"] = "9";
+
+            device["services"] = new Array();
+
+            //Service Thermostat
             var service = new Map();
-            service["name"] = getState(car + '.general.nickname').val + ' Climate';
+            var climateServiceName = deviceName
+            service["name"] = climateServiceName;
             service["subType"] = "";
             service["type"] = "Thermostat";
             var characteristics = new Array();
-            
+
             var characteristic = new Map();
             characteristic["name"] = "CurrentHeatingCoolingState";
             characteristic["enabled"] = true;
@@ -107,7 +113,7 @@ function updateConfig(yahkainstance){
             characteristic["inOutParameters"] = car + ".status.climatisationSettings.targetTemperature_C";
             characteristic["conversionFunction"] = "passthrough";
             characteristics.push(characteristic);
- 
+
             var characteristic = new Map();
             characteristic["name"] = "TemperatureDisplayUnits";
             characteristic["enabled"] = true;
@@ -142,6 +148,37 @@ function updateConfig(yahkainstance){
                 characteristics.push(characteristic);
             }
 
+            //Custom characteristics in Thermostat Service
+            var characteristic = new Map();
+            characteristic["name"] = "AdministratorOnlyAccess";
+            characteristic["enabled"] = true;
+            characteristic["customCharacteristic"] =  true,
+            characteristic["inOutFunction"] = "const";
+            characteristic["inOutParameters"] = "true"
+            characteristic["conversionFunction"] = "passthrough";
+            characteristics.push(characteristic);
+
+            var characteristic = new Map();
+            characteristic["name"] = "StatusActive";
+            characteristic["enabled"] = true;
+            characteristic["customCharacteristic"] =  true,
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = "vw-connect.0.info.connection" //Todo determine adapter instance
+            characteristic["conversionFunction"] = "passthrough";
+            characteristics.push(characteristic);
+
+            service["characteristics"] = characteristics;
+
+            device["services"].push(service)
+
+            //Service AccessoryInformation
+            var service = new Map();
+            service["name"] = climateServiceName + ' AccessoryInformation';
+            service["subType"] = "";
+            service["type"] = "AccessoryInformation";
+            service["linkTo"]= climateServiceName;
+            var characteristics = new Array();
+
             if(existsState(car + '.general.model')){
                 var characteristic = new Map();
                 characteristic["name"] = "Model";
@@ -172,39 +209,19 @@ function updateConfig(yahkainstance){
             characteristic["conversionFunction"] = "passthrough";
             characteristics.push(characteristic);
 
-            var characteristic = new Map();
-            characteristic["name"] = "AdministratorOnlyAccess";
-            characteristic["enabled"] = true;
-            characteristic["customCharacteristic"] =  true,
-            characteristic["inOutFunction"] = "const";
-            characteristic["inOutParameters"] = "true"
-            characteristic["conversionFunction"] = "passthrough";
-            characteristics.push(characteristic);
-
-            var characteristic = new Map();
-            characteristic["name"] = "StatusActive";
-            characteristic["enabled"] = true;
-            characteristic["customCharacteristic"] =  true,
-            characteristic["inOutFunction"] = "ioBroker.State";
-            characteristic["inOutParameters"] = "vw-connect.0.info.connection" //Todo determine adapter instance
-            characteristic["conversionFunction"] = "passthrough";
-            characteristics.push(characteristic);
-
             service["characteristics"] = characteristics;
 
-            var services = new Array()
-            device["services"] = new Array();
             device["services"].push(service)
         }
-
+        //Device Charging
         if(existsState(car + '.status.chargingStatus.chargingState')
                 && existsState(car + '.remote.charging')
                 && existsState(car + '.general.nickname')
                 && existsState(car + '.general.vin')){
-            var name = getState(car + '.general.nickname').val + ' Charging';
+            var deviceName = getState(car + '.general.nickname').val + ' Charging';
             var device = null;
             for(existingDevice of devices){
-                if (existingDevice["name"] == name){
+                if (existingDevice["name"] == deviceName){
                     console.log('Car '+car+' has chargingState, charging device already exsisting, updating it',"debug");
                     device = existingDevice;
                     break;
@@ -218,17 +235,22 @@ function updateConfig(yahkainstance){
             device["configType"]= "customdevice";
             device["manufacturer"] = "unknown";
             device["model"] = "unknown";
-            device["name"] = name;
+            device["name"] = deviceName;
             device["serial"] = getState(car + '.general.vin').val;
             device["firmware"] = "";
             device["enabled"] = true;
             device["category"] = "7";
+
+            device["services"] = new Array();
+
+            // Outlet Service
             var service = new Map();
-            service["name"] = getState(car + '.general.nickname').val + ' Charging';
+            var chargingServiceName = deviceName;
+            service["name"] = chargingServiceName;
             service["subType"] = "";
             service["type"] = "Outlet";
             var characteristics = new Array();
-            
+
             if(existsState(car + '.status.plugStatus.plugConnectionState')){
                 var characteristic = new Map();
                 characteristic["name"] = "OutletInUse";
@@ -268,6 +290,8 @@ function updateConfig(yahkainstance){
                 characteristics.push(characteristic);
             }
 
+            //Custom Characteristics (not in service)
+
             if(existsState(car + '.status.chargingStatus.chargePower_kW')){
                 var characteristic = new Map();
                 characteristic["name"] = "Community: Watts";
@@ -280,36 +304,6 @@ function updateConfig(yahkainstance){
                 characteristic["conversionParameters"]["toHomeKit"] = "return value * 1000";
                 characteristics.push(characteristic);
             }
-
-            if(existsState(car + '.general.model')){
-                var characteristic = new Map();
-                characteristic["name"] = "Model";
-                characteristic["enabled"] = true;
-                characteristic["customCharacteristic"] =  true,
-                characteristic["inOutFunction"] = "ioBroker.State";
-                characteristic["inOutParameters"] = car + ".general.model"
-                characteristic["conversionFunction"] = "passthrough";
-                characteristics.push(characteristic);
-            }
-
-            var characteristic = new Map();
-            characteristic["name"] = "Name";
-            characteristic["enabled"] = true;
-            characteristic["inOutFunction"] = "ioBroker.State";
-            characteristic["inOutParameters"] = car + ".general.nickname"
-            characteristic["conversionFunction"] = "script";
-            characteristic["conversionParameters"] = new Map();
-            characteristic["conversionParameters"]["toHomeKit"] = "return value + ' Climate';";
-            characteristics.push(characteristic);
-
-            var characteristic = new Map();
-            characteristic["name"] = "SerialNumber";
-            characteristic["enabled"] = true;
-            characteristic["customCharacteristic"] =  true,
-            characteristic["inOutFunction"] = "ioBroker.State";
-            characteristic["inOutParameters"] = car + ".general.vin"
-            characteristic["conversionFunction"] = "passthrough";
-            characteristics.push(characteristic);
 
             var characteristic = new Map();
             characteristic["name"] = "AdministratorOnlyAccess";
@@ -330,19 +324,103 @@ function updateConfig(yahkainstance){
             characteristics.push(characteristic);
 
             service["characteristics"] = characteristics;
+            device["services"].push(service)
 
-            var services = new Array()
-            device["services"] = new Array();
+            //Service BatteryService
+            if(existsState(car + '.status.batteryStatus.currentSOC_pct')
+                    && existsState(car + '.status.chargingStatus.chargingState')){
+                
+                var service = new Map();
+                service["name"] = chargingServiceName + ' Battery';
+                service["subType"] = "";
+                service["type"] = "BatteryService";
+                service["linkTo"] = chargingServiceName;
+                var characteristics = new Array();
+
+                var characteristic = new Map();
+                characteristic["name"] = "BatteryLevel";
+                characteristic["enabled"] = true;
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".status.batteryStatus.currentSOC_pct"
+                characteristic["conversionFunction"] = "passthrough";
+                characteristics.push(characteristic);
+
+                var characteristic = new Map();
+                characteristic["name"] = "ChargingState";
+                characteristic["enabled"] = true;
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".status.chargingStatus.chargingState"
+                characteristic["conversionFunction"] = "script";
+                characteristic["conversionParameters"] = new Map();
+                characteristic["conversionParameters"]["toHomeKit"] = "if(value=='readyForCharging')\n  return 0;\nelse if(value=='charging')\n  return 1;\nreturn 2;";
+                characteristics.push(characteristic);
+
+                var characteristic = new Map();
+                characteristic["name"] = "StatusLowBattery";
+                characteristic["enabled"] = true;
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".status.batteryStatus.currentSOC_pct"
+                characteristic["conversionFunction"] = "script";
+                characteristic["conversionParameters"] = new Map();
+                characteristic["conversionParameters"]["toHomeKit"] = "if(value<10)\n  return 1;\nelse\n  return 0;";
+                characteristics.push(characteristic);
+
+                service["characteristics"] = characteristics;
+
+                device["services"].push(service)
+            }
+
+            //Service AccessoryInformation
+            var service = new Map();
+            service["name"] = chargingServiceName + ' AccessoryInformation';
+            service["subType"] = "";
+            service["type"] = "AccessoryInformation";
+            service["linkTo"]= chargingServiceName;
+            var characteristics = new Array();
+
+            if(existsState(car + '.general.model')){
+                var characteristic = new Map();
+                characteristic["name"] = "Model";
+                characteristic["enabled"] = true;
+                characteristic["customCharacteristic"] =  true,
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".general.model"
+                characteristic["conversionFunction"] = "passthrough";
+                characteristics.push(characteristic);
+            }
+
+            var characteristic = new Map();
+            characteristic["name"] = "Name";
+            characteristic["enabled"] = true;
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = car + ".general.nickname"
+            characteristic["conversionFunction"] = "script";
+            characteristic["conversionParameters"] = new Map();
+            characteristic["conversionParameters"]["toHomeKit"] = "return value + ' Charging';";
+            characteristics.push(characteristic);
+
+            var characteristic = new Map();
+            characteristic["name"] = "SerialNumber";
+            characteristic["enabled"] = true;
+            characteristic["customCharacteristic"] =  true,
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = car + ".general.vin"
+            characteristic["conversionFunction"] = "passthrough";
+            characteristics.push(characteristic);
+
+            service["characteristics"] = characteristics;
+
             device["services"].push(service)
         }
 
+        //Device Battery
         if(existsState(car + '.status.batteryStatus.currentSOC_pct')
                 && existsState(car + '.general.nickname')
                 && existsState(car + '.general.vin')){
-            var name = getState(car + '.general.nickname').val + ' Battery';
+            var deviceName = getState(car + '.general.nickname').val + ' Battery';
             var device = null;
             for(existingDevice of devices){
-                if (existingDevice["name"] == name){
+                if (existingDevice["name"] == deviceName){
                     console.log('Car '+car+' has batteryStatus, battery device already exsisting, updating it',"debug");
                     device = existingDevice;
                     break;
@@ -356,17 +434,22 @@ function updateConfig(yahkainstance){
             device["configType"]= "customdevice";
             device["manufacturer"] = "unknown";
             device["model"] = "unknown";
-            device["name"] = name;
+            device["name"] = deviceName;
             device["serial"] = getState(car + '.general.vin').val;
             device["firmware"] = "";
             device["enabled"] = true;
             device["category"] = "1";
+
+            device["services"] = new Array();
+
+            //Service BatteryService
             var service = new Map();
-            service["name"] = getState(car + '.general.nickname').val + ' Battery';
+            var batteryServiceName = deviceName;
+            service["name"] = batteryServiceName;
             service["subType"] = "";
             service["type"] = "BatteryService";
             var characteristics = new Array();
-            
+
             var characteristic = new Map();
             characteristic["name"] = "BatteryLevel";
             characteristic["enabled"] = true;
@@ -397,6 +480,27 @@ function updateConfig(yahkainstance){
             characteristic["conversionParameters"]["toHomeKit"] = "if(value<10)\n  return 1;\nelse\n  return 0;";
             characteristics.push(characteristic);
 
+            var characteristic = new Map();
+            characteristic["name"] = "StatusActive";
+            characteristic["enabled"] = true;
+            characteristic["customCharacteristic"] =  true,
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = "vw-connect.0.info.connection" //Todo determine adapter instance
+            characteristic["conversionFunction"] = "passthrough";
+            characteristics.push(characteristic);
+
+            service["characteristics"] = characteristics;
+
+            device["services"].push(service)
+
+            //Service AccessoryInformation
+            var service = new Map();
+            service["name"] = batteryServiceName + ' AccessoryInformation';
+            service["subType"] = "";
+            service["type"] = "AccessoryInformation";
+            service["linkTo"]= batteryServiceName;
+            var characteristics = new Array();
+
             if(existsState(car + '.general.model')){
                 var characteristic = new Map();
                 characteristic["name"] = "Model";
@@ -415,7 +519,7 @@ function updateConfig(yahkainstance){
             characteristic["inOutParameters"] = car + ".general.nickname"
             characteristic["conversionFunction"] = "script";
             characteristic["conversionParameters"] = new Map();
-            characteristic["conversionParameters"]["toHomeKit"] = "return value + ' Climate';";
+            characteristic["conversionParameters"]["toHomeKit"] = "return value + ' Battery';";
             characteristics.push(characteristic);
 
             var characteristic = new Map();
@@ -426,6 +530,71 @@ function updateConfig(yahkainstance){
             characteristic["inOutParameters"] = car + ".general.vin"
             characteristic["conversionFunction"] = "passthrough";
             characteristics.push(characteristic);
+
+            service["characteristics"] = characteristics;
+
+            device["services"].push(service)
+        }
+        //Device Plug
+        if(existsState(car + '.status.plugStatus.plugConnectionState')
+                && existsState(car + '.general.nickname')
+                && existsState(car + '.general.vin')){
+            var deviceName = getState(car + '.general.nickname').val + ' Plug';
+            var device = null;
+            for(existingDevice of devices){
+                if (existingDevice["name"] == deviceName){
+                    console.log('Car '+car+' has plugSensor, plug device already exsisting, updating it',"debug");
+                    device = existingDevice;
+                    break;
+                }
+            }
+            if(!device){
+                console.log('Car '+car+' has plugSensor, creating plug device',"debug");
+                device = new Map();
+                devices.push(device)
+            }
+            device["configType"]= "customdevice";
+            device["manufacturer"] = "unknown";
+            device["model"] = "unknown";
+            device["name"] = deviceName;
+            device["serial"] = getState(car + '.general.vin').val;
+            device["firmware"] = "";
+            device["enabled"] = true;
+            device["category"] = "10";
+
+            device["services"] = new Array();
+
+            //Service ContactSensor
+            var service = new Map();
+            var contactServiceName = deviceName;
+            service["name"] = contactServiceName;
+            service["subType"] = "";
+            service["type"] = "ContactSensor";
+            var characteristics = new Array();
+
+            if(existsState(car + '.status.plugStatus.plugConnectionState')){
+                var characteristic = new Map();
+                characteristic["name"] = "ContactSensorState";
+                characteristic["enabled"] = true;
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".status.plugStatus.plugConnectionState"
+                characteristic["conversionFunction"] = "script";
+                characteristic["conversionParameters"] = new Map();
+                characteristic["conversionParameters"]["toHomeKit"] = "if(value=='connected')\n  return 0;\nreturn 1;";
+                characteristics.push(characteristic);
+            }
+
+            if(existsState(car + '.status.plugStatus.plugConnectionState')){
+                var characteristic = new Map();
+                characteristic["name"] = "StatusFault";
+                characteristic["enabled"] = true;
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".status.plugStatus.plugConnectionState"
+                characteristic["conversionFunction"] = "script";
+                characteristic["conversionParameters"] = new Map();
+                characteristic["conversionParameters"]["toHomeKit"] = "if(value=='connected' || value=='disconnected')\n  return 0;\nreturn 1;";
+                characteristics.push(characteristic);
+            }
 
             var characteristic = new Map();
             characteristic["name"] = "StatusActive";
@@ -438,8 +607,164 @@ function updateConfig(yahkainstance){
 
             service["characteristics"] = characteristics;
 
-            var services = new Array()
+            device["services"].push(service)
+
+            //Service AccessoryInformation
+            var service = new Map();
+            service["name"] = contactServiceName + ' AccessoryInformation';
+            service["subType"] = "";
+            service["type"] = "AccessoryInformation";
+            service["linkTo"]= contactServiceName;
+            var characteristics = new Array();
+
+            if(existsState(car + '.general.model')){
+                var characteristic = new Map();
+                characteristic["name"] = "Model";
+                characteristic["enabled"] = true;
+                characteristic["customCharacteristic"] =  true,
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".general.model"
+                characteristic["conversionFunction"] = "passthrough";
+                characteristics.push(characteristic);
+            }
+
+            var characteristic = new Map();
+            characteristic["name"] = "Name";
+            characteristic["enabled"] = true;
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = car + ".general.nickname"
+            characteristic["conversionFunction"] = "script";
+            characteristic["conversionParameters"] = new Map();
+            characteristic["conversionParameters"]["toHomeKit"] = "return value + ' Plug';";
+            characteristics.push(characteristic);
+
+            var characteristic = new Map();
+            characteristic["name"] = "SerialNumber";
+            characteristic["enabled"] = true;
+            characteristic["customCharacteristic"] =  true,
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = car + ".general.vin"
+            characteristic["conversionFunction"] = "passthrough";
+            characteristics.push(characteristic);
+
+            service["characteristics"] = characteristics;
+
+            device["services"].push(service)
+        }
+        //Device PlugLock
+        if(existsState(car + '.status.plugStatus.plugLockState')
+                && existsState(car + '.general.nickname')
+                && existsState(car + '.general.vin')){
+            var deviceName = getState(car + '.general.nickname').val + ' Plug Lock';
+            var device = null;
+            for(existingDevice of devices){
+                if (existingDevice["name"] == deviceName){
+                    console.log('Car '+car+' has plugSensor, plug device already exsisting, updating it',"debug");
+                    device = existingDevice;
+                    break;
+                }
+            }
+            if(!device){
+                console.log('Car '+car+' has plugSensor, creating plug device',"debug");
+                device = new Map();
+                devices.push(device)
+            }
+            device["configType"]= "customdevice";
+            device["manufacturer"] = "unknown";
+            device["model"] = "unknown";
+            device["name"] = deviceName;
+            device["serial"] = getState(car + '.general.vin').val;
+            device["firmware"] = "";
+            device["enabled"] = true;
+            device["category"] = "10";
+
             device["services"] = new Array();
+
+            //Service ContactSensor
+            var service = new Map();
+            var contactServiceName = deviceName;
+            service["name"] = contactServiceName;
+            service["subType"] = "";
+            service["type"] = "ContactSensor";
+            var characteristics = new Array();
+
+            if(existsState(car + '.status.plugStatus.plugLockState')){
+                var characteristic = new Map();
+                characteristic["name"] = "ContactSensorState";
+                characteristic["enabled"] = true;
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".status.plugStatus.plugLockState"
+                characteristic["conversionFunction"] = "script";
+                characteristic["conversionParameters"] = new Map();
+                characteristic["conversionParameters"]["toHomeKit"] = "if(value=='locked')\n  return 0;\nreturn 1;";
+                characteristics.push(characteristic);
+            }
+
+            if(existsState(car + '.status.plugStatus.plugLockState')){
+                var characteristic = new Map();
+                characteristic["name"] = "StatusFault";
+                characteristic["enabled"] = true;
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".status.plugStatus.plugLockState"
+                characteristic["conversionFunction"] = "script";
+                characteristic["conversionParameters"] = new Map();
+                characteristic["conversionParameters"]["toHomeKit"] = "if(value=='locked' || value=='unlocked')\n  return 0;\nreturn 1;";
+                characteristics.push(characteristic);
+            }
+
+            var characteristic = new Map();
+            characteristic["name"] = "StatusActive";
+            characteristic["enabled"] = true;
+            characteristic["customCharacteristic"] =  true,
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = "vw-connect.0.info.connection" //Todo determine adapter instance
+            characteristic["conversionFunction"] = "passthrough";
+            characteristics.push(characteristic);
+
+            service["characteristics"] = characteristics;
+
+            device["services"].push(service)
+
+            //Service AccessoryInformation
+            var service = new Map();
+            service["name"] = contactServiceName + ' AccessoryInformation';
+            service["subType"] = "";
+            service["type"] = "AccessoryInformation";
+            service["linkTo"]= contactServiceName;
+            var characteristics = new Array();
+
+            if(existsState(car + '.general.model')){
+                var characteristic = new Map();
+                characteristic["name"] = "Model";
+                characteristic["enabled"] = true;
+                characteristic["customCharacteristic"] =  true,
+                characteristic["inOutFunction"] = "ioBroker.State";
+                characteristic["inOutParameters"] = car + ".general.model"
+                characteristic["conversionFunction"] = "passthrough";
+                characteristics.push(characteristic);
+            }
+
+            var characteristic = new Map();
+            characteristic["name"] = "Name";
+            characteristic["enabled"] = true;
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = car + ".general.nickname"
+            characteristic["conversionFunction"] = "script";
+            characteristic["conversionParameters"] = new Map();
+            characteristic["conversionParameters"]["toHomeKit"] = "return value + ' Plug Lock';";
+            characteristics.push(characteristic);
+
+            var characteristic = new Map();
+            characteristic["name"] = "SerialNumber";
+            characteristic["enabled"] = true;
+            characteristic["customCharacteristic"] =  true,
+            characteristic["inOutFunction"] = "ioBroker.State";
+            characteristic["inOutParameters"] = car + ".general.vin"
+            characteristic["conversionFunction"] = "passthrough";
+            characteristics.push(characteristic);
+
+            service["characteristics"] = characteristics;
+
             device["services"].push(service)
         }
     });
@@ -459,7 +784,7 @@ function updateConfig(yahkainstance){
         console.log('Configured homekit username (mac address format) from default: '+ username,"debug");
     }
     bridge.username = username;
-    
+
 
     var pincode = "123-45-678";
     if(process.env.HOMEKIT_PIN){
@@ -514,7 +839,7 @@ function updateConfig(yahkainstance){
 
 function main() {
     updateConfig('yahka.0');
-    
+
 }
 
 setTimeout(main,    500);   // Zum Skriptstart ausführen
