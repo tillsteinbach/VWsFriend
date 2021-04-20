@@ -261,7 +261,7 @@ function updateConfig(yahkainstance){
                 characteristic["enabled"] = true;
                 characteristic["customCharacteristic"] =  true,
                 characteristic["inOutFunction"] = "ioBroker.State";
-                characteristic["inOutParameters"] = car + ".status.climatisationStatus.remainingClimatisationTime_min"
+                characteristic["inOutParameters"] = car + ".status.chargingStatus.remainingChargingTimeToComplete_min"
                 characteristic["conversionFunction"] = "script";
                 characteristic["conversionParameters"] = new Map();
                 characteristic["conversionParameters"]["toHomeKit"] = "return ((value * 60) + 1)";
