@@ -8,6 +8,7 @@ on:
   push:
     branches: [ main ]
     paths:
+     - .github/workflows/iobroker-build.yml
      - iobroker/**
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -30,6 +31,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          context: iobroker
           push: true
           tags: tillsteinbach/vwsfriend-iobroker:latest
           cache-from: type=registry,ref=tillsteinbach/vwsfriend-iobroker:latest
