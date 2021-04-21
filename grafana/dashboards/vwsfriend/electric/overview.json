@@ -1869,6 +1869,14 @@
         {
           "color": "#F2495C",
           "text": "on"
+        },
+        {
+          "color": "#5794F2",
+          "text": "cooling"
+        },
+        {
+          "color": "#B877D9",
+          "text": "ventilation"
         }
       ],
       "crosshairColor": "#8F070C",
