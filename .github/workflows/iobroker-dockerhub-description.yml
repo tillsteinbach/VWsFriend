@@ -2,7 +2,7 @@ name: Update Docker Hub Description for ioBroker
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - iobroker/README.md
       - .github/workflows/iobroker-dockerhub-description.yml
