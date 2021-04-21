@@ -5,7 +5,8 @@ on:
   push:
     branches: [ main ]
     paths:
-      - docker-compose*.yml
+      - '.github/workflows/compose.yml'
+      - 'docker-compose*.yml'
 
 jobs:
 
