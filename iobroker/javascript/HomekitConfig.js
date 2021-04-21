@@ -103,7 +103,7 @@ function updateConfig(yahkainstance){
             characteristic["inOutParameters"] = car + ".status.climatisationStatus.climatisationState";
             characteristic["conversionFunction"] = "script";
             characteristic["conversionParameters"] = new Map();
-            characteristic["conversionParameters"]["toHomeKit"] = "if(value=='off')\n  return 0;\nif(value=='heating')\n  return 1;\nif(value=='cooling')\n  return 2;\n\nreturn 0;";
+            characteristic["conversionParameters"]["toHomeKit"] = "if(value=='off')\n  return 0;\nif(value=='heating')\n  return 1;\nif(value=='cooling' || value=='ventilation')\n  return 2;\n\nreturn 0;";
             characteristics.push(characteristic);
 
             var characteristic = new Map();

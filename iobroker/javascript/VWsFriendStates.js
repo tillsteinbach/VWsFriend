@@ -1,8 +1,10 @@
-const process = require("process");
+t process = require("process");
 
 var carGeneralRegex = /(vw-connect\.\d+\.[A-Z0-9]+)/;
 var carCapturedTimestampRegex = /^(vw-connect\.\d+\.[A-Z0-9]+)\.status\.(.*)\.carCapturedTimestamp$/;
 var carCapturedTimestampName = 'carCapturedTimestamp';
+var carCapturedTimestampLatestRegex = /^0_userdata\.\d+\.(vw-connect\.\d+\.[A-Z0-9]+)\.carCapturedTimestampLatest$/;
+var carCapturedTimestampLatestName = 'carCapturedTimestampLatest';
 var enrollmentStatusRegex = /^(vw-connect\.\d+\.[A-Z0-9]+)\.general\.enrollmentStatus$/;
 var cruisingRangeElectricRegex = /^vw-connect\.\d+\.([A-Z0-9]+)\.status\.batteryStatus\.cruisingRangeElectric_km$/;
 var cruisingRangeElectricName = 'status.batteryStatus.cruisingRangeElectric_km';
@@ -66,6 +68,13 @@ var stateTemplates = {
             "role": 'value',
             "unit": 'km'
     },
+    "carCapturedTimestampLatest" : {
+            "name": 'Latest car captured timestamp from all services',
+            "desc": 'carCapturedTimestamp',
+            "type": 'string',
+            "role": 'value',
+            "unit": ''
+    },
     "carCapturedTimestamp_s" : {
             "name": 'Car captured Timestamp (s)',
             "desc": 'carCapturedTimestamp in seconds instead of date',
@@ -121,19 +130,25 @@ function runden(wert,stellen) {
 }
 
 function setOnlineState(car, changedId=null, setTimer=true) {
-    if (!carHasStateWithName(car, carCapturedTimestampName)){
-        console.log(car + ': has no state carCapturedTimestamp, cannot check online/offline state', 'debug');
-        return
-    }
     var onlineState = userdata + car + '.online';
-    var timestamp_string = getState(carGetFirstIdWithName(car, carCapturedTimestampName)).val;   // source
+    if(changedId){
+        var timestamp_string = getState(changedId).val;
+    }   
+    else{
+        if (!carHasStateWithName(car, carCapturedTimestampName)){
+            console.log(car + ': has no state carCapturedTimestamp, cannot check online/offline state', 'debug');
+            return
+        }
+        var timestamp_string = getState(carGetFirstIdWithName(car, carCapturedTimestampName)).val;
+    }
     var timestamp = Date.parse(timestamp_string);
     var online = true;
     if ((Date.now() - timestamp) > ((captureIntervalSeconds + 10) * 1000)){
         online = false;
     }
     else if (setTimer == true){
-        setTimeout(setOnlineState.bind(null, car, changedId, false), ((captureIntervalSeconds + 10) * 1000));
+        setTimeout(setOnlineState.bind(null, car, changedId, false), ((captureIntervalSeconds + 30) * 1000));
+        return;
     }
     
     if(!existsState(onlineState)){
@@ -145,10 +160,13 @@ function setOnlineState(car, changedId=null, setTimer=true) {
         });
     }
 
+
     console.log(onlineState + ': car is '+ (online?'online':'offline'), 'debug');
 }
 
 function setStimestamSState(car, changedId=null){
+    
+
     if(changedId!=null){
         var source = changedId;
     }
@@ -165,16 +183,38 @@ function setStimestamSState(car, changedId=null){
     var timestamp = Date.parse(timestamp_string)/1000; //date in ms to seconds
 
     var timestampSId = userdata + car + '.carCapturedTimestamp_s';
+    var carCapturedTimestampLatestId = userdata + car + '.carCapturedTimestampLatest';
 
     if(!existsState(timestampSId)){
         createStateFromTemplate(stateTemplates['carCapturedTimestamp_s'], timestampSId, timestamp.toString(), false);
     }
     else {
-        setState(timestampSId , timestamp, function (err) {
-            if (err) console.log('Cannot write object: ' + err, 'error');
-        });
+        currentState = getState(timestampSId).val;
+        if(currentState<timestamp){
+            setState(timestampSId , timestamp, function (err) {
+                if (err) console.log('Cannot write object: ' + err, 'error');
+            });
+        }
+        else if (currentState>timestamp){
+            console.log('Not updating carCapturedTimestamp_s: timestamp ' + timestamp + ' is older than already known timestamp '+ currentState, 'debug');
+        }
     }
 
+    if(!existsState(carCapturedTimestampLatestId)){
+        createStateFromTemplate(stateTemplates['carCapturedTimestampLatest'], carCapturedTimestampLatestId, timestamp_string, false);
+    }
+    else{
+        currentState = getState(carCapturedTimestampLatestId).val;
+        last_timestamp = (Date.parse(currentState)/1000)
+        if(last_timestamp<timestamp){
+            setState(carCapturedTimestampLatestId , timestamp_string, function (err) {
+                if (err) console.log('Cannot write object: ' + err, 'error');
+            });
+        }
+        else if (last_timestamp>timestamp){
+            console.log('Not updating carCapturedTimestampLatest: timestamp ' + timestamp_string + ' is older than already known timestamp '+ currentState, 'debug');
+        }
+    }
 }
 
 function setNicknameVIN(car, changedId=null){
@@ -299,24 +339,32 @@ function main() {
     var cars = findCars()
     console.log('Found the following cars: '+ cars,"debug");
     cars.forEach(function(car){
-        setOnlineState(car);
         setStimestamSState(car);
+        setOnlineState(car);
         setConsumptionAndRangeStates(car)
         setNicknameVIN(car)
     });
 }
 
-//For Online State
+//For Last Timestamp
 on({id: carCapturedTimestampRegex, change:'ne'}, function (obj) {
     const match = obj.id.match(carCapturedTimestampRegex);
     var car = match[1];
-    setOnlineState(car, obj.id);
     setStimestamSState(car, obj.id);
 });
 
+//For Online State
+on({id: carCapturedTimestampLatestRegex, change:'ne'}, function (obj) {
+    const match = obj.id.match(carCapturedTimestampLatestRegex);
+    var car = match[1];
+    setOnlineState(car, obj.id);
+});
+
+
+
 //For Nickname State
 on({id: nicknameRegex, change:'ne'}, function (obj) {
-    const match = obj.id.match(carCapturedTimestampRegex);
+    const match = obj.id.match(nicknameRegex);
     var car = match[1];
     setNicknameVIN(car, obj.id);
 });
@@ -329,6 +377,4 @@ on({id: [cruisingRangeElectricRegex, currentSOCRegex, batteryCapacityRegex], cha
 });
 
 setTimeout(main,    500);   // Zum Skriptstart ausführen
-
-
 
