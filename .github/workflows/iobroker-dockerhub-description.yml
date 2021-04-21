@@ -18,5 +18,5 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: tillsteinbach/vwsfriend-iobroker
-        short-description: ioBroker provisioned for VWsFriend Software. See: https://github.com/tillsteinbach/VWsFriend/
+        short-description: "ioBroker provisioned for VWsFriend Software. See: https://github.com/tillsteinbach/VWsFriend/"
         readme-filepath: ./iobroker/README.md
