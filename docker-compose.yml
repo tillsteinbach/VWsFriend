@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   iobroker:
-    #image: buanet/iobroker:v5.1.0
-    build: iobroker/.
+    image: tillsteinbach/vwsfriend-iobroker:latest
+    #build: iobroker/.
     networks:
       bridge:
       backend:

@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   iobroker:
-    build: iobroker/.
+    image: tillsteinbach/vwsfriend-iobroker:latest
+    #build: iobroker/.
     network_mode: host
     extra_hosts:
       - "influxdbbackend:127.0.0.1"
