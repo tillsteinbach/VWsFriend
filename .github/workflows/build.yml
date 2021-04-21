@@ -1,6 +1,11 @@
-name: Docker Image CI
+name: Docker-Compose CI
 
-on: [push]
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+    paths:
+      - docker-compose*.yml
 
 jobs:
 
