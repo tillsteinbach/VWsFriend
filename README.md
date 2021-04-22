@@ -1,5 +1,5 @@
 # VWsFriend
-[![Docker Image CI](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml/badge.svg)](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml)
+[![Docker COmpose CI](https://github.com/tillsteinbach/VWsFriend/actions/workflows/compose.yml/badge.svg)](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml)
 
 Volkswagen WeConnect© API visualization and control inspired by TeslaMate https://docs.teslamate.org/
 
