@@ -12,7 +12,7 @@ Volkswagen WeConnect© API visualization and control inspired by TeslaMate https
 * External internet access, to talk to the servers
 
 ## How to start
-* Clone or download the files docker-compose.yml and .env
+* Clone or download the files [docker-compose.yml](./docker-compose.yml) and [.env](./.env)
 * To create myconfig.env copy [.env](./.env) file and make changes according to your needs
 * Start the stack using your configuration.
 ```bash
@@ -32,12 +32,12 @@ docker-compose --env-file ./myconfig.env up
 
 ## VWsFriend with Apple Homekit support
 ![ID3](./screenshots/homekit.jpg)
-* Replace the docker-compose command by this to use the homekit override
+* Replace the docker-compose file by [docker-compose-homekit-host.yml](./docker-compose-homekit-host.yml) to use the homekit override
 ```bash
 docker-compose -f docker-compose-homekit-host.yml
 ```
 This will use host mode for iobroker. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
-If you do not like to share the host network with iobroker you can use macvlan mode:
+If you do not like to share the host network with iobroker you can use macvlan mode [docker-compose-homekit-macvlan.yml](./docker-compose-homekit-macvlan.yml):
 ```bash
 docker-compose -f docker-compose-homekit-macvlan.yml
 ```
