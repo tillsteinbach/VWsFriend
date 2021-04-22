@@ -1,5 +1,8 @@
 FROM buanet/iobroker:v5.1.0
 
+LABEL maintainer= \
+      url=
+
 ENV INFLUXDB_ADMIN_USER=admin
 ENV INFLUXDB_ADMIN_PASSWORD=secret
 ENV INFLUXDB_DB=iobroker
