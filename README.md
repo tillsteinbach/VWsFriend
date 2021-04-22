@@ -12,15 +12,23 @@ Volkswagen WeConnect© API visualization and control inspired by TeslaMate https
 * External internet access, to talk to the servers
 
 ## How to start
-* Clone or download the repository
-* Change the configuration in [config.env](./config.env)
-* Start the stack using your configuration. To create myconfig.env copy .env file
+* Clone or download the files docker-compose.yml and .env
+* To create myconfig.env copy [.env](./.env) file and make changes according to your needs
+* Start the stack using your configuration.
 ```bash
 docker-compose --env-file ./myconfig.env up
 ```
 * The first startup can take several minutes because of all the initial settings. Please be patient!
-* Open a browser to configure ioBroker on http://IP-ADDRESS:8081
-* Open a browser to configure grafana on http://IP-ADDRESS:3001 with the user and password you selected
+* Open a browser to configure ioBroker (if needed) on http://IP-ADDRESS:8081
+* Open a browser to use grafana on http://IP-ADDRESS:3001 with the user and password you selected
+
+
+## Update
+* To update the running VWsFriend configuration to the latest version, run the following commands:
+```bash
+docker-compose pull
+docker-compose --env-file ./myconfig.env up
+```
 
 ## VWsFriend with Apple Homekit support
 ![ID3](./screenshots/homekit.jpg)

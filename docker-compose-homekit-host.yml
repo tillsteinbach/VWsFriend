@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   iobroker:
-    build: iobroker/.
+    image: tillsteinbach/vwsfriend-iobroker:latest
     network_mode: host
     extra_hosts:
       - "influxdbbackend:127.0.0.1"
@@ -47,7 +47,7 @@ services:
       retries: 3
 
   grafana:
-    image: grafana/grafana:7.5.3
+    image: tillsteinbach/vwsfriend-grafana:latest
     ports:
       - 3001:3000
     networks:
@@ -57,14 +57,9 @@ services:
           - grafanabackend
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/config/grafana/provisioning/:/etc/grafana/provisioning/
-      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
-
     environment:
       - GF_SECURITY_ADMIN_USER=${USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${PASSWORD}
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_INSTALL_PLUGINS=natel-discrete-panel,pierosavi-imageit-panel
     healthcheck:
       test: (wget -qO- http://localhost:3000 | grep "<title>Grafana</title>" -q) || exit 1
       interval: 60s
