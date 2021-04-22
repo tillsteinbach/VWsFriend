@@ -1,0 +1,11 @@
+FROM grafana/grafana:7.5.3
+
+ENV GF_SECURITY_ADMIN_USER=admin
+ENV GF_SECURITY_ADMIN_PASSWORD=admin
+ENV GF_USERS_ALLOW_SIGN_UP=false
+ENV GF_INSTALL_PLUGINS=natel-discrete-panel,pierosavi-imageit-panel
+
+COPY ./config/grafana/provisioning/ /etc/grafana/provisioning/
+COPY ./dashboards/ /var/lib/grafana/dashboards/
+
+EXPOSE 3000
