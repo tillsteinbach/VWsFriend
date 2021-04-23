@@ -504,10 +504,10 @@
         {
           "alias": "Last connection",
           "groupBy": [],
-          "measurement": "vw-connect.0.$VIN.status.batteryStatus.carCapturedTimestamp",
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.carCapturedTimestampLatest",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.carCapturedTimestamp\"",
+          "query": "SELECT last(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.carCapturedTimestampLatest\"",
           "queryType": "randomWalk",
           "rawQuery": true,
           "refId": "A",
