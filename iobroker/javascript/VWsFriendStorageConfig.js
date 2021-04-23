@@ -11,6 +11,12 @@ const storageConfiguration = {
             'retention': oneMonth
         }
     },
+    'Latest car captured timestamp from all services': {
+        'regex': /^0_userdata\.\d+\.vw-connect\.\d+.([A-Z0-9]+)\.carCapturedTimestampLatest$/,
+        'options': {
+            'retention': oneMonth
+        }
+    },
     'Current consumption': {
         'regex': /^0_userdata\.\d+\.vw-connect\.\d+.([A-Z0-9]+)\.currentConsumption_kwhp100km$/,
         'options': {
@@ -172,7 +178,6 @@ function disableInflux(id){
 
 function enableInflux(id, options){//{changesOnly: true, debounce: 0, retention: oneYear, maxLength: 0, changesMinDelta: 0, aliasId; '', changesRelogInterval; 0, storageType; ''}
     var mergedOptions = Object.assign({changesOnly: true}, options);
-    console.log(typeof mergedOptions,"debug");
     sendTo(influxInstance, 'enableHistory', {
         id: id,
         options: mergedOptions
@@ -212,11 +217,11 @@ schedule({minute: 0}, function () {
 });
 
 //Schedule when connector goes online
-on({id: /^vw-connect\.\d+\.info\.connection$/, change:'ne', val:true}, function (obj) {
-    console.log("VW-Connect went online, checking storage configuration ","debug");
+on({id: /^vw-connec^\.\d+\.info\.connection$/, change:'ne', val:true}, function (obj) {
     setTimeout(checkall, connectFetchTimout);
 });
 
 setTimeout(main,    500);   // Zum Skriptstart ausführen
+
 
 
