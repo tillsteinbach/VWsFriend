@@ -20,7 +20,7 @@ var onOnlineRegex = /^(0_userdata\.\d+\.vw-connect\.\d+\.([A-Z0-9]+))\.online$/;
 var carCapturedTimestampLatestState = '.carCapturedTimestampLatest';
 
 var onClimatizationRegex = /^(vw-connect\.\d+\.([A-Z0-9]+))\.status\.climatisationStatus\.climatisationState$/;
-var climatizationCapturedTimestampState = '.status.climatisationSettings.carCapturedTimestamp';
+var climatizationCapturedTimestampState = '.status.climatisationStatus.carCapturedTimestamp';
 
 var onChargingRegex = /^(vw-connect\.\d+\.([A-Z0-9]+))\.status\.chargingStatus\.chargingState$/;
 var chargingCapturedTimestampState = '.status.chargingStatus.carCapturedTimestamp';
