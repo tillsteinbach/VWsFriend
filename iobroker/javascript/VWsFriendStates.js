@@ -1,5 +1,7 @@
 const process = require("process");
 
+var timeoutObj = null;
+
 var carGeneralRegex = /(vw-connect\.\d+\.[A-Z0-9]+)/;
 var carCapturedTimestampRegex = /^(vw-connect\.\d+\.[A-Z0-9]+)\.status\.(.*)\.carCapturedTimestamp$/;
 var carCapturedTimestampName = 'carCapturedTimestamp';
@@ -18,6 +20,7 @@ var nicknameRegex = /^(vw-connect\.\d+\.[A-Z0-9]+)\.general\.nickname$/;
 var nicknameVINonlyRegex = /^vw-connect\.\d+\.([A-Z0-9]+)\.general\.nickname$/;
 var nicknameName = 'nickname';
 var userdata = '0_userdata.0.'
+var cachedLastTimestamp = null;
 var captureIntervalSeconds = 60 * 5; 
 
 var stateTemplates = {
@@ -129,7 +132,41 @@ function runden(wert,stellen) {
     return gerundet;
 }
 
-function setOnlineState(car, changedId=null, setTimer=true) {
+function setOfflineState(car, changedId=null, lastTimestamp){
+    var onlineState = userdata + car + '.online';
+    timeoutObj = null;
+
+    if(changedId){
+        var timestamp_string = getState(changedId).val;
+    }   
+    else{
+        if (!carHasStateWithName(car, carCapturedTimestampName)){
+            console.log(car + ': has no state carCapturedTimestamp, cannot check online/offline state', 'debug');
+            return
+        }
+        var timestamp_string = getState(carGetFirstIdWithName(car, carCapturedTimestampName)).val;
+    }
+    var timestamp = Date.parse(timestamp_string);
+    
+    if ((Date.now() - timestamp) > (((captureIntervalSeconds * 2) + 15) * 1000)){
+        if(!existsState(onlineState)){
+            createStateFromTemplate(stateTemplates['online'], onlineState, false, false);
+        }
+        else{
+            setState(onlineState , {val: false, ack: true, ts: lastTimestamp, lc: lastTimestamp}, function (err) {
+                if (err) console.log('Cannot write object: ' + err, 'error');
+            });
+        }
+        console.log(onlineState + ': car is offline', 'debug');
+    }
+    else{
+        console.log('online timer expired, but car is still online', 'error');
+    }
+    
+    
+}
+
+function setOnlineState(car, changedId=null) {
     var onlineState = userdata + car + '.online';
     if(changedId){
         var timestamp_string = getState(changedId).val;
@@ -142,25 +179,26 @@ function setOnlineState(car, changedId=null, setTimer=true) {
         var timestamp_string = getState(carGetFirstIdWithName(car, carCapturedTimestampName)).val;
     }
     var timestamp = Date.parse(timestamp_string);
-    var online = true;
-    if ((Date.now() - timestamp) > ((captureIntervalSeconds + 30) * 1000)){
-        online = false;
+    if(timeoutObj){
+        clearTimeout(timeoutObj);
     }
-    else if (setTimer == true){
-        setTimeout(setOnlineState.bind(null, car, changedId, false), (((captureIntervalSeconds * 2) + 30) * 1000));
+    var online;
+    if ((Date.now() - timestamp) > (((captureIntervalSeconds * 2) + 30) * 1000)){
+        online = false
     }
-    
+    else{
+        online = true
+        timeoutObj = setTimeout(setOfflineState.bind(null, car, changedId, (Date.now() + (1000 * 10))), (((captureIntervalSeconds * 2) + 30) * 1000));
+    }
     if(!existsState(onlineState)){
         createStateFromTemplate(stateTemplates['online'], onlineState, online.toString(), false);
     }
     else{
-        setState(onlineState , online, function (err) {
+        setState(onlineState , {val: online, ack: true}, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
-
-
-    console.log(onlineState + ': car is '+ (online?'online':'offline'), 'debug');
+    console.log(onlineState + ': car is ' + (online?'online':'offline'), 'debug');
 }
 
 function setStimestamSState(car, changedId=null){
@@ -176,10 +214,13 @@ function setStimestamSState(car, changedId=null){
         }
         var source = carGetFirstIdWithName(car, carCapturedTimestampName);
     }
-    
 
     var timestamp_string = getState(source).val;   // source
     var timestamp = Date.parse(timestamp_string)/1000; //date in ms to seconds
+
+    if(cachedLastTimestamp && timestamp<=cachedLastTimestamp){
+        return;
+    }
 
     var timestampSId = userdata + car + '.carCapturedTimestamp_s';
     var carCapturedTimestampLatestId = userdata + car + '.carCapturedTimestampLatest';
@@ -188,32 +229,21 @@ function setStimestamSState(car, changedId=null){
         createStateFromTemplate(stateTemplates['carCapturedTimestamp_s'], timestampSId, timestamp.toString(), false);
     }
     else {
-        currentState = getState(timestampSId).val;
-        if(currentState<timestamp){
-            setState(timestampSId , timestamp, function (err) {
-                if (err) console.log('Cannot write object: ' + err, 'error');
-            });
-        }
-        else if (currentState>timestamp){
-            console.log('Not updating carCapturedTimestamp_s: timestamp ' + timestamp + ' is older than already known timestamp '+ currentState, 'debug');
-        }
+        setState(timestampSId , {val: timestamp, ack: true}, function (err) {
+            if (err) console.log('Cannot write object: ' + err, 'error');
+        });
+        console.log('Updating carCapturedTimestamp_s: timestamp ' + timestamp, 'debug');
     }
 
     if(!existsState(carCapturedTimestampLatestId)){
         createStateFromTemplate(stateTemplates['carCapturedTimestampLatest'], carCapturedTimestampLatestId, timestamp_string, false);
     }
     else{
-        currentState = getState(carCapturedTimestampLatestId).val;
-        last_timestamp = (Date.parse(currentState)/1000)
-        if(last_timestamp<timestamp){
-            setState(carCapturedTimestampLatestId , timestamp_string, function (err) {
-                if (err) console.log('Cannot write object: ' + err, 'error');
-            });
-        }
-        else if (last_timestamp>timestamp){
-            console.log('Not updating carCapturedTimestampLatest: timestamp ' + timestamp_string + ' is older than already known timestamp '+ currentState, 'debug');
-        }
+        setState(carCapturedTimestampLatestId , {val: timestamp_string, ack: true} , function (err) {
+            if (err) console.log('Cannot write object: ' + err, 'error');
+        });
     }
+    cachedLastTimestamp = timestamp;
 }
 
 function setNicknameVIN(car, changedId=null){
@@ -238,7 +268,7 @@ function setNicknameVIN(car, changedId=null){
         createStateFromTemplate(stateTemplates['nickname_vin'], nicknameVINId, nicknameVIN_string, false);
     }
     else {
-        setState(nicknameVINId , nicknameVIN_string, function (err) {
+        setState(nicknameVINId , {val: nicknameVIN_string, ack: true}, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
@@ -272,7 +302,7 @@ function setConsumptionAndRangeStates(car, changedId=null) {
 
     if(!existsState(capacityId)){
         if(process.env.CAR_BATTERYSIZE_KWH){
-            var capacity = process.env.CAR_BATTERYSIZE_KWH
+            var capacity = parseInt(process.env.CAR_BATTERYSIZE_KWH);
             console.log(car + ': has no state ' + capacityId + ': will create it from CAR_BATTERYSIZE_KWH variable with '+wltp+'kWh', 'debug');
         }
         else{
@@ -286,7 +316,7 @@ function setConsumptionAndRangeStates(car, changedId=null) {
     }
     if(!existsState(wltpId)){
         if(process.env.CAR_ELECTRIC_RANGE_KM){
-            var wltp = process.env.CAR_ELECTRIC_RANGE_KM
+            var wltp = parseInt(process.env.CAR_ELECTRIC_RANGE_KM);
             console.log(car + ': has no state ' + wltpId + ': will create it from CAR_ELECTRIC_RANGE_KM variable with '+wltp+'km', 'debug');
         }
         else{
@@ -308,7 +338,7 @@ function setConsumptionAndRangeStates(car, changedId=null) {
         createStateFromTemplate(stateTemplates['currentTotalRange_km'], currentTotalRangeId, Math.round(currentTotalRange).toString(), false);
     }
     else{
-        setState(currentTotalRangeId , Math.round(currentTotalRange), function (err) {
+        setState(currentTotalRangeId, {val: Math.round(currentTotalRange), ack: true}, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
@@ -316,7 +346,7 @@ function setConsumptionAndRangeStates(car, changedId=null) {
         createStateFromTemplate(stateTemplates['currentConsumption_kwhp100km'], currentConsumptionId, runden(currentConsumption,2).toString(), false);
     }
     else{
-        setState(currentConsumptionId , runden(currentConsumption,2), function (err) {
+        setState(currentConsumptionId, {val: runden(currentConsumption,2), ack: true}, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
@@ -324,7 +354,7 @@ function setConsumptionAndRangeStates(car, changedId=null) {
         createStateFromTemplate(stateTemplates['efficiency_pct'], efficiencyId, Math.round(efficiency).toString(), false);
     }
     else{
-        setState(efficiencyId , Math.round(efficiency), function (err) {
+        setState(efficiencyId, {val: Math.round(efficiency), ack: true}, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
@@ -335,6 +365,9 @@ function setConsumptionAndRangeStates(car, changedId=null) {
 }
 
 function main() {
+    if(process.env.VWCONNECT_INTERVAL){
+        captureIntervalSeconds = parseInt(process.env.VWCONNECT_INTERVAL) * 60;
+    }
     var cars = findCars()
     console.log('Found the following cars: '+ cars,"debug");
     cars.forEach(function(car){
@@ -376,4 +409,7 @@ on({id: [cruisingRangeElectricRegex, currentSOCRegex, batteryCapacityRegex], cha
 });
 
 setTimeout(main,    500);   // Zum Skriptstart ausführen
+
+
+
 
