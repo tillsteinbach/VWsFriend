@@ -1,4 +1,58 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "influxdb",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.5.4"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "natel-discrete-panel",
+      "name": "Discrete",
+      "version": "0.1.0"
+    },
+    {
+      "type": "panel",
+      "id": "pierosavi-imageit-panel",
+      "name": "ImageIt",
+      "version": "1.0.2"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -13,7 +67,7 @@
         "type": "dashboard"
       },
       {
-        "datasource": "influxdb",
+        "datasource": "${DS_INFLUXDB}",
         "enable": true,
         "hide": false,
         "iconColor": "#8F3BB8",
@@ -24,7 +78,7 @@
         "textColumn": "text"
       },
       {
-        "datasource": "influxdb",
+        "datasource": "${DS_INFLUXDB}",
         "enable": true,
         "hide": false,
         "iconColor": "rgba(255, 96, 96, 1)",
@@ -35,7 +89,7 @@
         "textColumn": "text"
       },
       {
-        "datasource": "influxdb",
+        "datasource": "${DS_INFLUXDB}",
         "enable": true,
         "hide": false,
         "iconColor": "#37872D",
@@ -50,12 +104,12 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 2,
-  "iteration": 1618207359848,
+  "id": null,
+  "iteration": 1619158585443,
   "links": [],
   "panels": [
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -99,7 +153,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -128,7 +182,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -174,7 +228,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -207,7 +261,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -241,7 +295,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -378,7 +432,7 @@
       }
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -424,7 +478,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "alias": "Car is online",
@@ -456,7 +510,7 @@
       "type": "stat"
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -499,10 +553,10 @@
         "text": {},
         "textMode": "value"
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
-          "alias": "Letzter Abruf",
+          "alias": "Last connection",
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.carCapturedTimestamp",
           "orderByTime": "ASC",
@@ -531,7 +585,7 @@
       "type": "stat"
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -877,7 +931,7 @@
       "type": "pierosavi-imageit-panel"
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -931,7 +985,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -960,7 +1014,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1002,7 +1056,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -1035,7 +1089,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -1069,13 +1123,13 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Consumption",
+          "alias": "Calculated Consumption",
           "yaxis": 2
         }
       ],
@@ -1084,7 +1138,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Current Range at 100%",
+          "alias": "Extrapolated Range at 100% SoC",
           "groupBy": [
             {
               "params": [
@@ -1124,7 +1178,7 @@
           "tags": []
         },
         {
-          "alias": "Consumption",
+          "alias": "Calculated Consumption",
           "groupBy": [
             {
               "params": [
@@ -1168,7 +1222,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Verbrauch und Max Reichweite",
+      "title": "Consumption & Range extrapolated to 100% SoC",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1185,7 +1239,7 @@
       "yaxes": [
         {
           "format": "lengthkm",
-          "label": "Current Range at 100%",
+          "label": "Extrapolated range at 100% SoC",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -1193,7 +1247,7 @@
         },
         {
           "format": "kWh/100km",
-          "label": "Consumption",
+          "label": "Calculated consumption",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -1206,7 +1260,7 @@
       }
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1253,7 +1307,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -1282,7 +1336,7 @@
       "type": "gauge"
     },
     {
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1324,7 +1378,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -1357,7 +1411,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {},
@@ -1392,7 +1446,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1491,7 +1545,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Efficiency",
+      "title": "Efficiency (Compared to WLTP range)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1534,7 +1588,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "fieldConfig": {
         "defaults": {},
@@ -1569,7 +1623,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1723,7 +1777,7 @@
         }
       ],
       "crosshairColor": "#8F070C",
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "display": "timeline",
       "expandFromQueryS": 0,
@@ -1880,7 +1934,7 @@
         }
       ],
       "crosshairColor": "#8F070C",
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "display": "timeline",
       "expandFromQueryS": 0,
@@ -2068,7 +2122,7 @@
         }
       ],
       "crosshairColor": "#8F070C",
-      "datasource": "influxdb",
+      "datasource": "${DS_INFLUXDB}",
       "description": "",
       "display": "timeline",
       "expandFromQueryS": 0,
@@ -2198,9 +2252,10 @@
     "list": [
       {
         "allValue": null,
-        "datasource": "influxdb",
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
         "definition": "SELECT \"value\"  FROM /0_userdata\\.\\d+\\.vw-connect\\.0\\.([A-Z0-9]+)\\.nickname_vin/",
-	"description": "Select Car if you have multiple cars in your account",
+        "description": "Select Car if you have multiple cars in your account",
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2209,9 +2264,9 @@
         "name": "VIN",
         "options": [],
         "query": "SELECT \"value\"  FROM /0_userdata\\.\\d+\\.vw-connect\\.0\\.([A-Z0-9]+)\\.nickname_vin/",
-	"refresh": 1,
+        "refresh": 1,
         "regex": "/(?<text>.*):(?<value>[A-Z0-9]+)/",
-	"skipUrlSync": false,
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
