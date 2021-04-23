@@ -1,4 +1,4 @@
-t process = require("process");
+const process = require("process");
 
 var carGeneralRegex = /(vw-connect\.\d+\.[A-Z0-9]+)/;
 var carCapturedTimestampRegex = /^(vw-connect\.\d+\.[A-Z0-9]+)\.status\.(.*)\.carCapturedTimestamp$/;
@@ -143,12 +143,11 @@ function setOnlineState(car, changedId=null, setTimer=true) {
     }
     var timestamp = Date.parse(timestamp_string);
     var online = true;
-    if ((Date.now() - timestamp) > ((captureIntervalSeconds + 10) * 1000)){
+    if ((Date.now() - timestamp) > ((captureIntervalSeconds + 30) * 1000)){
         online = false;
     }
     else if (setTimer == true){
-        setTimeout(setOnlineState.bind(null, car, changedId, false), ((captureIntervalSeconds + 30) * 1000));
-        return;
+        setTimeout(setOnlineState.bind(null, car, changedId, false), (((captureIntervalSeconds * 2) + 30) * 1000));
     }
     
     if(!existsState(onlineState)){
