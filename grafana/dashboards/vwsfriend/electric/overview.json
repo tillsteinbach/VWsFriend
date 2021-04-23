@@ -502,7 +502,7 @@
       "pluginVersion": "7.5.2",
       "targets": [
         {
-          "alias": "Letzter Abruf",
+          "alias": "Last connection",
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.carCapturedTimestamp",
           "orderByTime": "ASC",
@@ -1075,7 +1075,7 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Consumption",
+          "alias": "Calculated consumption",
           "yaxis": 2
         }
       ],
@@ -1084,7 +1084,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Current Range at 100%",
+          "alias": "Extrapolated range at 100% SoC",
           "groupBy": [
             {
               "params": [
@@ -1124,7 +1124,7 @@
           "tags": []
         },
         {
-          "alias": "Consumption",
+          "alias": "Calculated consumption",
           "groupBy": [
             {
               "params": [
@@ -1168,7 +1168,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Verbrauch und Max Reichweite",
+      "title": "Consumption & Range extrapolated to 100% SoC",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1185,7 +1185,7 @@
       "yaxes": [
         {
           "format": "lengthkm",
-          "label": "Current Range at 100%",
+          "label": "Extrapolated range at 100% SoC",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -1193,7 +1193,7 @@
         },
         {
           "format": "kWh/100km",
-          "label": "Consumption",
+          "label": "Calculated consumption",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -1407,7 +1407,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Efficiency",
+          "alias": "Efficiency (Compared to WLTP range)",
           "groupBy": [
             {
               "params": [
