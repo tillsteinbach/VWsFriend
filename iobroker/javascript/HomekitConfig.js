@@ -843,3 +843,4 @@ function main() {
 }
 
 setTimeout(main,    500);   // Zum Skriptstart ausführen
+
