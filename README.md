@@ -33,7 +33,7 @@ docker-compose --env-file ./myconfig.env up
 ```
 
 ## VWsFriend with Apple Homekit support
-<img src="./screenshots/homekit.jpg" width="230"><img src="./screenshots/homekit2.jpg" width="230"><img src="./screenshots/homekit3.jpg" width="230"><img src="./screenshots/homekit4.jpg" width="230">
+<img src="./screenshots/homekit.jpg" width="200"><img src="./screenshots/homekit2.jpg" width="200"><img src="./screenshots/homekit3.jpg" width="200"><img src="./screenshots/homekit4.jpg" width="200">
 
 * Replace the docker-compose file by [docker-compose-homekit-host.yml](./docker-compose-homekit-host.yml) to use the homekit override
 ```bash
