@@ -22,6 +22,8 @@ docker-compose --env-file ./myconfig.env up
 * Open a browser to configure ioBroker (if needed) on http://IP-ADDRESS:8081
 * Open a browser to use grafana on http://IP-ADDRESS:3001 with the user and password you selected
 
+## More information
+More information can be found in the Wiki: https://github.com/tillsteinbach/VWsFriend/wiki
 
 ## Update
 * To update the running VWsFriend configuration to the latest version, run the following commands:
@@ -31,7 +33,7 @@ docker-compose --env-file ./myconfig.env up
 ```
 
 ## VWsFriend with Apple Homekit support
-![ID3](./screenshots/homekit.jpg)
+<img src="./screenshots/homekit.jpg" width="200">
 * Replace the docker-compose file by [docker-compose-homekit-host.yml](./docker-compose-homekit-host.yml) to use the homekit override
 ```bash
 docker-compose -f docker-compose-homekit-host.yml
