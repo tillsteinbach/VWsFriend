@@ -50,6 +50,7 @@ Macvlan needs the variables for the IP to choose, the subnetmask and the gateway
 * Deploy datasource and dashboard as grafana app (allows better control)
 * More dashboards (also for other cars)
 * Change update frequency based on the cars state (more often when car is online)
+* Calculate more stats (e.g. total charging time and charged kwh)
 
 ## Known Issues
 * Does not show the nice picture of the car due to unclear license. Need to make a picture on my own when having time
