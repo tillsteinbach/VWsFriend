@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+
+## [0.2.0] - 2021-04-25
 ### Added
 - Now understanding climate state 'ventilation' in grafana and homekit
 - carCapturedTimestampLatest in userdata area
