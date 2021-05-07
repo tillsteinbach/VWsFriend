@@ -19,15 +19,15 @@ iobroker set javascript.0 --enableSetObject true
 iobroker set javascript.0 --libraries process
 
 iobroker set influxdb.0 --host influxdbbackend
-iobroker set influxdb.0 --password $INFLUXDB_ADMIN_PASSWORD
-iobroker set influxdb.0 --user $INFLUXDB_ADMIN_USER
-iobroker set influxdb.0 --dbname $INFLUXDB_DB
+iobroker set influxdb.0 --password "$INFLUXDB_ADMIN_PASSWORD"
+iobroker set influxdb.0 --user "$INFLUXDB_ADMIN_USER"
+iobroker set influxdb.0 --dbname "$INFLUXDB_DB"
 
-iobroker set vw-connect.0 --interval $VWCONNECT_INTERVAL
-iobroker set vw-connect.0 --user $VWCONNECT_USER
-iobroker set vw-connect.0 --password $VWCONNECT_PASSWORD
-iobroker set vw-connect.0 --pin $VWCONNECT_PIN
-iobroker set vw-connect.0 --type $VWCONNECT_TYPE
+iobroker set vw-connect.0 --interval "$VWCONNECT_INTERVAL"
+iobroker set vw-connect.0 --user "$VWCONNECT_USER"
+iobroker set vw-connect.0 --password "$VWCONNECT_PASSWORD"
+iobroker set vw-connect.0 --pin "$VWCONNECT_PIN"
+iobroker set vw-connect.0 --type "$VWCONNECT_TYPE"
 
 echo 'wait 10 seconds to allow the adapters to connect'
 sleep 10
