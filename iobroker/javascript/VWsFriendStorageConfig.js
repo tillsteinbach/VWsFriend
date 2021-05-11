@@ -1,8 +1,8 @@
 const influxInstance = 'influxdb.0'
-const connectFetchTimout=30*1000;
-const oneMonth = 31*24*60*60;
-const oneYear = 365*24*60*60;
-const twoYear = oneYear*2;
+const connectFetchTimout = 30 * 1000;
+const oneMonth = 31 * 24 * 60 * 60;
+const oneYear = 365 * 24 * 60 * 60;
+const twoYear = oneYear * 2;
 
 const storageConfiguration = {
     'Car captured Timestamp (s)': {
@@ -163,46 +163,46 @@ const storageConfiguration = {
     }
 };
 
-function disableInflux(id){
+function disableInflux(id) {
     sendTo(influxInstance, 'disableHistory', {
         id: id,
     }, function (result) {
         if (result.error) {
-            console.log("Could not disable influx configuration for: " + id +': '+result.error,"debug");
+            console.log("Could not disable influx configuration for: " + id + ': ' + result.error, "debug");
         }
         if (result.success) {
-            console.log("Disabled influx configuration for: " + id,"debug");
+            console.log("Disabled influx configuration for: " + id, "debug");
         }
     });
 }
 
-function enableInflux(id, options){//{changesOnly: true, debounce: 0, retention: oneYear, maxLength: 0, changesMinDelta: 0, aliasId; '', changesRelogInterval; 0, storageType; ''}
-    var mergedOptions = Object.assign({changesOnly: true}, options);
+function enableInflux(id, options) {//{changesOnly: true, debounce: 0, retention: oneYear, maxLength: 0, changesMinDelta: 0, aliasId; '', changesRelogInterval; 0, storageType; ''}
+    var mergedOptions = Object.assign({ changesOnly: true }, options);
     sendTo(influxInstance, 'enableHistory', {
         id: id,
         options: mergedOptions
     }, function (result) {
         if (result.error) {
-            console.log("Could not enable influx configuration for: " + id +': '+result.error,"debug");
+            console.log("Could not enable influx configuration for: " + id + ': ' + result.error, "debug");
         }
         if (result.success) {
-            console.log("Enabled influx configuration for: " + id,"debug");
+            console.log("Enabled influx configuration for: " + id, "debug");
         }
     });
 }
 
-function checkall(){
-    for ([statename, config] of Object.entries(storageConfiguration)){
+function checkall() {
+    for ([statename, config] of Object.entries(storageConfiguration)) {
         var ids = getIdByName(statename, true);
-        if(ids){
-            for (id of ids){
+        if (ids) {
+            for (id of ids) {
                 const match = id.match(config['regex']);
-                if(match){
+                if (match) {
                     const obj = getObject(id)
-                    if (!('common' in obj) || !('custom' in obj.common) || !(influxInstance in obj.common.custom)){
+                    if (!('common' in obj) || !('custom' in obj.common) || !(influxInstance in obj.common.custom)) {
                         enableInflux(id, config['options']);
                     }
-	        }
+                }
             }
         }
     }
@@ -212,16 +212,16 @@ function main() {
     checkall();
 }
 
-schedule({minute: 0}, function () {
+schedule({ minute: 0 }, function () {
     checkall();
 });
 
 //Schedule when connector goes online
-on({id: /^vw-connec^\.\d+\.info\.connection$/, change:'ne', val:true}, function (obj) {
+on({ id: /^vw-connec^\.\d+\.info\.connection$/, change: 'ne', val: true }, function (obj) {
     setTimeout(checkall, connectFetchTimout);
 });
 
-setTimeout(main,    500);   // Zum Skriptstart ausführen
+setTimeout(main, 500);   // Zum Skriptstart ausführen
 
 
 
