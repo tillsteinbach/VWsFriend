@@ -21,78 +21,78 @@ var nicknameVINonlyRegex = /^vw-connect\.\d+\.([A-Z0-9]+)\.general\.nickname$/;
 var nicknameName = 'nickname';
 var userdata = '0_userdata.0.'
 var cachedLastTimestamp = null;
-var captureIntervalSeconds = 60 * 5; 
+var captureIntervalSeconds = 60 * 5;
 
 var stateTemplates = {
-    "online" : {
-            "name": 'Online',
-            "type": 'boolean',
-            "role": 'value',
-            "unit": ''
+    "online": {
+        "name": 'Online',
+        "type": 'boolean',
+        "role": 'value',
+        "unit": ''
     },
-    "nickname_vin" : {
-            "name": 'Nickname:VIN',
-            "type": 'string',
-            "role": 'value',
-            "unit": ''
+    "nickname_vin": {
+        "name": 'Nickname:VIN',
+        "type": 'string',
+        "role": 'value',
+        "unit": ''
     },
-    "currentTotalRange_km" : {
-            "name": 'Current total range',
-            "desc": 'Current total range projected on 100% battery state (requires batteryCapacity_kwh to be set)',
-            "type": 'number',
-            "role": 'value',
-            "unit": 'km'
+    "currentTotalRange_km": {
+        "name": 'Current total range',
+        "desc": 'Current total range projected on 100% battery state (requires batteryCapacity_kwh to be set)',
+        "type": 'number',
+        "role": 'value',
+        "unit": 'km'
     },
-    "currentConsumption_kwhp100km" : {
-            "name": 'Current consumption',
-            "desc": 'Current consumption for 100km (requires batteryCapacity_kwh to be set)',
-            "type": 'number',
-            "role": 'value',
-            "unit": 'kWh/100km'
+    "currentConsumption_kwhp100km": {
+        "name": 'Current consumption',
+        "desc": 'Current consumption for 100km (requires batteryCapacity_kwh to be set)',
+        "type": 'number',
+        "role": 'value',
+        "unit": 'kWh/100km'
     },
-    "efficiency_pct" : {
-            "name": 'Current efficiency',
-            "desc": 'Current efficiency in percent related to WLTP range (requires wltp_km to be set)',
-            "type": 'number',
-            "role": 'value',
-            "unit": '%'
+    "efficiency_pct": {
+        "name": 'Current efficiency',
+        "desc": 'Current efficiency in percent related to WLTP range (requires wltp_km to be set)',
+        "type": 'number',
+        "role": 'value',
+        "unit": '%'
     },
-    "batteryCapacity_kwh" : {
-            "name": 'Usable Battery Capacity',
-            "desc": 'The usable energy in the cars battery, necessary for calculations',
-            "type": 'number',
-            "role": 'value',
-            "unit": 'kWh'
+    "batteryCapacity_kwh": {
+        "name": 'Usable Battery Capacity',
+        "desc": 'The usable energy in the cars battery, necessary for calculations',
+        "type": 'number',
+        "role": 'value',
+        "unit": 'kWh'
     },
-    "wltp_km" : {
-            "name": 'WLTP range',
-            "desc": 'WLTP range of the car, necessary for calculations',
-            "type": 'number',
-            "role": 'value',
-            "unit": 'km'
+    "wltp_km": {
+        "name": 'WLTP range',
+        "desc": 'WLTP range of the car, necessary for calculations',
+        "type": 'number',
+        "role": 'value',
+        "unit": 'km'
     },
-    "carCapturedTimestampLatest" : {
-            "name": 'Latest car captured timestamp from all services',
-            "desc": 'carCapturedTimestamp',
-            "type": 'string',
-            "role": 'value',
-            "unit": ''
+    "carCapturedTimestampLatest": {
+        "name": 'Latest car captured timestamp from all services',
+        "desc": 'carCapturedTimestamp',
+        "type": 'string',
+        "role": 'value',
+        "unit": ''
     },
-    "carCapturedTimestamp_s" : {
-            "name": 'Car captured Timestamp (s)',
-            "desc": 'carCapturedTimestamp in seconds instead of date',
-            "type": 'number',
-            "role": 'value',
-            "unit": 's'
+    "carCapturedTimestamp_s": {
+        "name": 'Car captured Timestamp (s)',
+        "desc": 'carCapturedTimestamp in seconds instead of date',
+        "type": 'number',
+        "role": 'value',
+        "unit": 's'
     }
 };
 
-function findCars(){
+function findCars() {
     var cars = [];
     var enrollmentStatuses = getIdByName('enrollmentStatus', true);
-    if(enrollmentStatuses){
-        for (enrollmentStatus of enrollmentStatuses){
-	    if (getState(enrollmentStatus).val == 'COMPLETED'){
+    if (enrollmentStatuses) {
+        for (enrollmentStatus of enrollmentStatuses) {
+            if (getState(enrollmentStatus).val == 'COMPLETED') {
                 const match = enrollmentStatus.match(enrollmentStatusRegex);
                 var car = match[1];
                 cars.push(car)
@@ -102,11 +102,11 @@ function findCars(){
     return cars;
 }
 
-function carGetFirstIdWithName(car, name){
+function carGetFirstIdWithName(car, name) {
     var states = getIdByName(name, true);
-    if(states){
-        for (state of states){
-            if (state.startsWith(car)){
+    if (states) {
+        for (state of states) {
+            if (state.startsWith(car)) {
                 return state;
             }
         }
@@ -114,101 +114,101 @@ function carGetFirstIdWithName(car, name){
     return null;
 }
 
-function carHasStateWithName(car, name){
+function carHasStateWithName(car, name) {
     var state = carGetFirstIdWithName(car, name)
     return (state != null);
 }
 
 function createStateFromTemplate(template, id, init, forceCreation = false) {
-    createState(id, init , forceCreation, template, function (err) {
+    createState(id, init, forceCreation, template, function (err) {
         if (err) console.log('Cannot write object: ' + err, 'error');
-        else console.log(id + ': New state was created','debug');
+        else console.log(id + ': New state was created', 'debug');
     });
-    
+
 }
 
-function runden(wert,stellen) {
-    var gerundet = Math.round(wert*Math.pow(10, stellen))/Math.pow(10, stellen);
+function runden(wert, stellen) {
+    var gerundet = Math.round(wert * Math.pow(10, stellen)) / Math.pow(10, stellen);
     return gerundet;
 }
 
-function setOfflineState(car, changedId=null, lastTimestamp){
+function setOfflineState(car, changedId = null, lastTimestamp) {
     var onlineState = userdata + car + '.online';
     timeoutObj = null;
 
-    if(changedId){
+    if (changedId) {
         var timestamp_string = getState(changedId).val;
-    }   
-    else{
-        if (!carHasStateWithName(car, carCapturedTimestampName)){
+    }
+    else {
+        if (!carHasStateWithName(car, carCapturedTimestampName)) {
             console.log(car + ': has no state carCapturedTimestamp, cannot check online/offline state', 'debug');
             return
         }
         var timestamp_string = getState(carGetFirstIdWithName(car, carCapturedTimestampName)).val;
     }
     var timestamp = Date.parse(timestamp_string);
-    
-    if ((Date.now() - timestamp) > (((captureIntervalSeconds * 2) + 15) * 1000)){
-        if(!existsState(onlineState)){
+
+    if ((Date.now() - timestamp) > (((captureIntervalSeconds * 2) + 15) * 1000)) {
+        if (!existsState(onlineState)) {
             createStateFromTemplate(stateTemplates['online'], onlineState, false, false);
         }
-        else{
-            setState(onlineState , {val: false, ack: true, ts: lastTimestamp, lc: lastTimestamp}, function (err) {
+        else {
+            setState(onlineState, { val: false, ack: true, ts: lastTimestamp, lc: lastTimestamp }, function (err) {
                 if (err) console.log('Cannot write object: ' + err, 'error');
             });
         }
         console.log(onlineState + ': car is offline', 'debug');
     }
-    else{
+    else {
         console.log('online timer expired, but car is still online', 'error');
     }
-    
-    
+
+
 }
 
-function setOnlineState(car, changedId=null) {
+function setOnlineState(car, changedId = null) {
     var onlineState = userdata + car + '.online';
-    if(changedId){
+    if (changedId) {
         var timestamp_string = getState(changedId).val;
-    }   
-    else{
-        if (!carHasStateWithName(car, carCapturedTimestampName)){
+    }
+    else {
+        if (!carHasStateWithName(car, carCapturedTimestampName)) {
             console.log(car + ': has no state carCapturedTimestamp, cannot check online/offline state', 'debug');
             return
         }
         var timestamp_string = getState(carGetFirstIdWithName(car, carCapturedTimestampName)).val;
     }
     var timestamp = Date.parse(timestamp_string);
-    if(timeoutObj){
+    if (timeoutObj) {
         clearTimeout(timeoutObj);
     }
     var online;
-    if ((Date.now() - timestamp) > (((captureIntervalSeconds * 2) + 30) * 1000)){
+    if ((Date.now() - timestamp) > (((captureIntervalSeconds * 2) + 30) * 1000)) {
         online = false
     }
-    else{
+    else {
         online = true
         timeoutObj = setTimeout(setOfflineState.bind(null, car, changedId, (Date.now() + (1000 * 10))), (((captureIntervalSeconds * 2) + 30) * 1000));
     }
-    if(!existsState(onlineState)){
+    if (!existsState(onlineState)) {
         createStateFromTemplate(stateTemplates['online'], onlineState, online.toString(), false);
     }
-    else{
-        setState(onlineState , {val: online, ack: true}, function (err) {
+    else {
+        setState(onlineState, { val: online, ack: true }, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
-    console.log(onlineState + ': car is ' + (online?'online':'offline'), 'debug');
+    console.log(onlineState + ': car is ' + (online ? 'online' : 'offline'), 'debug');
 }
 
-function setStimestamSState(car, changedId=null){
-    
+function setStimestamSState(car, changedId = null) {
 
-    if(changedId!=null){
+
+    if (changedId != null) {
         var source = changedId;
     }
-    else{
-        if (!carHasStateWithName(car, carCapturedTimestampName)){
+    else {
+        if (!carHasStateWithName(car, carCapturedTimestampName)) {
             console.log(car + ': has no state carCapturedTimestamp, cannot check online/offline state', 'debug');
             return
         }
@@ -216,66 +216,66 @@ function setStimestamSState(car, changedId=null){
     }
 
     var timestamp_string = getState(source).val;   // source
-    var timestamp = Date.parse(timestamp_string)/1000; //date in ms to seconds
+    var timestamp = Date.parse(timestamp_string) / 1000; //date in ms to seconds
 
-    if(cachedLastTimestamp && timestamp<=cachedLastTimestamp){
+    if (cachedLastTimestamp && timestamp <= cachedLastTimestamp) {
         return;
     }
 
     var timestampSId = userdata + car + '.carCapturedTimestamp_s';
     var carCapturedTimestampLatestId = userdata + car + '.carCapturedTimestampLatest';
 
-    if(!existsState(timestampSId)){
+    if (!existsState(timestampSId)) {
         createStateFromTemplate(stateTemplates['carCapturedTimestamp_s'], timestampSId, timestamp.toString(), false);
     }
     else {
-        setState(timestampSId , {val: timestamp, ack: true}, function (err) {
+        setState(timestampSId, { val: timestamp, ack: true }, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
         console.log('Updating carCapturedTimestamp_s: timestamp ' + timestamp, 'debug');
     }
 
-    if(!existsState(carCapturedTimestampLatestId)){
+    if (!existsState(carCapturedTimestampLatestId)) {
         createStateFromTemplate(stateTemplates['carCapturedTimestampLatest'], carCapturedTimestampLatestId, timestamp_string, false);
     }
-    else{
-        setState(carCapturedTimestampLatestId , {val: timestamp_string, ack: true} , function (err) {
+    else {
+        setState(carCapturedTimestampLatestId, { val: timestamp_string, ack: true }, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
     cachedLastTimestamp = timestamp;
 }
 
-function setNicknameVIN(car, changedId=null){
-    if(changedId!=null){
+function setNicknameVIN(car, changedId = null) {
+    if (changedId != null) {
         var source = changedId;
     }
-    else{
-        if (!carHasStateWithName(car, nicknameName)){
+    else {
+        if (!carHasStateWithName(car, nicknameName)) {
             console.log(car + ': has no state nickname, cannot do nickname vin mapping', 'debug');
             return
         }
         var source = carGetFirstIdWithName(car, nicknameName);
     }
-    
+
     const match = source.match(nicknameVINonlyRegex);
     var vin = match[1];
     var nicknameVIN_string = getState(source).val + ':' + vin;
 
     var nicknameVINId = userdata + car + '.nickname_vin';
 
-    if(!existsState(nicknameVINId)){
+    if (!existsState(nicknameVINId)) {
         createStateFromTemplate(stateTemplates['nickname_vin'], nicknameVINId, nicknameVIN_string, false);
     }
     else {
-        setState(nicknameVINId , {val: nicknameVIN_string, ack: true}, function (err) {
+        setState(nicknameVINId, { val: nicknameVIN_string, ack: true }, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
 
 }
 
-function setConsumptionAndRangeStates(car, changedId=null) {
+function setConsumptionAndRangeStates(car, changedId = null) {
     var socId = car + '.' + currentSOCName;
     var rangeId = car + '.' + cruisingRangeElectricName;
     var capacityId = userdata + car + '.' + batteryCapacityName;
@@ -284,7 +284,7 @@ function setConsumptionAndRangeStates(car, changedId=null) {
     var currentConsumptionId = userdata + car + '.' + 'currentConsumption_kwhp100km';
     var efficiencyId = userdata + car + '.' + 'efficiency_pct';
 
-    if(!existsState(socId)){
+    if (!existsState(socId)) {
         console.log(car + ': has no state ' + socId + ': cannot calculate additional consumption parameters', 'debug');
         return;
     }
@@ -292,7 +292,7 @@ function setConsumptionAndRangeStates(car, changedId=null) {
         var soc = getState(socId).val;   // soc auslesen
     }
 
-    if(!existsState(rangeId)){
+    if (!existsState(rangeId)) {
         console.log(car + ': has no state ' + rangeId + ': cannot calculate additional consumption parameters', 'debug');
         return;
     }
@@ -300,29 +300,29 @@ function setConsumptionAndRangeStates(car, changedId=null) {
         var range = getState(rangeId).val; // range auslesen
     }
 
-    if(!existsState(capacityId)){
-        if(process.env.CAR_BATTERYSIZE_KWH){
+    if (!existsState(capacityId)) {
+        if (process.env.CAR_BATTERYSIZE_KWH) {
             var capacity = parseInt(process.env.CAR_BATTERYSIZE_KWH);
-            console.log(car + ': has no state ' + capacityId + ': will create it from CAR_BATTERYSIZE_KWH variable with '+wltp+'kWh', 'debug');
+            console.log(car + ': has no state ' + capacityId + ': will create it from CAR_BATTERYSIZE_KWH variable with ' + wltp + 'kWh', 'debug');
         }
-        else{
+        else {
             var capacity = 58
-            console.log(car + ': has no state ' + capacityId + ': will create it with default of '+capacity+'kWh, you have to change it for your car in the config setting CAR_BATTERYSIZE_KWH', 'debug');
+            console.log(car + ': has no state ' + capacityId + ': will create it with default of ' + capacity + 'kWh, you have to change it for your car in the config setting CAR_BATTERYSIZE_KWH', 'debug');
         }
         createStateFromTemplate(stateTemplates['batteryCapacity_kwh'], capacityId, capacity, false);
     }
     else {
         var capacity = getState(capacityId).val; // capacity auslesen
     }
-    if(!existsState(wltpId)){
-        if(process.env.CAR_ELECTRIC_RANGE_KM){
+    if (!existsState(wltpId)) {
+        if (process.env.CAR_ELECTRIC_RANGE_KM) {
             var wltp = parseInt(process.env.CAR_ELECTRIC_RANGE_KM);
-            console.log(car + ': has no state ' + wltpId + ': will create it from CAR_ELECTRIC_RANGE_KM variable with '+wltp+'km', 'debug');
+            console.log(car + ': has no state ' + wltpId + ': will create it from CAR_ELECTRIC_RANGE_KM variable with ' + wltp + 'km', 'debug');
         }
-        else{
+        else {
             var wltp = 416
-            console.log(car + ': has no state ' + wltpId + ': will create it with default of '+wltp+'km, you have to change it for your car in the config setting CAR_ELECTRIC_RANGE_KM', 'debug');
-            
+            console.log(car + ': has no state ' + wltpId + ': will create it with default of ' + wltp + 'km, you have to change it for your car in the config setting CAR_ELECTRIC_RANGE_KM', 'debug');
+
         }
         createStateFromTemplate(stateTemplates['wltp_km'], wltpId, wltp, false);
     }
@@ -330,47 +330,47 @@ function setConsumptionAndRangeStates(car, changedId=null) {
         var wltp = getState(wltpId).val; // wltp auslesen
     }
 
-    var currentTotalRange = range / soc*100;
-    var currentConsumption = capacity / currentTotalRange*100;
+    var currentTotalRange = range / soc * 100;
+    var currentConsumption = capacity / currentTotalRange * 100;
     var efficiency = currentTotalRange / wltp * 100;
 
-    if(!existsState(currentTotalRangeId)){
+    if (!existsState(currentTotalRangeId)) {
         createStateFromTemplate(stateTemplates['currentTotalRange_km'], currentTotalRangeId, Math.round(currentTotalRange).toString(), false);
     }
-    else{
-        setState(currentTotalRangeId, {val: Math.round(currentTotalRange), ack: true}, function (err) {
+    else {
+        setState(currentTotalRangeId, { val: Math.round(currentTotalRange), ack: true }, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
-    if(!existsState(currentConsumptionId)){
-        createStateFromTemplate(stateTemplates['currentConsumption_kwhp100km'], currentConsumptionId, runden(currentConsumption,2).toString(), false);
+    if (!existsState(currentConsumptionId)) {
+        createStateFromTemplate(stateTemplates['currentConsumption_kwhp100km'], currentConsumptionId, runden(currentConsumption, 2).toString(), false);
     }
-    else{
-        setState(currentConsumptionId, {val: runden(currentConsumption,2), ack: true}, function (err) {
+    else {
+        setState(currentConsumptionId, { val: runden(currentConsumption, 2), ack: true }, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
-    if(!existsState(efficiencyId)){
+    if (!existsState(efficiencyId)) {
         createStateFromTemplate(stateTemplates['efficiency_pct'], efficiencyId, Math.round(efficiency).toString(), false);
     }
-    else{
-        setState(efficiencyId, {val: Math.round(efficiency), ack: true}, function (err) {
+    else {
+        setState(efficiencyId, { val: Math.round(efficiency), ack: true }, function (err) {
             if (err) console.log('Cannot write object: ' + err, 'error');
         });
     }
 
-    console.log("currentTotalRange_km: " + currentTotalRange,"debug");
-    console.log("currentConsumption_kwhp100km: " + currentConsumption,"debug");
-    console.log("efficiency_pct: " + efficiency,"debug");
+    console.log("currentTotalRange_km: " + currentTotalRange, "debug");
+    console.log("currentConsumption_kwhp100km: " + currentConsumption, "debug");
+    console.log("efficiency_pct: " + efficiency, "debug");
 }
 
 function main() {
-    if(process.env.VWCONNECT_INTERVAL){
+    if (process.env.VWCONNECT_INTERVAL) {
         captureIntervalSeconds = parseInt(process.env.VWCONNECT_INTERVAL) * 60;
     }
     var cars = findCars()
-    console.log('Found the following cars: '+ cars,"debug");
-    cars.forEach(function(car){
+    console.log('Found the following cars: ' + cars, "debug");
+    cars.forEach(function (car) {
         setStimestamSState(car);
         setOnlineState(car);
         setConsumptionAndRangeStates(car)
@@ -379,14 +379,14 @@ function main() {
 }
 
 //For Last Timestamp
-on({id: carCapturedTimestampRegex, change:'ne'}, function (obj) {
+on({ id: carCapturedTimestampRegex, change: 'ne' }, function (obj) {
     const match = obj.id.match(carCapturedTimestampRegex);
     var car = match[1];
     setStimestamSState(car, obj.id);
 });
 
 //For Online State
-on({id: carCapturedTimestampLatestRegex, change:'ne'}, function (obj) {
+on({ id: carCapturedTimestampLatestRegex, change: 'ne' }, function (obj) {
     const match = obj.id.match(carCapturedTimestampLatestRegex);
     var car = match[1];
     setOnlineState(car, obj.id);
@@ -395,20 +395,20 @@ on({id: carCapturedTimestampLatestRegex, change:'ne'}, function (obj) {
 
 
 //For Nickname State
-on({id: nicknameRegex, change:'ne'}, function (obj) {
+on({ id: nicknameRegex, change: 'ne' }, function (obj) {
     const match = obj.id.match(nicknameRegex);
     var car = match[1];
     setNicknameVIN(car, obj.id);
 });
 
 //For Range and Efficiency State
-on({id: [cruisingRangeElectricRegex, currentSOCRegex, batteryCapacityRegex], change:'ne'}, function (obj) {
+on({ id: [cruisingRangeElectricRegex, currentSOCRegex, batteryCapacityRegex], change: 'ne' }, function (obj) {
     const match = obj.id.match(carGeneralRegex);
     var car = match[1];
     setConsumptionAndRangeStates(car, obj.id);
 });
 
-setTimeout(main,    500);   // Zum Skriptstart ausführen
+setTimeout(main, 500);   // Zum Skriptstart ausführen
 
 
 
