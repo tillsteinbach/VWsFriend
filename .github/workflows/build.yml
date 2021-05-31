@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Docker meta
         id: meta
-        uses: crazy-max/ghaction-docker-meta@v2
+        uses: docker/metadata-action@v3
         with:
           images: |
             tillsteinbach/vwsfriend-iobroker
