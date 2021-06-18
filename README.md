@@ -1,7 +1,7 @@
 # VWsFriend
 [![Docker COmpose CI](https://github.com/tillsteinbach/VWsFriend/actions/workflows/compose.yml/badge.svg)](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml)
 
-Volkswagen WeConnect© API visualization and control inspired by TeslaMate https://docs.teslamate.org/
+Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
 ![ID3](./screenshots/id3.png)
