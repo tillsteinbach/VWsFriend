@@ -1,14 +1,15 @@
 version: '3.8'
 services:
   vwsfriend:
-    image: vwsfriend
+    build: vwsfriend/.
+    #image: vwsfriend
     environment:
       - WECONNECT_USER
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgresdbbackend/
 
-  postgresdb
+  postgresdb:
     image: postgres:13
     networks:
       backend:
@@ -22,7 +23,8 @@ services:
       - POSTGRES_DB=vwsfriend
 
   grafana:
-    image: tillsteinbach/vwsfriend-grafana:latest
+    build: grafana/
+    #image: tillsteinbach/vwsfriend-grafana:latest
     ports:
       - 3001:3000
     networks:
@@ -35,6 +37,8 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
     healthcheck:
       test: (wget -qO- http://localhost:3000 | grep "<title>Grafana</title>" -q) || exit 1
       interval: 60s

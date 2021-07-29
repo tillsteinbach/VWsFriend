@@ -1,0 +1,20 @@
+# config file version
+apiVersion: 1
+
+datasources:
+  - name: VWsFriend
+    orgId: 1
+    type: postgres
+    access: proxy
+    database: vwsfriend
+    user: $DB_USER
+    secureJsonData:
+      password: $DB_PASSWORD
+    jsonData:
+      sslmode: "disable"
+      postgresVersion: 1200
+    url: postgresdbbackend:5432
+    basicAuth: false
+    withCredentials: false
+    isDefault: true
+    editable: false
