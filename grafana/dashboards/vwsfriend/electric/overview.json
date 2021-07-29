@@ -2060,7 +2060,7 @@
       {
         "allValue": null,
         "datasource": "VWsFriend",
-        "definition": "SELECT vin || ':' || nickname || ' (' || model || ')' FROM vehicles",
+        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "error": null,
         "hide": 0,
@@ -2069,7 +2069,7 @@
         "multi": false,
         "name": "VIN",
         "options": [],
-        "query": "SELECT vin || ':' || nickname || ' (' || model || ')' FROM vehicles",
+        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "refresh": 1,
         "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
