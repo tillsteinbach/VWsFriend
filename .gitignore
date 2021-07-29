@@ -1,3 +1,4 @@
 myconfig.env
 docker-compose-homekit-macvlan.override.yml
 docker-compose-homekit-macvlan-dev.yml
+.DS_Store

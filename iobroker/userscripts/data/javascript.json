@@ -1,9 +1,0 @@
-{"system.adapter.javascript.0":{
-	"native":{
-		"mirrorPath": "/opt/javascript",
-		"mirrorInstance": "0",
-		"enableSetObject": true,
-		"libraries": "process"
-		}
-	}
-}
