@@ -17,8 +17,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 3,
-  "iteration": 1627583700775,
+  "id": 2,
+  "iteration": 1627584145593,
   "links": [],
   "panels": [
     {
@@ -2059,13 +2059,8 @@
     "list": [
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "ID.3",
-          "value": "WVWZZZE1ZMP035900"
-        },
         "datasource": "VWsFriend",
-        "definition": "SELECT vin || ':' || nickname FROM vehicles",
+        "definition": "SELECT vin || ':' || nickname || ' (' || model || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "error": null,
         "hide": 0,
@@ -2074,7 +2069,7 @@
         "multi": false,
         "name": "VIN",
         "options": [],
-        "query": "SELECT vin || ':' || nickname FROM vehicles",
+        "query": "SELECT vin || ':' || nickname || ' (' || model || ')' FROM vehicles",
         "refresh": 1,
         "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
@@ -2094,5 +2089,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Electric Car Overview",
-  "uid": "0sBWSrWnz"
+  "uid": "0sBWSrWnz",
+  "version": 1
 }
