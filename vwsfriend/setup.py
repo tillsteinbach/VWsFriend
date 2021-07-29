@@ -1,5 +1,5 @@
 import pathlib
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -11,7 +11,7 @@ TEST_REQUIRED = (HERE / "test_requirements.txt").read_text()
 
 setup(
     name='vwsfriend',
-    packages=['vwsfriend'],
+    packages=find_packages(),
     version=open("vwsfriend/__version.py").readlines()[-1].split()[-1].strip("\"'"),
     description='',
     long_description=README,
