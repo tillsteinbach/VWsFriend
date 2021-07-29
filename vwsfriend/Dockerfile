@@ -7,7 +7,8 @@ ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
 
 COPY . vwsfriend
-RUN apk add --no-cache --virtual .build-deps rust build-base gcc libc-dev libffi-dev musl-dev python3-dev libffi-dev openssl-dev cargo && \
+RUN apk add --no-cache --virtual .build-deps rust build-base gcc libc-dev libffi-dev musl-dev python3-dev libffi-dev openssl-dev cargo postgresql-dev && \
+   apk --no-cache add libpq && \
    apk --no-cache add jpeg-dev \
                           zlib-dev \
                           freetype-dev \
@@ -22,4 +23,4 @@ RUN apk add --no-cache --virtual .build-deps rust build-base gcc libc-dev libffi
     pip install ./vwsfriend/ && \
     apk del .build-deps
 
-CMD vwsfriend --username ${USER} --password ${PASSWORD} --interval ${WECONNECT_INTERVAL} --database-url ${DATABASE_URL} ${ADDITIONAL_PARAMETERS}
+CMD vwsfriend --username ${WECONNECT_USER} --password ${WECONNECT_PASSWORD} --interval ${WECONNECT_INTERVAL} --database-url ${DATABASE_URL} ${ADDITIONAL_PARAMETERS}

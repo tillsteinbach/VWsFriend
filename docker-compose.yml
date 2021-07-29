@@ -3,11 +3,13 @@ services:
   vwsfriend:
     build: vwsfriend/.
     #image: vwsfriend
+    networks:
+      backend:
     environment:
       - WECONNECT_USER
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgresdbbackend/
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgresdbbackend/vwsfriend
 
   postgresdb:
     image: postgres:13
@@ -50,6 +52,5 @@ networks:
   backend:
 
 volumes:
-  iobroker_data:
   postgresdb_data:
   grafana_data:
