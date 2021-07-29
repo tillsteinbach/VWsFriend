@@ -11,51 +11,18 @@
         "name": "Annotations & Alerts",
         "showIn": 0,
         "type": "dashboard"
-      },
-      {
-        "datasource": "influxdb",
-        "enable": true,
-        "hide": false,
-        "iconColor": "#8F3BB8",
-        "name": "state",
-        "query": "SELECT * FROM vw_connect_events WHERE $timeFilter AND value='$VIN' AND tags=~/state/",
-        "showIn": 0,
-        "tagsColumn": "tags",
-        "textColumn": "text"
-      },
-      {
-        "datasource": "influxdb",
-        "enable": true,
-        "hide": false,
-        "iconColor": "rgba(255, 96, 96, 1)",
-        "name": "climatization",
-        "query": "SELECT * FROM vw_connect_events WHERE $timeFilter AND value='$VIN' AND tags=~/climatization/",
-        "showIn": 0,
-        "tagsColumn": "tags",
-        "textColumn": "text"
-      },
-      {
-        "datasource": "influxdb",
-        "enable": true,
-        "hide": false,
-        "iconColor": "#37872D",
-        "name": "charging",
-        "query": "SELECT * FROM vw_connect_events WHERE $timeFilter AND value='$VIN' AND tags=~/charging/",
-        "showIn": 0,
-        "tagsColumn": "tags",
-        "textColumn": "text"
       }
     ]
   },
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 2,
-  "iteration": 1618207359848,
+  "id": 3,
+  "iteration": 1627583700775,
   "links": [],
   "panels": [
     {
-      "datasource": "influxdb",
+      "datasource": "VWsFriend",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -99,36 +66,60 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
+          "format": "time_series",
+          "group": [],
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\"",
           "queryType": "randomWalk",
           "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"primary_currentSOC_pct\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "\"primary_currentSOC_pct\""
                 ],
-                "type": "field"
+                "type": "column"
               }
             ]
           ],
-          "tags": []
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
         }
       ],
       "title": "Battery",
       "type": "gauge"
     },
     {
-      "datasource": "influxdb",
+      "datasource": "VWsFriend",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -174,29 +165,53 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
+          "format": "time_series",
+          "group": [],
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km\"",
           "queryType": "randomWalk",
           "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"totalRange_km\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "\"totalRange_km\""
                 ],
-                "type": "field"
+                "type": "column"
               }
             ]
           ],
-          "tags": []
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
         }
       ],
       "title": "Projected Range",
@@ -207,7 +222,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "influxdb",
+      "datasource": "VWsFriend",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -227,6 +242,8 @@
         "alignAsTable": true,
         "avg": true,
         "current": true,
+        "hideEmpty": true,
+        "hideZero": false,
         "max": true,
         "min": true,
         "rightSide": false,
@@ -241,13 +258,14 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "Projected Range",
+          "$$hashKey": "object:668",
+          "alias": "/.*Range/",
           "yaxis": 2
         }
       ],
@@ -256,7 +274,36 @@
       "steppedLine": false,
       "targets": [
         {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"totalRange_km\" AS \"Total Range\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "1",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
           "alias": "Battery SoC",
+          "format": "time_series",
+          "group": [],
           "groupBy": [
             {
               "params": [
@@ -271,32 +318,51 @@
               "type": "fill"
             }
           ],
-          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "refId": "A",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"primary_currentSOC_pct\" AS \"Primary Engine SoC\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "refId": "2",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "\"primary_currentSOC_pct\""
                 ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
+                "type": "column"
               }
             ]
           ],
-          "tags": []
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
         },
         {
           "alias": "Projected Range",
+          "format": "time_series",
+          "group": [],
           "groupBy": [
             {
               "params": [
@@ -312,28 +378,164 @@
             }
           ],
           "hide": false,
-          "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
           "rawQuery": true,
-          "refId": "B",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"primary_remainingRange_km\" AS \"Primary Engine Range\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "refId": "3",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "\"primary_remainingRange_km\""
                 ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
+                "type": "column"
               }
             ]
           ],
-          "tags": []
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "alias": "Battery SoC",
+          "format": "time_series",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"secondary_currentSOC_pct\" AS \"Secondary Engine SoC\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "refId": "4",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"primary_currentSOC_pct\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "alias": "Projected Range",
+          "format": "time_series",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"secondary_remainingRange_km\" AS \"Secondary Engine Range\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "refId": "5",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"primary_remainingRange_km\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
         }
       ],
       "thresholds": [],
@@ -356,6 +558,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:151",
           "format": "percent",
           "label": "SoC",
           "logBase": 1,
@@ -364,6 +567,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:152",
           "format": "lengthkm",
           "label": "Range",
           "logBase": 1,
@@ -424,7 +628,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "alias": "Car is online",
@@ -499,7 +703,7 @@
         "text": {},
         "textMode": "value"
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "alias": "Last connection",
@@ -529,352 +733,6 @@
       "timeShift": null,
       "title": "Last Data from Car",
       "type": "stat"
-    },
-    {
-      "datasource": "influxdb",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 18,
-        "y": 4
-      },
-      "id": 17,
-      "options": {
-        "forceImageRefresh": false,
-        "imageUrl": "/public/img/custom/id3.jpeg",
-        "lockSensors": false,
-        "mappings": [
-          {
-            "compareTo": "on",
-            "description": "",
-            "id": "on-color",
-            "operator": "equal",
-            "values": {
-              "backgroundBlink": false,
-              "backgroundColor": "rgb(0, 0, 0)",
-              "bold": true,
-              "fontColor": "red",
-              "valueBlink": false,
-              "visible": true
-            }
-          },
-          {
-            "compareTo": "heating",
-            "description": "",
-            "id": "heating-color",
-            "operator": "equal",
-            "values": {
-              "backgroundBlink": false,
-              "backgroundColor": "#000",
-              "bold": true,
-              "fontColor": "red",
-              "valueBlink": false,
-              "visible": true
-            }
-          }
-        ],
-        "sensors": [
-          {
-            "backgroundBlink": false,
-            "backgroundColor": "#000",
-            "bold": false,
-            "decimals": 2,
-            "fontColor": "#FFF",
-            "link": "",
-            "mappingId": "on-color",
-            "name": "Window",
-            "position": {
-              "x": 15.341881108222005,
-              "y": 39.00582524271845
-            },
-            "query": {
-              "alias": "",
-              "id": "A"
-            },
-            "unit": "string",
-            "valueBlink": false,
-            "visible": true
-          },
-          {
-            "backgroundBlink": false,
-            "backgroundColor": "#000",
-            "bold": false,
-            "decimals": 2,
-            "fontColor": "#FFF",
-            "link": "",
-            "mappingId": "on-color",
-            "name": "Window",
-            "position": {
-              "x": 83.99440089585666,
-              "y": 39.22626262626262
-            },
-            "query": {
-              "alias": "",
-              "id": "B"
-            },
-            "unit": "string",
-            "valueBlink": false,
-            "visible": true
-          },
-          {
-            "backgroundBlink": false,
-            "backgroundColor": "#000",
-            "bold": false,
-            "decimals": 1,
-            "fontColor": "#FFF",
-            "link": "",
-            "mappingId": "",
-            "name": "Temperature",
-            "position": {
-              "x": 54.89753639417694,
-              "y": 30.575757575757574
-            },
-            "query": {
-              "alias": "",
-              "id": "C"
-            },
-            "unit": "celsius",
-            "valueBlink": false,
-            "visible": true
-          },
-          {
-            "backgroundBlink": false,
-            "backgroundColor": "#000",
-            "bold": false,
-            "decimals": 2,
-            "fontColor": "#FFF",
-            "link": "",
-            "mappingId": "heating-color",
-            "name": "AC",
-            "position": {
-              "x": 54.89753639417694,
-              "y": 47.49696969696969
-            },
-            "query": {
-              "alias": "",
-              "id": "D"
-            },
-            "unit": "string",
-            "valueBlink": false,
-            "visible": true
-          },
-          {
-            "backgroundBlink": false,
-            "backgroundColor": "#000",
-            "bold": false,
-            "decimals": null,
-            "fontColor": "#FFF",
-            "link": "",
-            "mappingId": "",
-            "name": "Plug",
-            "position": {
-              "x": 64.42128864762802,
-              "y": 0.3404255319148938
-            },
-            "query": {
-              "alias": "",
-              "id": "E"
-            },
-            "unit": "string",
-            "valueBlink": false,
-            "visible": true
-          },
-          {
-            "backgroundBlink": false,
-            "backgroundColor": "#000",
-            "bold": false,
-            "decimals": 2,
-            "fontColor": "#FFF",
-            "link": "",
-            "mappingId": "",
-            "name": "Plug",
-            "position": {
-              "x": 84.42105263157895,
-              "y": 0.15319148936169996
-            },
-            "query": {
-              "alias": "",
-              "id": "F"
-            },
-            "unit": "string",
-            "valueBlink": false,
-            "visible": true
-          }
-        ],
-        "sensorsTextSize": 15
-      },
-      "pluginVersion": "7.5.2",
-      "targets": [
-        {
-          "groupBy": [],
-          "measurement": "vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.front",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.front\"",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "groupBy": [],
-          "hide": false,
-          "measurement": "vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.rear",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.windowHeatingStatus.windowHeatingStatus.rear\"",
-          "rawQuery": true,
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "groupBy": [],
-          "hide": false,
-          "measurement": "vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C\"",
-          "rawQuery": true,
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "groupBy": [],
-          "hide": false,
-          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.climatisationState",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationStatus.climatisationState\"",
-          "rawQuery": true,
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.plugStatus.plugConnectionState\"",
-          "rawQuery": true,
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.plugStatus.plugLockState\"",
-          "rawQuery": true,
-          "refId": "F",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "title": "Quick View",
-      "type": "pierosavi-imageit-panel"
     },
     {
       "datasource": "influxdb",
@@ -931,7 +789,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -1002,7 +860,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -1069,7 +927,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1253,7 +1111,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -1324,7 +1182,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "targets": [
         {
           "groupBy": [],
@@ -1392,7 +1250,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1569,7 +1427,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "7.5.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1833,6 +1691,7 @@
       "title": "Online State",
       "type": "natel-discrete-panel",
       "units": "none",
+      "use12HourClock": false,
       "useTimePrecision": false,
       "valueMaps": [
         {
@@ -2034,6 +1893,7 @@
       "title": "Climatization",
       "type": "natel-discrete-panel",
       "units": "short",
+      "use12HourClock": false,
       "useTimePrecision": false,
       "valueMaps": [
         {
@@ -2176,6 +2036,7 @@
       "title": "Charging State",
       "type": "natel-discrete-panel",
       "units": "short",
+      "use12HourClock": false,
       "useTimePrecision": false,
       "valueMaps": [
         {
@@ -2198,9 +2059,14 @@
     "list": [
       {
         "allValue": null,
-        "datasource": "influxdb",
-        "definition": "SELECT \"value\"  FROM /0_userdata\\.\\d+\\.vw-connect\\.0\\.([A-Z0-9]+)\\.nickname_vin/",
-	"description": "Select Car if you have multiple cars in your account",
+        "current": {
+          "selected": false,
+          "text": "ID.3",
+          "value": "WVWZZZE1ZMP035900"
+        },
+        "datasource": "VWsFriend",
+        "definition": "SELECT vin || ':' || nickname FROM vehicles",
+        "description": "Select Car if you have multiple cars in your account",
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2208,10 +2074,10 @@
         "multi": false,
         "name": "VIN",
         "options": [],
-        "query": "SELECT \"value\"  FROM /0_userdata\\.\\d+\\.vw-connect\\.0\\.([A-Z0-9]+)\\.nickname_vin/",
-	"refresh": 1,
-        "regex": "/(?<text>.*):(?<value>[A-Z0-9]+)/",
-	"skipUrlSync": false,
+        "query": "SELECT vin || ':' || nickname FROM vehicles",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
@@ -2222,12 +2088,11 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Electric Car Overview",
-  "uid": "bLpiaT_Mk",
-  "version": 84
+  "uid": "0sBWSrWnz"
 }
