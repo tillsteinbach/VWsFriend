@@ -2,6 +2,7 @@ from vwsfriend.model.range import Range
 
 from weconnect.addressable import AddressableLeaf
 
+
 class RangeAgent():
     def __init__(self, session, vehicle):
         self.session = session
@@ -13,7 +14,6 @@ class RangeAgent():
             if 'rangeStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['rangeStatus'].enabled:
                 self.vehicle.weConnectVehicle.statuses['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
-
 
     def __onCarCapturedTimestampChange(self, element, flags):
         rangeStatus = self.vehicle.weConnectVehicle.statuses['rangeStatus']
@@ -29,7 +29,7 @@ class RangeAgent():
             current_secondary_currentSOC_pct = rangeStatus.secondaryEngine.currentSOC_pct.value
             current_secondary_remainingRange_km = rangeStatus.secondaryEngine.remainingRange_km.value
 
-        if self.range is None or (self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value and ( \
+        if self.range is None or (self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value and (
                 self.range.totalRange_km != current_totalRange_km
                 or self.range.primary_currentSOC_pct != current_primary_currentSOC_pct
                 or self.range.primary_remainingRange_km != current_primary_remainingRange_km

@@ -1,5 +1,6 @@
 from vwsfriend.agents.range_agent import RangeAgent
-import weconnect
+from vwsfriend.agents.charge_agent import ChargeAgent
+from vwsfriend.agents.state_agent import StateAgent
 from weconnect.elements import vehicle
 
 from sqlalchemy import create_engine
@@ -7,14 +8,12 @@ from sqlalchemy.orm import Session
 from vwsfriend.model.base import Base
 
 from weconnect.addressable import AddressableLeaf
-import weconnect.elements
 
 from vwsfriend.model.vehicle import Vehicle
 
 
-
 class DBConnector():
-    def __init__(self, weConnect, dbUrl):
+    def __init__(self, weConnect, dbUrl, interval):
 
         engine = create_engine(dbUrl)
         self.session = Session(engine)
@@ -23,6 +22,8 @@ class DBConnector():
 
         self.vehicles = self.session.query(Vehicle).all()
         self.agents = list()
+
+        self.interval = interval
 
         weConnect.addObserver(self.onEnable, AddressableLeaf.ObserverEvent.ENABLED, onUpdateComplete=True)
 
@@ -39,6 +40,8 @@ class DBConnector():
                 self.session.add(foundVehicle)
             foundVehicle.connect(element)
             self.agents.append(RangeAgent(self.session, foundVehicle))
+            self.agents.append(ChargeAgent(self.session, foundVehicle))
+            self.agents.append(StateAgent(self.session, foundVehicle, updateInterval=self.interval))
 
     def commit(self):
         for agent in self.agents:

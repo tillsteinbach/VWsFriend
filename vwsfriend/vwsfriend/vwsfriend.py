@@ -124,7 +124,7 @@ def main():
         weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(not args.fromcache))
 
-        connector = DBConnector(weConnect=weConnect, dbUrl=args.dbUrl)
+        connector = DBConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval)
 
         if args.fromcache:
             weConnect.fillCacheFromJson(args.cachefile, maxAge=2147483647)
@@ -136,19 +136,25 @@ def main():
             if args.fromcache:
                 time.sleep(10)
             else:
-                time.sleep(600)
+                time.sleep(args.interval)
             toggle = not toggle
             print('update')
             if toggle:
                 if args.fromcache:
                     weConnect.fillCacheFromJson(args.cachefile, maxAge=2147483647)
-                weConnect.update(updateCapabilities=False, updatePictures=False)
-                connector.commit()
+                try:
+                    weConnect.update(updateCapabilities=False, updatePictures=False)
+                    connector.commit()
+                except weconnect.errors.RetrievalError:
+                    LOG.info(f'Retrieval error during update. Will try again after configured interval of {args.interval}s')
             else:
                 if args.fromcache:
                     weConnect.fillCacheFromJson(args.cachefile2, maxAge=2147483647)
-                weConnect.update(updateCapabilities=False, updatePictures=False)
-                connector.commit()
+                try:
+                    weConnect.update(updateCapabilities=False, updatePictures=False)
+                    connector.commit()
+                except weconnect.errors.RetrievalError:
+                    LOG.info(f'Retrieval error during update. Will try again after configured interval of {args.interval}s')
 
 
         exit(0)
