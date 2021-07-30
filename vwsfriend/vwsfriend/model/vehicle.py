@@ -1,5 +1,4 @@
 from sqlalchemy import Column, String, Enum
-from sqlalchemy.orm import relationship
 
 from weconnect.addressable import AddressableLeaf
 from weconnect.elements.range_status import RangeStatus
