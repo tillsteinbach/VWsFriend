@@ -37,7 +37,7 @@ class ChargeAgent():
                 self.charge.remainingChargingTimeToComplete_min != current_remainingChargingTimeToComplete_min
                 or self.charge.chargingState != current_chargingState
                 or self.charge.chargeMode != current_chargeMode
-                or self.charge.schargePower_kW != current_chargePower_kW
+                or self.charge.chargePower_kW != current_chargePower_kW
                 or self.charge.chargeRate_kmph != current_chargeRate_kmph)):
 
             self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState, current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
