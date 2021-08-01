@@ -50,7 +50,7 @@ class StateAgent():
                 self.online = None
                 self.lastCarCapturedTimestamp = None
             else:
-                if self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc):
+                if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
                     self.vehicle.lastChange = self.lastCarCapturedTimestamp
         else:
             # When online now but now record add the record
@@ -58,7 +58,7 @@ class StateAgent():
                 LOG.info(f'Vehicle {self.vehicle.vin} went online')
                 self.onlineState = StateAgent.OnlineState.ONLINE
                 self.vehicle.online = True
-                if self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc):
+                if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
                     self.vehicle.lastChange = self.lastCarCapturedTimestamp
                 self.online = Online(self.vehicle, onlineTime=self.earliestCarCapturedTimestampInInterval, offlineTime=None)
                 self.session.add(self.online)
