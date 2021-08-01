@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Enum
+from sqlalchemy import Column, String, Enum, Boolean, DateTime
 
 from weconnect.addressable import AddressableLeaf
 from weconnect.elements.range_status import RangeStatus
@@ -11,7 +11,10 @@ class Vehicle(Base):
     vin = Column(String(17), primary_key=True)
     model = Column(String(256))
     nickname = Column(String(256))
-    carType = Column(Enum(RangeStatus.CarType))
+    carType = Column(Enum(RangeStatus.CarType, length=63))
+    online = Column(Boolean)
+    lastUpdate = Column(DateTime)
+    lastChange = Column(DateTime)
     weConnectVehicle = None
 
     def __init__(self, vin):
@@ -29,6 +32,8 @@ class Vehicle(Base):
             self.weConnectVehicle.statuses['rangeStatus'].carType.addObserver(self.__onCarTypeChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             if self.weConnectVehicle.statuses['rangeStatus'].carType.enabled:
                 self.carType = self.weConnectVehicle.statuses['rangeStatus'].carType.value
+            else:
+                self.carType = RangeStatus.CarType.UNKNOWN
 
     def __onModelChange(self, element, flags):
         if self.model != element.value:
