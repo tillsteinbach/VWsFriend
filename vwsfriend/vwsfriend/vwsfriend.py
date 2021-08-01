@@ -145,7 +145,7 @@ def main():
                 try:
                     weConnect.update(updateCapabilities=False, updatePictures=False)
                     connector.commit()
-                except weconnect.errors.RetrievalError:
+                except weconnect.RetrievalError:
                     LOG.info(f'Retrieval error during update. Will try again after configured interval of {args.interval}s')
             else:
                 if args.fromcache:
@@ -153,7 +153,7 @@ def main():
                 try:
                     weConnect.update(updateCapabilities=False, updatePictures=False)
                     connector.commit()
-                except weconnect.errors.RetrievalError:
+                except weconnect.RetrievalError:
                     LOG.info(f'Retrieval error during update. Will try again after configured interval of {args.interval}s')
 
 
