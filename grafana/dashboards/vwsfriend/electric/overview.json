@@ -11,14 +11,23 @@
         "name": "Annotations & Alerts",
         "showIn": 0,
         "type": "dashboard"
+      },
+      {
+        "datasource": "VWsFriend",
+        "enable": true,
+        "hide": false,
+        "iconColor": "#73BF69",
+        "name": "Online",
+        "rawQuery": "SELECT\n  \"onlineTime\" as \"time\",\n  \"offlineTime\" as \"timeend\",\n  'Car went online (' || (\"offlineTime\"-\"onlineTime\") || ')' as \"text\"\nFROM\n  onlinestates\nWHERE\n  vehicle_vin = '$VIN' and\n  $__timeFilter(\"onlineTime\")",
+        "showIn": 0
       }
     ]
   },
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 2,
-  "iteration": 1627584145593,
+  "id": 3,
+  "iteration": 1627843599002,
   "links": [],
   "panels": [
     {
@@ -1064,7 +1073,7 @@
       }
     },
     {
-      "datasource": "influxdb",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1114,13 +1123,17 @@
       "pluginVersion": "7.5.4",
       "targets": [
         {
+          "format": "time_series",
+          "group": [],
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\"",
           "queryType": "randomWalk",
           "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargePower_kW\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1133,14 +1146,22 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
-      "title": "Charging Speed",
+      "title": "Charging Power",
       "type": "gauge"
     },
     {
-      "datasource": "influxdb",
+      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1185,13 +1206,17 @@
       "pluginVersion": "7.5.4",
       "targets": [
         {
+          "format": "time_series",
+          "group": [],
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.chargingStatus.remainingChargingTimeToComplete_min\"",
           "queryType": "randomWalk",
           "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingChargingTimeToComplete_min\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1204,7 +1229,15 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Remaining Charging Time",
@@ -1392,7 +1425,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "influxdb",
+      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {},
@@ -1433,6 +1466,7 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
+          "$$hashKey": "object:185",
           "alias": "Charge Rate",
           "yaxis": 2
         }
@@ -1443,6 +1477,8 @@
       "targets": [
         {
           "alias": "Charge Power",
+          "format": "time_series",
+          "group": [],
           "groupBy": [
             {
               "params": [
@@ -1458,11 +1494,13 @@
             }
           ],
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
           "queryType": "randomWalk",
           "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargePower_kW\" AS \"Charge Power\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1479,10 +1517,20 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         },
         {
           "alias": "Charge Rate",
+          "format": "time_series",
+          "group": [],
           "groupBy": [
             {
               "params": [
@@ -1499,10 +1547,12 @@
           ],
           "hide": false,
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargeRate_kmph\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargeRate_kmph\" AS \"Charge Rate\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -1519,7 +1569,15 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "thresholds": [],
@@ -1542,6 +1600,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:192",
           "decimals": null,
           "format": "kwatt",
           "label": "Charge Power",
@@ -1551,6 +1610,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:193",
           "format": "velocitykmh",
           "label": "Charge Rate",
           "logBase": 1,
@@ -1911,24 +1971,28 @@
       "backgroundColor": "rgba(128,128,128,0.1)",
       "colorMaps": [
         {
+          "$$hashKey": "object:846",
           "color": "#CCC",
           "text": "N/A"
         },
         {
+          "$$hashKey": "object:847",
           "color": "#7EB26D",
-          "text": "readyForCharging"
+          "text": "READY_FOR_CHARGING"
         },
         {
+          "$$hashKey": "object:848",
           "color": "#F2495C",
-          "text": "error"
+          "text": "ERROR"
         },
         {
+          "$$hashKey": "object:849",
           "color": "#5794F2",
-          "text": "charging"
+          "text": "CHARGING"
         }
       ],
       "crosshairColor": "#8F070C",
-      "datasource": "influxdb",
+      "datasource": null,
       "description": "",
       "display": "timeline",
       "expandFromQueryS": 0,
@@ -1952,6 +2016,7 @@
       "pluginVersion": "7.5.2",
       "rangeMaps": [
         {
+          "$$hashKey": "object:801",
           "from": "null",
           "text": "N/A",
           "to": "null"
@@ -1968,13 +2033,17 @@
       "targets": [
         {
           "alias": "Charging State",
+          "format": "table",
+          "group": [],
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.chargingStatus.chargingState",
+          "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.chargingStatus.chargingState\" WHERE $timeFilter",
           "queryType": "randomWalk",
           "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1987,7 +2056,15 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "textSize": 24,
@@ -2035,14 +2112,39 @@
       "timeTextColor": "#d8d9da",
       "title": "Charging State",
       "type": "natel-discrete-panel",
-      "units": "short",
+      "units": "none",
       "use12HourClock": false,
       "useTimePrecision": false,
       "valueMaps": [
         {
+          "$$hashKey": "object:799",
           "op": "=",
           "text": "N/A",
           "value": "null"
+        },
+        {
+          "$$hashKey": "object:901",
+          "op": "=",
+          "text": "Ready for Charging",
+          "value": "READY_FOR_CHARGING"
+        },
+        {
+          "$$hashKey": "object:75",
+          "op": "=",
+          "text": "error",
+          "value": "ERROR"
+        },
+        {
+          "$$hashKey": "object:77",
+          "op": "=",
+          "text": "off",
+          "value": "OFF"
+        },
+        {
+          "$$hashKey": "object:79",
+          "op": "=",
+          "text": "charging",
+          "value": "CHARGING"
         }
       ],
       "valueTextColor": "#000000",
@@ -2082,13 +2184,10 @@
       }
     ]
   },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
-  },
+
   "timepicker": {},
   "timezone": "",
   "title": "Electric Car Overview",
-  "uid": "0sBWSrWnz",
+  "uid": "I4qEe3W7z",
   "version": 1
 }
