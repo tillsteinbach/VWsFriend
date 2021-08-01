@@ -33,10 +33,9 @@ class StateAgent():
                 self.__onCarCapturedTimestampChange(element=status.carCapturedTimestamp, flags=None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
-        if self.onlineState == StateAgent.OnlineState.ONLINE:
-            if element.enabled and (self.lastCarCapturedTimestamp is None or self.lastCarCapturedTimestamp < element.value):
+        if element.enabled and (self.lastCarCapturedTimestamp is None or self.lastCarCapturedTimestamp < element.value):
                 self.lastCarCapturedTimestamp = element.value
-        else:
+        if self.onlineState == StateAgent.OnlineState.OFFLINE:
             if element.enabled and (self.earliestCarCapturedTimestampInInterval is None or self.earliestCarCapturedTimestampInInterval > element.value) \
                     and (element.value + timedelta(seconds=((self.updateInterval * 2) + 30))) > datetime.utcnow().replace(tzinfo=timezone.utc):
                 self.earliestCarCapturedTimestampInInterval = element.value
@@ -51,13 +50,16 @@ class StateAgent():
                 self.online = None
                 self.lastCarCapturedTimestamp = None
             else:
-                self.vehicle.lastChange = self.lastCarCapturedTimestamp
+                if self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc):
+                    self.vehicle.lastChange = self.lastCarCapturedTimestamp
         else:
             # When online now but now record add the record
             if self.online is None and self.earliestCarCapturedTimestampInInterval is not None:
                 LOG.info(f'Vehicle {self.vehicle.vin} went online')
                 self.onlineState = StateAgent.OnlineState.ONLINE
                 self.vehicle.online = True
+                if self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc):
+                    self.vehicle.lastChange = self.lastCarCapturedTimestamp
                 self.online = Online(self.vehicle, onlineTime=self.earliestCarCapturedTimestampInInterval, offlineTime=None)
                 self.session.add(self.online)
                 self.earliestCarCapturedTimestampInInterval = None
