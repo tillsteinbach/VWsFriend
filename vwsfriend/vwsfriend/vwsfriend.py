@@ -11,11 +11,10 @@ import threading
 
 from pyhap.accessory_driver import AccessoryDriver
 
-from vwsfriend.homekit.bridge import VWsFriendBridge
-
-from vwsfriend.model.db_connector import DBConnector
-
 from weconnect import weconnect
+
+from vwsfriend.homekit.bridge import VWsFriendBridge
+from vwsfriend.model.db_connector import DBConnector
 
 from .__version import __version__
 
@@ -52,7 +51,7 @@ class NumberRangeArgument:
         return argparse.ArgumentTypeError('Must be a number')
 
 
-def main():
+def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     parser = argparse.ArgumentParser(
         prog='vwsfriend',
         description='TBD')
@@ -138,7 +137,7 @@ def main():
             else:
                 time.sleep(args.interval)
             toggle = not toggle
-            print('update')
+            LOG.info('Updating data from WeConnect')
             if toggle:
                 if args.fromcache:
                     weConnect.fillCacheFromJson(args.cachefile, maxAge=2147483647)
@@ -146,7 +145,7 @@ def main():
                     weConnect.update(updateCapabilities=False, updatePictures=False)
                     connector.commit()
                 except weconnect.RetrievalError:
-                    LOG.info(f'Retrieval error during update. Will try again after configured interval of {args.interval}s')
+                    LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
             else:
                 if args.fromcache:
                     weConnect.fillCacheFromJson(args.cachefile2, maxAge=2147483647)
@@ -154,10 +153,10 @@ def main():
                     weConnect.update(updateCapabilities=False, updatePictures=False)
                     connector.commit()
                 except weconnect.RetrievalError:
-                    LOG.info(f'Retrieval error during update. Will try again after configured interval of {args.interval}s')
+                    LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
 
-
-        exit(0)
+        sys.exit(0)
+        # flake8: noqa
 
         # Start the accessory on port 51826
         driver = AccessoryDriver(pincode=b'123-45-678')

@@ -12,7 +12,9 @@ class ClimatizationAgent():
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
             if 'climatisationStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['climatisationStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['climatisationStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.statuses['climatisationStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
+                                                                                                               AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                               onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
@@ -28,7 +30,8 @@ class ClimatizationAgent():
                 self.charge.remainingClimatisationTime_min != current_remainingClimatisationTime_min
                 or self.charge.climatisationState != current_climatisationState)):
 
-            self.charge = Climatization(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min, current_climatisationState)
+            self.charge = Climatization(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
+                                        current_climatisationState)
             self.session.add(self.charge)
 
     def commit(self):

@@ -12,7 +12,9 @@ class RangeAgent():
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
             if 'rangeStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['rangeStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.statuses['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
+                                                                                                       AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                       onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
@@ -36,7 +38,8 @@ class RangeAgent():
                 or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
                 or self.range.secondary_remainingRange_km != current_secondary_remainingRange_km)):
 
-            self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct, current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
+            self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
+                               current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
             self.session.add(self.range)
 
     def commit(self):
