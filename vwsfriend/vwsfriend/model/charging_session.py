@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, DateTime, Enum, ForeignKey
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
@@ -36,9 +36,10 @@ class ChargingSession(Base):
     startSOC_pct = Column(Integer)
     endSOC_pct = Column(Integer)
     mileage_km = Column(Integer)
-    cost = Column(Integer)
-    # To be added Location
-    # To be added Charger
+    position_latitude = Column(Float)
+    position_longitude = Column(Float)
+    location_id = Column(Integer, ForeignKey('locations.osm_id'))
+    location = relationship("Location")
 
     def __init__(self, vehicle):
         self.vehicle = vehicle
