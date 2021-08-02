@@ -22,16 +22,17 @@ class Charging(pyhap.accessory.Accessory):
         if chargingStatus is not None and chargingStatus.chargingState.enabled:
             chargingStatus.chargingState.addObserver(self.onChargingState, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charOn = servOutlet.configure_char('On')
-            #print(self.charOn.properties)
-            #self.charOn.override_properties(properties={'Format': 'bool', 'Permissions': ['pr', 'ev']})
+            # print(self.charOn.properties)
+            # self.charOn.override_properties(properties={'Format': 'bool', 'Permissions': ['pr', 'ev']})
             self.setOnState(chargingStatus.chargingState)
 
-        #if chargingStatus is not None and chargingStatus.remainingChargingTimeToComplete_min.enabled:
-        #    chargingStatus.remainingChargingTimeToComplete_min.addObserver(self.onRemainingChargingTimeToComplete, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-        #    # Add Characteristic that is not planned for the service. This is still visible in other Apps than Apple Home
-        #    servOutlet.add_characteristic(pyhap.loader.get_loader().get_char("RemainingDuration"))
-        #    self.charRemainingDuration = servOutlet.configure_char('RemainingDuration')
-        #    self.charRemainingDuration.set_value(chargingStatus.remainingChargingTimeToComplete_min.value * 60)
+        # if chargingStatus is not None and chargingStatus.remainingChargingTimeToComplete_min.enabled:
+        #     chargingStatus.remainingChargingTimeToComplete_min.addObserver(self.onRemainingChargingTimeToComplete,
+        #                                                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+        #     # Add Characteristic that is not planned for the service. This is still visible in other Apps than Apple Home
+        #     servOutlet.add_characteristic(pyhap.loader.get_loader().get_char("RemainingDuration"))
+        #     self.charRemainingDuration = servOutlet.configure_char('RemainingDuration')
+        #     self.charRemainingDuration.set_value(chargingStatus.remainingChargingTimeToComplete_min.value * 60)
 
         if plugStatus is not None and plugStatus.plugConnectionState.enabled:
             plugStatus.plugConnectionState.addObserver(self.onplugConnectionStateChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)

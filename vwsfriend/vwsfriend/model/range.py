@@ -19,7 +19,8 @@ class Range(Base):
     secondary_currentSOC_pct = Column(Integer)
     secondary_remainingRange_km = Column(Integer)
 
-    def __init__(self, vehicle, carCapturedTimestamp, totalRange_km, primary_currentSOC_pct, primary_remainingRange_km, secondary_currentSOC_pct, secondary_remainingRange_km):
+    def __init__(self, vehicle, carCapturedTimestamp, totalRange_km, primary_currentSOC_pct, primary_remainingRange_km, secondary_currentSOC_pct,
+                 secondary_remainingRange_km):
         self.vehicle = vehicle
         self.carCapturedTimestamp = carCapturedTimestamp
         self.totalRange_km = totalRange_km
