@@ -8,11 +8,13 @@ class ChargeAgent():
         self.session = session
         self.vehicle = vehicle
         self.charge = session.query(Charge).filter(Charge.vehicle == vehicle).order_by(Charge.carCapturedTimestamp.desc()).first()
-        
+
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
             if 'chargingStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['chargingStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['chargingStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.statuses['chargingStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
+                                                                                                          AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                          onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
@@ -40,7 +42,8 @@ class ChargeAgent():
                 or self.charge.chargePower_kW != current_chargePower_kW
                 or self.charge.chargeRate_kmph != current_chargeRate_kmph)):
 
-            self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState, current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
+            self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
+                                 current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
             self.session.add(self.charge)
 
     def commit(self):

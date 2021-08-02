@@ -34,7 +34,7 @@ class StateAgent():
 
     def __onCarCapturedTimestampChange(self, element, flags):
         if element.enabled and (self.lastCarCapturedTimestamp is None or self.lastCarCapturedTimestamp < element.value):
-                self.lastCarCapturedTimestamp = element.value
+            self.lastCarCapturedTimestamp = element.value
         if self.onlineState == StateAgent.OnlineState.OFFLINE:
             if element.enabled and (self.earliestCarCapturedTimestampInInterval is None or self.earliestCarCapturedTimestampInInterval > element.value) \
                     and (element.value + timedelta(seconds=((self.updateInterval * 2) + 30))) > datetime.utcnow().replace(tzinfo=timezone.utc):
@@ -42,7 +42,8 @@ class StateAgent():
 
     def checkOnlineOffline(self):
         if self.onlineState == StateAgent.OnlineState.ONLINE:
-            if  self.online is not None and (self.lastCarCapturedTimestamp + timedelta(seconds=((self.updateInterval * 3) + 30))) < datetime.utcnow().replace(tzinfo=timezone.utc):
+            if self.online is not None and (self.lastCarCapturedTimestamp + timedelta(seconds=((self.updateInterval * 3) + 30))) \
+                    < datetime.utcnow().replace(tzinfo=timezone.utc):
                 LOG.info(f'Vehicle {self.vehicle.vin} went offline')
                 self.onlineState = StateAgent.OnlineState.OFFLINE
                 self.vehicle.online = False
@@ -67,7 +68,7 @@ class StateAgent():
     def commit(self):
         self.checkOnlineOffline()
         self.vehicle.lastUpdate = datetime.utcnow().replace(tzinfo=timezone.utc)
-    
+
     class OnlineState(Enum):
         ONLINE = auto()
         OFFLINE = auto()
