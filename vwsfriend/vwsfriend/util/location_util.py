@@ -2,7 +2,7 @@ from vwsfriend.model.location import Location
 import requests
 
 
-def locationFromLatLon(latitude, longitude):
+def locationFromLatLon(session, latitude, longitude):
     query = {
         'lat': latitude,
         'lon': longitude,
@@ -16,4 +16,5 @@ def locationFromLatLon(latitude, longitude):
     response = requests.get('https://nominatim.openstreetmap.org/reverse', params=query, headers=headers)
     if response.status_code == requests.codes['ok']:
         location = Location(jsonDict=response.json())
-        print(location)
+        return session.merge(location)
+    return None
