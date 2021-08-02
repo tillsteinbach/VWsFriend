@@ -70,7 +70,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     defaultTemp = os.path.join(tempfile.gettempdir(), 'weconnect.token')
     parser.add_argument('--tokenfile', help=f'file to store token (default: {defaultTemp})', default=defaultTemp)
     parser.add_argument('-i', '--interval', help='Query interval in seconds',
-                              type=NumberRangeArgument(1), required=False, default=300)
+                              type=NumberRangeArgument(1), required=False, default=300) # TODO make 300 the minimum
     parser.add_argument('--fromcache', help='Use previously captured data stored with --cache', action='store_true')  # TODO: Remove
     defaultCacheTemp = os.path.join(tempfile.gettempdir(), 'weconnect.cache')
     parser.add_argument('--cachefile', help=f'file to store cache (default: {defaultCacheTemp})',  # TODO: Remove

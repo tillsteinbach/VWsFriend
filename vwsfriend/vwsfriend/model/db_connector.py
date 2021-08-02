@@ -4,6 +4,7 @@ from vwsfriend.agents.range_agent import RangeAgent
 from vwsfriend.agents.charge_agent import ChargeAgent
 from vwsfriend.agents.state_agent import StateAgent
 from vwsfriend.agents.climatization_agent import ClimatizationAgent
+from vwsfriend.agents.refuel_agent import RefuelAgent
 from weconnect.elements import vehicle
 
 from sqlalchemy import create_engine
@@ -13,6 +14,7 @@ from vwsfriend.model.base import Base
 from weconnect.addressable import AddressableLeaf
 
 from vwsfriend.model.vehicle import Vehicle
+from weconnect.elements.range_status import RangeStatus
 
 
 LOG = logging.getLogger("VWsFriend")
@@ -50,6 +52,9 @@ class DBConnector():
             self.agents.append(ChargeAgent(self.session, foundVehicle))
             self.agents.append(StateAgent(self.session, foundVehicle, updateInterval=self.interval))
             self.agents.append(ClimatizationAgent(self.session, foundVehicle))
+            self.agents.append(RefuelAgent(self.session, foundVehicle))
+            if foundVehicle.carType == RangeStatus.CarType.UNKNOWN:
+                LOG.warning('Vehicle %s has an unkown carType, thus some features won\'t be available until the correct carType could be detected', foundVehicle.vin)
 
     def commit(self):
         for agent in self.agents:
