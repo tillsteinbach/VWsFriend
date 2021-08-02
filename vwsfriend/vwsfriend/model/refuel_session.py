@@ -16,7 +16,7 @@ class RefuelSession(Base):
     mileage_km = Column(Integer)
     position_latitude = Column(Float)
     position_longitude = Column(Float)
-    location_id = Column(String, ForeignKey('locations.osm_id'))
+    location_id = Column(Integer, ForeignKey('locations.osm_id'))
     location = relationship("Location")
 
     def __init__(self, vehicle, date, startSOC_pct, endSOC_pct, mileage_km, position_latitude, position_longitude, location):
