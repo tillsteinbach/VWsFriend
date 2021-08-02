@@ -13,7 +13,11 @@ class StateAgent():
     def __init__(self, session, vehicle, updateInterval):
         self.session = session
         self.vehicle = vehicle
-        self.updateInterval = updateInterval
+        self.onlineTimeout = (updateInterval * 2) + 30
+        self.offlineTimout = (updateInterval * 2) + 30
+        # The offline timeout must be at least 10 minutes plus 30 seconds as this is the update frequency of data for some cars.
+        if self.offlineTimout < 630:
+            self.offlineTimout = 630
         self.onlineState = None
         self.online = session.query(Online).filter(Online.vehicle == vehicle).order_by(Online.onlineTime.desc()).first()
         # If the last record in the database is completed we are not online right now
@@ -37,12 +41,12 @@ class StateAgent():
             self.lastCarCapturedTimestamp = element.value
         if self.onlineState == StateAgent.OnlineState.OFFLINE:
             if element.enabled and (self.earliestCarCapturedTimestampInInterval is None or self.earliestCarCapturedTimestampInInterval > element.value) \
-                    and (element.value + timedelta(seconds=((self.updateInterval * 2) + 30))) > datetime.utcnow().replace(tzinfo=timezone.utc):
+                    and (element.value + timedelta(seconds=self.onlineTimeout)) > datetime.utcnow().replace(tzinfo=timezone.utc):
                 self.earliestCarCapturedTimestampInInterval = element.value
 
     def checkOnlineOffline(self):
         if self.onlineState == StateAgent.OnlineState.ONLINE:
-            if self.online is not None and (self.lastCarCapturedTimestamp + timedelta(seconds=((self.updateInterval * 3) + 30))) \
+            if self.online is not None and (self.lastCarCapturedTimestamp + timedelta(seconds=self.offlineTimeout)) \
                     < datetime.utcnow().replace(tzinfo=timezone.utc):
                 LOG.info(f'Vehicle {self.vehicle.vin} went offline')
                 self.onlineState = StateAgent.OnlineState.OFFLINE
