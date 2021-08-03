@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, BigInteger, Float, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
@@ -14,11 +14,11 @@ class Trip(Base):
     endDate = Column(DateTime)
     start_position_latitude = Column(Float)
     start_position_longitude = Column(Float)
-    start_location_id = Column(Integer, ForeignKey('locations.osm_id'))
+    start_location_id = Column(BigInteger, ForeignKey('locations.osm_id'))
     start_location = relationship("Location", foreign_keys=[start_location_id])
     destination_position_latitude = Column(Float)
     destination_position_longitude = Column(Float)
-    destination_location_id = Column(Integer, ForeignKey('locations.osm_id'))
+    destination_location_id = Column(BigInteger, ForeignKey('locations.osm_id'))
     destination_location = relationship("Location", foreign_keys=[destination_location_id])
     start_mileage_km = Column(Integer)
     end_mileage_km = Column(Integer)

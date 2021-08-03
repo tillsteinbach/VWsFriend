@@ -1,13 +1,13 @@
 import json
 
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, BigInteger, String, Float
 
 from vwsfriend.model.base import Base
 
 
 class Location(Base):
     __tablename__ = 'locations'
-    osm_id = Column(Integer, primary_key=True)
+    osm_id = Column(BigInteger, primary_key=True)
     osm_type = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
