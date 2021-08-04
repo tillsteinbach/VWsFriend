@@ -18,7 +18,7 @@
         "hide": false,
         "iconColor": "#73BF69",
         "name": "Online",
-        "rawQuery": "SELECT\n  \"onlineTime\" as \"time\",\n  \"offlineTime\" as \"timeend\",\n  'Car went online (' || (\"offlineTime\"-\"onlineTime\") || ')' as \"text\"\nFROM\n  onlinestates\nWHERE\n  vehicle_vin = '$VIN' and\n  $__timeFilter(\"onlineTime\")",
+        "rawQuery": "SELECT\n  \"onlineTime\" as \"time\",\n  \"offlineTime\" as \"timeend\",\n  CASE WHEN \"onlineTime\"=\"offlineTime\" THEN 'Car sent update'\n            ELSE 'Car went online (' || (\"offlineTime\"-\"onlineTime\") || ')'\n  END as \"text\"\nFROM\n  onlinestates\nWHERE\n  vehicle_vin = '$VIN' and\n  $__timeFilter(\"onlineTime\")",
         "showIn": 0
       }
     ]
@@ -27,7 +27,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 3,
-  "iteration": 1627887577148,
+  "iteration": 1628110547243,
   "links": [],
   "panels": [
     {
@@ -78,7 +78,7 @@
       "pluginVersion": "7.5.4",
       "targets": [
         {
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
@@ -88,7 +88,7 @@
           "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\"",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"primary_currentSOC_pct\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"currentSOC_pct\" AS \"Battery SoC\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -177,7 +177,7 @@
       "pluginVersion": "7.5.4",
       "targets": [
         {
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "groupBy": [],
           "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
@@ -187,7 +187,7 @@
           "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km\"",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"totalRange_km\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"cruisingRangeElectric_km\" AS \"Electric Range\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -223,7 +223,7 @@
           ]
         }
       ],
-      "title": "Projected Range",
+      "title": "Projected Electric Range",
       "type": "gauge"
     },
     {
@@ -246,6 +246,551 @@
       },
       "hiddenSeries": false,
       "id": 2,
+      "interval": "5m",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:668",
+          "alias": "/.*Range/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"cruisingRangeElectric_km\" AS \"Electric Range\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "1",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "alias": "Battery SoC",
+          "format": "time_series",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"currentSOC_pct\" AS \"Battery SoC\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "refId": "2",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"primary_currentSOC_pct\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Battery Level",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:151",
+          "format": "percent",
+          "label": "SoC",
+          "logBase": 1,
+          "max": "100",
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:152",
+          "format": "lengthkm",
+          "label": "Range",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "Car is offline",
+              "to": "",
+              "type": 1,
+              "value": "0"
+            },
+            {
+              "from": "",
+              "id": 2,
+              "text": "Car is online",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^online$/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 40,
+          "valueSize": 40
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.5.4",
+      "targets": [
+        {
+          "alias": "Car is online",
+          "format": "table",
+          "group": [],
+          "groupBy": [],
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.online",
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.online\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"lastUpdate\" AS \"time\",\n  CASE WHEN \"online\"=True THEN 1\n       WHEN \"online\"=False THEN 0\n  END as \"online\"\nFROM vehicles\nWHERE\n  vin = '$VIN'",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            []
+          ],
+          "table": "vehicles",
+          "tags": [],
+          "timeColumn": "\"lastUpdate\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Car Online State",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 2
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {},
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.5.4",
+      "targets": [
+        {
+          "alias": "Last connection",
+          "format": "table",
+          "group": [],
+          "groupBy": [],
+          "measurement": "0_userdata.0.vw-connect.0.$VIN.carCapturedTimestampLatest",
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.carCapturedTimestampLatest\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"lastUpdate\" AS \"Last update from Server\",\n  \"lastChange\" AS \"Last update from Car\"\nFROM vehicles\nWHERE\n  vin = '$VIN'",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Last Data from Car",
+      "type": "stat"
+    },
+    {
+      "datasource": "influxdb",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 25,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 15
+              },
+              {
+                "color": "orange",
+                "value": 18
+              },
+              {
+                "color": "red",
+                "value": 21
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.4",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C\" ",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Target Temperature",
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 30,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "m"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 3,
+        "y": 8
+      },
+      "id": 19,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.4",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "groupBy": [],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min\"",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingClimatisationTime_min\"\nFROM climatization\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Remaining Climatization Time",
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "VWsFriend",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 23,
       "interval": "5m",
       "legend": {
         "alignAsTable": true,
@@ -551,7 +1096,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Battery Level",
+      "title": "Levels & Range",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -592,148 +1137,66 @@
     },
     {
       "datasource": null,
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 1,
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 6,
-        "x": 18,
-        "y": 0
-      },
-      "id": 22,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^Car is Online$/",
-          "values": true
-        },
-        "text": {
-          "titleSize": 40,
-          "valueSize": 40
-        },
-        "textMode": "value_and_name"
-      },
-      "pluginVersion": "7.5.4",
-      "targets": [
-        {
-          "alias": "Car is online",
-          "format": "table",
-          "group": [],
-          "groupBy": [],
-          "measurement": "0_userdata.0.vw-connect.0.$VIN.online",
-          "metricColumn": "none",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.online\"",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"lastUpdate\" AS \"time\",\n  \"online\" AS \"Car is Online\"\nFROM vehicles\nWHERE\n  vin = '$VIN'",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            []
-          ],
-          "table": "vehicles",
-          "tags": [],
-          "timeColumn": "\"lastUpdate\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Car Online State",
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
+              },
               {
-                "color": "green",
-                "value": null
+                "color": "#EAB839",
+                "value": 11
               }
             ]
           },
-          "unit": "dateTimeAsIso"
+          "unit": "kwatt"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 18,
-        "y": 2
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 16
       },
-      "id": 13,
+      "id": 9,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "/.*/",
-          "values": true
+          "fields": "",
+          "values": false
         },
-        "text": {},
-        "textMode": "value_and_name"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
       },
       "pluginVersion": "7.5.4",
       "targets": [
         {
-          "alias": "Last connection",
           "format": "table",
           "group": [],
           "groupBy": [],
-          "measurement": "0_userdata.0.vw-connect.0.$VIN.carCapturedTimestampLatest",
+          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
           "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"0_userdata.0.vw-connect.0.$VIN.carCapturedTimestampLatest\"",
+          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\"",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"lastUpdate\" AS \"Last update from Server\",\n  \"lastChange\" AS \"Last update from Car\"\nFROM vehicles\nWHERE\n  vin = '$VIN'",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargePower_kW\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -757,92 +1220,7 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Last Data from Car",
-      "type": "stat"
-    },
-    {
-      "datasource": "influxdb",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "max": 25,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 15
-              },
-              {
-                "color": "orange",
-                "value": 18
-              },
-              {
-                "color": "red",
-                "value": 21
-              }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 3,
-        "x": 0,
-        "y": 8
-      },
-      "id": 5,
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "7.5.4",
-      "targets": [
-        {
-          "groupBy": [],
-          "measurement": "vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationSettings.targetTemperature_C\" ",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "title": "Target Temperature",
+      "title": "Charging Speed",
       "type": "gauge"
     },
     {
@@ -854,10 +1232,9 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "max": 30,
           "min": 0,
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
                 "color": "green",
@@ -873,10 +1250,11 @@
         "h": 8,
         "w": 3,
         "x": 3,
-        "y": 8
+        "y": 16
       },
-      "id": 19,
+      "id": 20,
       "options": {
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -891,17 +1269,17 @@
       "pluginVersion": "7.5.4",
       "targets": [
         {
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "groupBy": [],
-          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
           "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min\"",
+          "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.chargingStatus.remainingChargingTimeToComplete_min\"",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingClimatisationTime_min\"\nFROM climatization\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingChargingTimeToComplete_min\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -925,7 +1303,7 @@
           ]
         }
       ],
-      "title": "Remaining Climatization Time",
+      "title": "Remaining Charging Time",
       "type": "gauge"
     },
     {
@@ -944,7 +1322,7 @@
         "h": 8,
         "w": 12,
         "x": 6,
-        "y": 8
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 14,
@@ -1104,177 +1482,6 @@
       }
     },
     {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 1,
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 11
-              }
-            ]
-          },
-          "unit": "kwatt"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 3,
-        "x": 0,
-        "y": 16
-      },
-      "id": 9,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "7.5.4",
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "groupBy": [],
-          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
-          "metricColumn": "none",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\"",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargePower_kW\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Charging Speed",
-      "type": "gauge"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "m"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 3,
-        "x": 3,
-        "y": 16
-      },
-      "id": 20,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "7.5.4",
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "groupBy": [],
-          "measurement": "vw-connect.0.$VIN.status.climatisationStatus.remainingClimatisationTime_min",
-          "metricColumn": "none",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT \"value\" FROM \"vw-connect.0.$VIN.status.chargingStatus.remainingChargingTimeToComplete_min\"",
-          "queryType": "randomWalk",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingChargingTimeToComplete_min\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Remaining Charging Time",
-      "type": "gauge"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -1291,7 +1498,7 @@
         "h": 8,
         "w": 12,
         "x": 6,
-        "y": 16
+        "y": 24
       },
       "hiddenSeries": false,
       "id": 15,
@@ -1468,7 +1675,7 @@
         "h": 8,
         "w": 12,
         "x": 6,
-        "y": 24
+        "y": 32
       },
       "hiddenSeries": false,
       "id": 18,
@@ -1690,7 +1897,7 @@
         "h": 4,
         "w": 12,
         "x": 6,
-        "y": 32
+        "y": 40
       },
       "highlightOnMouseover": true,
       "id": 21,
@@ -1869,7 +2076,7 @@
         "h": 4,
         "w": 12,
         "x": 6,
-        "y": 36
+        "y": 44
       },
       "highlightOnMouseover": true,
       "id": 7,
@@ -2065,7 +2272,7 @@
         "h": 5,
         "w": 12,
         "x": 6,
-        "y": 40
+        "y": 48
       },
       "highlightOnMouseover": true,
       "id": 10,
@@ -2247,6 +2454,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Electric Car Overview",
-  "uid": "UaTyhMM7k",
+  "uid": "b0WnuNMnk",
   "version": 1
 }
