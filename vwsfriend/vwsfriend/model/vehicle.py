@@ -32,7 +32,7 @@ class Vehicle(Base):
             self.weConnectVehicle.statuses['rangeStatus'].carType.addObserver(self.__onCarTypeChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             if self.weConnectVehicle.statuses['rangeStatus'].carType.enabled:
                 self.carType = self.weConnectVehicle.statuses['rangeStatus'].carType.value
-            else:
+            elif self.carType is None:
                 self.carType = RangeStatus.CarType.UNKNOWN
 
     def __onModelChange(self, element, flags):
