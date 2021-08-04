@@ -1,6 +1,7 @@
 import logging
 
 from vwsfriend.agents.range_agent import RangeAgent
+from vwsfriend.agents.battery_agent import BatteryAgent
 from vwsfriend.agents.charge_agent import ChargeAgent
 from vwsfriend.agents.state_agent import StateAgent
 from vwsfriend.agents.climatization_agent import ClimatizationAgent
@@ -50,6 +51,7 @@ class DBConnector():
                 self.session.add(foundVehicle)
             foundVehicle.connect(element)
             self.agents.append(RangeAgent(self.session, foundVehicle))
+            self.agents.append(BatteryAgent(self.session, foundVehicle))
             self.agents.append(ChargeAgent(self.session, foundVehicle))
             self.agents.append(StateAgent(self.session, foundVehicle, updateInterval=self.interval))
             self.agents.append(ClimatizationAgent(self.session, foundVehicle))
