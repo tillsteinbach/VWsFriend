@@ -1,6 +1,8 @@
 import os
 import sys
+import re
 import argparse
+from datetime import datetime, timedelta, timezone
 import logging
 import time
 import tempfile
@@ -70,13 +72,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     defaultTemp = os.path.join(tempfile.gettempdir(), 'weconnect.token')
     parser.add_argument('--tokenfile', help=f'file to store token (default: {defaultTemp})', default=defaultTemp)
     parser.add_argument('-i', '--interval', help='Query interval in seconds',
-                              type=NumberRangeArgument(1), required=False, default=300) # TODO make 300 the minimum
-    parser.add_argument('--fromcache', help='Use previously captured data stored with --cache', action='store_true')  # TODO: Remove
-    defaultCacheTemp = os.path.join(tempfile.gettempdir(), 'weconnect.cache')
-    parser.add_argument('--cachefile', help=f'file to store cache (default: {defaultCacheTemp})',  # TODO: Remove
-                        default=defaultCacheTemp)
-    parser.add_argument('--cachefile2', help=f'file to store cache (default: {defaultCacheTemp})',  # TODO: Remove
-                        default=defaultCacheTemp)
+                              type=NumberRangeArgument(imin=300), required=False, default=300)
+    parser.add_argument('--demo', help=f'folder containing demo scenario, see README for more information')
 
     args = parser.parse_args()
 
@@ -121,39 +118,39 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
     try:
         weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
-                                        updateAfterLogin=False, loginOnInit=(not args.fromcache))
+                                        updateAfterLogin=False, loginOnInit=(args.demo is None))
 
         connector = DBConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval)
 
-        if args.fromcache:
-            weConnect.fillCacheFromJson(args.cachefile, maxAge=2147483647)
-        weConnect.update(updateCapabilities=False, updatePictures=False)
-        connector.commit()
-
-        toggle = True
-        while True:
-            if args.fromcache:
-                time.sleep(10)
-            else:
+        if args.demo is not None:
+            utcDemoStart = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0)
+            for file in sorted(os.listdir(args.demo)):
+                fileNameRegex = r'(?P<number>\d+)_(?P<delay>\d+)s(_(?P<stage>[^\.]+))?.cache.json'
+                match = re.search(fileNameRegex, file)
+                if match is not None:
+                    time.sleep(int(match.groupdict()['delay']))
+                    stageFilePath = f'{args.demo}/{file}'
+                    with open(stageFilePath,"r") as fp:
+                        cacheString = fp.read()
+                        cacheString =re.sub(r'demodate\((?P<offset>[+-]?\d+)\)', lambda m: str(utcDemoStart + timedelta(seconds=int(m.groupdict()['offset']))).replace('+00:00', 'Z'), cacheString)
+                        cacheString =re.sub(r'now\((?P<offset>[+-]?\d+)\)', lambda m: str(datetime.now() + timedelta(seconds=int(m.groupdict()['offset']))), cacheString)
+                        weConnect.fillCacheFromJsonString(cacheString, maxAge=2147483647)
+                        weConnect.update(updateCapabilities=False)
+                        connector.commit()
+                        if match.groupdict()['stage'] is not None:
+                            LOG.info('Stage %s completed', match.groupdict()['stage'])
+                        else:
+                            LOG.info('Stage completed')
+            LOG.info('Demo completed')
+        else:
+            while True:
+                try:
+                    LOG.info('Updating data from WeConnect')
+                    weConnect.update(updateCapabilities=False, updatePictures=False)
+                    connector.commit()
+                except weconnect.RetrievalError:
+                    LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
                 time.sleep(args.interval)
-            toggle = not toggle
-            LOG.info('Updating data from WeConnect')
-            if toggle:
-                if args.fromcache:
-                    weConnect.fillCacheFromJson(args.cachefile, maxAge=2147483647)
-                try:
-                    weConnect.update(updateCapabilities=False, updatePictures=False)
-                    connector.commit()
-                except weconnect.RetrievalError:
-                    LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
-            else:
-                if args.fromcache:
-                    weConnect.fillCacheFromJson(args.cachefile2, maxAge=2147483647)
-                try:
-                    weConnect.update(updateCapabilities=False, updatePictures=False)
-                    connector.commit()
-                except weconnect.RetrievalError:
-                    LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
 
         sys.exit(0)
         # flake8: noqa
