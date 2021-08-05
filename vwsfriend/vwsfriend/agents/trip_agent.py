@@ -3,7 +3,7 @@ import logging
 from vwsfriend.model.trip import Trip
 from vwsfriend.util.location_util import locationFromLatLon
 
-from weconnect.addressable import AddressableLeaf
+from weconnect.addressable import AddressableLeaf, AddressableAttribute
 
 LOG = logging.getLogger("VWsFriend")
 
@@ -20,6 +20,18 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
                                                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                            onUpdateComplete=True)
+            else:
+                self.vehicle.weConnectVehicle.statuses.addObserver(self.__onStatusesChange,
+                                                                   AddressableLeaf.ObserverEvent.ENABLED,
+                                                                   onUpdateComplete=True)
+
+    def __onStatusesChange(self, element, flags):
+        if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
+            if self.__onCarCapturedTimestampChange not in element.getObservers(flags=AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True):
+                element.addObserver(self.__onCarCapturedTimestampChange,
+                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                    onUpdateComplete=True)
+            self.__onCarCapturedTimestampChange(element, flags)
 
     def __onCarCapturedTimestampChange(self, element, flags):
         parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
