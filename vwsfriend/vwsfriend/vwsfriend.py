@@ -14,7 +14,7 @@ import threading
 from pyhap.accessory_driver import AccessoryDriver
 
 from weconnect import weconnect
-
+from weconnect.__version import __version__ as __weconnect_version__
 from vwsfriend.homekit.bridge import VWsFriendBridge
 from vwsfriend.model.db_connector import DBConnector
 
@@ -58,7 +58,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         prog='vwsfriend',
         description='TBD')
     parser.add_argument('--version', action='version',
-                        version='%(prog)s {version}'.format(version=__version__))
+                        version='%(prog)s {version} (using WeConnect-python {weversion})'.format(version=__version__, weversion=__weconnect_version__))
     parser.add_argument('-u', '--username', help='Username of Volkswagen id', required=False)
     parser.add_argument('-p', '--password', help='Password of Volkswagen id', required=False)
     parser.add_argument('--database-url', dest='dbUrl', help='Database to connect to', default='sqlite:///vwsfrienddevel.db')
