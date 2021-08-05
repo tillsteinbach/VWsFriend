@@ -1,4 +1,3 @@
-from enum import Enum, auto
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
 from vwsfriend.util.location_util import locationFromLatLon
@@ -26,8 +25,8 @@ class ChargeAgent():
                 self.__onChargingStatusCarCapturedTimestampChange(None, None)
 
                 self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargingState.addObserver(self.__onChargingStateChange,
-                                                                                                          AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                          onUpdateComplete=True)
+                                                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                   onUpdateComplete=True)
                 self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargePower_kW.addObserver(self.__onChargePowerChange,
                                                                                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                     onUpdateComplete=True)
@@ -36,10 +35,9 @@ class ChargeAgent():
                 self.vehicle.weConnectVehicle.statuses['plugStatus'].plugConnectionState.addObserver(self.__onPlugConnectionStateChange,
                                                                                                      AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                      onUpdateComplete=True)
-            self.vehicle.weConnectVehicle.statuses['plugStatus'].plugLockState.addObserver(self.__onPlugLockStateChange,
-                                                                                           AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                           onUpdateComplete=True)
-            
+                self.vehicle.weConnectVehicle.statuses['plugStatus'].plugLockState.addObserver(self.__onPlugLockStateChange,
+                                                                                               AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                               onUpdateComplete=True)
 
     def __onChargingStatusCarCapturedTimestampChange(self, element, flags):
         chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
@@ -69,7 +67,7 @@ class ChargeAgent():
             self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
                                  current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
             self.session.add(self.charge)
-    
+
     def __onChargingStateChange(self, element, flags):
         chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
         if element.value == ChargingStatus.ChargingState.CHARGING:
@@ -101,7 +99,7 @@ class ChargeAgent():
                     batteryStatus = self.vehicle.weConnectVehicle.statuses['batteryStatus']
                     if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
                         self.chargingSession.endSOC_pct = batteryStatus.currentSOC_pct.value
-                
+
                 # also write position
                 if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses:
                     parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
@@ -110,7 +108,7 @@ class ChargeAgent():
                         self.chargingSession.position_latitude = parkingPosition.latitude.value
                         self.chargingSession.position_longitude = parkingPosition.longitude.value
                         self.chargingSession.location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
-                
+
                 # also write milage
                 if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses:
                     maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
@@ -140,11 +138,10 @@ class ChargeAgent():
         elif element.value == PlugStatus.PlugLockState.UNLOCKED:
             if self.chargingSession is not None and self.chargingSession.unlocked is None:
                 self.chargingSession.unlocked = plugStatus.carCapturedTimestamp.value
-        
+
     def __onChargePowerChange(self, element, flags):
         if self.maxChargePower_kW is None or element.value > self.maxChargePower_kW:
             self.maxChargePower_kW = element.value
-        
 
     def commit(self):
         pass
