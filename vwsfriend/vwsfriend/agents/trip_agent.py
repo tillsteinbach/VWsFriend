@@ -20,6 +20,7 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
                                                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                            onUpdateComplete=True)
+                LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips')
             else:
                 self.vehicle.weConnectVehicle.statuses.addObserver(self.__onStatusesChange,
                                                                    AddressableLeaf.ObserverEvent.ENABLED,
@@ -27,10 +28,12 @@ class TripAgent():
 
     def __onStatusesChange(self, element, flags):
         if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
+            # only add if not in list of observers
             if self.__onCarCapturedTimestampChange not in element.getObservers(flags=AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True):
                 element.addObserver(self.__onCarCapturedTimestampChange,
                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                     onUpdateComplete=True)
+                LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips')
             self.__onCarCapturedTimestampChange(element, flags)
 
     def __onCarCapturedTimestampChange(self, element, flags):
