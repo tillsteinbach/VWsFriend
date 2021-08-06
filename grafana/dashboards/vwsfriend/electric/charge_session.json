@@ -1,0 +1,662 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": 5,
+  "iteration": 1628260587144,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "VWsFriend",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 7,
+      "interval": "5m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:668",
+          "alias": "/.*Range/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"cruisingRangeElectric_km\" AS \"Electric Range\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "1",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "alias": "Battery SoC",
+          "format": "time_series",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"currentSOC_pct\" AS \"Battery SoC\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "refId": "2",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"primary_currentSOC_pct\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "ranges",
+          "tags": [],
+          "timeColumn": "\"carCapturedTimestamp\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "vehicle_vin",
+                "=",
+                "'$VIN'"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Battery Level",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:151",
+          "format": "percent",
+          "label": "SoC",
+          "logBase": 1,
+          "max": "100",
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:152",
+          "format": "lengthkm",
+          "label": "Range",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(255, 253, 253)",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "titleSize": 25,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.5.4",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  connected AS \"Connected\",\n  locked AS \"Locked\",\n  started AS \"Started\",\n  ended AS \"Ended\",\n  unlocked AS \"Unlocked\",\n  disconnected AS \"Disconnected\"\nFROM charging_sessions\nWHERE\n  id = $id",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Times",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "hiddenSeries": false,
+      "id": 9,
+      "interval": "5m",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:618",
+          "alias": "Charge Rate",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Charge Power",
+          "format": "time_series",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargePower_kW\" AS \"Charge Power\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "alias": "Charge Rate",
+          "format": "time_series",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargeRate_kmph\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargeRate_kmph\" AS \"Charge Rate\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Charging",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:625",
+          "decimals": null,
+          "format": "kwatt",
+          "label": "Charge Power",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:626",
+          "format": "velocitykmh",
+          "label": "Charge Rate",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(255, 255, 255)",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/% (Start|End)/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-RdYlGr"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 12,
+        "y": 9
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "titleSize": 25,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "7.5.4",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  \"mileage_km\" AS \"Odometer\"\nFROM charging_sessions\nWHERE\n  id = $id",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Details",
+      "type": "stat"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "label": null,
+        "name": "id",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "label": null,
+        "name": "VIN",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "timepicker": {
+    "hidden": true
+  },
+  "timezone": "",
+  "title": "Charge Session",
+  "uid": "5rkOB0G7z",
+  "version": 1
+}
