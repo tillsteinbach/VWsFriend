@@ -1,0 +1,262 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 4,
+  "iteration": 1628260383257,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": null,
+            "displayMode": "color-text",
+            "filterable": true
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Location"
+            },
+            "properties": [
+              {
+                "id": "noValue"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Date"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "custom.width",
+                "value": 160
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Data Details",
+                    "url": "d/5rkOB0G7z?from=${__data.fields.start_date_ts}&to=${__data.fields.end_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max. Power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/% (Start|End)/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-RdYlGr"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Odometer"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "km"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdhms"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AC/DC"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/[a-zA-Z0-9]*_date_ts/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.4",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  id,\n  (round(extract(epoch FROM started) - 10) * 1000) AS start_date_ts,\n  (round(extract(epoch FROM ended) - 10) * 1000) AS end_date_ts,\n  started AS \"Date\",\n  locations.display_name AS \"Location\",\n  ended - started AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  \"mileage_km\" AS \"Odometer\"\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY started",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Charges",
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "datasource": null,
+        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "description": "Select Car if you have multiple cars in your account",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Car",
+        "multi": false,
+        "name": "VIN",
+        "options": [],
+        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "timepicker": {
+    "hidden": true
+  },
+  "timezone": "",
+  "title": "Charges",
+  "uid": "WHZz0AGnz",
+  "version": 1
+}
