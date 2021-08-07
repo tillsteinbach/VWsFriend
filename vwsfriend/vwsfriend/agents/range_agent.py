@@ -37,10 +37,14 @@ class RangeAgent():
                 or self.range.primary_remainingRange_km != current_primary_remainingRange_km
                 or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
                 or self.range.secondary_remainingRange_km != current_secondary_remainingRange_km)):
+            print(self.range.carCapturedTimestamp)
+            print(rangeStatus.carCapturedTimestamp.value)
+            print(self.range.carCapturedTimestamp==rangeStatus.carCapturedTimestamp.value)
 
             self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
                                current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
             self.session.add(self.range)
+            self.session.flush()
 
     def commit(self):
         pass
