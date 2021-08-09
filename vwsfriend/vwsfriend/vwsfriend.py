@@ -84,6 +84,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     logging.basicConfig(level=LOG_LEVELS[logLevel])
     logging.getLogger("pyhap").setLevel(level="CRITICAL")
 
+    LOG.info('vwsfriend %s (using WeConnect-python %s)', __version__, __weconnect_version__)
+
     username = None
     password = None
 
