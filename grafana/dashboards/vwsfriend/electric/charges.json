@@ -46,7 +46,7 @@
       "title": "Last Month",
       "tooltip": "",
       "type": "link",
-      "url": "/d/WHZz0AGnz/?from=now-1m"
+      "url": "/d/WHZz0AGnz/?from=now-1M"
     },
     {
       "asDropdown": false,
