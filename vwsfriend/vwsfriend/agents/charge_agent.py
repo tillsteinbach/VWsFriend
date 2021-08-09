@@ -1,6 +1,7 @@
+import logging
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
-from vwsfriend.util.location_util import locationFromLatLon
+from vwsfriend.util.location_util import locationFromLatLon, chargerFromLatLon
 
 from weconnect.addressable import AddressableLeaf
 from weconnect.elements.charging_status import ChargingStatus
@@ -108,6 +109,9 @@ class ChargeAgent():
                         self.chargingSession.position_latitude = parkingPosition.latitude.value
                         self.chargingSession.position_longitude = parkingPosition.longitude.value
                         self.chargingSession.location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                        self.chargingSession.charger = chargerFromLatLon(weConnect=self.vehicle.weConnectVehicle.weConnect, session=self.session,
+                                                                         latitude=parkingPosition.latitude.value, longitude=parkingPosition.longitude.value,
+                                                                         searchRadius=100)
 
                 # also write milage
                 if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses:
