@@ -15,7 +15,9 @@ from vwsfriend.model.base import Base
 
 from weconnect.addressable import AddressableLeaf
 
-from vwsfriend.model.vehicle import Vehicle
+from vwsfriend.model import Vehicle
+
+#from vwsfriend.model.vehicle import Vehicle
 from weconnect.elements.range_status import RangeStatus
 
 
