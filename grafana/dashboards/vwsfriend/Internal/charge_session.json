@@ -21,7 +21,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1628503387851,
+  "iteration": 1628518889392,
   "links": [],
   "panels": [
     {
@@ -233,7 +233,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 6,
         "x": 12,
         "y": 0
@@ -558,6 +558,18 @@
                 "value": "kwatt"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Odometer"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
           }
         ]
       },
@@ -565,7 +577,7 @@
         "h": 11,
         "w": 6,
         "x": 12,
-        "y": 9
+        "y": 8
       },
       "id": 3,
       "options": {
@@ -621,14 +633,112 @@
       "type": "stat"
     },
     {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(255, 253, 253)",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max Power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "titleSize": 25,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.1.0",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  chargers.name AS \"Name\",\n  chargers.address AS \"Address\",\n  chargers.max_power AS \"Max Power\",\n  chargers.num_spots AS \"Spots\",\n  operators.name AS \"Operator\"\nFROM charging_sessions\nLEFT JOIN chargers ON charger_id = chargers.id\nLEFT JOIN operators ON operator_id = operators.id\nWHERE\n  charging_sessions.id = $id",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Charger",
+      "type": "stat"
+    },
+    {
       "autoZoom": true,
       "datasource": null,
       "defaultLayer": "OpenStreetMap",
       "gridPos": {
-        "h": 14,
+        "h": 13,
         "w": 6,
         "x": 0,
-        "y": 14
+        "y": 19
       },
       "id": 13,
       "lineColor": "red",
@@ -642,7 +752,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(connected),\n  unnest(ARRAY[position_latitude, position_latitude]) AS latitude\nFROM charging_sessions\nWHERE\n  id = $id",
+          "rawSql": "SELECT\n  $__time(connected),\n  unnest(ARRAY[position_latitude, chargers.latitude]) AS latitude\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nWHERE\n  charging_sessions.id = $id",
           "refId": "A",
           "select": [
             [
@@ -671,7 +781,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(connected),\n  unnest(ARRAY[position_longitude, position_longitude]) AS longitude\nFROM charging_sessions\nWHERE\n  id = $id",
+          "rawSql": "SELECT\n  $__time(connected),\n  unnest(ARRAY[position_longitude, chargers.longitude]) AS longitude\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nWHERE\n  charging_sessions.id = $id",
           "refId": "B",
           "select": [
             [
@@ -728,7 +838,7 @@
         "h": 13,
         "w": 6,
         "x": 6,
-        "y": 14
+        "y": 19
       },
       "id": 11,
       "options": {
@@ -756,7 +866,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  locations.name,\n  locations.amenity,\n  locations.road,\n  locations.house_number,\n  locations.neighbourhood,\n  locations.postcode,\n  locations.city,\n  locations.state,\n  locations.country\nFROM charging_sessions\nLEFT JOIN locations on charging_sessions.location_id = locations.osm_id\nWHERE\n  id = $id",
+          "rawSql": "SELECT\n  locations.name AS \"Name\",\n  locations.amenity AS \"Amenity\",\n  (locations.road || COALESCE(' '||locations.house_number, '')) AS \"Street\",\n  locations.neighbourhood AS \"Neighbourhood\",\n  locations.postcode AS \"Postcode\",\n  locations.city AS \"City\",\n  locations.state AS \"State\",\n  locations.country AS \"Country\"\nFROM charging_sessions\nLEFT JOIN locations on charging_sessions.location_id = locations.osm_id\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -793,8 +903,8 @@
       {
         "current": {
           "selected": false,
-          "text": "4",
-          "value": "4"
+          "text": "",
+          "value": ""
         },
         "description": null,
         "error": null,
@@ -808,7 +918,7 @@
             "value": ""
           }
         ],
-        "query": "4",
+        "query": "",
         "skipUrlSync": false,
         "type": "textbox"
       },
