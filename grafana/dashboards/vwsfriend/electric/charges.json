@@ -22,8 +22,45 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1628520273397,
-  "links": [],
+  "iteration": 1628531493789,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Year",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/WHZz0AGnz/?from=now-1y"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Month",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/WHZz0AGnz/?from=now-1m"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Week",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/WHZz0AGnz/?from=now-1w"
+    }
+  ],
   "panels": [
     {
       "datasource": null,
@@ -228,7 +265,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE (started, COALESCE (locked, connected)) AS \"Date\",\n  locations.display_name AS \"Location\",\n  COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)) AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount\",\n  \"mileage_km\" AS \"Odometer\",\n  id,\n  (round(extract(epoch FROM COALESCE (started, COALESCE (locked, connected))) - 10) * 1000) AS start_date_ts,\n  (round(extract(epoch FROM COALESCE (ended, COALESCE (unlocked, disconnected))) - 10) * 1000) AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  charging_sessions.vehicle_vin = '$VIN'\nORDER BY started",
+          "rawSql": "SELECT\n  COALESCE (started, COALESCE (locked, connected)) AS \"Date\",\n  locations.display_name AS \"Location\",\n  COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)) AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount\",\n  \"mileage_km\" AS \"Odometer\",\n  id,\n  (round(extract(epoch FROM COALESCE (started, COALESCE (locked, connected))) - 10) * 1000) AS start_date_ts,\n  (round(extract(epoch FROM COALESCE (ended, COALESCE (unlocked, disconnected))) - 10) * 1000) AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nORDER BY started",
           "refId": "A",
           "select": [
             [
@@ -330,7 +367,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  chargers.name AS \"Charger\",\n  COUNT(charging_sessions.id) AS \"Sessions\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  chargers.name IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY chargers.id\nORDER BY \"Sessions\"\nLIMIT 10",
+          "rawSql": "SELECT\n  chargers.name AS \"Charger\",\n  COUNT(charging_sessions.id) AS \"Sessions\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  chargers.name IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY chargers.id\nORDER BY \"Sessions\"\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -432,7 +469,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  operators.name AS \"Operator\",\n  COUNT(charging_sessions.id) AS \"Sessions\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nLEFT JOIN operators ON chargers.operator_id = operators.id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  operators.name IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY operators.id\nORDER BY \"Sessions\"\nLIMIT 10",
+          "rawSql": "SELECT\n  operators.name AS \"Operator\",\n  COUNT(charging_sessions.id) AS \"Sessions\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nLEFT JOIN operators ON chargers.operator_id = operators.id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  operators.name IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY operators.id\nORDER BY \"Sessions\"\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -490,8 +527,12 @@
       }
     ]
   },
+  "time": {
+    "from": "1970-01-01T00:00:00.000Z",
+    "to": "now"
+  },
   "timepicker": {
-    "hidden": true
+    "hidden": false
   },
   "timezone": "",
   "title": "Charges",
