@@ -34,9 +34,11 @@ class TripAgent():
                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                     onUpdateComplete=True)
                 LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips')
-            self.__onCarCapturedTimestampChange(element, flags)
+                self.vehicle.weConnectVehicle.statuses.removeObserver(self.__onStatusesChange)
+                self.__onCarCapturedTimestampChange(element, flags)
 
     def __onCarCapturedTimestampChange(self, element, flags):
+        LOG.info(f'Element: {element.getGlobalAddress()} Flags {flags}')
         parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
 
         self.trip = Trip(self.vehicle, None, None, None, None, None)

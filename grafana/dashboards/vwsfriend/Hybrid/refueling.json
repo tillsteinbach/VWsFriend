@@ -22,7 +22,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1628490547716,
+  "id": 5,
+  "iteration": 1628491893606,
   "links": [],
   "panels": [
     {
@@ -53,17 +54,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Location"
-            },
-            "properties": [
-              {
-                "id": "noValue"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Date"
             },
             "properties": [
@@ -80,55 +70,9 @@
                 "value": [
                   {
                     "title": "Data Details",
-                    "url": "d/5rkOB0G7z?from=${__data.fields.start_date_ts}&to=${__data.fields.end_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
+                    "url": "d/DO0EwAGnk?from=${__data.fields.start_date_ts}&to=${__data.fields.start_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Max. Power"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "kwatt"
-              },
-              {
-                "id": "custom.width",
-                "value": 110
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/% (Start|End)/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "color",
-                "value": {
-                  "mode": "continuous-RdYlGr"
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 80
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "max",
-                "value": 100
               }
             ]
           },
@@ -150,36 +94,34 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Duration"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "dtdhms"
-              },
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "AC/DC"
+              "id": "byRegexp",
+              "options": "/% (Start|End)/"
             },
             "properties": [
               {
                 "id": "custom.width",
                 "value": 80
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-RdYlGr"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/(id|[a-zA-Z0-9]*_date_ts)/"
+              "options": "/(id|[a-zA-Z0-9]_date_ts)/"
             },
             "properties": [
               {
@@ -207,7 +149,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  started AS \"Date\",\n  locations.display_name AS \"Location\",\n  ended - started AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  \"mileage_km\" AS \"Odometer\",\n  id,\n  (round(extract(epoch FROM started) - 10) * 1000) AS start_date_ts,\n  (round(extract(epoch FROM ended) - 10) * 1000) AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY started",
+          "rawSql": "SELECT\n  date AS \"Date\",\n  locations.display_name AS \"Location\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  \"mileage_km\" AS \"Odometer\",\n  id,\n  (round(extract(epoch FROM date)) * 1000) AS start_date_ts\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY date",
           "refId": "A",
           "select": [
             [
@@ -231,7 +173,8 @@
           ]
         }
       ],
-      "title": "Charges",
+      "title": "Refueling",
+      "transformations": [],
       "type": "table"
     }
   ],
@@ -243,8 +186,9 @@
     "list": [
       {
         "allValue": null,
+
         "datasource": null,
-        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles WHERE vehicles.\"carType\" != 'ELECTRIC'",
         "description": "Select Car if you have multiple cars in your account",
         "error": null,
         "hide": 0,
@@ -253,7 +197,7 @@
         "multi": false,
         "name": "VIN",
         "options": [],
-        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles WHERE vehicles.\"carType\" != 'ELECTRIC'",
         "refresh": 1,
         "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
@@ -265,15 +209,11 @@
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
   "timepicker": {
     "hidden": true
   },
   "timezone": "",
-  "title": "Charges",
-  "uid": "WHZz0AGnz",
+  "title": "Refueling",
+  "uid": "3BxOw0G7k",
   "version": 1
 }
