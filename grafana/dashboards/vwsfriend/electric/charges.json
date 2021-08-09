@@ -22,7 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1628490547716,
+  "iteration": 1628502002033,
   "links": [],
   "panels": [
     {
@@ -73,7 +73,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 160
+                "value": null
               },
               {
                 "id": "links",
@@ -187,6 +187,26 @@
                 "value": 1
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Amount"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
           }
         ]
       },
@@ -198,7 +218,8 @@
       },
       "id": 2,
       "options": {
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "8.1.0",
       "targets": [
@@ -207,7 +228,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  started AS \"Date\",\n  locations.display_name AS \"Location\",\n  ended - started AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  \"mileage_km\" AS \"Odometer\",\n  id,\n  (round(extract(epoch FROM started) - 10) * 1000) AS start_date_ts,\n  (round(extract(epoch FROM ended) - 10) * 1000) AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY started",
+          "rawSql": "SELECT\n  started AS \"Date\",\n  locations.display_name AS \"Location\",\n  ended - started AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount\",\n  \"mileage_km\" AS \"Odometer\",\n  id,\n  (round(extract(epoch FROM started) - 10) * 1000) AS start_date_ts,\n  (round(extract(epoch FROM ended) - 10) * 1000) AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  charging_sessions.vehicle_vin = '$VIN'\nORDER BY started",
           "refId": "A",
           "select": [
             [
@@ -264,10 +285,6 @@
         "useTags": false
       }
     ]
-  },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
   },
   "timepicker": {
     "hidden": true
