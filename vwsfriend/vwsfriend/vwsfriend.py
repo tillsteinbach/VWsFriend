@@ -148,7 +148,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             while True:
                 try:
                     LOG.info('Updating data from WeConnect')
-                    weConnect.update(updateCapabilities=False, updatePictures=False)
+                    weConnect.update(updateCapabilities=False, updatePictures=False, force=True)
                     connector.commit()
                 except weconnect.RetrievalError:
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)

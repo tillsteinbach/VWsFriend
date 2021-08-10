@@ -950,8 +950,7 @@
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
-    "electric",
-    "hybrid"
+    "internal"
   ],
   "templating": {
     "list": [
