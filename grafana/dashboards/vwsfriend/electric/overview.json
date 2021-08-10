@@ -33,7 +33,23 @@
   "gnetId": null,
   "graphTooltip": 1,
   "iteration": 1628503994116,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [
+        "electric",
+        "hybrid"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
     {
       "datasource": "VWsFriend",
@@ -2343,7 +2359,10 @@
   "refresh": false,
   "schemaVersion": 30,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "electric",
+    "hybrid"
+  ],
   "templating": {
     "list": [
       {
