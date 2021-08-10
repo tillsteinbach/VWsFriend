@@ -21,8 +21,36 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1628518889392,
-  "links": [],
+  "iteration": 1628577533839,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Charges",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/WHZz0AGnz"
+    },
+    {
+      "asDropdown": true,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [
+        "electric",
+        "hybrid"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
     {
       "aliasColors": {},
@@ -897,7 +925,10 @@
   "refresh": false,
   "schemaVersion": 30,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "electric",
+    "hybrid"
+  ],
   "templating": {
     "list": [
       {
