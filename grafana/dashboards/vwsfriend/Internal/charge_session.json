@@ -21,7 +21,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1628579414167,
+  "iteration": 1628603592227,
   "links": [
     {
       "asDropdown": false,
@@ -560,6 +560,14 @@
                 "value": {
                   "mode": "continuous-RdYlGr"
                 }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
               }
             ]
           },
@@ -999,10 +1007,6 @@
         "type": "textbox"
       }
     ]
-  },
-  "time": {
-    "from": "2021-08-08T10:26:18.000Z",
-    "to": "2021-08-08T11:45:28.000Z"
   },
   "timepicker": {
     "hidden": true
