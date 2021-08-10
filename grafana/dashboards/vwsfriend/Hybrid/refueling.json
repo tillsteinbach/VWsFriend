@@ -22,7 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1628503593679,
+  "iteration": 1628602044664,
   "links": [
     {
       "asDropdown": false,
@@ -276,8 +276,12 @@
       }
     ]
   },
+  "time": {
+    "from": "1970-01-01T00:00:00.000Z",
+    "to": "now"
+  },
   "timepicker": {
-    "hidden": true
+    "hidden": false
   },
   "timezone": "",
   "title": "Refueling",
