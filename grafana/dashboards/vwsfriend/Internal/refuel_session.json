@@ -440,7 +440,7 @@
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
-    "hybrid"
+    "internal"
   ],
   "templating": {
     "list": [
