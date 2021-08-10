@@ -22,7 +22,34 @@
   "gnetId": null,
   "graphTooltip": 1,
   "iteration": 1628503798675,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Refueling",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/3BxOw0G7k"
+    },
+    {
+      "asDropdown": true,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [
+        "hybrid"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
     {
       "autoZoom": true,
@@ -412,7 +439,9 @@
   "refresh": false,
   "schemaVersion": 30,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "hybrid"
+  ],
   "templating": {
     "list": [
       {

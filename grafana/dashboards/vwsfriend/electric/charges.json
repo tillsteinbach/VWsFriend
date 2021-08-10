@@ -59,6 +59,21 @@
       "tooltip": "",
       "type": "link",
       "url": "/d/WHZz0AGnz/?from=now-1w"
+    },
+    {
+      "asDropdown": true,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [
+        "electric",
+        "hybrid"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
     }
   ],
   "panels": [
@@ -500,7 +515,10 @@
   "refresh": "",
   "schemaVersion": 30,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "electric",
+    "hybrid"
+  ],
   "templating": {
     "list": [
       {
