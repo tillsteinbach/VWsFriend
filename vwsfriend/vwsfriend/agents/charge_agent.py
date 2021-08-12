@@ -74,7 +74,7 @@ class ChargeAgent():
         chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
         if element.value == ChargingStatus.ChargingState.CHARGING:
             self.isCharging = True
-            if self.chargingSession is None or self.chargingSession.ended is not None:
+            if self.chargingSession is None or self.chargingSession.ended is not None or self.chargingSession.disconnected is not None or self.chargingSession.unlocked is not None:
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
                 self.session.add(self.chargingSession)
             if self.chargingSession.started is None:
@@ -141,7 +141,7 @@ class ChargeAgent():
     def __onPlugConnectionStateChange(self, element, flags):
         plugStatus = self.vehicle.weConnectVehicle.statuses['plugStatus']
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
-            if self.chargingSession is None or self.chargingSession.disconnected is not None:
+            if self.chargingSession is None or self.chargingSession.ended is not None or self.chargingSession.disconnected is not None or self.chargingSession.unlocked is not None:
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
                 self.session.add(self.chargingSession)
             if self.chargingSession.connected is None:
@@ -153,7 +153,7 @@ class ChargeAgent():
     def __onPlugLockStateChange(self, element, flags):
         plugStatus = self.vehicle.weConnectVehicle.statuses['plugStatus']
         if element.value == PlugStatus.PlugLockState.LOCKED:
-            if self.chargingSession is None or self.chargingSession.unlocked is not None:
+            if self.chargingSession is None or self.chargingSession.ended is not None or self.chargingSession.disconnected is not None or self.chargingSession.unlocked is not None:
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
                 self.session.add(self.chargingSession)
             if self.chargingSession.locked is None:
