@@ -25,7 +25,6 @@ class TripAgent():
             self.lastParkingPositionLatitude = None
             self.lastParkingPositionLongitude = None
 
-
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
             if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['parkingPosition'].enabled:
@@ -75,7 +74,7 @@ class TripAgent():
         if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
             self.lastParkingPositionTimestamp = parkingPosition.carCapturedTimestamp.value
         if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
-                    and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
             self.lastParkingPositionLatitude = parkingPosition.latitude.value
             self.lastParkingPositionLongitude = parkingPosition.longitude.value
         if self.trip is not None:
@@ -93,7 +92,7 @@ class TripAgent():
                 maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
                 if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km is not None:
                     self.trip.end_mileage_km = maintenanceStatus.mileage_km.value
-            
+
             self.trip = None
 
             LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
