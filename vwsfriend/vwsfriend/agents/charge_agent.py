@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 import logging
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
@@ -15,7 +16,7 @@ class ChargeAgent():
         self.charge = session.query(Charge).filter(Charge.vehicle == vehicle).order_by(Charge.carCapturedTimestamp.desc()).first()
         self.chargingSession = None
 
-        self.maxChargePower_kW = None
+        self.isCharging = False
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
@@ -72,7 +73,7 @@ class ChargeAgent():
     def __onChargingStateChange(self, element, flags):
         chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
         if element.value == ChargingStatus.ChargingState.CHARGING:
-            self.maxChargePower_kW = None
+            self.isCharging = True
             if self.chargingSession is None or self.chargingSession.ended is not None:
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
                 self.session.add(self.chargingSession)
@@ -84,13 +85,31 @@ class ChargeAgent():
                 batteryStatus = self.vehicle.weConnectVehicle.statuses['batteryStatus']
                 if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
                     self.chargingSession.startSOC_pct = batteryStatus.currentSOC_pct.value
+
+            # also write position
+            if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses:
+                parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+                if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                        and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                    self.chargingSession.position_latitude = parkingPosition.latitude.value
+                    self.chargingSession.position_longitude = parkingPosition.longitude.value
+                    self.chargingSession.location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                    self.chargingSession.charger = chargerFromLatLon(weConnect=self.vehicle.weConnectVehicle.weConnect, session=self.session,
+                                                                        latitude=parkingPosition.latitude.value, longitude=parkingPosition.longitude.value,
+                                                                        searchRadius=100)
+
+            # also write milage
+            if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses:
+                maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
+                if maintenanceStatus.mileage_km.enabled:
+                    self.chargingSession.mileage_km = maintenanceStatus.mileage_km.value
         elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING]:
+            self.isCharging = False
             if self.chargingSession is not None and self.chargingSession.ended is None:
                 self.chargingSession.ended = chargeStatus.carCapturedTimestamp.value
 
-                self.chargingSession.maximumChargePower_kW = self.maxChargePower_kW
-                if self.maxChargePower_kW is not None:
-                    if self.maxChargePower_kW > 11:
+                if self.chargingSession.maximumChargePower_kW is not None:
+                    if self.chargingSession.maximumChargePower_kW > 11:
                         self.chargingSession.acdc = ACDC.DC
                     else:
                         self.chargingSession.acdc = ACDC.AC
@@ -144,8 +163,8 @@ class ChargeAgent():
                 self.chargingSession.unlocked = plugStatus.carCapturedTimestamp.value
 
     def __onChargePowerChange(self, element, flags):
-        if self.maxChargePower_kW is None or element.value > self.maxChargePower_kW:
-            self.maxChargePower_kW = element.value
+        if self.isCharging and self.chargingSession is not None and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
+            self.chargingSession.maximumChargePower_kW = element.value
 
     def commit(self):
         pass
