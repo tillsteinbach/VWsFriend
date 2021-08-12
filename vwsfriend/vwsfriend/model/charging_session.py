@@ -42,3 +42,33 @@ class ChargingSession(Base):
 
     def __init__(self, vehicle):
         self.vehicle = vehicle
+
+    def isConnectedState(self):
+        return self.connected is not None and self.disconnected is None
+
+    def isLockedState(self):
+        return self.locked is not None and self.unlocked is None
+
+    def isChargingState(self):
+        return self.started is not None and self.ended is None
+
+    def isClosed(self):
+        return self.ended is not None or self.unlocked is not None or self.disconnected is not None
+
+    def wasStarted(self):
+        return self.started is not None
+
+    def wasConnected(self):
+        return self.connected is not None
+
+    def wasLocked(self):
+        return self.locked is not None
+
+    def wasEnded(self):
+        return self.ended is not None
+
+    def wasDisconnected(self):
+        return self.disconnected is not None
+
+    def wasUnlocked(self):
+        return self.unlocked is not None

@@ -47,4 +47,3 @@ def chargerFromLatLon(weConnect, session, latitude, longitude, searchRadius):
     except RetrievalError:
         pass
     return None
-
