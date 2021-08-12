@@ -1,0 +1,517 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 9,
+  "iteration": 1628762034156,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Year",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/WHZz0AGnz/?from=now-1y"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Month",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/WHZz0AGnz/?from=now-1M"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Week",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/WHZz0AGnz/?from=now-1w"
+    },
+    {
+      "asDropdown": true,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [
+        "electric",
+        "hybrid"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": null,
+            "displayMode": "color-text",
+            "filterable": true
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdhms"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(id|[a-zA-Z0-9]*_date_ts)/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(Start|End) Date/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 160
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Trip Details",
+                    "url": "d/6JFDUrG7z?from=${__data.fields.start_date_ts}&to=${__data.fields.end_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(Length|Odometer)/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 26,
+        "w": 17,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.1.0",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  start_locations.display_name AS \"Start Location\",\n  destination_location.display_name AS \"Destination Location\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 DESC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Trips",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(id|[a-zA-Z0-9]*_date_ts)/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Length"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Trip Details",
+                    "url": "d/6JFDUrG7z?from=${__data.fields.start_date_ts}&to=${__data.fields.end_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Length"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 5,
+        "x": 17,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "8.1.0",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"endDate\" AS \"Date\",\n  destination_location.display_name AS \"Destination\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  id,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  (\"end_mileage_km\"-\"start_mileage_km\") IS NOT NULL AND\n  trips.vehicle_vin = '$VIN'\nORDER BY \"Length\" DESC\nLIMIT 10",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Longest Trips by km",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(id|[a-zA-Z0-9]*_date_ts)/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Trip Details",
+                    "url": "d/6JFDUrG7z?from=${__data.fields.start_date_ts}&to=${__data.fields.end_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 5,
+        "x": 17,
+        "y": 13
+      },
+      "id": 5,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "8.1.0",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"endDate\" AS \"Date\",\n  destination_location.display_name AS \"Destination\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  id,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  (\"endDate\"-\"startDate\") IS NOT NULL AND\n  trips.vehicle_vin = '$VIN'\nORDER BY \"Duration\" DESC\nLIMIT 10",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Longest Trips by Duration",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [
+    "electric",
+    "hybrid"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "datasource": null,
+        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "description": "Select Car if you have multiple cars in your account",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Car",
+        "multi": false,
+        "name": "VIN",
+        "options": [],
+        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "1970-01-01T00:00:00.000Z",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": false
+  },
+  "timezone": "",
+  "title": "Trips",
+  "uid": "2wMSY9Mnk",
+  "version": 1
+}
