@@ -11,7 +11,7 @@ class Range(Base):
     )
     id = Column(Integer, primary_key=True)
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
-    carCapturedTimestamp = Column(DateTime)
+    carCapturedTimestamp = Column(DateTime(timezone=True))
     vehicle = relationship("Vehicle")
     totalRange_km = Column(Integer)
     primary_currentSOC_pct = Column(Integer)
