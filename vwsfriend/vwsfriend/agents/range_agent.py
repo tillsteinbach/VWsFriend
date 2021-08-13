@@ -9,7 +9,7 @@ class RangeAgent():
         self.session = session
         self.vehicle = vehicle
         self.range = session.query(Range).filter(Range.vehicle == vehicle).order_by(Range.carCapturedTimestamp.desc()).first()
-        if self.range is not None:
+        if self.range is not None and self.range.carCapturedTimestamp is not None:
             self.range.carCapturedTimestamp = self.range.carCapturedTimestamp.replace(tzinfo=timezone.utc)
 
         # register for updates:
