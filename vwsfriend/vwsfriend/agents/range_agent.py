@@ -8,7 +8,7 @@ class RangeAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.range = session.query(Range).filter(Range.vehicle == vehicle).order_by(Range.carCapturedTimestamp.desc()).first()
+        self.range = session.query(Range).filter(Range.vehicle == vehicle and Range.carCapturedTimestamp.isnot(None)).order_by(Range.carCapturedTimestamp.desc()).first()
         if self.range is not None and self.range.carCapturedTimestamp is not None:
             self.range.carCapturedTimestamp = self.range.carCapturedTimestamp.replace(tzinfo=timezone.utc)
 
@@ -34,17 +34,12 @@ class RangeAgent():
             current_secondary_currentSOC_pct = rangeStatus.secondaryEngine.currentSOC_pct.value
             current_secondary_remainingRange_km = rangeStatus.secondaryEngine.remainingRange_km.value
 
-        if self.range is None or (self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value and (
+        if self.range is None or (rangeStatus.carCapturedTimestamp.value is not None and self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value and (
                 self.range.totalRange_km != current_totalRange_km
                 or self.range.primary_currentSOC_pct != current_primary_currentSOC_pct
                 or self.range.primary_remainingRange_km != current_primary_remainingRange_km
                 or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
                 or self.range.secondary_remainingRange_km != current_secondary_remainingRange_km)):
-
-            print(self.range)
-            if self.range is not None:
-                print(self.range.carCapturedTimestamp)
-                print(rangeStatus.carCapturedTimestamp.value)
 
             self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
                                current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)

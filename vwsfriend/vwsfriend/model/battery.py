@@ -11,7 +11,7 @@ class Battery(Base):
     )
     id = Column(Integer, primary_key=True)
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
-    carCapturedTimestamp = Column(DateTime)
+    carCapturedTimestamp = Column(DateTime(timezone=True), nullable=False)
     vehicle = relationship("Vehicle")
     currentSOC_pct = Column(Integer)
     cruisingRangeElectric_km = Column(Integer)
