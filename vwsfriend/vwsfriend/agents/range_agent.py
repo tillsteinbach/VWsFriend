@@ -1,4 +1,5 @@
 from vwsfriend.model.range import Range
+from datetime import timezone
 
 from weconnect.addressable import AddressableLeaf
 
@@ -8,6 +9,8 @@ class RangeAgent():
         self.session = session
         self.vehicle = vehicle
         self.range = session.query(Range).filter(Range.vehicle == vehicle).order_by(Range.carCapturedTimestamp.desc()).first()
+        if self.range is not None:
+            self.range.carCapturedTimestamp = self.range.carCapturedTimestamp.replace(tzinfo=timezone.utc)
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
