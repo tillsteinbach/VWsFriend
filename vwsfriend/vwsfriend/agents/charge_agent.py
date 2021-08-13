@@ -160,7 +160,7 @@ class ChargeAgent():
     def updatePosition(self):
         if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses:
             parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
-            if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+            if self.chargingSession is not None and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
                     and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
                 self.chargingSession.position_latitude = parkingPosition.latitude.value
                 self.chargingSession.position_longitude = parkingPosition.longitude.value
@@ -174,7 +174,7 @@ class ChargeAgent():
     def updateMileage(self):
         if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses:
             maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
-            if maintenanceStatus.mileage_km.enabled:
+            if self.chargingSession is not None and maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
                 self.chargingSession.mileage_km = maintenanceStatus.mileage_km.value
 
     def commit(self):
