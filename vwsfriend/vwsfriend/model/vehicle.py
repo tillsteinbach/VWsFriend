@@ -5,6 +5,7 @@ from weconnect.addressable import AddressableLeaf
 from weconnect.elements.range_status import RangeStatus
 
 from vwsfriend.model.base import Base
+from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
 
 class Vehicle(Base):
@@ -14,8 +15,8 @@ class Vehicle(Base):
     nickname = Column(String(256))
     carType = Column(Enum(RangeStatus.CarType, length=63))
     online = Column(Boolean)
-    lastUpdate = Column(DateTime)
-    lastChange = Column(DateTime)
+    lastUpdate = Column(DatetimeDecorator)
+    lastChange = Column(DatetimeDecorator)
     settings = relationship("VecicleSettings", back_populates="vehicle")
     weConnectVehicle = None
 

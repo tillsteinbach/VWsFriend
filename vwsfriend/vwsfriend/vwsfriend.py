@@ -15,6 +15,8 @@ from pyhap.accessory_driver import AccessoryDriver
 
 from weconnect import weconnect
 from weconnect.__version import __version__ as __weconnect_version__
+
+from vwsfriend.ui.vwsfriend_ui import VWsFriendUI
 from vwsfriend.homekit.bridge import VWsFriendBridge
 from vwsfriend.model.db_connector import DBConnector
 
@@ -121,6 +123,11 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     try:
         weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None))
+
+
+        ui = VWsFriendUI()
+        ui.run()
+
 
         connector = DBConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval)
 

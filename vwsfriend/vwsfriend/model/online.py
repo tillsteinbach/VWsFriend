@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueCons
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
+from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
 
 class Online(Base):
@@ -11,8 +12,8 @@ class Online(Base):
     )
     id = Column(Integer, primary_key=True)
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
-    onlineTime = Column(DateTime)
-    offlineTime = Column(DateTime)
+    onlineTime = Column(DatetimeDecorator)
+    offlineTime = Column(DatetimeDecorator)
     vehicle = relationship("Vehicle")
 
     def __init__(self, vehicle, onlineTime, offlineTime):

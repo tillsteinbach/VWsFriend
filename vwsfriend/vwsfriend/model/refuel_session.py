@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, BigInteger, Float, String, DateTime, For
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
+from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
 
 class RefuelSession(Base):
@@ -10,7 +11,7 @@ class RefuelSession(Base):
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
     vehicle = relationship("Vehicle")
 
-    date = Column(DateTime)
+    date = Column(DatetimeDecorator)
     startSOC_pct = Column(Integer)
     endSOC_pct = Column(Integer)
     mileage_km = Column(Integer)

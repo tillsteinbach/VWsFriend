@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueCons
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
+from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
 
 class Range(Base):
@@ -11,7 +12,7 @@ class Range(Base):
     )
     id = Column(Integer, primary_key=True)
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
-    carCapturedTimestamp = Column(DateTime(timezone=True), nullable=False)
+    carCapturedTimestamp = Column(DatetimeDecorator(timezone=True), nullable=False)
     vehicle = relationship("Vehicle")
     totalRange_km = Column(Integer)
     primary_currentSOC_pct = Column(Integer)
