@@ -42,4 +42,6 @@ setup(
     python_requires='>=3.7',
     setup_requires=SETUP_REQUIRED,
     tests_require=TEST_REQUIRED,
+    include_package_data=True,
+    zip_safe=False,
 )
