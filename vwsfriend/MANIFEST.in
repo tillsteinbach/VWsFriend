@@ -1,0 +1,3 @@
+graft vwsfriend/ui/static
+graft vwsfriend/ui/templates
+global-exclude *.pyc
