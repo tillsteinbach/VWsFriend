@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, BigInteger, Float, String, DateTime, Enu
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
+from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
 from weconnect.elements.charging_settings import ChargingSettings
 
@@ -20,12 +21,12 @@ class ChargingSession(Base):
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
     vehicle = relationship("Vehicle")
 
-    connected = Column(DateTime)
-    locked = Column(DateTime)
-    started = Column(DateTime)
-    ended = Column(DateTime)
-    unlocked = Column(DateTime)
-    disconnected = Column(DateTime)
+    connected = Column(DatetimeDecorator)
+    locked = Column(DatetimeDecorator)
+    started = Column(DatetimeDecorator)
+    ended = Column(DatetimeDecorator)
+    unlocked = Column(DatetimeDecorator)
+    disconnected = Column(DatetimeDecorator)
     maxChargeCurrentACSetting = Column(Enum(ChargingSettings.MaximumChargeCurrent, length=63))
     targetSOCSetting_pct = Column(Integer)
     maximumChargePower_kW = Column(Integer)

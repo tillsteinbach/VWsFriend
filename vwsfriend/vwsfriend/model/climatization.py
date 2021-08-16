@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Uniq
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
+from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
 from weconnect.elements.climatization_status import ClimatizationStatus
 
@@ -13,7 +14,7 @@ class Climatization(Base):
     )
     id = Column(Integer, primary_key=True)
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
-    carCapturedTimestamp = Column(DateTime(timezone=True), nullable=False)
+    carCapturedTimestamp = Column(DatetimeDecorator(timezone=True), nullable=False)
     vehicle = relationship("Vehicle")
     remainingClimatisationTime_min = Column(Integer)
     climatisationState = Column(Enum(ClimatizationStatus.ClimatizationState, length=63))

@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, BigInteger, Float, String, DateTime, For
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
+from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
 
 class Trip(Base):
@@ -10,8 +11,8 @@ class Trip(Base):
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
     vehicle = relationship("Vehicle")
 
-    startDate = Column(DateTime)
-    endDate = Column(DateTime)
+    startDate = Column(DatetimeDecorator)
+    endDate = Column(DatetimeDecorator)
     start_position_latitude = Column(Float)
     start_position_longitude = Column(Float)
     start_location_id = Column(BigInteger, ForeignKey('locations.osm_id'))
