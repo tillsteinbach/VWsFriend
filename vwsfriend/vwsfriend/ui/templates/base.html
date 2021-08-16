@@ -1,0 +1,18 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - VWsFriend</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav>
+  <h1>VWsFriend</h1>
+  <ul>
+    <li><a href="{{ url_for('status.vehicles') }}">Vehicles</a>
+  </ul>
+</nav>
+<section class="content">
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</section>
