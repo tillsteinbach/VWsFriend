@@ -125,8 +125,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                         updateAfterLogin=False, loginOnInit=(args.demo is None))
 
 
-        ui = VWsFriendUI()
-        ui.run()
+        #ui = VWsFriendUI()
+        #ui.run()
+        #time.sleep(600000)
 
 
         connector = DBConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval)
