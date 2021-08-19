@@ -22,5 +22,6 @@ RUN apk add --no-cache --virtual .build-deps rust build-base gcc libc-dev libffi
     pip install -r ./vwsfriend/test_requirements.txt && \
     pip install ./vwsfriend/ && \
     apk del .build-deps
+RUN mkdir -p /config
 
-CMD vwsfriend --username ${WECONNECT_USER} --password ${WECONNECT_PASSWORD} --interval ${WECONNECT_INTERVAL} --database-url ${DATABASE_URL} ${ADDITIONAL_PARAMETERS}
+CMD vwsfriend --username ${WECONNECT_USER} --password ${WECONNECT_PASSWORD} --interval ${WECONNECT_INTERVAL} --database-url ${DATABASE_URL} --config-dir /config ${ADDITIONAL_PARAMETERS}

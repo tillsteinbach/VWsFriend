@@ -3,6 +3,8 @@ services:
   vwsfriend:
     build: vwsfriend/.
     #image: vwsfriend
+    ports:
+     - 4001:4000
     networks:
       backend:
     environment:
@@ -10,7 +12,7 @@ services:
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgresdbbackend/vwsfriend
-
+      - ADDITIONAL_PARAMETERS=--with-database --with-abrp -vv
   postgresdb:
     image: postgres:13
     networks:
@@ -23,6 +25,8 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=vwsfriend
+      - TZ=UTC
+      - PGTZ=UTC
 
   grafana:
     build: grafana/
