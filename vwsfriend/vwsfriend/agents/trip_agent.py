@@ -14,7 +14,7 @@ class TripAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.trip = session.query(Trip).filter(Trip.vehicle == vehicle).order_by(Trip.startDate).first()
+        self.trip = session.query(Trip).filter(Trip.vehicle == vehicle).order_by(Trip.startDate.desc()).first()
         if self.trip is not None and self.trip.endDate is not None:
             self.lastParkingPositionTimestamp = self.trip.endDate
             self.lastParkingPositionLatitude = self.trip.destination_position_latitude
