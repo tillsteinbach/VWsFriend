@@ -1,14 +1,14 @@
 
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from vwsfriend.model.base import Base
 
 
-class VecicleSettings(Base):
+class VehicleSettings(Base):
     __tablename__ = 'vehicle_settings'
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'), primary_key=True)
-    vehicle = relationship("Vehicle")
+    vehicle = relationship("Vehicle", back_populates="settings")
 
     primary_capacity = Column(Integer)
     primary_wltp_range = Column(Integer)

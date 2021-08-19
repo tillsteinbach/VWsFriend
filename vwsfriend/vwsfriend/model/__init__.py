@@ -7,6 +7,6 @@ from .online import Online
 from .range import Range
 from .refuel_session import RefuelSession
 from .trip import Trip
-from .vehicle_settings import VecicleSettings
+from .vehicle_settings import VehicleSettings
 from .vehicle import Vehicle
 from .charger import Charger, Operator
