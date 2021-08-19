@@ -1,5 +1,5 @@
-from sqlalchemy import Column, String, Enum, Boolean, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Enum, Boolean
+from sqlalchemy.orm import relationship, backref
 
 from weconnect.addressable import AddressableLeaf
 from weconnect.elements.range_status import RangeStatus
@@ -17,7 +17,8 @@ class Vehicle(Base):
     online = Column(Boolean)
     lastUpdate = Column(DatetimeDecorator)
     lastChange = Column(DatetimeDecorator)
-    settings = relationship("VecicleSettings", back_populates="vehicle")
+    settings = relationship("VehicleSettings", back_populates="vehicle", uselist=False)
+
     weConnectVehicle = None
 
     def __init__(self, vin):

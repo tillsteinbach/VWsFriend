@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Vehicle Settings for {{vehicle.nickname.value}}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<ul>
+  {% if connector.withDB %}
+  <li><a href="{{ url_for('settings.vehicleDBParameters', vin=vehicle.vin.value) }}">Vehicle Parameters for visualization</a></li>
+  {% endif %}
+  {% if connector.withABRP %}
+  <li><a href="{{ url_for('settings.vehicleABRPSettings', vin=vehicle.vin.value) }}">Vehicle Parameters for connectivity with ABRP</a></li>
+  {% endif %}
+</ul>
+{% endblock %}

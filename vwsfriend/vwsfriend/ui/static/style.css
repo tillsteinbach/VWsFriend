@@ -14,3 +14,14 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
+
+
+img.status {
+    width: 388px;
+    height: auto;
+  }
+
+img.icon {
+    width: 30px;
+    height: auto;
+  }

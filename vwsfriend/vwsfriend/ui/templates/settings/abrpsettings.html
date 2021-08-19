@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}ABRP Settings for {{vehicle.nickname.value}} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <p>To connect this vehicle to ABRP you have to generate a user token for this vehicle. To support multiple ABRP accounts you can set multiple tokens here.</p>
+  <div class="form-wrapper">
+    <form method="POST">
+        {{ form.csrf_token }}
+  
+        {% for a in form.accounts %}
+          <fieldset class="form-field">
+            <fieldset class="form-field">
+              {{ a.form.account_name.label }}
+              {{ a.form.account_name(size=20) }}
+              {% if a.form.account_name.errors %}
+                <ul class="errors">
+                  {% for error in a.form.account_name.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </fieldset>
+            <fieldset class="form-field">
+              {{ a.form.account_token.label }}
+              {{ a.form.account_token(size=20) }}
+              {% if a.form.account_token.errors %}
+                <ul class="errors">
+                  {% for error in a.form.account_token.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </fieldset>
+            {{ a.form.delete }}
+          </fieldset>
+        {% endfor %}
+        {% if form.accounts.errors %}
+          <ul class="errors">
+            {% for error in form.accounts.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+  
+        {{ form.addAccount }}{{ form.save }}
+  
+    </form>
+  </div>
+{% endblock %}

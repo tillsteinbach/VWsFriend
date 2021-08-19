@@ -18,7 +18,7 @@ from weconnect.__version import __version__ as __weconnect_version__
 
 from vwsfriend.ui.vwsfriend_ui import VWsFriendUI
 from vwsfriend.homekit.bridge import VWsFriendBridge
-from vwsfriend.model.db_connector import DBConnector
+from vwsfriend.agent_connector import AgentConnector
 
 from .__version import __version__
 
@@ -63,6 +63,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         version='%(prog)s {version} (using WeConnect-python {weversion})'.format(version=__version__, weversion=__weconnect_version__))
     parser.add_argument('-u', '--username', help='Username of Volkswagen id', required=False)
     parser.add_argument('-p', '--password', help='Password of Volkswagen id', required=False)
+    parser.add_argument('--with-database', dest='withDatabase', help='Connect VWsFriend to database for visualization', action='store_true')
     parser.add_argument('--database-url', dest='dbUrl', help='Database to connect to', default='sqlite:///vwsfrienddevel.db')
     defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
     parser.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
@@ -76,6 +77,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     parser.add_argument('-i', '--interval', help='Query interval in seconds',
                               type=NumberRangeArgument(imin=300), required=False, default=300)
     parser.add_argument('--demo', help=f'folder containing demo scenario, see README for more information')
+    parser.add_argument('--with-abrp', dest='withABRP', help='Connect VWsFriend to ABRP (you need to add userTokens in the UI!)', action='store_true')
 
     args = parser.parse_args()
 
@@ -124,13 +126,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None))
 
+        connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP)
 
-        #ui = VWsFriendUI()
-        #ui.run()
-        #time.sleep(600000)
-
-
-        connector = DBConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval)
+        ui = VWsFriendUI(weConnect=weConnect, connector=connector, dbUrl=args.dbUrl)
+        ui.run()
 
         if args.demo is not None:
             utcDemoStart = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0)
@@ -145,7 +144,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         cacheString =re.sub(r'demodate\((?P<offset>[+-]?\d+)\)', lambda m: str(utcDemoStart + timedelta(seconds=int(m.groupdict()['offset']))).replace('+00:00', 'Z'), cacheString)
                         cacheString =re.sub(r'now\((?P<offset>[+-]?\d+)\)', lambda m: str(datetime.now() + timedelta(seconds=int(m.groupdict()['offset']))), cacheString)
                         weConnect.fillCacheFromJsonString(cacheString, maxAge=2147483647)
-                        weConnect.update(updateCapabilities=False)
+                        weConnect.update(updateCapabilities=True)
                         connector.commit()
                         if match.groupdict()['stage'] is not None:
                             LOG.info('Stage %s completed', match.groupdict()['stage'])
@@ -156,12 +155,13 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             while True:
                 try:
                     LOG.info('Updating data from WeConnect')
-                    weConnect.update(updateCapabilities=False, updatePictures=False, force=True)
+                    weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
                     connector.commit()
                 except weconnect.RetrievalError:
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
                 time.sleep(args.interval)
 
+        time.sleep(600000)
         sys.exit(0)
         # flake8: noqa
 
