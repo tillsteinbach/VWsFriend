@@ -25,7 +25,7 @@ LOG = logging.getLogger("VWsFriend")
 
 
 class AgentConnector():
-    def __init__(self, weConnect, dbUrl, interval, withDB=False, withABRP=False):
+    def __init__(self, weConnect, dbUrl, interval, withDB=False, withABRP=False, configDir='./'):
         self.agents = dict()
 
         if withDB:
@@ -39,6 +39,7 @@ class AgentConnector():
         self.withABRP = withABRP
 
         self.interval = interval
+        self.configDir = configDir
 
         weConnect.addObserver(self.onEnable, AddressableLeaf.ObserverEvent.ENABLED, onUpdateComplete=True)
 
@@ -71,7 +72,7 @@ class AgentConnector():
                     LOG.warning('Vehicle %s has an unkown carType, thus some features won\'t be available until the correct carType could be detected',
                                 foundVehicle.vin)
             if self.withABRP:
-                self.agents[element.vin.value].append(ABRPAgent(weConnectVehicle=element, tokenfile=f'{element.vin.value}-ABRP.token'))
+                self.agents[element.vin.value].append(ABRPAgent(weConnectVehicle=element, tokenfile=f'{self.configDir}/{element.vin.value}-ABRP.token'))
 
 
     def commit(self):

@@ -74,6 +74,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         ' will cause a new login for every invokation!)', action='store_true')
     defaultTemp = os.path.join(tempfile.gettempdir(), 'weconnect.token')
     parser.add_argument('--tokenfile', help=f'file to store token (default: {defaultTemp})', default=defaultTemp)
+    parser.add_argument('--config-dir', dest='configDir', help=f'directory to store configuration files (default: ./)', default='./')
     parser.add_argument('-i', '--interval', help='Query interval in seconds',
                               type=NumberRangeArgument(imin=300), required=False, default=300)
     parser.add_argument('--demo', help=f'folder containing demo scenario, see README for more information')
@@ -126,7 +127,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None))
 
-        connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP)
+        connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP, configDir=args.configDir)
 
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, dbUrl=args.dbUrl)
         ui.run()
