@@ -12,7 +12,7 @@ class ChargeAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.charge = session.query(Charge).filter(Charge.vehicle == vehicle).order_by(Charge.carCapturedTimestamp.desc()).first()
+        self.charge = session.query(Charge).filter(Charge.vehicle == vehicle and Charge.carCapturedTimestamp.isnot(None)).order_by(Charge.carCapturedTimestamp.desc()).first()
         self.chargingSession = None
         self.previousChargingSession = None
 

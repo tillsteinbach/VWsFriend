@@ -7,7 +7,7 @@ class ClimatizationAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.charge = session.query(Climatization).filter(Climatization.vehicle == vehicle).order_by(Climatization.carCapturedTimestamp.desc()).first()
+        self.charge = session.query(Climatization).filter(Climatization.vehicle == vehicle and Climatization.carCapturedTimestamp.isnot(None)).order_by(Climatization.carCapturedTimestamp.desc()).first()
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
