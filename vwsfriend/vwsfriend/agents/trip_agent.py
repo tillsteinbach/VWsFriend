@@ -34,7 +34,7 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
                                                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                            onUpdateComplete=True)
-                self.__onCarCapturedTimestampChange(self, self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
+                self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
                                                                                                            AddressableLeaf.ObserverEvent.DISABLED,
                                                                                                            onUpdateComplete=True)
