@@ -1,5 +1,6 @@
+from sqlalchemy import and_
+
 from vwsfriend.model.range import Range
-from datetime import timezone
 
 from weconnect.addressable import AddressableLeaf
 
@@ -8,7 +9,7 @@ class RangeAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.range = session.query(Range).filter(Range.vehicle == vehicle and Range.carCapturedTimestamp.isnot(None)).order_by(Range.carCapturedTimestamp.desc()).first()
+        self.range = session.query(Range).filter(and_(Range.vehicle == vehicle, Range.carCapturedTimestamp.isnot(None))).order_by(Range.carCapturedTimestamp.desc()).first()
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
