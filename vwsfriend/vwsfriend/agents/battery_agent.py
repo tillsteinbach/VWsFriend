@@ -1,3 +1,5 @@
+from sqlalchemy import and_
+
 from vwsfriend.model.battery import Battery
 
 from weconnect.addressable import AddressableLeaf
@@ -7,7 +9,7 @@ class BatteryAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.battery = session.query(Battery).filter(Battery.vehicle == vehicle and Battery.carCapturedTimestamp.isnot(None)).order_by(Battery.carCapturedTimestamp.desc()).first()
+        self.battery = session.query(Battery).filter(and_(Battery.vehicle == vehicle, Battery.carCapturedTimestamp.isnot(None))).order_by(Battery.carCapturedTimestamp.desc()).first()
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:

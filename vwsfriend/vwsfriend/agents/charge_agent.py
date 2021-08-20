@@ -1,4 +1,7 @@
 import logging
+
+from sqlalchemy import and_
+
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
 from vwsfriend.util.location_util import locationFromLatLon, chargerFromLatLon
@@ -12,7 +15,7 @@ class ChargeAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.charge = session.query(Charge).filter(Charge.vehicle == vehicle and Charge.carCapturedTimestamp.isnot(None)).order_by(Charge.carCapturedTimestamp.desc()).first()
+        self.charge = session.query(Charge).filter(and_(Charge.vehicle == vehicle, Charge.carCapturedTimestamp.isnot(None))).order_by(Charge.carCapturedTimestamp.desc()).first()
         self.chargingSession = None
         self.previousChargingSession = None
 
