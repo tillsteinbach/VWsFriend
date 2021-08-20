@@ -34,6 +34,7 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
                                                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                            onUpdateComplete=True)
+                self.__onCarCapturedTimestampChange(self, self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
                                                                                                            AddressableLeaf.ObserverEvent.DISABLED,
                                                                                                            onUpdateComplete=True)
@@ -99,7 +100,8 @@ class TripAgent():
 
             LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
         else:
-            LOG.info(f'Vehicle {self.vehicle.vin} provides a parking position, but no trip was started (this is ok during startup)')
+            if flags is not None:
+                LOG.info(f'Vehicle {self.vehicle.vin} provides a parking position, but no trip was started (this is ok during startup)')
 
     def commit(self):
         pass
