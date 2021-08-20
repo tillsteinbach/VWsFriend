@@ -61,7 +61,7 @@ class ABRPAgent():
         for account, token in self.__userTokens:
             params= {'token': token}
             data= {'tlm': self.telemetryData}
-            response = self.__session.post(API_BASE_URL+'tlm/send', params=params, json=data)
+            response = self.__session.post(API_BASE_URL + 'tlm/send', params=params, json=data)
             if response.status_code != requests.codes['ok']:
                 LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed with status code {response.status_code}')
             else:
