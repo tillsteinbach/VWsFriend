@@ -19,7 +19,7 @@ class StateAgent():
         if self.offlineTimeout < 630:
             self.offlineTimeout = 630
         self.onlineState = None
-        self.online = session.query(Online).filter(Online.vehicle == vehicle).order_by(Online.onlineTime.desc()).first()
+        self.online = session.query(Online).filter(Online.vehicle == vehicle and Online.onlineTime.isnot(None)).order_by(Online.onlineTime.desc()).first()
         # If the last record in the database is completed we are not online right now
         if self.online is None or self.online.offlineTime is not None:
             self.online = None
