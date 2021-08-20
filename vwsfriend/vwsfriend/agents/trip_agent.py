@@ -15,10 +15,13 @@ class TripAgent():
         self.session = session
         self.vehicle = vehicle
         self.trip = session.query(Trip).filter(Trip.vehicle == vehicle).order_by(Trip.startDate.desc()).first()
-        if self.trip is not None and self.trip.endDate is not None:
-            self.lastParkingPositionTimestamp = self.trip.endDate
-            self.lastParkingPositionLatitude = self.trip.destination_position_latitude
-            self.lastParkingPositionLongitude = self.trip.destination_position_longitude
+        if self.trip is not None:
+            if self.trip.endDate is not None:
+                self.lastParkingPositionTimestamp = self.trip.endDate
+                self.lastParkingPositionLatitude = self.trip.destination_position_latitude
+                self.lastParkingPositionLongitude = self.trip.destination_position_longitude
+            else:
+                LOG.info(f'Vehicle {self.vehicle.vin} has still an open trip during startup, closing it now')
             self.trip = None
         else:
             self.lastParkingPositionTimestamp = None
@@ -56,7 +59,8 @@ class TripAgent():
 
     def __onCarCapturedTimestampDisabled(self, element, flags):
         if self.trip is not None:
-            LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition but no trip was started')
+            LOG.info(f'Vehicle {self.vehicle.vin} removed a parkingPosition but there was an open trip, closing it now')
+            self.trip = None
         self.trip = Trip(self.vehicle, datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0), self.lastParkingPositionLatitude,
                          self.lastParkingPositionLongitude, None, None)
         self.trip.start_location = locationFromLatLon(self.session, self.lastParkingPositionLatitude, self.lastParkingPositionLongitude)
@@ -78,8 +82,6 @@ class TripAgent():
             self.lastParkingPositionLatitude = parkingPosition.latitude.value
             self.lastParkingPositionLongitude = parkingPosition.longitude.value
         if self.trip is not None:
-            parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
-
             if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
                 self.trip.endDate = parkingPosition.carCapturedTimestamp.value
             if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
@@ -96,6 +98,8 @@ class TripAgent():
             self.trip = None
 
             LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
+        else:
+            LOG.info(f'Vehicle {self.vehicle.vin} provides a parking position, but no trip was started (this is ok during startup)')
 
     def commit(self):
         pass
