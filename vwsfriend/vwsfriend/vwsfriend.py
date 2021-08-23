@@ -79,6 +79,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                               type=NumberRangeArgument(imin=300), required=False, default=300)
     parser.add_argument('--demo', help=f'folder containing demo scenario, see README for more information')
     parser.add_argument('--with-abrp', dest='withABRP', help='Connect VWsFriend to ABRP (you need to add userTokens in the UI!)', action='store_true')
+    parser.add_argument('--with-homekit', dest='withHomekit', help='Provide Apple Homekit functionality', action='store_true')
 
     args = parser.parse_args()
 
@@ -130,8 +131,22 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP, configDir=args.configDir)
 
+        if args.withHomekit:
+            LOG.info('Starting up Homekit')
+            # Start the accessory on port 51826
+            driver = AccessoryDriver(pincode=b'123-45-678', persist_file=f'{args.configDir}/accessory.state', port=51826)
+            bridge = VWsFriendBridge(driver=driver, weConnect=weConnect)
+            driver.add_accessory(bridge)
+
+            # Start it!
+            #hapThread = threading.Thread(target=driver.start)
+            #hapThread.start()
+            driver.start()
+
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, dbUrl=args.dbUrl)
         ui.run()
+
+        
 
         if args.demo is not None:
             utcDemoStart = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0)
@@ -153,6 +168,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         else:
                             LOG.info('Stage completed')
             LOG.info('Demo completed')
+            time.sleep(100000000)
         else:
             while True:
                 try:
@@ -163,38 +179,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
                 time.sleep(args.interval)
 
-        time.sleep(600000)
-        sys.exit(0)
-        # flake8: noqa
-
-        # Start the accessory on port 51826
-        driver = AccessoryDriver(pincode=b'123-45-678')
-        bridge = VWsFriendBridge(driver=driver, weConnect=weConnect)
-        driver.add_accessory(bridge)
-
-        #  signal.signal(signal.SIGTERM, driver.signal_handler)
-
-        # Start it!
-        #driver.async_start()
-        #driver.start()
-
-        x = threading.Thread(target=driver.start,)
-        x.start()
-        toggle = True
-        while True:
-            if args.fromcache:
-                time.sleep(10)
-            else:
-                time.sleep(600)
-            toggle = not toggle
-            if toggle:
-                if args.fromcache:
-                    weConnect.fillCacheFromJson(args.cachefile, maxAge=2147483647)
-                weConnect.update(updateCapabilities=False)
-            else:
-                if args.fromcache:
-                    weConnect.fillCacheFromJson(args.cachefile2, maxAge=2147483647)
-                weConnect.update(updateCapabilities=False)
 
     except weconnect.AuthentificationError as e:
         LOG.critical('There was a problem when authenticating with WeConnect: %s', e)
