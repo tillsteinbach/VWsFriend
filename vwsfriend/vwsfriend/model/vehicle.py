@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Enum, Boolean
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 
 from weconnect.addressable import AddressableLeaf
 from weconnect.elements.range_status import RangeStatus

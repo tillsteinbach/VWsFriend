@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base

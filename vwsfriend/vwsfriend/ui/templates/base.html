@@ -4,7 +4,10 @@
 <nav>
   <h1>VWsFriend</h1>
   <ul>
-    <li><a href="{{ url_for('status.vehicles') }}"> Status</a>
+    {% if connector.withDB %}
+    <li><a href="http://{{ request.remote_addr}}:3000">Visualization</a>
+    {% endif %}
+    <li><a href="{{ url_for('status.vehicles') }}">Status</a>
   </ul>
 </nav>
 <section class="content">

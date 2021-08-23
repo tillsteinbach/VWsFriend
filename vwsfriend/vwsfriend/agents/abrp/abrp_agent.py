@@ -56,14 +56,14 @@ class ABRPAgent():
             self.__userTokens = tokens
         LOG.info('Reading abrp tokenfile %s', tokenfile)
 
-    
     def updateTelemetry(self):
         for account, token in self.__userTokens:
-            params= {'token': token}
-            data= {'tlm': self.telemetryData}
+            params = {'token': token}
+            data = {'tlm': self.telemetryData}
             response = self.__session.post(API_BASE_URL + 'tlm/send', params=params, json=data)
             if response.status_code != requests.codes['ok']:
-                LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed with status code {response.status_code}')
+                LOG.error(
+                    f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed with status code {response.status_code}')
             else:
                 data = response.json()
                 if 'status' in data:
@@ -74,7 +74,7 @@ class ABRPAgent():
                 else:
                     LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} returned unexpected data')
 
-    def commit(self):
+    def commit(self):  # noqa: C901
         if 'batteryStatus' in self.weConnectVehicle.statuses:
             batteryStatus = self.weConnectVehicle.statuses['batteryStatus']
             if batteryStatus.carCapturedTimestamp.enabled and batteryStatus.carCapturedTimestamp.value is not None:
@@ -110,4 +110,3 @@ class ABRPAgent():
 
         self.updateTelemetry()
         self.telemetryData = dict()
-

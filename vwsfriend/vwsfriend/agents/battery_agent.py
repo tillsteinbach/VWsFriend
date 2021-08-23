@@ -9,7 +9,8 @@ class BatteryAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.battery = session.query(Battery).filter(and_(Battery.vehicle == vehicle, Battery.carCapturedTimestamp.isnot(None))).order_by(Battery.carCapturedTimestamp.desc()).first()
+        self.battery = session.query(Battery).filter(and_(Battery.vehicle == vehicle,
+                                                          Battery.carCapturedTimestamp.isnot(None))).order_by(Battery.carCapturedTimestamp.desc()).first()
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
