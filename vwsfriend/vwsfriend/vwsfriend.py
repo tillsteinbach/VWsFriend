@@ -139,9 +139,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             driver.add_accessory(bridge)
 
             # Start it!
-            #hapThread = threading.Thread(target=driver.start)
-            #hapThread.start()
-            driver.start()
+            hapThread = threading.Thread(target=driver.start)
+            hapThread.start()
+            #driver.start()
 
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, dbUrl=args.dbUrl)
         ui.run()
