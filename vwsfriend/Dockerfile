@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
 
 RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
-    apt-get install --no-install-recommends -y libpq-dev libffi-dev && \
+    apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev cargo && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN python3.9 -m venv /opt/venv
