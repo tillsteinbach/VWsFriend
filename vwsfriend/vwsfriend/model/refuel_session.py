@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, Float, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, BigInteger, Float, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base

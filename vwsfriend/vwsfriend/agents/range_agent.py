@@ -9,7 +9,8 @@ class RangeAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.range = session.query(Range).filter(and_(Range.vehicle == vehicle, Range.carCapturedTimestamp.isnot(None))).order_by(Range.carCapturedTimestamp.desc()).first()
+        self.range = session.query(Range).filter(and_(Range.vehicle == vehicle,
+                                                      Range.carCapturedTimestamp.isnot(None))).order_by(Range.carCapturedTimestamp.desc()).first()
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
@@ -33,12 +34,13 @@ class RangeAgent():
             current_secondary_currentSOC_pct = rangeStatus.secondaryEngine.currentSOC_pct.value
             current_secondary_remainingRange_km = rangeStatus.secondaryEngine.remainingRange_km.value
 
-        if self.range is None or (rangeStatus.carCapturedTimestamp.value is not None and self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value and (
-                self.range.totalRange_km != current_totalRange_km
-                or self.range.primary_currentSOC_pct != current_primary_currentSOC_pct
-                or self.range.primary_remainingRange_km != current_primary_remainingRange_km
-                or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
-                or self.range.secondary_remainingRange_km != current_secondary_remainingRange_km)):
+        if self.range is None or (rangeStatus.carCapturedTimestamp.value is not None
+                                  and self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value
+                                  and (self.range.totalRange_km != current_totalRange_km
+                                       or self.range.primary_currentSOC_pct != current_primary_currentSOC_pct
+                                       or self.range.primary_remainingRange_km != current_primary_remainingRange_km
+                                       or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
+                                       or self.range.secondary_remainingRange_km != current_secondary_remainingRange_km)):
 
             self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
                                current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)

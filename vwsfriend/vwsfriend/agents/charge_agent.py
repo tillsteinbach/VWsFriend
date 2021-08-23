@@ -1,5 +1,3 @@
-import logging
-
 from sqlalchemy import and_
 
 from vwsfriend.model.charge import Charge
@@ -15,7 +13,8 @@ class ChargeAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.charge = session.query(Charge).filter(and_(Charge.vehicle == vehicle, Charge.carCapturedTimestamp.isnot(None))).order_by(Charge.carCapturedTimestamp.desc()).first()
+        self.charge = session.query(Charge).filter(and_(Charge.vehicle == vehicle, Charge.carCapturedTimestamp.isnot(None))
+                                                   ).order_by(Charge.carCapturedTimestamp.desc()).first()
         self.chargingSession = None
         self.previousChargingSession = None
 
@@ -71,7 +70,7 @@ class ChargeAgent():
                                  current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
             self.session.add(self.charge)
 
-    def __onChargingStateChange(self, element, flags):
+    def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
         if element.value == ChargingStatus.ChargingState.CHARGING:
             if self.chargingSession is None or self.chargingSession.isClosed():
@@ -157,7 +156,8 @@ class ChargeAgent():
             self.updateMileage()
 
     def __onChargePowerChange(self, element, flags):
-        if self.chargingSession.isChargingState() and self.chargingSession is not None and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
+        if self.chargingSession.isChargingState() and self.chargingSession is not None \
+                and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
             self.chargingSession.maximumChargePower_kW = element.value
 
     def updatePosition(self):

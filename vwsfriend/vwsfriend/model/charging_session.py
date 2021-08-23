@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Integer, BigInteger, Float, String, DateTime, Enum, ForeignKey
+from sqlalchemy import Column, Integer, BigInteger, Float, String, Enum, ForeignKey
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
