@@ -18,9 +18,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
         self.weConnect = weConnect
         self.driver = driver
 
-        self.update()
-
-    def update(self,):
+    def update(self):
         for vehicle in self.weConnect.vehicles.values():
             nickname = vehicle.nickname.value
             # Climatization
