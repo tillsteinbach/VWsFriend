@@ -1,5 +1,6 @@
 import threading
 import os
+import uuid
 import logging
 import flask
 
@@ -21,17 +22,18 @@ LOG = logging.getLogger("VWsFriend")
 
 csrf = CSRFProtect()
 
+
 class VWsFriendUI:
     def __init__(self, weConnect=None, connector=None, dbUrl=None):
         print(os.path.dirname(__file__))
         self.app = flask.Flask('VWsFriend', template_folder=os.path.dirname(__file__) + '/templates', static_folder=os.path.dirname(__file__) + '/static')
         self.app.debug = True
         self.app.config.from_mapping(
-            SECRET_KEY='dev',
+            SECRET_KEY=uuid.uuid4().hex,
         )
         csrf.init_app(self.app)
 
-        self.app.add_url_rule('/', '/', self.test, methods=['GET'])
+        self.app.add_url_rule('/', '/', self.root)
 
         self.app.register_blueprint(status.bp)
         self.app.register_blueprint(settings.bp)
@@ -54,10 +56,9 @@ class VWsFriendUI:
         webthread.start()
         LOG.info('VWsFriend is listening on %s:%s)', host, port)
 
-        #server.shutdown()
-        #webthread.join()
-        #LOG.info('ProSafeExporter was stopped')
+        # server.shutdown()
+        # webthread.join()
+        # LOG.info('ProSafeExporter was stopped')
 
-    def test(self):
-        return flask.Response('laladede')
-
+    def root(self):
+        return flask.redirect(flask.url_for('status.vehicles'))

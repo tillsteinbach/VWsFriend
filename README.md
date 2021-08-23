@@ -18,9 +18,9 @@ Volkswagen WeConnect© API visualization and control (HomeKit) inspired by Tesla
 ```bash
 docker-compose --env-file ./myconfig.env up
 ```
-* The first startup can take several minutes because of all the initial settings. Please be patient!
-* Open a browser to configure ioBroker (if needed) on http://IP-ADDRESS:8081
-* Open a browser to use grafana on http://IP-ADDRESS:3001 with the user and password you selected
+
+* Open a browser to use the webinterface on http://IP-ADDRESS:4000
+* Open a browser to use grafana on http://IP-ADDRESS:3000 with the user and password you selected
 
 ## More information
 More information can be found in the Wiki: https://github.com/tillsteinbach/VWsFriend/wiki
@@ -39,8 +39,8 @@ docker-compose --env-file ./myconfig.env up
 ```bash
 docker-compose -f docker-compose-homekit-host.yml
 ```
-This will use host mode for iobroker. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
-If you do not like to share the host network with iobroker you can use macvlan mode [docker-compose-homekit-macvlan.yml](./docker-compose-homekit-macvlan.yml):
+This will use host mode for vwsfriend. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
+If you do not like to share the host network with vwsfriend you can use macvlan mode [docker-compose-homekit-macvlan.yml](./docker-compose-homekit-macvlan.yml):
 ```bash
 docker-compose -f docker-compose-homekit-macvlan.yml
 ```
@@ -52,16 +52,17 @@ Macvlan needs the variables for the IP to choose, the subnetmask and the gateway
 * Change update frequency based on the cars state (more often when car is online)
 * Calculate more stats (e.g. total charging time and charged kwh)
 
-## Known Issues
-* Does not show the nice picture of the car due to unclear license. Need to make a picture on my own when having time
-
 ## Credits
 * Software used in VWsFriend:
     * [Docker and Docker compose](https://www.docker.com/community/open-source)
-    * [ioBroker](https://www.iobroker.net)
-    * [ioBroker.vw-connect](https://github.com/TA2k/ioBroker.vw-connect)
     * [InfluxDB](https://www.influxdata.com)
     * [Grafana](https://grafana.com)
+    * [HAP-python](https://github.com/ikalchev/HAP-python)
+    * And several more
+
+## Related projects
+- [WeConnect-cli](https://github.com/tillsteinbach/WeConnect-cli): A commandline interface to interact with WeConnect
+- [WeConnect-MQTT](https://github.com/tillsteinbach/WeConnect-mqtt): A MQTT Client that provides WeConnect data to the MQTT Broker of your choice (e.g. your home automation solution such as [ioBroker](https://www.iobroker.net), [FHEM](https://fhem.de) or [Home Assistant](https://www.home-assistant.io))
 
 ## Other
 We Connect© Volkswagen AG

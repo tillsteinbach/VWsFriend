@@ -1,5 +1,12 @@
 import logging
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+from weconnect.elements import vehicle
+from weconnect.addressable import AddressableLeaf
+from weconnect.elements.range_status import RangeStatus
+
 from vwsfriend.agents.range_agent import RangeAgent
 from vwsfriend.agents.battery_agent import BatteryAgent
 from vwsfriend.agents.charge_agent import ChargeAgent
@@ -8,18 +15,8 @@ from vwsfriend.agents.climatization_agent import ClimatizationAgent
 from vwsfriend.agents.refuel_agent import RefuelAgent
 from vwsfriend.agents.trip_agent import TripAgent
 from vwsfriend.agents.abrp.abrp_agent import ABRPAgent
-from weconnect.elements import vehicle
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from vwsfriend.model.base import Base
-
-from weconnect.addressable import AddressableLeaf
-
 from vwsfriend.model import Vehicle
-
-from weconnect.elements.range_status import RangeStatus
-
 
 LOG = logging.getLogger("VWsFriend")
 
@@ -51,11 +48,11 @@ class AgentConnector():
                 foundVehicle = None
                 for dbVehicle in self.vehicles:
                     if dbVehicle.vin == element.vin.value:
-                        LOG.info(f'Found matching vehicle for vin {element.vin.value} in database')
+                        LOG.info('Found matching vehicle for vin %s in database', element.vin.value)
                         foundVehicle = dbVehicle
                         break
                 if foundVehicle is None:
-                    LOG.info(f'Found no matching vehicle for vin {element.vin.value} in database, will create a new one')
+                    LOG.info('Found no matching vehicle for vin %s in database, will create a new one', element.vin.value)
                     foundVehicle = Vehicle(element.vin.value)
                     self.session.add(foundVehicle)
                     self.session.commit(foundVehicle)
@@ -74,10 +71,9 @@ class AgentConnector():
             if self.withABRP:
                 self.agents[element.vin.value].append(ABRPAgent(weConnectVehicle=element, tokenfile=f'{self.configDir}/{element.vin.value}-ABRP.token'))
 
-
     def commit(self):
-        for vin in self.agents:
-            for agent in self.agents[vin]:
+        for vehicleAgents in self.agents.values():
+            for agent in vehicleAgents:
                 agent.commit()
         if self.withDB:
             self.session.commit()

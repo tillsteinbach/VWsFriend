@@ -55,31 +55,39 @@ class NumberRangeArgument:
         return argparse.ArgumentTypeError('Must be a number')
 
 
-def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
+def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements, too-many-locals
     parser = argparse.ArgumentParser(
         prog='vwsfriend',
         description='TBD')
     parser.add_argument('--version', action='version',
                         version='%(prog)s {version} (using WeConnect-python {weversion})'.format(version=__version__, weversion=__weconnect_version__))
-    parser.add_argument('-u', '--username', help='Username of Volkswagen id', required=False)
-    parser.add_argument('-p', '--password', help='Password of Volkswagen id', required=False)
-    parser.add_argument('--with-database', dest='withDatabase', help='Connect VWsFriend to database for visualization', action='store_true')
-    parser.add_argument('--database-url', dest='dbUrl', help='Database to connect to', default='sqlite:///vwsfrienddevel.db')
+    weConnectGroup = parser.add_argument_group('WeConnect')
+    weConnectGroup.add_argument('-u', '--username', help='Username of Volkswagen id', required=False)
+    weConnectGroup.add_argument('-p', '--password', help='Password of Volkswagen id', required=False)
     defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
-    parser.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
-                        ' Netrc is only used when username and password are not provided  as arguments',
-                        default=None, required=False)
-    parser.add_argument('-v', '--verbose', action="append_const", const=-1,)
-    parser.add_argument('--no-token-storage', dest='noTokenStorage', help='Do not store token on filesystem (this'
-                        ' will cause a new login for every invokation!)', action='store_true')
+    weConnectGroup.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
+                                ' Netrc is only used when username and password are not provided  as arguments',
+                                default=None, required=False)
+    weConnectGroup.add_argument('-i', '--interval', help='Query interval in seconds',
+                                type=NumberRangeArgument(imin=300), required=False, default=300)
     defaultTemp = os.path.join(tempfile.gettempdir(), 'weconnect.token')
-    parser.add_argument('--tokenfile', help=f'file to store token (default: {defaultTemp})', default=defaultTemp)
-    parser.add_argument('--config-dir', dest='configDir', help=f'directory to store configuration files (default: ./)', default='./')
-    parser.add_argument('-i', '--interval', help='Query interval in seconds',
-                              type=NumberRangeArgument(imin=300), required=False, default=300)
-    parser.add_argument('--demo', help=f'folder containing demo scenario, see README for more information')
-    parser.add_argument('--with-abrp', dest='withABRP', help='Connect VWsFriend to ABRP (you need to add userTokens in the UI!)', action='store_true')
-    parser.add_argument('--with-homekit', dest='withHomekit', help='Provide Apple Homekit functionality', action='store_true')
+    weConnectGroup.add_argument('--tokenfile', help=f'file to store token (default: {defaultTemp})', default=defaultTemp)
+    weConnectGroup.add_argument('--no-token-storage', dest='noTokenStorage', help='Do not store token on filesystem (this'
+                                ' will cause a new login for every invokation!)', action='store_true')
+
+    parser.add_argument('-v', '--verbose', action="append_const", const=-1,)
+    parser.add_argument('--config-dir', dest='configDir', help='directory to store configuration files (default: ./)', default='./')
+    parser.add_argument('--demo', help='folder containing demo scenario, see README for more information')
+    dbGroup = parser.add_argument_group('Database & visualization')
+
+    dbGroup.add_argument('--with-database', dest='withDatabase', help='Connect VWsFriend to database for visualization', action='store_true')
+    dbGroup.add_argument('--database-url', dest='dbUrl', help='Database to connect to', default='sqlite:///vwsfrienddevel.db')
+
+    abrpGroup = parser.add_argument_group('ABRP: A better route planner')
+    abrpGroup.add_argument('--with-abrp', dest='withABRP', help='Connect VWsFriend to ABRP (you need to add userTokens in the UI!)', action='store_true')
+
+    homekitGroup = parser.add_argument_group('Homekit')
+    homekitGroup.add_argument('--with-homekit', dest='withHomekit', help='Provide Apple Homekit functionality', action='store_true')
 
     args = parser.parse_args()
 
@@ -89,7 +97,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
     logging.basicConfig(level=LOG_LEVELS[logLevel])
     logging.getLogger("pyhap").setLevel(level="CRITICAL")
-    #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
     LOG.info('vwsfriend %s (using WeConnect-python %s)', __version__, __weconnect_version__)
 
@@ -129,7 +137,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None))
 
-        connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP, configDir=args.configDir)
+        connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
+                                   configDir=args.configDir)
 
         if args.withHomekit:
             LOG.info('Starting up Homekit')
@@ -146,8 +155,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, dbUrl=args.dbUrl)
         ui.run()
 
-        
-
         if args.demo is not None:
             utcDemoStart = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0)
             for file in sorted(os.listdir(args.demo)):
@@ -156,10 +163,12 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 if match is not None:
                     time.sleep(int(match.groupdict()['delay']))
                     stageFilePath = f'{args.demo}/{file}'
-                    with open(stageFilePath,"r") as fp:
+                    with open(stageFilePath, "r") as fp:
                         cacheString = fp.read()
-                        cacheString =re.sub(r'demodate\((?P<offset>[+-]?\d+)\)', lambda m: str(utcDemoStart + timedelta(seconds=int(m.groupdict()['offset']))).replace('+00:00', 'Z'), cacheString)
-                        cacheString =re.sub(r'now\((?P<offset>[+-]?\d+)\)', lambda m: str(datetime.now() + timedelta(seconds=int(m.groupdict()['offset']))), cacheString)
+                        cacheString = re.sub(r'demodate\((?P<offset>[+-]?\d+)\)',
+                                             lambda m: str(utcDemoStart + timedelta(seconds=int(m.groupdict()['offset']))).replace('+00:00', 'Z'), cacheString)
+                        cacheString = re.sub(r'now\((?P<offset>[+-]?\d+)\)',
+                                             lambda m: str(datetime.now() + timedelta(seconds=int(m.groupdict()['offset']))), cacheString)
                         weConnect.fillCacheFromJsonString(cacheString, maxAge=2147483647)
                         if args.withHomekit and not weConnectBridgeInitialized:
                             weConnectBridgeInitialized = True
@@ -171,7 +180,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         else:
                             LOG.info('Stage completed')
             LOG.info('Demo completed')
-            time.sleep(100000000)
         else:
             while True:
                 try:
@@ -184,7 +192,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 except weconnect.RetrievalError:
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
                 time.sleep(args.interval)
-
 
     except weconnect.AuthentificationError as e:
         LOG.critical('There was a problem when authenticating with WeConnect: %s', e)
