@@ -137,11 +137,11 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             driver = AccessoryDriver(pincode=b'123-45-678', persist_file=f'{args.configDir}/accessory.state', port=51826)
             bridge = VWsFriendBridge(driver=driver, weConnect=weConnect)
             driver.add_accessory(bridge)
+            weConnectBridgeInitialized = False
 
             # Start it!
             hapThread = threading.Thread(target=driver.start)
             hapThread.start()
-            #driver.start()
 
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, dbUrl=args.dbUrl)
         ui.run()
@@ -161,6 +161,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         cacheString =re.sub(r'demodate\((?P<offset>[+-]?\d+)\)', lambda m: str(utcDemoStart + timedelta(seconds=int(m.groupdict()['offset']))).replace('+00:00', 'Z'), cacheString)
                         cacheString =re.sub(r'now\((?P<offset>[+-]?\d+)\)', lambda m: str(datetime.now() + timedelta(seconds=int(m.groupdict()['offset']))), cacheString)
                         weConnect.fillCacheFromJsonString(cacheString, maxAge=2147483647)
+                        if args.withHomekit and not weConnectBridgeInitialized:
+                            weConnectBridgeInitialized = True
+                            bridge.update()
                         weConnect.update(updateCapabilities=True)
                         connector.commit()
                         if match.groupdict()['stage'] is not None:
@@ -175,6 +178,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                     LOG.info('Updating data from WeConnect')
                     weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
                     connector.commit()
+                    if args.withHomekit and not weConnectBridgeInitialized:
+                        weConnectBridgeInitialized = True
+                        bridge.update()
                 except weconnect.RetrievalError:
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
                 time.sleep(args.interval)
