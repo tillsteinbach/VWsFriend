@@ -46,7 +46,6 @@ jobs:
         make test
     - name: Archive code coverage results
       uses: actions/upload-artifact@v2
-      working-directory: vwsfriend
       with:
         name: code-coverage-report
-        path: coverage_html_report/**
+        path: vwsfriend/coverage_html_report/**
