@@ -51,7 +51,7 @@ jobs:
   vwsfriend-docker-deploy:
     needs: [vwsfriend-python-deploy]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 300
     steps:
       - name: Version from input
         if: github.event_name != 'push'
