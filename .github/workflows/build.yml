@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: ioBroker and grafana build
+name: VWsFriend and grafana build
 
 # Controls when the action will run. 
 on:
@@ -11,12 +11,12 @@ on:
       - "v*"
     paths:
      - .github/workflows/build.yml
-     - iobroker/**
+     - vwsfriend/**
      - grafana/**
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  iobroker:
+  vwsfriend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,8 +26,8 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            tillsteinbach/vwsfriend-iobroker
-            ghcr.io/tillsteinbach/vwsfriend-iobroker
+            tillsteinbach/vwsfriend
+            ghcr.io/tillsteinbach/vwsfriend
           tags: |
             type=edge,
             type=semver,pattern={{version}}
@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v2.1.5
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-iobroker-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-vwsfriend-${{ github.sha }}
       - name: Login to DockerHub
         uses: docker/login-action@v1.9.0
         with:
@@ -55,7 +55,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2.4.0
         with:
-          context: iobroker
+          context: vwsfriend
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
@@ -86,7 +86,7 @@ jobs:
         uses: actions/cache@v2.1.5
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-iobroker-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-grafana-${{ github.sha }}
       - name: Login to DockerHub
         uses: docker/login-action@v1.9.0
         with:
