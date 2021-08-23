@@ -16,12 +16,13 @@ RUN apk add --no-cache --virtual .build-deps rust build-base gcc libc-dev libffi
                           openjpeg-dev \
                           tiff-dev \
                           tk-dev \
-                          tcl-dev && \
+                          tcl-dev
+RUN --mount=type=cache,target=/root/.cache \
     pip install -r ./vwsfriend/requirements.txt && \
     pip install -r ./vwsfriend/setup_requirements.txt && \
     pip install -r ./vwsfriend/test_requirements.txt && \
-    pip install ./vwsfriend/ && \
-    apk del .build-deps
+    pip install ./vwsfriend/
+RUN apk del .build-deps
 RUN mkdir -p /config
 
 CMD vwsfriend --username ${WECONNECT_USER} --password ${WECONNECT_PASSWORD} --interval ${WECONNECT_INTERVAL} --database-url ${DATABASE_URL} --config-dir /config ${ADDITIONAL_PARAMETERS}
