@@ -23,7 +23,7 @@ LOG = logging.getLogger("VWsFriend")
 
 class AgentConnector():
     def __init__(self, weConnect, dbUrl, interval, withDB=False, withABRP=False, configDir='./'):
-        self.agents = dict()
+        self.agents = {}
 
         if withDB:
             engine = create_engine(dbUrl)
@@ -43,7 +43,7 @@ class AgentConnector():
     def onEnable(self, element, flags):
         if (flags & AddressableLeaf.ObserverEvent.ENABLED) and isinstance(element, vehicle.Vehicle):
             if element.vin not in self.agents:
-                self.agents[element.vin.value] = list()
+                self.agents[element.vin.value] = []
             if self.withDB:
                 foundVehicle = None
                 for dbVehicle in self.vehicles:

@@ -163,7 +163,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 if match is not None:
                     time.sleep(int(match.groupdict()['delay']))
                     stageFilePath = f'{args.demo}/{file}'
-                    with open(stageFilePath, "r") as fp:
+                    with open(stageFilePath, mode='r', encoding='utf8') as fp:
                         cacheString = fp.read()
                         cacheString = re.sub(r'demodate\((?P<offset>[+-]?\d+)\)',
                                              lambda m: str(utcDemoStart + timedelta(seconds=int(m.groupdict()['offset']))).replace('+00:00', 'Z'), cacheString)
