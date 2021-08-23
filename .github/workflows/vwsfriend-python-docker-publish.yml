@@ -1,0 +1,110 @@
+name: Upload VWsFriend Python Package and Docker Image
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  vwsfriend-python-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Set up Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: "3.x"
+      - name: Version from input
+        if: github.event_name != 'push'
+        run: |
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Version from pushed tag
+        if: github.event_name == 'push'
+        run: |
+          # from refs/tags/v1.2.3 get 1.2.3
+          echo "version=$(echo $GITHUB_REF | sed 's#.*/v##')" >> $GITHUB_ENV
+      - name: Autobump version
+        run: |
+          PLACEHOLDER="__version__ = 'develop'"
+          REPLACEMENT="__version__ = '${{ env.version }}'"
+          VERSION_FILE="vwsfriend/vwsfriend/__version.py"
+          # ensure the placeholder is there. If grep doesn't find the placeholder
+          # it exits with exit code 1 and github actions aborts the build. 
+          grep "$PLACEHOLDER" "$VERSION_FILE"
+          sed -i "s/$PLACEHOLDER/$REPLACEMENT/g" "$VERSION_FILE"
+          grep "$REPLACEMENT" "$VERSION_FILE"
+        shell: bash
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+      - name: Build and publish
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
+
+  vwsfriend-docker-deploy:
+    needs: [vwsfriend-python-deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Version from input
+        if: github.event_name != 'push'
+        run: |
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Version from pushed tag
+        if: github.event_name == 'push'
+        run: |
+          # from refs/tags/v1.2.3 get 1.2.3
+          echo "version=$(echo $GITHUB_REF | sed 's#.*/v##')" >> $GITHUB_ENV
+      - name: Wait for PIPY to have the version available
+        run: |
+          pip3 download vwsfriend==${{ env.version }} > /dev/null
+          while [ $? -ne 0 ]; do sleep 10; pip3 download vwsfriend==${{ env.version }}; done
+        shell: bash {0}
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3.4.1
+        with:
+          images: |
+            tillsteinbach/vwsfriend
+            ghcr.io/tillsteinbach/vwsfriend
+          tags: |
+            type=raw,value=edge
+            type=pep440,pattern={{version}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1.5.1
+      - name: Setup Cache for buildx
+        uses: actions/cache@v2.1.6
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-vwsfriend-${{ github.sha }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1.10.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: docker
+          push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
