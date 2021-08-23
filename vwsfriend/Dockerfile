@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y python3.9 pytho
 RUN python3.9 -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
-#RUN pip3 install --no-cache-dir wheel
+RUN pip3 install --no-cache-dir wheel
 RUN pip3 install --no-cache-dir vwsfriend
 
 #RUN python setup.py install
