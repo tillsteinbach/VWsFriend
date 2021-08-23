@@ -107,7 +107,7 @@ def vehicleDBParameters(vin):
     return render_template('settings/vehicledbparameters.html', vehicle=foundVehicle, form=form, connector=current_app.connector)
 
 
-@bp.route('/vehicle/abrp/<vin>', methods=['GET', 'POST'])
+@bp.route('/vehicle/abrp/<vin>', methods=['GET', 'POST'])  # noqa: C901
 def vehicleABRPSettings(vin):  # noqa: C901
     if vin not in current_app.weConnect.vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
