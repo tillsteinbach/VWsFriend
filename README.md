@@ -4,12 +4,15 @@
 Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
-![ID3](./screenshots/id3.png)
+![ID3](https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/id3.png)
 
 ## Requirements
 * Docker (if you are new to Docker, see [Installing Docker and Docker Compose](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl))
 * A Machine that's always on, so VWsFriend can continually fetch data
 * External internet access, to talk to the servers
+
+## Login & Consent
+VWsFriend is based on the new WeConnect ID API that was introduced with the new series of ID cars. If you use another car or hybrid you probably need to agree to the terms and conditions of the WeConnect ID interface. Easiest to do so is by installing the WeConnect ID app on your smartphone and login there. If necessary you will be asked to agree to the terms and conditions.
 
 ## How to start
 * Clone or download the files [docker-compose.yml](./docker-compose.yml) and [.env](./.env)
@@ -37,7 +40,7 @@ VWsFriend supports sending its data to ABPR out of the box. You just have to gen
 Connecting VWsFriend to ABRP enables you to use the current SoC, position, parking and charging state (feature availability depends on your car!) when planning routes in ABRP
 
 ## VWsFriend with Apple Homekit support
-<img src="./screenshots/homekit.jpg" width="200"><img src="./screenshots/homekit2.jpg" width="200"><img src="./screenshots/homekit3.jpg" width="200"><img src="./screenshots/homekit4.jpg" width="200">
+<img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit2.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit3.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit4.jpg" width="200">
 
 * Replace the docker-compose file by [docker-compose-homekit-host.yml](./docker-compose-homekit-host.yml) to use the homekit override
 ```bash
