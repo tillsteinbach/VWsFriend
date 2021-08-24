@@ -9,15 +9,14 @@ on:
       - 'docker-compose*.yml'
 
 jobs:
-
   build:
-
-    runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        compose-file: [docker-compose.yml, docker-compose-homekit-host.yml, docker-compose-homekit-macvlan.yml]
     steps:
     - uses: actions/checkout@v1
     - name: Build the docker-compose stack
-      run: docker-compose --env-file .env up -d
+      run: docker-compose -f ${{ matrix.compose-file }} --env-file .env up -d
     - name: Check running containers
       run: docker ps -a
     - name: Check logs for iobroker
