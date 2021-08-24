@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         compose-file: [docker-compose.yml, docker-compose-homekit-host.yml, docker-compose-homekit-macvlan.yml]
