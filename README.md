@@ -1,5 +1,16 @@
 # VWsFriend
-[![Docker COmpose CI](https://github.com/tillsteinbach/VWsFriend/actions/workflows/compose.yml/badge.svg)](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml)
+[![GitHub sourcecode](https://img.shields.io/badge/Source-GitHub-green)](https://github.com/tillsteinbach/VWsFriend/)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/tillsteinbach/VWsFriend)](https://github.com/tillsteinbach/VWsFriend/releases/latest)
+[![GitHub](https://img.shields.io/github/license/tillsteinbach/VWsFriend)](https://github.com/tillsteinbach/VWsFriend/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/tillsteinbach/VWsFriend)](https://github.com/tillsteinbach/VWsFriend/issues)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/vwsfriend?label=PyPI%20Downloads)](https://pypi.org/project/vwsfriend/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/vwsfriend)](https://pypi.org/project/vwsfriend/)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/tillsteinbach/vwsfriend?sort=semver)](https://hub.docker.com/r/tillsteinbach/vwsfriend)
+[![Docker Pulls](https://img.shields.io/docker/pulls/tillsteinbach/vwsfriend)](https://hub.docker.com/r/tillsteinbach/vwsfriend)
+[![Donate at PayPal](https://img.shields.io/badge/Donate-PayPal-2997d8)](https://www.paypal.com/donate?hosted_button_id=2BVFF5GJ9SXAJ)
+[![Sponsor at Github](https://img.shields.io/badge/Sponsor-GitHub-28a745)](https://github.com/sponsors/tillsteinbach)
+
+[![Docker Compose CI](https://github.com/tillsteinbach/VWsFriend/actions/workflows/compose.yml/badge.svg)](https://github.com/tillsteinbach/VWsFriend/actions/workflows/build.yml)
 
 Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
