@@ -87,9 +87,9 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-vwsfriend-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-vwsfriend-release-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-vwsfriend-release-
       - name: Login to DockerHub
         uses: docker/login-action@v1.10.0
         with:
