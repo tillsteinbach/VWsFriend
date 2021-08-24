@@ -32,6 +32,10 @@ docker-compose pull
 docker-compose --env-file ./myconfig.env up
 ```
 
+## ABPR (A better Route Planner) support
+VWsFriend supports sending its data to ABPR out of the box. You just have to generate a user-token in ABRP and configure it for your car in the UI.
+Connecting VWsFriend to ABRP enables you to use the current SoC, position, parking and charging state (feature availability depends on your car!) when planning routes in ABRP
+
 ## VWsFriend with Apple Homekit support
 <img src="./screenshots/homekit.jpg" width="200"><img src="./screenshots/homekit2.jpg" width="200"><img src="./screenshots/homekit3.jpg" width="200"><img src="./screenshots/homekit4.jpg" width="200">
 
@@ -55,7 +59,7 @@ Macvlan needs the variables for the IP to choose, the subnetmask and the gateway
 ## Credits
 * Software used in VWsFriend:
     * [Docker and Docker compose](https://www.docker.com/community/open-source)
-    * [InfluxDB](https://www.influxdata.com)
+    * [PostgreSQL](https://www.postgresql.org)
     * [Grafana](https://grafana.com)
     * [HAP-python](https://github.com/ikalchev/HAP-python)
     * And several more
