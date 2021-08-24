@@ -4,7 +4,7 @@
 Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
-![ID3](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/id3.png)
+<img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/id3.png" width="100%">
 
 ## Requirements
 * Docker (if you are new to Docker, see [Installing Docker and Docker Compose](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl))
