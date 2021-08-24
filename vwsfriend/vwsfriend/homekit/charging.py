@@ -14,8 +14,8 @@ class Charging(pyhap.accessory.Accessory):
 
     category = pyhap.const.CATEGORY_OUTLET
 
-    def __init__(self, driver, displayName, chargingStatus, plugStatus=None):
-        super().__init__(driver=driver, display_name=displayName)
+    def __init__(self, driver, aid, displayName, chargingStatus, plugStatus=None):
+        super().__init__(driver=driver, display_name=displayName, aid=aid)
 
         servOutlet = self.add_preload_service('Outlet')
 

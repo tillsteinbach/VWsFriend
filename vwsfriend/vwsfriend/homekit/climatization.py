@@ -13,8 +13,8 @@ class Climatization(pyhap.accessory.Accessory):
 
     category = pyhap.const.CATEGORY_THERMOSTAT
 
-    def __init__(self, driver, displayName, climatizationStatus, climatizationSettings=None):
-        super().__init__(driver=driver, display_name=displayName)
+    def __init__(self, driver, aid, displayName, climatizationStatus, climatizationSettings=None):
+        super().__init__(driver=driver, display_name=displayName, aid=aid)
 
         servThermostat = self.add_preload_service('Thermostat')
 

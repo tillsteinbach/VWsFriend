@@ -24,7 +24,7 @@ csrf = CSRFProtect()
 
 
 class VWsFriendUI:
-    def __init__(self, weConnect=None, connector=None, dbUrl=None):
+    def __init__(self, weConnect=None, connector=None, homekitDriver=None, dbUrl=None):
         print(os.path.dirname(__file__))
         self.app = flask.Flask('VWsFriend', template_folder=os.path.dirname(__file__) + '/templates', static_folder=os.path.dirname(__file__) + '/static')
         self.app.debug = True
@@ -39,6 +39,7 @@ class VWsFriendUI:
         self.app.register_blueprint(settings.bp)
         self.app.weConnect = weConnect
         self.app.connector = connector
+        self.app.homekitDriver = homekitDriver
 
         if connector.withDB and dbUrl is not None:
             engine = create_engine(dbUrl)

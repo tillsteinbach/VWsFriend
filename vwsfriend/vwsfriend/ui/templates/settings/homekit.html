@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Homekit Settings {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <p>To connect your Home to the cars managed by VWsFriend please scan the following QR Code with the Home App on your smartphone.</p>
+  <img src="{{ url_for('settings.homekitQR') }}" id="homekitQR"/>
+  <p>You can also manually add the Bridge <strong>{{ current_app.homekitDriver.accessory.display_name }}</strong> with the Passcode: <strong>{{ current_app.homekitDriver.state.pincode.decode('utf8') }}</strong></p>
+  <h2>Status:</h2>
+  <p>
+    <form method="POST">
+      {{ form.csrf_token }}
+    The bridge is currently {{ 'paired' if current_app.homekitDriver.state.paired else 'unpaired' }}{{ form.unpair(disabled=(not current_app.homekitDriver.state.paired)) }}
+    </form>
+  </p>
+  <h2>Available Homekit Accessories:</h2>
+  <p>
+    <ul>
+    {% for accessory in current_app.homekitDriver.accessory.accessories.values() %}
+      <li><strong>{{ accessory.display_name }}</strong> (AID: {{ accessory.aid }}) Services: {% for service in accessory.services %}{{service.display_name}}, {% endfor %}</li>
+    {% endfor %}
+    </ul>
+  </p>
+{% endblock %}
