@@ -1,7 +1,9 @@
 import re
 from collections import namedtuple
+from io import BytesIO
+from pyqrcode import pyqrcode
 
-from flask import Blueprint, render_template, current_app, abort, redirect, url_for, request
+from flask import Blueprint, render_template, current_app, abort, redirect, url_for, request, send_file, flash
 from flask_wtf import FlaskForm
 from wtforms import FieldList, FormField, StringField, IntegerField, SubmitField, HiddenField
 from wtforms.validators import DataRequired, NumberRange, Optional, Length, Regexp, ValidationError
@@ -61,6 +63,10 @@ class ABRPSettingsForm(FlaskForm):
                 raise ValidationError('Token is no real ABRP user token')
 
 
+class HomekitForm(FlaskForm):
+    unpair = SubmitField('Unpair')
+
+
 ABRPSettingsEntry = namedtuple('ABRPSettings', ('accounts'))
 
 
@@ -70,7 +76,7 @@ def vehicle(vin):
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     foundVehicle = current_app.weConnect.vehicles[vin]
 
-    return render_template('settings/vehicle.html', vehicle=foundVehicle, connector=current_app.connector)
+    return render_template('settings/vehicle.html', vehicle=foundVehicle, current_app=current_app)
 
 
 @bp.route('/vehicle/database/<vin>', methods=['GET', 'POST'])
@@ -104,7 +110,7 @@ def vehicleDBParameters(vin):
 
         return redirect(url_for("settings.vehicle", vin=vin))
 
-    return render_template('settings/vehicledbparameters.html', vehicle=foundVehicle, form=form, connector=current_app.connector)
+    return render_template('settings/vehicledbparameters.html', vehicle=foundVehicle, form=form, current_app=current_app)
 
 
 @bp.route('/vehicle/abrp/<vin>', methods=['GET', 'POST'])  # noqa: C901
@@ -147,4 +153,37 @@ def vehicleABRPSettings(vin):  # noqa: C901
         agent.userTokens = newTokens
         return redirect(url_for("settings.vehicle", vin=vin))
 
-    return render_template('settings/abrpsettings.html', vehicle=foundVehicle, form=form, connector=current_app.connector)
+    return render_template('settings/abrpsettings.html', vehicle=foundVehicle, form=form, current_app=current_app)
+
+
+@bp.route('/homekit', methods=['GET', 'POST'])
+def homekit():
+    form = HomekitForm()
+
+    if form.unpair.data:
+        clients = list(current_app.homekitDriver.state.paired_clients.keys()).copy()
+        for client in clients:
+            import asyncio
+            try:
+                asyncio.get_event_loop()
+            except RuntimeError as ex:
+                if "There is no current event loop in thread" in str(ex):
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+            current_app.homekitDriver.unpair(client)
+            current_app.homekitDriver.config_changed()
+        flash('Unpaired the Homekit bridge. You can now pair again')
+
+    return render_template('settings/homekit.html', form=form, connector=current_app.connector, current_app=current_app)
+
+
+@bp.route('/homekit/homekit-qr.png', methods=['GET'])
+def homekitQR():
+    if current_app.homekitDriver is None or current_app.homekitDriver.accessory is None:
+        abort(404, "VWsFriend is running without Homekit support")
+    xhm_uri = current_app.homekitDriver.accessory.xhm_uri()
+    qrcode = pyqrcode.create(xhm_uri)
+    img_io = BytesIO()
+    qrcode.png(img_io, scale=12)
+    img_io.seek(0)
+    return send_file(img_io, mimetype='image/png')

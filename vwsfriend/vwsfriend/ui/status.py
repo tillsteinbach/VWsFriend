@@ -7,7 +7,7 @@ bp = Blueprint('status', __name__, url_prefix='/status')
 @bp.route('/vehicles', methods=['GET'])
 def vehicles():
     vehicles = current_app.weConnect.vehicles.values()
-    return render_template('status/vehicles.html', vehicles=vehicles, connector=current_app.connector)
+    return render_template('status/vehicles.html', vehicles=vehicles, current_app=current_app)
 
 
 @bp.route('/vehicles/<string:vin>-status.png', methods=['GET'])

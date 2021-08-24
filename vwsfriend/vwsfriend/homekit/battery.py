@@ -13,8 +13,8 @@ class Battery(pyhap.accessory.Accessory):
 
     category = pyhap.const.CATEGORY_OTHER
 
-    def __init__(self, driver, displayName, batteryStatus, chargingStatus=None):
-        super().__init__(driver=driver, display_name=displayName)
+    def __init__(self, driver, aid, displayName, batteryStatus, chargingStatus=None):
+        super().__init__(driver=driver, display_name=displayName, aid=aid)
 
         servBattery = self.add_preload_service('BatteryService')
 

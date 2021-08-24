@@ -4,10 +4,13 @@
 <nav>
   <h1>VWsFriend</h1>
   <ul>
-    {% if connector.withDB %}
+    {% if current_app.connector.withDB %}
     <li><a href="http://{{ request.remote_addr}}:3000">Visualization</a>
     {% endif %}
     <li><a href="{{ url_for('status.vehicles') }}">Status</a>
+    {% if current_app.homekitDriver %}
+    <li><a href="{{ url_for('settings.homekit') }}">Homekit</a>
+    {% endif %}
   </ul>
 </nav>
 <section class="content">

@@ -140,11 +140,12 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
                                    configDir=args.configDir)
 
+        driver = None
         if args.withHomekit:
             LOG.info('Starting up Homekit')
             # Start the accessory on port 51826
-            driver = AccessoryDriver(pincode=b'123-45-678', persist_file=f'{args.configDir}/accessory.state', port=51826)
-            bridge = VWsFriendBridge(driver=driver, weConnect=weConnect)
+            driver = AccessoryDriver(pincode=None, persist_file=f'{args.configDir}/accessory.state')
+            bridge = VWsFriendBridge(driver=driver, weConnect=weConnect, aidfile=f'{args.configDir}/accessory.aid')
             driver.add_accessory(bridge)
             weConnectBridgeInitialized = False
 
@@ -152,7 +153,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             hapThread = threading.Thread(target=driver.start)
             hapThread.start()
 
-        ui = VWsFriendUI(weConnect=weConnect, connector=connector, dbUrl=args.dbUrl)
+        ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl)
         ui.run()
 
         if args.demo is not None:

@@ -6,11 +6,14 @@
 
 {% block content %}
 <ul>
-  {% if connector.withDB %}
+  {% if current_app.connector.withDB %}
   <li><a href="{{ url_for('settings.vehicleDBParameters', vin=vehicle.vin.value) }}">Vehicle Parameters for visualization</a></li>
   {% endif %}
-  {% if connector.withABRP %}
+  {% if current_app.connector.withABRP %}
   <li><a href="{{ url_for('settings.vehicleABRPSettings', vin=vehicle.vin.value) }}">Vehicle Parameters for connectivity with ABRP</a></li>
+  {% endif %}
+  {% if not current_app.connector.withDB and not current_app.connector.withABRP %}
+  Currently nothing to configure
   {% endif %}
 </ul>
 {% endblock %}
