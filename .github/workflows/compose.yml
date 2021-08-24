@@ -21,11 +21,6 @@ jobs:
       run: docker-compose -f ${{ matrix.compose-file }} --env-file .env up -d
     - name: Container Status
       run: docker ps -a
-    - name: Check running containers
-      run: |
-        docker ps -a | grep -q 'Up.*vwsfriend_grafana_1'
-        docker ps -a | grep -q 'Up.*vwsfriend_postgresdb_1'
-      shell: bash
     - name: Let containers run for 60s
       uses: juliangruber/sleep-action@v1
       with:
