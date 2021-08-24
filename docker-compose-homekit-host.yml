@@ -32,7 +32,7 @@ services:
       - PGTZ=UTC
 
   grafana:
-    image: tillsteinbach/vwsfriend-grafana:edge
+    image: tillsteinbach/vwsfriend-grafana:latest
     ports:
       - 3000:3000
     networks:
