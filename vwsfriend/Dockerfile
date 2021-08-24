@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y python3.9 pytho
     apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev cargo libjpeg-dev zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+
 RUN python3.9 -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
