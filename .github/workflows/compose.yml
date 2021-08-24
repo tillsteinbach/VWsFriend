@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/compose.yml'
       - 'docker-compose*.yml'
+      - '.env'
 
 jobs:
   build:
@@ -20,10 +21,10 @@ jobs:
       run: docker-compose -f ${{ matrix.compose-file }} --env-file .env up -d
     - name: Check running containers
       run: docker ps -a
-    - name: Sleep for 10s
+    - name: Let containers running for 60s
       uses: juliangruber/sleep-action@v1
       with:
-        time: 30s
+        time: 60s
     - name: Check logs for vwsfriend
       run: docker logs vwsfriend_vwsfriend_1
     - name: Check logs for postgresdb
