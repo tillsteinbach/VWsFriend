@@ -2,12 +2,13 @@
 Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
-![ID3](https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/id3.png)
+![ID3](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/id3.png)
 
 ## Requirements
 You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/)
 
 To make use of all features you have to install and configure several depending projects (grafana, postgresql, ...) most users use the preconfigured docker images at: https://github.com/tillsteinbach/VWsFriend/
+If you still want to setup everything on your own, please continue reading.
 
 ### Login & Consent
 VWsFriend is based on the new WeConnect ID API that was introduced with the new series of ID cars. If you use another car or hybrid you probably need to agree to the terms and conditions of the WeConnect ID interface. Easiest to do so is by installing the WeConnect ID app on your smartphone and login there. If necessary you will be asked to agree to the terms and conditions.
@@ -33,7 +34,7 @@ vwsfriend --with-abrp
 ```
 
 ## VWsFriend with Apple Homekit support
-<img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit2.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit3.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit4.jpg" width="200">
+<img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit2.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit3.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit4.jpg" width="200">
 
 ```bash
 vwsfriend --with-homekit
