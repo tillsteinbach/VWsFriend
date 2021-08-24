@@ -20,9 +20,15 @@ jobs:
       run: docker-compose -f ${{ matrix.compose-file }} --env-file .env up -d
     - name: Check running containers
       run: docker ps -a
-    - name: Check logs for iobroker
+    - name: Sleep for 10s
+      uses: juliangruber/sleep-action@v1
+      with:
+        time: 30s
+    - name: Check logs for vwsfriend
       run: docker logs vwsfriend_vwsfriend_1
-    - name: Check logs for influxdb
+    - name: Check logs for postgresdb
       run: docker logs vwsfriend_postgresdb_1
     - name: Check logs for grafana
       run: docker logs vwsfriend_grafana_1
+    - name: Check running containers again
+      run: docker ps -a
