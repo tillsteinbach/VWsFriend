@@ -23,7 +23,7 @@ jobs:
       run: docker ps -a
     - name: Check running containers
       run:
-        docker ps -a | grep -q 'Up.*\(.*starting\).*vwsfriend_vwsfriend_1'
+        docker ps -a | grep -q 'Up.*vwsfriend_vwsfriend_1'
       shell: bash
     - name: Let containers run for 60s
       uses: juliangruber/sleep-action@v1
