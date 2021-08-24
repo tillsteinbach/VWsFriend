@@ -29,7 +29,7 @@ ENV WECONNECT_INTERVAL=
 ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3-venv && \
+RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3-venv wget && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/venv /opt/venv
