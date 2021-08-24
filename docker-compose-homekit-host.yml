@@ -1,17 +1,21 @@
 version: '3.8'
 services:
   vwsfriend:
-          image: tillsteinbach/vwsfriend:latest
-    ports:
-     - 4000:4000
-    networks:
-      backend:
+    image: tillsteinbach/vwsfriend:latest
+    network_mode: host
+    extra_hosts:
+      - "postgresdbbackend:127.0.0.1"
+      - "postgresdb:127.0.0.1"
+      - "grafanabackend:127.0.0.1"
+      - "grafana:127.0.0.1"
+    volumes:
+      - vwsfriend_data:/config
     environment:
       - WECONNECT_USER
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgresdbbackend/vwsfriend
-      - ADDITIONAL_PARAMETERS=--with-database --with-abrp -vv
+      - ADDITIONAL_PARAMETERS=--with-database --with-abrp --with-homekit -vv
   postgresdb:
     image: postgres:13
     networks:
@@ -28,7 +32,7 @@ services:
       - PGTZ=UTC
 
   grafana:
-    image: tillsteinbach/vwsfriend-grafana:latest
+    image: tillsteinbach/vwsfriend-grafana:edge
     ports:
       - 3000:3000
     networks:
@@ -52,7 +56,10 @@ services:
 networks:
   bridge:
   backend:
+  global-macvlan-network:
+    external: true
 
 volumes:
   postgresdb_data:
   grafana_data:
+  vwsfriend_data:
