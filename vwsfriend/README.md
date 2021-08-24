@@ -2,7 +2,7 @@
 Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
-![ID3](../screenshots/id3.png)
+![ID3](https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/id3.png)
 
 ## Requirements
 You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/)
@@ -33,7 +33,7 @@ vwsfriend --with-abrp
 ```
 
 ## VWsFriend with Apple Homekit support
-<img src="../screenshots/homekit.jpg" width="200"><img src="../screenshots/homekit2.jpg" width="200"><img src="../screenshots/homekit3.jpg" width="200"><img src="../screenshots/homekit4.jpg" width="200">
+<img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit2.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit3.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit4.jpg" width="200">
 
 ```bash
 vwsfriend --with-homekit
