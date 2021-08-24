@@ -29,9 +29,11 @@ More information can be found in the Wiki: https://github.com/tillsteinbach/VWsF
 ## ABPR (A better Route Planner) support
 VWsFriend supports sending its data to ABPR out of the box. You just have to generate a user-token in ABRP and configure it for your car in the UI.
 Connecting VWsFriend to ABRP enables you to use the current SoC, position, parking and charging state (feature availability depends on your car!) when planning routes in ABRP
+If you only want to use the ABPR feature you can try:
 ```bash
-vwsfriend --with-abrp
+vwsfriend -u user -p password --with-abrp
 ```
+After vwsfriend is started open a browser at http://IP-ADDRESS:4000 and add your user-token in the settings of your car.
 
 ## VWsFriend with Apple Homekit support
 <img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit2.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit3.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit4.jpg" width="200">
