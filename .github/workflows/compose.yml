@@ -19,10 +19,12 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build the docker-compose stack
       run: docker-compose -f ${{ matrix.compose-file }} --env-file .env up -d
+    - name: Container Status
+      run: docker ps -a
     - name: Check running containers
       run: '! docker ps -a | grep -q  Exited'
       shell: bash
-    - name: Let containers running for 60s
+    - name: Let containers run for 60s
       uses: juliangruber/sleep-action@v1
       with:
         time: 60s
@@ -32,6 +34,8 @@ jobs:
       run: docker logs vwsfriend_postgresdb_1
     - name: Check logs for grafana
       run: docker logs vwsfriend_grafana_1
+    - name: Container Status
+      run: docker ps -a
     - name: Check running containers again
       run: '! docker ps -a | grep -q  Exited'
       shell: bash
