@@ -4,7 +4,7 @@
 Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
-![ID3](https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/id3.png)
+![ID3](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/id3.png)
 
 ## Requirements
 * Docker (if you are new to Docker, see [Installing Docker and Docker Compose](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl))
@@ -40,7 +40,7 @@ VWsFriend supports sending its data to ABPR out of the box. You just have to gen
 Connecting VWsFriend to ABRP enables you to use the current SoC, position, parking and charging state (feature availability depends on your car!) when planning routes in ABRP
 
 ## VWsFriend with Apple Homekit support
-<img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit2.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit3.jpg" width="200"><img src="https://github.com/tillsteinbach/VWsFriend/blob/main/screenshots/homekit4.jpg" width="200">
+<img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit2.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit3.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit4.jpg" width="200">
 
 * Replace the docker-compose file by [docker-compose-homekit-host.yml](./docker-compose-homekit-host.yml) to use the homekit override
 ```bash
