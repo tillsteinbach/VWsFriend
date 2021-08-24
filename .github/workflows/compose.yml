@@ -23,7 +23,6 @@ jobs:
       run: docker ps -a
     - name: Check running containers
       run: |
-        docker ps -a | grep -q 'Up.*vwsfriend_vwsfriend_1'
         docker ps -a | grep -q 'Up.*vwsfriend_grafana_1'
         docker ps -a | grep -q 'Up.*vwsfriend_postgresdb_1'
       shell: bash
@@ -32,7 +31,9 @@ jobs:
       with:
         time: 60s
     - name: Check logs for vwsfriend
-      run: docker logs vwsfriend_vwsfriend_1
+      run: |
+        docker logs vwsfriend_vwsfriend_1
+        docker logs vwsfriend_vwsfriend_1 | grep -q 'CRITICAL:VWsFriend:There was a problem when authenticating with WeConnect: Your account for test@test.de was not found. Would you like to create a new account?'
     - name: Check logs for postgresdb
       run: docker logs vwsfriend_postgresdb_1
     - name: Check logs for grafana
