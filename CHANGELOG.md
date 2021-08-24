@@ -2,6 +2,22 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- Nothng unreleased so far
+
+## [0.3.0] - 2021-08-24
+This is a complete rewrite of VWsFriend using a self developed API. It drops ioBroker
+
+### Added
+- Several new dashboards for refueling (hybrid and gasoline only), charging sessions, trips (only when parking position is provided), ...
+- Added support to forward telemetry to ABPR (A better route planner)
+- Web Userinterface to see status and configure settings
+- a lot more...
+
+### Changed
+- Now uses PostgreSQL instead of Influx
+
+### Removed
+- ioBroker is not shipped anymore with VWsFriend. If you still want to use ioBroker, you can use ioBroker with [WeConnect-mqt](https://github.com/tillsteinbach/WeConnect-mqtt).
 
 ## [0.2.0] - 2021-04-25
 ### Added
@@ -21,5 +37,6 @@ All notable changes to this project will be documented in this file.
 Initial release to enable "latest" tag on dockerhub
 
 [unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/tillsteinbach/VWsFriend/compare/v0.1.0...v0.2.0
+[0.3.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.3.0
+[0.2.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.2.0
 [0.1.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.1.0
