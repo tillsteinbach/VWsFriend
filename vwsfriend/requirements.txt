@@ -1,7 +1,6 @@
-weconnect
-#weconnect==0.3.2
-HAP-python[QRCode]==4.1.0
-sqlalchemy==1.4.23
+weconnect~=0.20.0
+HAP-python[QRCode]~=4.1.0
+sqlalchemy~=1.4.23
 psycopg2-binary
 requests
 flask

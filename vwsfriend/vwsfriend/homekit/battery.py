@@ -5,31 +5,34 @@ import pyhap
 from weconnect.elements.charging_status import ChargingStatus
 from weconnect.addressable import AddressableLeaf
 
+from vwsfriend.homekit.genericAccessory import GenericAccessory
+
 LOG = logging.getLogger("VWsFriend")
 
 
-class Battery(pyhap.accessory.Accessory):
-    """Battery Assessory"""
+class Battery(GenericAccessory):
+    """Battery Accessory"""
 
     category = pyhap.const.CATEGORY_OTHER
 
-    def __init__(self, driver, aid, displayName, batteryStatus, chargingStatus=None):
-        super().__init__(driver=driver, display_name=displayName, aid=aid)
+    def __init__(self, driver, bridge, aid, id, vin, displayName, batteryStatus, chargingStatus=None):
+        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
 
-        servBattery = self.add_preload_service('BatteryService')
+        self.service = self.add_preload_service('BatteryService', ['Name', 'ConfiguredName', 'BatteryLevel', 'StatusLowBattery', 'ChargingState'])
 
         if batteryStatus.currentSOC_pct.enabled:
-            batteryStatus.currentSOC_pct.addObserver(self.onCurrentSOCChange,
-                                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-            self.charBatteryLevel = servBattery.configure_char('BatteryLevel')
+            batteryStatus.currentSOC_pct.addObserver(self.onCurrentSOCChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+            self.charBatteryLevel = self.service.configure_char('BatteryLevel')
             self.charBatteryLevel.set_value(batteryStatus.currentSOC_pct.value)
-            self.charStatusLowBattery = servBattery.configure_char('StatusLowBattery')
+            self.charStatusLowBattery = self.service.configure_char('StatusLowBattery')
             self.setStatusLowBattery(batteryStatus.currentSOC_pct)
 
         if chargingStatus is not None and chargingStatus.chargingState.enabled:
             chargingStatus.chargingState.addObserver(self.onChargingState, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-            self.charChargingState = servBattery.configure_char('ChargingState')
+            self.charChargingState = self.service.configure_char('ChargingState')
             self.setChargingState(chargingStatus.chargingState)
+
+        self.addNameCharacteristics()
 
     def setStatusLowBattery(self, currentSOC_pct):
         if self.charStatusLowBattery is not None:
