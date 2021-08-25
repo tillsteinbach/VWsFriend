@@ -145,7 +145,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             LOG.info('Starting up Homekit')
             # Start the accessory on port 51826
             driver = AccessoryDriver(pincode=None, persist_file=f'{args.configDir}/accessory.state')
-            bridge = VWsFriendBridge(driver=driver, weConnect=weConnect, aidfile=f'{args.configDir}/accessory.aid')
+            bridge = VWsFriendBridge(driver=driver, weConnect=weConnect, accessoryConfigFile=f'{args.configDir}/accessory.config')
             driver.add_accessory(bridge)
             weConnectBridgeInitialized = False
 

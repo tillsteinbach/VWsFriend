@@ -1,6 +1,7 @@
 import logging
 import json
-import requests
+from requests import Session, codes
+from requests.structures import CaseInsensitiveDict
 
 from weconnect.elements.vehicle import Vehicle
 from weconnect.elements.charging_status import ChargingStatus
@@ -12,21 +13,21 @@ LOG = logging.getLogger("VWsFriend")
 API_BASE_URL = 'https://api.iternio.com/1/'
 VWSFRIEND_IDENTIFIER = '6225724a-65fb-4d4c-9ac5-d7dff2b78c1d'
 
-HEADER = {'accept': 'application/json',
-          'user-agent': f'VWsFriend ({__version__})',
-          'accept-language': 'en-en',
-          'Authorization': f'APIKEY {VWSFRIEND_IDENTIFIER}'}
+HEADER = CaseInsensitiveDict({'accept': 'application/json',
+                              'user-agent': f'VWsFriend ({__version__})',
+                              'accept-language': 'en-en',
+                              'Authorization': f'APIKEY {VWSFRIEND_IDENTIFIER}'})
 
 
 class ABRPAgent():
-    def __init__(self, weConnectVehicle: Vehicle, tokenfile):
+    def __init__(self, weConnectVehicle: Vehicle, tokenfile: str):
         self.weConnectVehicle = weConnectVehicle
-        self.__session = requests.Session()
+        self.__session: Session = Session()
         self.__session.headers = HEADER
-        self.__userTokens = list()
+        self.__userTokens: list[tuple[str, str]] = []
 
-        self.telemetryData = dict()
-        self.tokenfile = tokenfile
+        self.telemetryData: dict = {}
+        self.tokenfile: str = tokenfile
         try:
             self.readTokens(tokenfile)
         except FileNotFoundError:
@@ -61,7 +62,7 @@ class ABRPAgent():
             params = {'token': token}
             data = {'tlm': self.telemetryData}
             response = self.__session.post(API_BASE_URL + 'tlm/send', params=params, json=data)
-            if response.status_code != requests.codes['ok']:
+            if response.status_code != codes['ok']:
                 LOG.error(
                     f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed with status code {response.status_code}')
             else:
@@ -109,4 +110,4 @@ class ABRPAgent():
                 self.telemetryData['power'] = chargingStatus.chargePower_kW.value * -1
 
         self.updateTelemetry()
-        self.telemetryData = dict()
+        self.telemetryData.clear()

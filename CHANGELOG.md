@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - Nothng unreleased so far
 
+## [0.4.0] - 2021-08-25
+### Added
+- New Homekit Accessories (Plug and Lock) added
+- Homekit can now control charging and climatization (temperature and on/off state)
+- Homekit configuration through UI
+
 ## [0.3.0] - 2021-08-24
 This is a complete rewrite of VWsFriend using a self developed API. It drops ioBroker
 
@@ -36,7 +42,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.4.0
 [0.3.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.3.0
 [0.2.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.2.0
 [0.1.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.1.0
