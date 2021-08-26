@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 - Homekit can now control charging and climatization (temperature and on/off state)
 - Homekit configuration through UI
 
+### Fixed
+- Trips work again after changes to WeConnect Service
+
 ## [0.3.0] - 2021-08-24
 This is a complete rewrite of VWsFriend using a self developed API. It drops ioBroker
 
