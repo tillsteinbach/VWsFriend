@@ -33,10 +33,13 @@ class TripAgent():
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
             if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['parkingPosition'].enabled:
-                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
+                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampEnabled,
+                                                                                                           AddressableLeaf.ObserverEvent.ENABLED,
+                                                                                                           onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChanged,
                                                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                            onUpdateComplete=True)
-                self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
+                self.__onCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
                                                                                                            AddressableLeaf.ObserverEvent.DISABLED,
                                                                                                            onUpdateComplete=True)
@@ -49,8 +52,11 @@ class TripAgent():
     def __onStatusesChange(self, element, flags):
         if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
             # only add if not in list of observers
-            if self.__onCarCapturedTimestampChange not in element.getObservers(flags=AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True):
-                element.addObserver(self.__onCarCapturedTimestampChange,
+            if self.__onCarCapturedTimestampEnabled not in element.getObservers(flags=AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True):
+                element.addObserver(self.__onCarCapturedTimestampEnabled,
+                                    AddressableLeaf.ObserverEvent.ENABLED,
+                                    onUpdateComplete=True)
+                element.addObserver(self.__onCarCapturedTimestampChanged,
                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                     onUpdateComplete=True)
                 element.addObserver(self.__onCarCapturedTimestampDisabled,
@@ -58,7 +64,7 @@ class TripAgent():
                                     onUpdateComplete=True)
                 LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips')
                 self.vehicle.weConnectVehicle.statuses.removeObserver(self.__onStatusesChange)
-                self.__onCarCapturedTimestampChange(element, flags)
+                self.__onCarCapturedTimestampEnabled(element, flags)
 
     def __onCarCapturedTimestampDisabled(self, element, flags):
         if self.trip is not None:
@@ -76,7 +82,16 @@ class TripAgent():
         self.session.add(self.trip)
         LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
 
-    def __onCarCapturedTimestampChange(self, element, flags):
+    def __onCarCapturedTimestampChanged(self, element, flags):
+        parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+        if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
+            self.lastParkingPositionTimestamp = parkingPosition.carCapturedTimestamp.value
+        if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+            self.lastParkingPositionLatitude = parkingPosition.latitude.value
+            self.lastParkingPositionLongitude = parkingPosition.longitude.value
+
+    def __onCarCapturedTimestampEnabled(self, element, flags):
         parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
         if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
             self.lastParkingPositionTimestamp = parkingPosition.carCapturedTimestamp.value
