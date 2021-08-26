@@ -1,6 +1,6 @@
 weconnect~=0.20.2
 HAP-python[QRCode]~=4.1.0
-pypng~=0.0.20
+pypng~=0.0.21
 sqlalchemy~=1.4.23
 psycopg2-binary
 requests
