@@ -3,6 +3,7 @@ import logging
 import pyhap
 
 from weconnect.addressable import AddressableLeaf
+from weconnect.elements.charging_status import ChargingStatus
 from weconnect.elements.climatization_status import ClimatizationStatus
 from weconnect.elements.control_operation import ControlOperation
 
@@ -18,13 +19,15 @@ class Climatization(GenericAccessory):
     category = pyhap.const.CATEGORY_AIR_CONDITIONER
 
     def __init__(self, driver, bridge, aid, id, vin, displayName, climatizationStatus: ClimatizationStatus, climatizationSettings=None,
-                 climatizationControl=None):
+                 batteryStatus=None, chargingStatus=None, climatizationControl=None):
         super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
 
         self.climatizationControl = climatizationControl
         self.climatizationSettings = climatizationSettings
         self.service = self.add_preload_service('Thermostat', ['Name', 'ConfiguredName', 'CurrentHeatingCoolingState', 'TargetHeatingCoolingState',
                                                 'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration'])
+        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
+        self.service.add_linked_service(self.batteryService)
 
         if climatizationStatus.climatisationState.enabled:
             climatizationStatus.climatisationState.addObserver(self.onClimatizationState,
@@ -44,6 +47,18 @@ class Climatization(GenericAccessory):
                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=climatizationSettings.targetTemperature_C.value,
                                                                      setter_callback=self.__onTargetTemperatureChanged)
+
+        if batteryStatus is not None and batteryStatus.currentSOC_pct.enabled:
+            batteryStatus.currentSOC_pct.addObserver(self.onCurrentSOCChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+            self.charBatteryLevel = self.batteryService.configure_char('BatteryLevel')
+            self.charBatteryLevel.set_value(batteryStatus.currentSOC_pct.value)
+            self.charStatusLowBattery = self.batteryService.configure_char('StatusLowBattery')
+            self.setStatusLowBattery(batteryStatus.currentSOC_pct)
+
+        if batteryStatus is not None and chargingStatus is not None and chargingStatus.chargingState.enabled:
+            chargingStatus.chargingState.addObserver(self.onChargingState, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+            self.charChargingState = self.batteryService.configure_char('ChargingState')
+            self.setChargingState(chargingStatus.chargingState)
 
         # Set constant to celsius
         # TODO: We can enable conversion here later
@@ -105,3 +120,38 @@ class Climatization(GenericAccessory):
             LOG.debug('Changed climatization target temperature to: %f', value)
         else:
             LOG.error('Climatization target temperature cannot be controled')
+
+    def setStatusLowBattery(self, currentSOC_pct):
+        if self.charStatusLowBattery is not None:
+            if currentSOC_pct.value > 10:
+                self.charStatusLowBattery.set_value(0)
+            else:
+                self.charStatusLowBattery.set_value(1)
+
+    def setChargingState(self, chargingState):
+        if self.charChargingState is not None:
+            if chargingState.value == ChargingStatus.ChargingState.OFF \
+                    or chargingState.value == ChargingStatus.ChargingState.READY_FOR_CHARGING:
+                self.charChargingState.set_value(0)
+            elif chargingState.value == ChargingStatus.ChargingState.CHARGING:
+                self.charChargingState.set_value(1)
+            elif chargingState.value == ChargingStatus.ChargingState.ERROR:
+                self.charChargingState.set_value(2)
+            else:
+                self.charChargingState.set_value(2)
+                LOG.warn('unsupported chargingState: %s', chargingState.value.value)
+
+    def onCurrentSOCChange(self, element, flags):
+        if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
+            self.charBatteryLevel.set_value(element.value)
+            self.setStatusLowBattery(element)
+            LOG.debug('Battery SoC Changed: %d %%', element.value)
+        else:
+            LOG.debug('Unsupported event %s', flags)
+
+    def onChargingState(self, element, flags):
+        if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
+            self.setChargingState(element)
+            LOG.debug('Charging State Changed: %s', element.value.value)
+        else:
+            LOG.debug('Unsupported event %s', flags)

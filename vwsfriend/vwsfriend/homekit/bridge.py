@@ -5,7 +5,7 @@ import pyhap
 from weconnect.weconnect import WeConnect
 
 from .climatization import Climatization
-from .battery import Battery
+# from .battery import Battery
 from .charging import Charging
 from .plug import Plug
 from .locking_system import LockingSystem
@@ -68,26 +68,38 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                     climatizationSettings = vehicle.statuses['climatisationSettings']
                 else:
                     climatizationSettings = None
-                climatizationAccessory = Climatization(driver=self.driver, bridge=self, aid=self.selectAID('Climatization', vin), id='Climatization', vin=vin,
-                                                       displayName=f'{nickname} Climatization', climatizationStatus=climatizationStatus,
-                                                       climatizationSettings=climatizationSettings, climatizationControl=vehicle.controls.climatizationControl)
-                climatizationAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
-                self.add_accessory(climatizationAccessory)
-                configChanged = True
 
-            if 'batteryStatus' in vehicle.statuses:
-                batteryStatus = vehicle.statuses['batteryStatus']
+                if 'batteryStatus' in vehicle.statuses:
+                    batteryStatus = vehicle.statuses['batteryStatus']
+                else:
+                    batteryStatus = None
 
                 if 'chargingStatus' in vehicle.statuses:
                     chargingStatus = vehicle.statuses['chargingStatus']
                 else:
                     chargingStatus = None
 
-                batteryAccessory = Battery(driver=self.driver, bridge=self, aid=self.selectAID('Battery', vin), id='Battery', vin=vin,
-                                           displayName=f'{nickname} Battery', batteryStatus=batteryStatus, chargingStatus=chargingStatus)
-                batteryAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
-                self.add_accessory(batteryAccessory)
+                climatizationAccessory = Climatization(driver=self.driver, bridge=self, aid=self.selectAID('Climatization', vin), id='Climatization', vin=vin,
+                                                       displayName=f'{nickname} Climatization', climatizationStatus=climatizationStatus,
+                                                       climatizationSettings=climatizationSettings, batteryStatus=batteryStatus, chargingStatus=chargingStatus,
+                                                       climatizationControl=vehicle.controls.climatizationControl)
+                climatizationAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
+                self.add_accessory(climatizationAccessory)
                 configChanged = True
+
+            # if 'batteryStatus' in vehicle.statuses:
+            #     batteryStatus = vehicle.statuses['batteryStatus']
+
+            #     if 'chargingStatus' in vehicle.statuses:
+            #         chargingStatus = vehicle.statuses['chargingStatus']
+            #     else:
+            #         chargingStatus = None
+
+            #     batteryAccessory = Battery(driver=self.driver, bridge=self, aid=self.selectAID('Battery', vin), id='Battery', vin=vin,
+            #                                displayName=f'{nickname} Battery', batteryStatus=batteryStatus, chargingStatus=chargingStatus)
+            #     batteryAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
+            #     self.add_accessory(batteryAccessory)
+            #     configChanged = True
 
             if 'chargingStatus' in vehicle.statuses:
                 chargingStatus = vehicle.statuses['chargingStatus']
@@ -97,9 +109,14 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 else:
                     plugStatus = None
 
+                if 'batteryStatus' in vehicle.statuses:
+                    batteryStatus = vehicle.statuses['batteryStatus']
+                else:
+                    batteryStatus = None
+
                 chargingAccessory = Charging(driver=self.driver, bridge=self, aid=self.selectAID('Charging', vin), id='Charging', vin=vin,
                                              displayName=f'{nickname} Charging', chargingStatus=chargingStatus, plugStatus=plugStatus,
-                                             chargingControl=vehicle.controls.chargingControl)
+                                             batteryStatus=batteryStatus, chargingControl=vehicle.controls.chargingControl)
                 chargingAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
                 self.add_accessory(chargingAccessory)
                 configChanged = True

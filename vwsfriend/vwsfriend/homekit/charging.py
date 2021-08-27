@@ -17,18 +17,18 @@ class Charging(GenericAccessory):
 
     category = pyhap.const.CATEGORY_OUTLET
 
-    def __init__(self, driver, bridge, aid, id, vin, displayName, chargingStatus, plugStatus=None, chargingControl=None):
+    def __init__(self, driver, bridge, aid, id, vin, displayName, chargingStatus, plugStatus=None, batteryStatus=None, chargingControl=None):
         super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
 
         self.chargingControl = chargingControl
 
         self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration'])
+        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
+        self.service.add_linked_service(self.batteryService)
 
         if chargingStatus is not None and chargingStatus.chargingState.enabled:
             chargingStatus.chargingState.addObserver(self.onChargingState, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charOn = self.service.configure_char('On', setter_callback=self.__onOnChanged)
-            # print(self.charOn.properties)
-            # self.charOn.override_properties(properties={'Format': 'bool', 'Permissions': ['pr', 'ev']})
             self.setOnState(chargingStatus.chargingState)
 
         if chargingStatus is not None and chargingStatus.remainingChargingTimeToComplete_min.enabled:
@@ -42,6 +42,17 @@ class Charging(GenericAccessory):
             plugStatus.plugConnectionState.addObserver(self.onplugConnectionStateChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charOutletInUse = self.service.configure_char('OutletInUse')
             self.setOutletInUse(plugStatus.plugConnectionState)
+
+        if batteryStatus is not None and batteryStatus.currentSOC_pct.enabled:
+            batteryStatus.currentSOC_pct.addObserver(self.onCurrentSOCChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+            self.charBatteryLevel = self.batteryService.configure_char('BatteryLevel')
+            self.charBatteryLevel.set_value(batteryStatus.currentSOC_pct.value)
+            self.charStatusLowBattery = self.batteryService.configure_char('StatusLowBattery')
+            self.setStatusLowBattery(batteryStatus.currentSOC_pct)
+
+        if batteryStatus is not None and chargingStatus is not None and chargingStatus.chargingState.enabled:
+            self.charChargingState = self.batteryService.configure_char('ChargingState')
+            self.setChargingState(chargingStatus.chargingState)
 
         self.addNameCharacteristics()
 
@@ -71,6 +82,7 @@ class Charging(GenericAccessory):
     def onChargingState(self, element, flags):
         if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             self.setOnState(element)
+            self.setChargingState(element)
             LOG.debug('Charging State Changed: %s', element.value.value)
         else:
             LOG.debug('Unsupported event %s', flags)
@@ -99,3 +111,31 @@ class Charging(GenericAccessory):
                 self.chargingControl.value = ControlOperation.STOP
         else:
             LOG.error('Charging cannot be controled')
+
+    def setStatusLowBattery(self, currentSOC_pct):
+        if self.charStatusLowBattery is not None:
+            if currentSOC_pct.value > 10:
+                self.charStatusLowBattery.set_value(0)
+            else:
+                self.charStatusLowBattery.set_value(1)
+
+    def setChargingState(self, chargingState):
+        if self.charChargingState is not None:
+            if chargingState.value == ChargingStatus.ChargingState.OFF \
+                    or chargingState.value == ChargingStatus.ChargingState.READY_FOR_CHARGING:
+                self.charChargingState.set_value(0)
+            elif chargingState.value == ChargingStatus.ChargingState.CHARGING:
+                self.charChargingState.set_value(1)
+            elif chargingState.value == ChargingStatus.ChargingState.ERROR:
+                self.charChargingState.set_value(2)
+            else:
+                self.charChargingState.set_value(2)
+                LOG.warn('unsupported chargingState: %s', chargingState.value.value)
+
+    def onCurrentSOCChange(self, element, flags):
+        if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
+            self.charBatteryLevel.set_value(element.value)
+            self.setStatusLowBattery(element)
+            LOG.debug('Battery SoC Changed: %d %%', element.value)
+        else:
+            LOG.debug('Unsupported event %s', flags)
