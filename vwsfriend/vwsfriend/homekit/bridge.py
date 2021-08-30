@@ -83,7 +83,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                                                        displayName=f'{nickname} Climatization', climatizationStatus=climatizationStatus,
                                                        climatizationSettings=climatizationSettings, batteryStatus=batteryStatus, chargingStatus=chargingStatus,
                                                        climatizationControl=vehicle.controls.climatizationControl)
-                climatizationAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
+                climatizationAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-climatization')
                 self.add_accessory(climatizationAccessory)
                 configChanged = True
 
@@ -97,7 +97,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
 
             #     batteryAccessory = Battery(driver=self.driver, bridge=self, aid=self.selectAID('Battery', vin), id='Battery', vin=vin,
             #                                displayName=f'{nickname} Battery', batteryStatus=batteryStatus, chargingStatus=chargingStatus)
-            #     batteryAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
+            #     batteryAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-battery')
             #     self.add_accessory(batteryAccessory)
             #     configChanged = True
 
@@ -117,7 +117,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 chargingAccessory = Charging(driver=self.driver, bridge=self, aid=self.selectAID('Charging', vin), id='Charging', vin=vin,
                                              displayName=f'{nickname} Charging', chargingStatus=chargingStatus, plugStatus=plugStatus,
                                              batteryStatus=batteryStatus, chargingControl=vehicle.controls.chargingControl)
-                chargingAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
+                chargingAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-charging')
                 self.add_accessory(chargingAccessory)
                 configChanged = True
 
@@ -126,7 +126,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
 
                 plugAccessory = Plug(driver=self.driver, bridge=self, aid=self.selectAID('ChargingPlug', vin), id='ChargingPlug', vin=vin,
                                      displayName=f'{nickname} Charging Plug', plugStatus=plugStatus)
-                plugAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
+                plugAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-charging_plug')
                 self.add_accessory(plugAccessory)
                 configChanged = True
 
@@ -135,7 +135,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
 
                 lockingSystemAccessory = LockingSystem(driver=self.driver, bridge=self, aid=self.selectAID('LockingSystem', vin), id='LockingSystem', vin=vin,
                                                        displayName=f'{nickname} Locking System', accessStatus=accessStatus)
-                lockingSystemAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=vin)
+                lockingSystemAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-locking_system')
                 self.add_accessory(lockingSystemAccessory)
                 configChanged = True
 
