@@ -20,6 +20,8 @@ from vwsfriend.ui.vwsfriend_ui import VWsFriendUI
 from vwsfriend.homekit.bridge import VWsFriendBridge
 from vwsfriend.agent_connector import AgentConnector
 
+from vwsfriend.homekit.custom_characteristics import CUSTOM_CHARACTERISTICS
+
 from .__version import __version__
 
 
@@ -145,6 +147,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             LOG.info('Starting up Homekit')
             # Start the accessory on port 51826
             driver = AccessoryDriver(pincode=None, persist_file=f'{args.configDir}/accessory.state')
+
+            for characteristicKey, characteristic in CUSTOM_CHARACTERISTICS.items():
+                driver.loader.char_types[characteristicKey] = characteristic
+
             bridge = VWsFriendBridge(driver=driver, weConnect=weConnect, accessoryConfigFile=f'{args.configDir}/accessory.config')
             driver.add_accessory(bridge)
             weConnectBridgeInitialized = False

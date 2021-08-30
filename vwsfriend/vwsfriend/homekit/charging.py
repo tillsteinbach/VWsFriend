@@ -22,7 +22,7 @@ class Charging(GenericAccessory):
 
         self.chargingControl = chargingControl
 
-        self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration'])
+        self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration', 'Consumption'])
         self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
         self.service.add_linked_service(self.batteryService)
 
@@ -34,9 +34,12 @@ class Charging(GenericAccessory):
         if chargingStatus is not None and chargingStatus.remainingChargingTimeToComplete_min.enabled:
             chargingStatus.remainingChargingTimeToComplete_min.addObserver(self.onRemainingChargingTimeToComplete,
                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-
             # Add Characteristic that is not planned for the service. This is still visible in other Apps than Apple Home
             self.charRemainingDuration = self.service.configure_char('RemainingDuration', value=chargingStatus.remainingChargingTimeToComplete_min.value * 60)
+
+        if chargingStatus is not None and chargingStatus.chargePower_kW.enabled:
+            chargingStatus.chargePower_kW.addObserver(self.onChargePowerChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+            self.charWatt = self.service.configure_char('Consumption', value=chargingStatus.chargePower_kW.value * 1000)
 
         if plugStatus is not None and plugStatus.plugConnectionState.enabled:
             plugStatus.plugConnectionState.addObserver(self.onplugConnectionStateChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
@@ -98,6 +101,13 @@ class Charging(GenericAccessory):
         if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             self.charRemainingDuration.set_value(element.value * 60)
             LOG.debug('RemainingChargingTimeToComplete Changed: %d', element.value)
+        else:
+            LOG.debug('Unsupported event %s', flags)
+
+    def onChargePowerChange(self, element, flags):
+        if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
+            self.charWatt.set_value(element.value * 1000)
+            LOG.debug('chargePower_kW Changed: %d', element.value)
         else:
             LOG.debug('Unsupported event %s', flags)
 
