@@ -2,6 +2,7 @@ import logging
 import json
 from requests import Session, codes
 from requests.structures import CaseInsensitiveDict
+from requests import RequestException
 
 from weconnect.elements.vehicle import Vehicle
 from weconnect.elements.charging_status import ChargingStatus
@@ -61,19 +62,22 @@ class ABRPAgent():
         for account, token in self.__userTokens:
             params = {'token': token}
             data = {'tlm': self.telemetryData}
-            response = self.__session.post(API_BASE_URL + 'tlm/send', params=params, json=data)
-            if response.status_code != codes['ok']:
-                LOG.error(
-                    f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed with status code {response.status_code}')
-            else:
-                data = response.json()
-                if 'status' in data:
-                    if data['status'] != 'ok':
-                        LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed')
-                    if 'missing' in data:
-                        LOG.info(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account}: {data["missing"]}')
+            try:
+                response = self.__session.post(API_BASE_URL + 'tlm/send', params=params, json=data)
+                if response.status_code != codes['ok']:
+                    LOG.error(
+                        f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed with status code {response.status_code}')
                 else:
-                    LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} returned unexpected data')
+                    data = response.json()
+                    if 'status' in data:
+                        if data['status'] != 'ok':
+                            LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed')
+                        if 'missing' in data:
+                            LOG.info(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account}: {data["missing"]}')
+                    else:
+                        LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} returned unexpected data')
+            except RequestException as e:
+                LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after next interval')
 
     def commit(self):  # noqa: C901
         if 'batteryStatus' in self.weConnectVehicle.statuses:
