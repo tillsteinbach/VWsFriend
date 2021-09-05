@@ -1,4 +1,6 @@
+import logging
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
@@ -7,6 +9,8 @@ from vwsfriend.util.location_util import locationFromLatLon, chargerFromLatLon
 from weconnect.addressable import AddressableLeaf
 from weconnect.elements.charging_status import ChargingStatus
 from weconnect.elements.plug_status import PlugStatus
+
+LOG = logging.getLogger("VWsFriend")
 
 
 class ChargeAgent():
@@ -68,7 +72,11 @@ class ChargeAgent():
 
             self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
                                  current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
-            self.session.add(self.charge)
+            try:
+                with self.session.begin_nested():
+                    self.session.add(self.charge)
+            except IntegrityError:
+                LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API')
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
@@ -76,7 +84,11 @@ class ChargeAgent():
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                self.session.add(self.chargingSession)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.chargingSession)
+                except IntegrityError:
+                    LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
             if not self.chargingSession.wasStarted():
                 self.chargingSession.started = chargeStatus.carCapturedTimestamp.value
             # also write start SoC
@@ -119,7 +131,11 @@ class ChargeAgent():
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                self.session.add(self.chargingSession)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.chargingSession)
+                except IntegrityError:
+                    LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
             if self.chargingSession.connected is None:
                 self.chargingSession.connected = plugStatus.carCapturedTimestamp.value
             # also write position if available

@@ -1,8 +1,12 @@
+import logging
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.range import Range
 
 from weconnect.addressable import AddressableLeaf
+
+LOG = logging.getLogger("VWsFriend")
 
 
 class RangeAgent():
@@ -44,8 +48,11 @@ class RangeAgent():
 
             self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
                                current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
-            self.session.add(self.range)
-            self.session.flush()
+            try:
+                with self.session.begin_nested():
+                    self.session.add(self.range)
+            except IntegrityError:
+                LOG.warning('Could not add range entry to the database, this is usually due to an error in the WeConnect API')
 
     def commit(self):
         pass

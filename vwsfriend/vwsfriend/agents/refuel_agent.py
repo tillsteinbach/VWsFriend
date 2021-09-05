@@ -1,4 +1,5 @@
 import logging
+from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.refuel_session import RefuelSession
 from vwsfriend.util.location_util import locationFromLatLon
@@ -50,7 +51,11 @@ class RefuelAgent():
                 LOG.info('Vehicle %s refueled from %d percent to %d percent', self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
                 self.range = RefuelSession(self.vehicle, element.value, self.primary_currentSOC_pct, current_primary_currentSOC_pct, mileage_km,
                                            position_latitude, position_longitude, location)
-                self.session.add(self.range)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.range)
+                except IntegrityError:
+                    LOG.warning('Could not add range entry to the database, this is usually due to an error in the WeConnect API')
                 self.primary_currentSOC_pct = current_primary_currentSOC_pct
             # SoC decreased, normal usage
             elif self.primary_currentSOC_pct is None or current_primary_currentSOC_pct < self.primary_currentSOC_pct:
