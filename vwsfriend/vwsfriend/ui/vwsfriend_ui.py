@@ -34,6 +34,15 @@ class VWsFriendUI:
         )
         csrf.init_app(self.app)
 
+        self.app.add_url_rule('/healthcheck', '/healthcheck', self.healthcheck)
+
+        class NoHealth(logging.Filter):
+            def filter(self, record):
+                return 'GET /healthcheck' not in record.getMessage()
+
+        #  Disable logging for healthcheck
+        logging.getLogger("werkzeug").addFilter(NoHealth())
+
         self.app.add_url_rule('/', '/', self.root)
 
         self.app.register_blueprint(status.bp)
@@ -65,3 +74,6 @@ class VWsFriendUI:
 
     def root(self):
         return flask.redirect(flask.url_for('status.vehicles'))
+
+    def healthcheck(self):
+        return 'ok'
