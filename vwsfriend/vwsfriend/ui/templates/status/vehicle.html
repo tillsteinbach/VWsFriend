@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block content %}
+<div>
 <div style="display: flex; margin-top: 5px;"> 
 
   <div style="flex: 0 0 250px;">
@@ -58,5 +59,69 @@ L.marker([{{vehicle.statuses['parkingPosition'].latitude.value}}, {{vehicle.stat
 
 </script>
 {% endif %}
+</div>
+<hr>
+{% if 'accessStatus' in vehicle.statuses and vehicle.statuses['accessStatus'].enabled and vehicle.statuses['accessStatus'].carCapturedTimestamp.enabled %}
+<p><h2>Access Status (From {{vehicle.statuses['accessStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
+<ul>
+  {% if vehicle.statuses['accessStatus'].overallStatus.enabled %}
+  <li> Overall Status: {{vehicle.statuses['accessStatus'].overallStatus.value.value}}</li>
+  {% endif %}
+</ul>
+</p>
+{% endif %}
+
+{% if 'batteryStatus' in vehicle.statuses and vehicle.statuses['batteryStatus'].enabled and vehicle.statuses['batteryStatus'].carCapturedTimestamp.enabled %}
+<p><h2>Battery Status (From {{vehicle.statuses['batteryStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
+<ul>
+  {% if vehicle.statuses['batteryStatus'].currentSOC_pct.enabled %}
+  <li> Current SoC: {{vehicle.statuses['batteryStatus'].currentSOC_pct.value}}%</li>
+  {% endif %}
+  {% if vehicle.statuses['batteryStatus'].cruisingRangeElectric_km.enabled %}
+  <li> Cruising Range Electric: {{vehicle.statuses['batteryStatus'].cruisingRangeElectric_km.value}}km</li>
+  {% endif %}
+</ul>
+</p>
+{% endif %}
+
+{% if 'chargingStatus' in vehicle.statuses and vehicle.statuses['chargingStatus'].enabled and vehicle.statuses['chargingStatus'].carCapturedTimestamp.enabled %}
+<p><h2>Charging Status (From {{vehicle.statuses['chargingStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
+<ul>
+  {% if vehicle.statuses['chargingStatus'].remainingChargingTimeToComplete_min.enabled and vehicle.statuses['chargingStatus'].remainingChargingTimeToComplete_min.value > 0 %}
+  <li> Charging time to complete: {{vehicle.statuses['chargingStatus'].remainingChargingTimeToComplete_min.value}}min</li>
+  {% endif %}
+  {% if vehicle.statuses['chargingStatus'].chargingState.enabled %}
+  <li> Charging State: {{vehicle.statuses['chargingStatus'].chargingState.value.value}}</li>
+  {% endif %}
+  {% if vehicle.statuses['chargingStatus'].chargeMode.enabled %}
+  <li> Charge Mode: {{vehicle.statuses['chargingStatus'].chargeMode.value.value}}</li>
+  {% endif %}
+  {% if vehicle.statuses['chargingStatus'].chargePower_kW.enabled and vehicle.statuses['chargingStatus'].chargePower_kW.value > 0 %}
+  <li> Charge Power: {{vehicle.statuses['chargingStatus'].chargePower_kW.value}}kW</li>
+  {% endif %}
+  {% if vehicle.statuses['chargingStatus'].chargeRate_kmph.enabled and vehicle.statuses['chargingStatus'].chargeRate_kmph.value > 0 %}
+  <li> Charge Rate: {{vehicle.statuses['chargingStatus'].chargeRate_kmph.value}}km/h</li>
+  {% endif %}
+</ul>
+</p>
+{% endif %}
+
+{% if 'chargingSettings' in vehicle.statuses and vehicle.statuses['chargingSettings'].enabled and vehicle.statuses['chargingSettings'].carCapturedTimestamp.enabled %}
+<p><h2>Charging Settings (From {{vehicle.statuses['chargingSettings'].carCapturedTimestamp.value.isoformat()}})</h2>
+<ul>
+  {% if vehicle.statuses['chargingSettings'].maxChargeCurrentAC.enabled %}
+  <li> Max charge current AC: {{vehicle.statuses['chargingSettings'].maxChargeCurrentAC.value.value}}</li>
+  {% endif %}
+  {% if vehicle.statuses['chargingSettings'].autoUnlockPlugWhenCharged.enabled %}
+  <li> Auto unlock plug when charged: {{vehicle.statuses['chargingSettings'].autoUnlockPlugWhenCharged.value.value}}</li>
+  {% endif %}
+  {% if vehicle.statuses['chargingSettings'].targetSOC_pct.enabled %}
+  <li> Target SoC: {{vehicle.statuses['chargingSettings'].targetSOC_pct.value}}%</li>
+  {% endif %}
+</ul>
+</p>
+{% endif %}
+
+
 </div>
 {% endblock %}
