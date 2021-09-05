@@ -1,12 +1,12 @@
-from io import BytesIO
 from flask import Blueprint, render_template, current_app, abort, request, flash
 from flask_wtf import FlaskForm
-from wtforms import FieldList, FormField, StringField, IntegerField, SubmitField, HiddenField, DateTimeField, FloatField
-from wtforms.validators import DataRequired, NumberRange, Optional, Length, Regexp, ValidationError
+from wtforms import SubmitField, HiddenField, DateTimeField, FloatField
+from wtforms.validators import DataRequired, NumberRange, Optional
 
 from vwsfriend.model.trip import Trip
 
 bp = Blueprint('database', __name__, url_prefix='/database')
+
 
 class TripEditForm(FlaskForm):
     id = HiddenField('id', validators=[DataRequired()])
@@ -29,7 +29,7 @@ def vehicleDBParameters():
 
     if trip is None:
         abort(404, f"Trip with id {id} doesn't exist.")
-    
+
     form = TripEditForm()
 
     if form.delete.data:
