@@ -1,8 +1,12 @@
+import logging
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.climatization import Climatization
 
 from weconnect.addressable import AddressableLeaf
+
+LOG = logging.getLogger("VWsFriend")
 
 
 class ClimatizationAgent():
@@ -36,7 +40,11 @@ class ClimatizationAgent():
 
             self.charge = Climatization(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
                                         current_climatisationState)
-            self.session.add(self.charge)
+            try:
+                with self.session.begin_nested():
+                    self.session.add(self.charge)
+            except IntegrityError:
+                LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API')
 
     def commit(self):
         pass

@@ -1,8 +1,12 @@
+import logging
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.battery import Battery
 
 from weconnect.addressable import AddressableLeaf
+
+LOG = logging.getLogger("VWsFriend")
 
 
 class BatteryAgent():
@@ -30,7 +34,11 @@ class BatteryAgent():
                 or self.battery.cruisingRangeElectric_km != current_cruisingRangeElectric_km)):
 
             self.battery = Battery(self.vehicle, batteryStatus.carCapturedTimestamp.value, current_currentSOC_pct, current_cruisingRangeElectric_km)
-            self.session.add(self.battery)
+            try:
+                with self.session.begin_nested():
+                    self.session.add(self.battery)
+            except IntegrityError:
+                LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API')
 
     def commit(self):
         pass

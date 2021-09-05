@@ -2,6 +2,7 @@ import logging
 from datetime import datetime, timezone
 
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.trip import Trip
 from vwsfriend.util.location_util import locationFromLatLon
@@ -78,8 +79,11 @@ class TripAgent():
             maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
             if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km is not None:
                 self.trip.start_mileage_km = maintenanceStatus.mileage_km.value
-
-        self.session.add(self.trip)
+        try:
+            with self.session.begin_nested():
+                self.session.add(self.trip)
+        except IntegrityError:
+            LOG.warning('Could not add trip entry to the database, this is usually due to an error in the WeConnect API')
         LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
 
     def __onCarCapturedTimestampChanged(self, element, flags):

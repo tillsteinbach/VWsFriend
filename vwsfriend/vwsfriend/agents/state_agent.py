@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta
 import logging
 
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.online import Online
 
@@ -68,7 +69,11 @@ class StateAgent():
                 if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
                     self.vehicle.lastChange = self.lastCarCapturedTimestamp
                 self.online = Online(self.vehicle, onlineTime=self.earliestCarCapturedTimestampInInterval, offlineTime=None)
-                self.session.add(self.online)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.online)
+                except IntegrityError:
+                    LOG.warning('Could not add online state entry to the database, this is usually due to an error in the WeConnect API')
                 self.earliestCarCapturedTimestampInInterval = None
 
     def commit(self):
