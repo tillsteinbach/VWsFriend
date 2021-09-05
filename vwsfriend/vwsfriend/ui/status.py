@@ -10,6 +10,14 @@ def vehicles():
     return render_template('status/vehicles.html', vehicles=vehicles, current_app=current_app)
 
 
+@bp.route('/vehicle/<string:vin>/', methods=['GET'])
+def vehicle(vin):
+    vehicles = current_app.weConnect.vehicles
+    if vin not in vehicles:
+        abort(404, f"Vehicle with VIN {vin} doesn't exist.")
+    return render_template('status/vehicle.html', vehicle=vehicles[vin], current_app=current_app)
+
+
 @bp.route('/vehicles/<string:vin>-status.png', methods=['GET'])
 def vehicleStatusImg(vin):
     vehicles = current_app.weConnect.vehicles
