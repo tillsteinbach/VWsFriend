@@ -158,6 +158,9 @@ def vehicleABRPSettings(vin):  # noqa: C901
 
 @bp.route('/homekit', methods=['GET', 'POST'])
 def homekit():
+    if current_app.homekitDriver is None:
+        abort(404, f"Homekit support was not enabled. Enabled it with --with-homekit")
+
     form = HomekitForm()
 
     if form.unpair.data:

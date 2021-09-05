@@ -14,6 +14,7 @@ from vwsfriend.model.base import Base
 
 import vwsfriend.ui.status as status
 import vwsfriend.ui.settings as settings
+import vwsfriend.ui.database as database
 
 LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 DEFAULT_LOG_LEVEL = "ERROR"
@@ -37,6 +38,7 @@ class VWsFriendUI:
 
         self.app.register_blueprint(status.bp)
         self.app.register_blueprint(settings.bp)
+        self.app.register_blueprint(database.bp)
         self.app.weConnect = weConnect
         self.app.connector = connector
         self.app.homekitDriver = homekitDriver

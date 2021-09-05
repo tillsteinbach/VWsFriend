@@ -9,9 +9,17 @@
   <!-- Table headers not necessary-->
   {% for vehicle in vehicles %}
   <tr>
-      <td style="width: 400px"><img src="{{ url_for('status.vehicleImg', vin=vehicle.vin.value) }}" class="status"/></td>
-      <td>{{vehicle.nickname.value}}</td>
-      <td>{{vehicle.model.value}}</td>
+      <td style="width: 400px"><a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}"><img src="{{ url_for('status.vehicleImg', vin=vehicle.vin.value) }}" class="status"/></a></td>
+      <td>
+        <div><h3><a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}">{{vehicle.nickname.value}}</a> (<a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}">{{vehicle.model.value}}</a>)</h3>
+          <p>
+            
+            {% if 'batteryStatus' in vehicle.statuses and vehicle.statuses['batteryStatus'].enabled and vehicle.statuses['batteryStatus'].currentSOC_pct.enabled %} {{vehicle.statuses['batteryStatus'].currentSOC_pct}}% electric SoC,{% endif %}
+            {% if 'parkingPosition' in vehicle.statuses and vehicle.statuses['parkingPosition'].enabled and vehicle.statuses['parkingPosition'].carCapturedTimestamp.enabled %} parked, {% endif %}
+
+          </p>
+        </div>
+      </td>
       <td><a href="{{ url_for('settings.vehicle', vin=vehicle.vin.value) }}"><img src="{{ url_for('static', filename='icons/settings.png') }}" class="icon"/></td></a></td>
   </tr>
   {% endfor %}

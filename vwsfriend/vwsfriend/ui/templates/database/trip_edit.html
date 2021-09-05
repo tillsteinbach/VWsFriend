@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}Edit Settings for Trip{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if form %}
+<div class="form-wrapper">
+  <form method="POST">
+      {{ form.csrf_token }}
+
+      {{ form.id }}
+      {{ form.vehicle_vin }}
+
+      <fieldset class="form-field">
+        {{ form.startDate.label }}
+        {{ form.startDate }}
+        {% if form.startDate.errors %}
+          <ul class="errors">
+            {% for error in form.startDate.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <div id="startposition" style="height:400px"></div>
+      <script>
+        var target = 'start'
+        const lat = {{ form.start_position_latitude.data or '0' }}
+        const lon = {{ form.start_position_longitude.data or '0'}}
+        var zoomlevel = 0
+
+        if(lat != 0 && lon != 0){
+          zoomlevel = 20
+        }
+
+        var startposition = L.latLng([lat, lon]);
+        var map = L.map('startposition').setView(startposition, zoomlevel);
+        
+        const osm = new L.TileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 }
+          );
+
+        const hybrid = new L.TileLayer(
+            "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
+            { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+          );
+
+        new L.Control.Layers({ OSM: osm, Hybrid: hybrid }).addTo(map);
+        map.addLayer(osm);
+
+
+        var position = L.marker([lat, lon], {draggable:'false'}).addTo(map);
+
+        L.Control.geocoder({defaultMarkGeocode: false}).on('markgeocode', function(e) {
+          map.fitBounds(e.geocode.bbox);
+          position.setLatLng(e.geocode.center)
+        }).addTo(map);
+
+        
+        position.on('move', function(e){
+          element = document.getElementById(target+'_position_latitude');
+          element.value = e.latlng.lat;
+          element = document.getElementById(target+'_position_longitude');
+          element.value = e.latlng.lng;
+        });
+
+        map.on('click', function(e){
+          var coord = e.latlng;
+          position.setLatLng(coord); 
+          map.panTo(coord)
+        });
+
+        var legend = L.control({position: 'topright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML = '<select onchange="changeSelection(this)"><option>Start</option><option>Destination</option></select>';
+            div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+            return div;
+        };
+        legend.addTo(map);
+
+
+
+        function changeSelection(selectObject) {
+          var value = selectObject.value;  
+          console.log(value);
+          alert('changed');
+        }
+      </script>
+
+      <fieldset class="form-field">
+        {{ form.start_position_latitude.label }}
+        {{ form.start_position_latitude }}
+        {% if form.start_position_latitude.errors %}
+          <ul class="errors">
+            {% for error in form.start_position_latitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.start_position_longitude.label }}
+        {{ form.start_position_longitude }}
+        {% if form.start_position_longitude.errors %}
+          <ul class="errors">
+            {% for error in form.start_position_longitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.endDate.label }}
+        {{ form.endDate }}
+        {% if form.endDate.errors %}
+          <ul class="errors">
+            {% for error in form.endDate.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.destination_position_latitude.label }}
+        {{ form.destination_position_latitude }}
+        {% if form.destination_position_latitude.errors %}
+          <ul class="errors">
+            {% for error in form.destination_position_latitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.destination_position_longitude.label }}
+        {{ form.destination_position_longitude }}
+        {% if form.destination_position_longitude.errors %}
+          <ul class="errors">
+            {% for error in form.destination_position_longitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      {{ form.save }}{{ form.delete }}
+
+  </form>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}Vehicle Status for {{vehicle.nickname.value}}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; margin-top: 5px;"> 
+
+  <div style="flex: 0 0 250px;">
+    <img src="{{ url_for('status.vehicleImg', vin=vehicle.vin.value) }}" class="status"/>
+  </div>
+
+{% if 'parkingPosition' in vehicle.statuses and vehicle.statuses['parkingPosition'].enabled and vehicle.statuses['parkingPosition'].carCapturedTimestamp.enabled %}
+<div style="flex: 1;" id="mapid"></div>
+
+<script>
+var parkingPosition = L.latLng({{vehicle.statuses['parkingPosition'].latitude.value}}, {{vehicle.statuses['parkingPosition'].longitude.value}});
+var map = L.map('mapid').setView(parkingPosition, 10);
+setTimeout(function(){ map.flyToBounds([parkingPosition], { animate: true, duration: 1.0}); }, 300);
+
+
+const parkingTime = new Date('{{vehicle.statuses['parkingPosition'].carCapturedTimestamp.value.isoformat()}}');
+
+var vehicleIcon = L.icon({
+    iconUrl: '{{ url_for("status.vehicleImg", vin=vehicle.vin.value) }}',
+    iconSize: [77, 43],
+    iconAnchor: [37, 22],
+    popupAnchor: [0, -10],
+    tooltipAnchor: [37, 0],
+});
+
+const osm = new L.TileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 }
+  );
+
+const hybrid = new L.TileLayer(
+    "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
+    { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+  );
+
+new L.Control.Layers({ OSM: osm, Hybrid: hybrid }).addTo(map);
+map.addLayer(osm);
+
+
+L.marker([{{vehicle.statuses['parkingPosition'].latitude.value}}, {{vehicle.statuses['parkingPosition'].longitude.value}}], {icon: vehicleIcon}).addTo(map)
+    .bindTooltip('Parking position from ' + parkingTime.toLocaleDateString() + ' ' + parkingTime.toLocaleTimeString())
+
+</script>
+{% endif %}
+</div>
+{% endblock %}
