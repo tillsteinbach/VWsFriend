@@ -1,3 +1,4 @@
 graft vwsfriend/ui/static
 graft vwsfriend/ui/templates
+graft vwsfriend/model/alembic.ini
 global-exclude *.pyc

@@ -38,73 +38,6 @@
         {% endif %}
       </fieldset>
 
-      <div id="startposition" style="height:400px"></div>
-      <script>
-        var target = 'start'
-        const lat = {{ form.start_position_latitude.data or '0' }}
-        const lon = {{ form.start_position_longitude.data or '0'}}
-        var zoomlevel = 0
-
-        if(lat != 0 && lon != 0){
-          zoomlevel = 20
-        }
-
-        var startposition = L.latLng([lat, lon]);
-        var map = L.map('startposition').setView(startposition, zoomlevel);
-        
-        const osm = new L.TileLayer(
-            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 }
-          );
-
-        const hybrid = new L.TileLayer(
-            "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
-            { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
-          );
-
-        new L.Control.Layers({ OSM: osm, Hybrid: hybrid }).addTo(map);
-        map.addLayer(osm);
-
-
-        var position = L.marker([lat, lon], {draggable:'false'}).addTo(map);
-
-        L.Control.geocoder({defaultMarkGeocode: false}).on('markgeocode', function(e) {
-          map.fitBounds(e.geocode.bbox);
-          position.setLatLng(e.geocode.center)
-        }).addTo(map);
-
-        
-        position.on('move', function(e){
-          element = document.getElementById(target+'_position_latitude');
-          element.value = e.latlng.lat;
-          element = document.getElementById(target+'_position_longitude');
-          element.value = e.latlng.lng;
-        });
-
-        map.on('click', function(e){
-          var coord = e.latlng;
-          position.setLatLng(coord); 
-          map.panTo(coord)
-        });
-
-        var legend = L.control({position: 'topright'});
-        legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML = '<select onchange="changeSelection(this)"><option>Start</option><option>Destination</option></select>';
-            div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
-            return div;
-        };
-        legend.addTo(map);
-
-
-
-        function changeSelection(selectObject) {
-          var value = selectObject.value;  
-          console.log(value);
-          alert('changed');
-        }
-      </script>
-
       <fieldset class="form-field">
         {{ form.start_position_latitude.label }}
         {{ form.start_position_latitude }}
@@ -123,6 +56,18 @@
         {% if form.start_position_longitude.errors %}
           <ul class="errors">
             {% for error in form.start_position_longitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.start_mileage_km.label }}
+        {{ form.start_mileage_km }}
+        {% if form.start_mileage_km.errors %}
+          <ul class="errors">
+            {% for error in form.start_mileage_km.errors %}
               <li>{{ error }}</li>
             {% endfor %}
           </ul>
@@ -164,6 +109,110 @@
           </ul>
         {% endif %}
       </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.end_mileage_km.label }}
+        {{ form.end_mileage_km }}
+        {% if form.end_mileage_km.errors %}
+          <ul class="errors">
+            {% for error in form.end_mileage_km.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <div id="positions" style="height:400px"></div>
+      <script>
+        var target = 'start'
+        const startlat = {{ form.start_position_latitude.data or '0' }}
+        const startlon = {{ form.start_position_longitude.data or '0'}}
+        const destinationlat = {{ form.destination_position_latitude.data or '0' }}
+        const destinationlon = {{ form.destination_position_longitude.data or '0'}}
+        var startzoomlevel = 0
+        var destinationzoomlevel = 0
+
+        if(startlat != 0 && startlon != 0){
+          startzoomlevel = 20
+        }
+
+        if(destinationlat != 0 && destinationlon != 0){
+          destinationzoomlevel = 20
+        }
+
+        var startposition = L.latLng([startlat, startlon]);
+        var map = L.map('positions').setView(startposition, startzoomlevel);
+        var destinationposition = L.latLng([destinationlat, destinationlon]);
+        
+        const osm = new L.TileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 }
+          );
+
+        const hybrid = new L.TileLayer(
+            "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
+            { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+          );
+
+        new L.Control.Layers({ OSM: osm, Hybrid: hybrid }).addTo(map);
+        map.addLayer(osm);
+
+
+        var position = L.marker([startlat, startlon], {draggable:'false'}).addTo(map);
+
+        L.Control.geocoder({defaultMarkGeocode: false}).on('markgeocode', function(e) {
+          map.fitBounds(e.geocode.bbox);
+          position.setLatLng(e.geocode.center)
+        }).addTo(map);
+
+        
+        position.on('move', function(e){
+          if(e.latlng.lat != 0 && e.latlng.lng != 0){
+            element = document.getElementById(target+'_position_latitude');
+            element.value = e.latlng.lat;
+            element = document.getElementById(target+'_position_longitude');
+            element.value = e.latlng.lng;
+            if(target=='start'){
+              startposition = e.latlng
+              startzoomlevel = 20
+            }
+            else if(target=='destination'){
+              destinationposition = e.latlng
+              destinationzoomlevel = 20
+            }
+          }
+        });
+
+        map.on('click', function(e){
+          var coord = e.latlng;
+          position.setLatLng(coord); 
+          map.panTo(coord)
+        });
+
+        var legend = L.control({position: 'topright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML = '<select onchange="changeSelection(this)"><option value="start">Start</option><option value="destination">Destination</option></select>';
+            div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+            return div;
+        };
+        legend.addTo(map);
+
+
+
+        function changeSelection(selectObject) {
+          target = selectObject.value;
+          if(target=='start'){
+            map.setView(startposition, startzoomlevel);
+            position.setLatLng(startposition)
+          }
+          else if(target=='destination'){
+            map.setView(destinationposition, destinationzoomlevel);
+            position.setLatLng(destinationposition)
+          }
+          
+        }
+      </script>
 
       {{ form.save }}{{ form.delete }}
 

@@ -46,3 +46,14 @@ def vehicleImg(vin):
         pictures['car'].value.save(img_io, 'PNG')
         img_io.seek(0)
     return send_file(img_io, mimetype='image/png')
+
+
+@bp.route('/vehicles/<string:vin>-status_or_car.png', methods=['GET'])
+def vehicleStatusOrImg(vin):
+    vehicles = current_app.weConnect.vehicles
+    if vin not in vehicles:
+        abort(404, f"Vehicle with VIN {vin} doesn't exist.")
+    statuses = vehicles[vin].statuses
+    if 'accessStatus' in statuses:
+        return vehicleStatusImg(vin)
+    return vehicleImg(vin)
