@@ -6,3 +6,4 @@ psycopg2-binary
 requests
 flask
 flask_wtf
+alembic~=1.7.1
