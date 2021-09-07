@@ -30,6 +30,7 @@ services:
           - postgresdbbackend
     volumes:
       - postgresdb_data:/var/lib/postgresql/data
+    user: postgres
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -37,7 +38,7 @@ services:
       - TZ=UTC
       - PGTZ=UTC
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready --username=${DB_USER} --dbname=vwsfriend"]
       interval: 10s
       timeout: 5s
       retries: 5
