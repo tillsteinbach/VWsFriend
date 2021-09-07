@@ -18,6 +18,8 @@ from vwsfriend.agents.abrp.abrp_agent import ABRPAgent
 from vwsfriend.model.base import Base
 from vwsfriend.model import Vehicle
 
+from vwsfriend.model.migrations import run_database_migrations
+
 LOG = logging.getLogger("VWsFriend")
 
 
@@ -26,6 +28,10 @@ class AgentConnector():
         self.agents = {}
 
         if withDB:
+            LOG.info('Starting database upgrade if necessary')
+            run_database_migrations(dsn=dbUrl)
+            LOG.info('Database upgrade done')
+
             engine = create_engine(dbUrl)
             self.session = Session(engine)
             Base.metadata.create_all(engine)
@@ -55,7 +61,7 @@ class AgentConnector():
                     LOG.info('Found no matching vehicle for vin %s in database, will create a new one', element.vin.value)
                     foundVehicle = Vehicle(element.vin.value)
                     self.session.add(foundVehicle)
-                    self.session.commit(foundVehicle)
+                    self.session.commit()
                 foundVehicle.connect(element)
 
                 self.agents[element.vin.value].append(RangeAgent(self.session, foundVehicle))
