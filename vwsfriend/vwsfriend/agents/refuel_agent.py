@@ -54,6 +54,7 @@ class RefuelAgent():
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.range)
+                    self.session.commit()
                 except IntegrityError:
                     LOG.warning('Could not add range entry to the database, this is usually due to an error in the WeConnect API')
                 self.primary_currentSOC_pct = current_primary_currentSOC_pct

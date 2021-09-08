@@ -75,6 +75,7 @@ class ChargeAgent():
             try:
                 with self.session.begin_nested():
                     self.session.add(self.charge)
+                self.session.commit()
             except IntegrityError:
                 LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API')
 
@@ -87,6 +88,7 @@ class ChargeAgent():
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.chargingSession)
+                    self.session.commit()
                 except IntegrityError:
                     LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
             if not self.chargingSession.wasStarted():
@@ -134,6 +136,7 @@ class ChargeAgent():
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.chargingSession)
+                    self.session.commit()
                 except IntegrityError:
                     LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
             if self.chargingSession.connected is None:

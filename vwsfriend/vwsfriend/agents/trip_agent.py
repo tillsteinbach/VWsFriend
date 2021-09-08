@@ -82,6 +82,7 @@ class TripAgent():
         try:
             with self.session.begin_nested():
                 self.session.add(self.trip)
+            self.session.commit()
         except IntegrityError:
             LOG.warning('Could not add trip entry to the database, this is usually due to an error in the WeConnect API')
         LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
