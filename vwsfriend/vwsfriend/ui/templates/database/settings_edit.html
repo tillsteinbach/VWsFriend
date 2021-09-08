@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}Edit Settings{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>In order for VWsFriend to work we would like you to review and adjust these settings:</p>
+{% if form %}
+<div class="form-wrapper">
+  <form method="POST">
+      {{ form.csrf_token }}
+
+      {{ form.id }}
+      {{ form.unit_of_length }}
+      {{ form.unit_of_temperature }}
+      {{ form.locale }}
+
+      <fieldset class="form-field">
+        {{ form.vwsfriend_url.label }}
+        {{ form.vwsfriend_url }}
+        {% if form.vwsfriend_url.errors %}
+          <ul class="errors">
+            {% for error in form.vwsfriend_url.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.grafana_url.label }}
+        {{ form.grafana_url }}
+        {% if form.grafana_url.errors %}
+          <ul class="errors">
+            {% for error in form.grafana_url.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      {{ form.save }}
+  </form>
+</div>
+{% endif %}
+{% endblock %}
