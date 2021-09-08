@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Versions{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<ul>
+  {% for tool, version in g.versions.items() %}
+  <li><strong>{{tool}}:</strong> {{version}}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

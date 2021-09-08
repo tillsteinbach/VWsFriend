@@ -16,6 +16,14 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
 
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  max-width: 960px;
+  text-align: center;
+  padding: 0.5em;
+}
 
 img.status {
     width: 388px;
