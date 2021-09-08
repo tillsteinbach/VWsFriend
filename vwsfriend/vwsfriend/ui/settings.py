@@ -84,10 +84,12 @@ def vehicleDBParameters(vin):
     if vin not in current_app.weConnect.vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     foundVehicle = current_app.weConnect.vehicles[vin]
-    dbVehicle = current_app.session.query(Vehicle).filter(Vehicle.vin == vin).first()
+    dbVehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
+    if dbVehicle is None:
+        abort(404, f"Vehicle with VIN {vin} doesn't exist in the database, please try to restart VWsFriend")
     if dbVehicle.settings is None:
         dbVehicle.settings = VehicleSettings(vehicle=dbVehicle)
-        current_app.session.commit()
+        current_app.db.session.commit()
 
     if dbVehicle.carType == RangeStatus.CarType.ELECTRIC:
         form = ElectricVehicleSettingsForm()
@@ -106,7 +108,7 @@ def vehicleDBParameters(vin):
         dbVehicle.settings.primary_wltp_range = form.primary_wltp_range.data
         dbVehicle.settings.secondary_capacity = form.secondary_capacity.data
         dbVehicle.settings.secondary_wltp_range = form.secondary_wltp_range.data
-        current_app.session.commit()
+        current_app.db.session.commit()
 
         return redirect(url_for("settings.vehicle", vin=vin))
 

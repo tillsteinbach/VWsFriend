@@ -10,3 +10,4 @@ from .trip import Trip
 from .vehicle_settings import VehicleSettings
 from .vehicle import Vehicle
 from .charger import Charger, Operator
+from .settings import Settings
