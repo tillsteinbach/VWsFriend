@@ -27,3 +27,9 @@
   {% endfor %}
   {% block content %}{% endblock %}
 </section>
+
+<div id="footer">
+  {% block footer %}
+  VWsFriend <a href="{{ url_for('versions') }}">{{ g.versions['VWsFriend']}}</a>
+  {% endblock %}
+</div>
