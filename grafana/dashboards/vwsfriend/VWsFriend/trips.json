@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 9,
-  "iteration": 1628762034156,
+  "iteration": 1631099458193,
   "links": [
     {
       "asDropdown": false,
@@ -35,7 +35,7 @@
       "title": "Last Year",
       "tooltip": "",
       "type": "link",
-      "url": "/d/WHZz0AGnz/?from=now-1y"
+      "url": "/d/2wMSY9Mnk/?from=now-1y"
     },
     {
       "asDropdown": false,
@@ -47,7 +47,7 @@
       "title": "Last Month",
       "tooltip": "",
       "type": "link",
-      "url": "/d/WHZz0AGnz/?from=now-1M"
+      "url": "/d/2wMSY9Mnk/?from=now-1M"
     },
     {
       "asDropdown": false,
@@ -59,7 +59,7 @@
       "title": "Last Week",
       "tooltip": "",
       "type": "link",
-      "url": "/d/WHZz0AGnz/?from=now-1w"
+      "url": "/d/2wMSY9Mnk/?from=now-1w"
     },
     {
       "asDropdown": true,
@@ -171,6 +171,28 @@
                 "value": "km"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Edit"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Edit this Trip",
+                    "url": "${vwsfriend_url}/database/trips/edit?id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -192,7 +214,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  start_locations.display_name AS \"Start Location\",\n  destination_location.display_name AS \"Destination Location\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 DESC",
+          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  start_locations.display_name AS \"Start Location\",\n  destination_location.display_name AS \"Destination Location\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 DESC",
           "refId": "A",
           "select": [
             [
@@ -500,6 +522,25 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "datasource": null,
+        "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "vwsfriend_url",
+        "options": [],
+        "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },

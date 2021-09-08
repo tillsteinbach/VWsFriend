@@ -24,7 +24,21 @@
   "graphTooltip": 0,
   "id": 11,
   "iteration": 1628762119398,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
     {
       "autoZoom": true,
