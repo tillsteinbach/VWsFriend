@@ -23,8 +23,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 12,
-  "iteration": 1628709770989,
+  "iteration": 1631103640181,
   "links": [
     {
       "asDropdown": true,
@@ -405,7 +404,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 12,
         "w": 8,
         "x": 0,
         "y": 3
@@ -421,7 +420,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  UNNEST(ARRAY[\"start_locations\".neighbourhood,\"destination_locations\".neighbourhood]) as \"Neighbourhood\",\n  COUNT(*) as \"Visits\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.start_location_id = start_locations.osm_id\nLEFT JOIN locations destination_locations ON trips.destination_location_id = destination_locations.osm_id\nWHERE\n \"start_locations\".neighbourhood IS NOT NULL AND \"destination_locations\".neighbourhood IS NOT NULL AND\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Neighbourhood\"\nORDER BY \"Visits\" DESC\nLIMIT 10;",
+          "rawSql": "SELECT\n  \"start_locations\".neighbourhood as \"Neighbourhood\",\n  COUNT(*) as \"Visits\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.start_location_id = start_locations.osm_id\nWHERE\n \"start_locations\".neighbourhood IS NOT NULL AND\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Neighbourhood\"\nORDER BY \"Visits\" DESC\nLIMIT 10;",
           "refId": "A",
           "select": [
             [
@@ -496,7 +495,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 12,
         "w": 8,
         "x": 8,
         "y": 3
@@ -512,7 +511,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  UNNEST(ARRAY[\"start_locations\".city,\"destination_locations\".city]) as \"City\",\n  COUNT(*) as \"Visits\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.start_location_id = start_locations.osm_id\nLEFT JOIN locations destination_locations ON trips.destination_location_id = destination_locations.osm_id\nWHERE\n \"start_locations\".city IS NOT NULL AND \"destination_locations\".city IS NOT NULL AND\n ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"City\"\nORDER BY \"Visits\" DESC\nLIMIT 10;",
+          "rawSql": "SELECT\n  \"start_locations\".city as \"City\",\n  COUNT(*) as \"Visits\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.start_location_id = start_locations.osm_id\nWHERE\n \"start_locations\".city IS NOT NULL AND\n ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"City\"\nORDER BY \"Visits\" DESC\nLIMIT 10;",
           "refId": "A",
           "select": [
             [
@@ -587,7 +586,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 12,
         "w": 8,
         "x": 16,
         "y": 3
@@ -603,7 +602,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  UNNEST(ARRAY[\"start_locations\".state,\"destination_locations\".state]) as \"State\",\n  COUNT(*) as \"Visits\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.start_location_id = start_locations.osm_id\nLEFT JOIN locations destination_locations ON trips.destination_location_id = destination_locations.osm_id\nWHERE\n \"start_locations\".state IS NOT NULL AND \"destination_locations\".state IS NOT NULL AND\n ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"State\"\nORDER BY \"Visits\" DESC\nLIMIT 10;",
+          "rawSql": "SELECT\n  \"start_locations\".state as \"State\",\n  COUNT(*) as \"Visits\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.start_location_id = start_locations.osm_id\nWHERE\n \"start_locations\".state IS NOT NULL AND\n ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"State\"\nORDER BY \"Visits\" DESC\nLIMIT 10;",
           "refId": "A",
           "select": [
             [
@@ -673,10 +672,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 13,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 15
       },
       "id": 11,
       "options": {
@@ -689,7 +688,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  max(\"endDate\") AS \"Date\",\n  \"display_name\" AS \"Location\"\nFROM trips\nRIGHT JOIN locations ON trips.destination_location_id = locations.osm_id\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"display_name\", \"destination_location_id\"\nORDER BY \"Date\" DESC\nLIMIT 50",
+          "rawSql": "SELECT\n  max(\"endDate\") AS \"Date\",\n  \"display_name\" AS \"Location\"\nFROM trips\nRIGHT JOIN locations ON trips.destination_location_id = locations.osm_id\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"display_name\", \"destination_location_id\"\nORDER BY \"Date\" DESC\nLIMIT 20",
           "refId": "A",
           "select": [
             [
@@ -758,5 +757,5 @@
   "timezone": "",
   "title": "Locations",
   "uid": "I3w91jGnz",
-  "version": 17
+  "version": 1
 }
