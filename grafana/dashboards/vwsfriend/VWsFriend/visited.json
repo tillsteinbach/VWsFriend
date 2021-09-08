@@ -31,6 +31,7 @@
       "includeVars": true,
       "keepTime": false,
       "tags": [
+        "vwsfriend"
       ],
       "targetBlank": false,
       "title": "Dashboards",
@@ -124,8 +125,7 @@
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
-    "electric",
-    "hybrid"
+    "vwsfriend"
   ],
   "templating": {
     "list": [
