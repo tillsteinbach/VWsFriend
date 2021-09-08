@@ -57,6 +57,7 @@ def settingsEdit():
             settings.vwsfriend_url = form.vwsfriend_url.data
             settings.locale = form.locale.data
             current_app.db.session.merge(settings)
+        current_app.db.session.commit()
         return redirect(url_for('status.vehicles'))
 
     form.id.data = settings.id
@@ -83,6 +84,7 @@ def tripEdit():
         flash(f'Successfully deleted trip {id}')
         with current_app.db.session.begin_nested():
             current_app.db.session.delete(trip)
+        current_app.db.session.commit()
         return render_template('database/trip_edit.html', current_app=current_app, form=None)
 
     if form.validate_on_submit():
@@ -103,6 +105,7 @@ def tripEdit():
                 trip.destination_location = locationFromLatLon(current_app.db.session, trip.destination_position_latitude, trip.destination_position_longitude)
             trip.start_mileage_km = form.start_mileage_km.data
             trip.end_mileage_km = form.end_mileage_km.data
+        current_app.db.session.commit()
         flash(f'Successfully updated trip {id}')
 
     form.id.data = trip.id

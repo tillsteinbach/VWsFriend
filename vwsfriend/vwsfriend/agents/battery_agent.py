@@ -37,6 +37,7 @@ class BatteryAgent():
             try:
                 with self.session.begin_nested():
                     self.session.add(self.battery)
+                self.session.commit()
             except IntegrityError:
                 LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API')
 

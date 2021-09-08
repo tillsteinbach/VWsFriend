@@ -72,6 +72,7 @@ class StateAgent():
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.online)
+                    self.session.commit()
                 except IntegrityError:
                     LOG.warning('Could not add online state entry to the database, this is usually due to an error in the WeConnect API')
                 self.earliestCarCapturedTimestampInInterval = None
