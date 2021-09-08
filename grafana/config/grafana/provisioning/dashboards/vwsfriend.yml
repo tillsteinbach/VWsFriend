@@ -15,6 +15,6 @@ providers:
     allowUiUpdates: false
     options:
       # <string, required> path to dashboard files on disk. Required when using the 'file' type
-      path:  /var/lib/grafana/dashboards/vwsfriend
+      path:  /var/lib/grafana-static/dashboards/vwsfriend
       # <bool> use folder names from filesystem to create folders in Grafana
       foldersFromFilesStructure: true

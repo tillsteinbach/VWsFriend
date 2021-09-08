@@ -8,6 +8,6 @@ ENV DB_USER=admin
 ENV DB_PASSWORD=secret
 
 COPY ./config/grafana/provisioning/ /etc/grafana/provisioning/
-COPY ./dashboards/ /var/lib/grafana/dashboards/
+COPY ./dashboards/ /var/lib/grafana-static/dashboards/
 
 EXPOSE 3000
