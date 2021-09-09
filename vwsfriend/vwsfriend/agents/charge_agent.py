@@ -43,6 +43,9 @@ class ChargeAgent():
                     chargingSession = session.query(ChargingSession).filter(ChargingSession.vehicle == vehicle).order_by(ChargingSession.started.desc()).first()
                     if chargingSession is not None and not chargingSession.isClosed():
                         self.chargingSession = chargingSession
+                        LOG.info('Vehicle is charging and an open charging session entry was found in the database. This session will be continued.')
+                    else:
+                        LOG.warning('Vehicle is charging but no open charging session entry was found in the database. This session cannot be recorded.')
 
             if 'plugStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['plugStatus'].enabled:
                 self.vehicle.weConnectVehicle.statuses['plugStatus'].plugConnectionState.addObserver(self.__onPlugConnectionStateChange,
