@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ## [0.4.3] - 2021-09-09
 ### Fixed
 - Crash when experiencing connection problems, e.g. due to internet outage
+- Version footer
+- Catching up a running charging session after restart
 
 ## [0.4.2] - 2021-09-08
 ### Fixed
