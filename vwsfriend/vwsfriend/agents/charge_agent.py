@@ -37,6 +37,13 @@ class ChargeAgent():
                                                                                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                     onUpdateComplete=True)
 
+                # If the vehicle is charging check if you can catch up an open charging session:
+                if self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargingState.enabled \
+                        and self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargingState.value == ChargingStatus.ChargingState.CHARGING:
+                    chargingSession = session.query(ChargingSession).filter(ChargingSession.vehicle == vehicle).order_by(ChargingSession.started.desc()).first()
+                    if chargingSession is not None and not chargingSession.isClosed():
+                        self.chargingSession = chargingSession
+
             if 'plugStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['plugStatus'].enabled:
                 self.vehicle.weConnectVehicle.statuses['plugStatus'].plugConnectionState.addObserver(self.__onPlugConnectionStateChange,
                                                                                                      AddressableLeaf.ObserverEvent.VALUE_CHANGED,
@@ -175,7 +182,7 @@ class ChargeAgent():
             self.updateMileage()
 
     def __onChargePowerChange(self, element, flags):
-        if self.chargingSession.isChargingState() and self.chargingSession is not None \
+        if self.chargingSession is not None and self.chargingSession.isChargingState()\
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
             self.chargingSession.maximumChargePower_kW = element.value
 
