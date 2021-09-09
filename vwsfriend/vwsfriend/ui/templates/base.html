@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 {% block head %}
 {% endblock %}
+<div id="wrapper">
 <nav>
   <h1>VWsFriend</h1>
   <ul>
@@ -28,8 +29,9 @@
   {% block content %}{% endblock %}
 </section>
 
-<div id="footer">
+<section id="footer">
   {% block footer %}
   VWsFriend <a href="{{ url_for('versions') }}">{{ g.versions['VWsFriend']}}</a>
   {% endblock %}
+</section>
 </div>

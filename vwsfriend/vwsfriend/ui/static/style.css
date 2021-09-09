@@ -1,5 +1,5 @@
-html { font-family: sans-serif; background: #eee; padding: 1rem; }
-body { max-width: 960px; margin: 0 auto; background: white; }
+html { font-family: sans-serif; background: #eee; padding: 1rem;}
+body { max-width: 960px; margin: 0 auto; background: white;}
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 h2 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
@@ -9,7 +9,7 @@ nav h1 { flex: auto; margin: 0; }
 nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
 nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
 nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
-.content { padding: 0 1rem 1rem; }
+.content { padding: 0 1rem 1rem;}
 .content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
 .content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
 .flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
@@ -17,12 +17,14 @@ input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
 
 #footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  max-width: 960px;
+  position: fixed; 
+  left: 0px;
+  bottom: 0px; 
+  height: 1em;
+  width: 100%; 
   text-align: center;
-  padding: 0.5em;
+  background: #eee;
+  padding: 0.25rem
 }
 
 img.status {
