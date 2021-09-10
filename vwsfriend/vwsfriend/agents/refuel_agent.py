@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import logging
 from sqlalchemy.exc import IntegrityError
 
@@ -26,7 +27,8 @@ class RefuelAgent():
 
     def __onCarCapturedTimestampChange(self, element, flags):
         rangeStatus = self.vehicle.weConnectVehicle.statuses['rangeStatus']
-        if self.vehicle.carType in [RangeStatus.CarType.HYBRID] and rangeStatus.primaryEngine.currentSOC_pct.enabled:
+        if self.vehicle.carType in [RangeStatus.CarType.HYBRID] and rangeStatus.primaryEngine.currentSOC_pct.enabled \
+                and element.value > (datetime.utcnow() - timedelta(days=1)):
             current_primary_currentSOC_pct = rangeStatus.primaryEngine.currentSOC_pct.value
 
             mileage_km = None
