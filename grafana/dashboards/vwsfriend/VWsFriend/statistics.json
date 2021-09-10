@@ -22,8 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 18,
-  "iteration": 1631283860157,
+  "iteration": 1631284252892,
   "links": [
     {
       "asDropdown": true,
@@ -203,7 +202,8 @@
       },
       "id": 2,
       "options": {
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "8.1.3",
       "targets": [
@@ -213,7 +213,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"startDate\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"startDate\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(\"startDate\", 'YYYY Month')\n    WHEN 'year' THEN to_char(\"startDate\", 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(\"startDate\", 'WW') || ' starting ' || to_char(\"startDate\", 'YYYY-MM-DD')\n    ELSE to_char(\"startDate\", 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Drives\",\n  EXTRACT(EPOCH FROM SUM(\"endDate\"-\"startDate\")) AS \"Time driven\",\n  SUM(\"end_mileage_km\"-\"start_mileage_km\") AS \"Distance\",\n  percentile_cont(0.5) WITHIN GROUP (ORDER BY (\"end_mileage_km\"-\"start_mileage_km\")) AS \"Median Distance\"\nFROM \n  trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to",
+          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"startDate\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"startDate\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(date_trunc('month', \"startDate\"), 'YYYY Month')\n    WHEN 'year' THEN to_char(date_trunc('year', \"startDate\"), 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(date_trunc('week', \"startDate\"), 'WW') || ' starting ' || to_char(date_trunc('week', \"startDate\"), 'YYYY-MM-DD')\n    ELSE to_char(\"startDate\", 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Drives\",\n  EXTRACT(EPOCH FROM SUM(\"endDate\"-\"startDate\")) AS \"Time driven\",\n  SUM(\"end_mileage_km\"-\"start_mileage_km\") AS \"Distance\",\n  percentile_cont(0.5) WITHIN GROUP (ORDER BY (\"end_mileage_km\"-\"start_mileage_km\")) AS \"Median Distance\"\nFROM \n  trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to\nORDER BY \"date_from\" DESC",
           "refId": "A",
           "select": [
             [
@@ -242,7 +242,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(\"started\", 'YYYY Month')\n    WHEN 'year' THEN to_char(\"started\", 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(\"started\", 'WW') || ' starting ' || to_char(\"started\", 'YYYY-MM-DD')\n    ELSE to_char(\"started\", 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Charges\",\n  EXTRACT(EPOCH FROM SUM(\"ended\"-\"started\")) AS \"Time charging\",\n  EXTRACT(EPOCH FROM AVG(\"ended\"-\"started\")) AS \"Avg. charging\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Energy Charged\",\n  AVG((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Avg. Charged\"\nFROM \n  charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"started\") AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to",
+          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(date_trunc('month', \"started\"), 'YYYY Month')\n    WHEN 'year' THEN to_char(date_trunc('year', \"started\"), 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(date_trunc('week', \"started\"), 'WW') || ' starting ' || to_char(date_trunc('week', \"started\"), 'YYYY-MM-DD')\n    ELSE to_char(\"started\", 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Charges\",\n  EXTRACT(EPOCH FROM SUM(\"ended\"-\"started\")) AS \"Time charging\",\n  EXTRACT(EPOCH FROM AVG(\"ended\"-\"started\")) AS \"Avg. charging\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Energy Charged\",\n  AVG((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Avg. Charged\"\nFROM \n  charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"started\") AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to\nORDER BY \"date_from\" DESC",
           "refId": "B",
           "select": [
             [
@@ -271,7 +271,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(\"date\", 'YYYY Month')\n    WHEN 'year' THEN to_char(\"date\", 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(\"date\", 'WW') || ' starting ' || to_char(\"date\", 'YYYY-MM-DD')\n    ELSE to_char(\"date\", 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Refuels\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)) AS \"Fuel Added\",\n  AVG((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)) AS \"Avg. Added\"\nFROM \n  refuel_sessions\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"date\") AND\n  refuel_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to",
+          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(date_trunc('month', \"date\"), 'YYYY Month')\n    WHEN 'year' THEN to_char(date_trunc('year', \"date\"), 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(date_trunc('week', \"date\"), 'WW') || ' starting ' || to_char(date_trunc('week', \"date\"), 'YYYY-MM-DD')\n    ELSE to_char(\"date\", 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Refuels\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)) AS \"Fuel Added\",\n  AVG((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)) AS \"Avg. Added\"\nFROM \n  refuel_sessions\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"date\") AND\n  refuel_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to\nORDER BY \"date_from\" DESC",
           "refId": "C",
           "select": [
             [
@@ -362,7 +362,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "month",
           "value": "month"
         },
