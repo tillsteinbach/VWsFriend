@@ -27,6 +27,8 @@ services:
 
   postgresdb:
     image: postgres:13
+    ports:
+      - 5432:5432
     networks:
       backend:
         aliases:
