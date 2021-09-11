@@ -2,7 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Fixed
+- Fixed vehicle image loading in Grafana car overview dashboard (thanks to cmantsch)
+- Database migration process
+- VWsFriend is now waiting for the database to be available
 
 ## [0.5.0] - 2021-09-10
 ### Added
