@@ -1,7 +1,9 @@
+import time
 import logging
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text, inspect
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import OperationalError
 
 from weconnect.elements import vehicle
 from weconnect.addressable import AddressableLeaf
@@ -28,13 +30,25 @@ class AgentConnector():
         self.agents = {}
 
         if withDB:
-            LOG.info('Starting database upgrade if necessary')
-            run_database_migrations(dsn=dbUrl)
-            LOG.info('Database upgrade done')
-
-            engine = create_engine(dbUrl)
+            engine = create_engine(dbUrl, pool_pre_ping=True)
             self.session = Session(engine)
-            Base.metadata.create_all(engine)
+
+            while True:
+                try:
+                    self.session.query(text('1')).from_statement(text('SELECT 1')).all()
+                except OperationalError:
+                    LOG.error('Could not establish a connection to database at %s will try again after 10 seconds', dbUrl)
+                    time.sleep(10)
+                break
+
+            if not inspect(engine).has_table("vehicles"):
+                LOG.info('It looks like you have an empty database at %s will create all tables', dbUrl)
+                Base.metadata.create_all(engine)
+                run_database_migrations(dsn=dbUrl, stampOnly=True)
+            else:
+                LOG.info('It looks like you have an existing database at %s will check if an upgrade is necessary', dbUrl)
+                run_database_migrations(dsn=dbUrl)
+                LOG.info('Database upgrade done')
 
             self.vehicles = self.session.query(Vehicle).all()
         self.withDB = withDB
