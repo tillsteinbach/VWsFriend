@@ -58,17 +58,21 @@ Connecting VWsFriend to ABRP enables you to use the current SoC, position, parki
 docker-compose -f docker-compose-homekit-host.yml
 ```
 This will use host mode for vwsfriend. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
+Host mode is not working on macOS. The reson is that the network is still virtualized. See also [Known Issues](#known-issues).
+
 If you do not like to share the host network with vwsfriend you can use macvlan mode [docker-compose-homekit-macvlan.yml](./docker-compose-homekit-macvlan.yml):
 ```bash
 docker-compose -f docker-compose-homekit-macvlan.yml
 ```
 Macvlan needs the variables for the IP to choose, the subnetmask and the gateway to be set in your configuration.
+Macvlan mode is not supported on macOS! See also [Known Issues](#known-issues).
+
+## Known Issues
+* Ironically you cannot host VWsFriend with Homekit support on a macOS machine. The reason is that there is no way to get the advertisements via multicast out of the container into the network. If you want to use the Homekit feature you have to host VWsFriend on a Linux machine. If someone is able to make a setup work on macOS, please let me know to allow me to update the documentation!
 
 ## Open improvements
 * Deploy datasource and dashboard as grafana app (allows better control)
-* More dashboards (also for other cars)
 * Change update frequency based on the cars state (more often when car is online)
-* Calculate more stats (e.g. total charging time and charged kwh)
 
 ## Credits
 * Software used in VWsFriend:
