@@ -37,16 +37,17 @@ class AgentConnector():
                 try:
                     self.session.query(text('1')).from_statement(text('SELECT 1')).all()
                 except OperationalError:
-                    LOG.error('Could not establish a connection to database at %s will try again after 10 seconds', dbUrl)
+                    LOG.error('Could not establish a connection to database, will try again after 10 seconds')
                     time.sleep(10)
+                    continue
                 break
 
             if not inspect(engine).has_table("vehicles"):
-                LOG.info('It looks like you have an empty database at %s will create all tables', dbUrl)
+                LOG.info('It looks like you have an empty database will create all tables')
                 Base.metadata.create_all(engine)
                 run_database_migrations(dsn=dbUrl, stampOnly=True)
             else:
-                LOG.info('It looks like you have an existing database at %s will check if an upgrade is necessary', dbUrl)
+                LOG.info('It looks like you have an existing database will check if an upgrade is necessary')
                 run_database_migrations(dsn=dbUrl)
                 LOG.info('Database upgrade done')
 
