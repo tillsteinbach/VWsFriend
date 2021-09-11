@@ -71,8 +71,6 @@ services:
 networks:
   bridge:
   backend:
-  global-macvlan-network:
-    external: true
 
 volumes:
   postgresdb_data:
