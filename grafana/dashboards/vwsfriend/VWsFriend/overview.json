@@ -62,7 +62,7 @@
       },
       "id": 5,
       "options": {
-        "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"http://10.11.5.123:4000/status/vehicles/${VIN}-status_or_car.png\"/>\n</a>\n",
+        "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url}/status/vehicles/${VIN}-status_or_car.png\"/>\n</a>\n",
         "mode": "html"
       },
       "pluginVersion": "8.1.0",
