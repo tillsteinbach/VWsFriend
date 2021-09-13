@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   vwsfriend:
-    image: tillsteinbach/vwsfriend:latest
+    image: tillsteinbach/vwsfriend:${VWSFRIEND_VERSION-latest}
     network_mode: host
     extra_hosts:
       - "postgresdbbackend:127.0.0.1"
@@ -14,7 +14,7 @@ services:
       - WECONNECT_USER
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgresdbbackend/vwsfriend
+      - DATABASE_URL=postgresql://${DB_USER-admin}:${DB_PASSWORD-secret}@postgresdbbackend/vwsfriend
       - ADDITIONAL_PARAMETERS=--with-database --with-abrp --with-homekit -vv
     depends_on:
       postgresdb:
@@ -37,19 +37,19 @@ services:
       - postgresdb_data:/var/lib/postgresql/data
     user: postgres
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER-admin}
+      - POSTGRES_PASSWORD=${DB_PASSWORD-secret}
       - POSTGRES_DB=vwsfriend
       - TZ=UTC
       - PGTZ=UTC
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready --username=${DB_USER} --dbname=vwsfriend"]
+      test: ["CMD-SHELL", "pg_isready --username=${DB_USER-admin} --dbname=vwsfriend"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   grafana:
-    image: tillsteinbach/vwsfriend-grafana:latest
+    image: tillsteinbach/vwsfriend-grafana:${VWSFRIEND_GRAFANA_VERSION-latest}
     ports:
       - 3000:3000
     networks:
@@ -60,12 +60,12 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
-      - GF_SECURITY_ADMIN_USER=${USERNAME}
-      - GF_SECURITY_ADMIN_PASSWORD=${PASSWORD}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-    healthcheck:
-      test: (wget -qO- http://localhost:3000 | grep "<title>Grafana</title>" -q) || exit 1
+      - GF_SECURITY_ADMIN_USER=${USERNAME-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${PASSWORD-secret}
+      - DB_USER=${DB_USER-admin}
+      - DB_PASSWORD=${DB_PASSWORD-secret}
+    healthcheck:i
+      test: ["CMD-SHELL", "(wget -qO- http://localhost:3000/api/health | grep '\"database\": \"ok\"' -q) || exit 1"]
       interval: 60s
       timeout: 10s
       retries: 3
