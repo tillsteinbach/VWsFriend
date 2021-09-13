@@ -42,4 +42,4 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 4000
 
-CMD vwsfriend --username ${WECONNECT_USER} --password ${WECONNECT_PASSWORD} --interval ${WECONNECT_INTERVAL} --database-url ${DATABASE_URL} --config-dir /config ${ADDITIONAL_PARAMETERS}
+CMD vwsfriend --username=${WECONNECT_USER} --password=${WECONNECT_PASSWORD} --interval=${WECONNECT_INTERVAL} --database-url=${DATABASE_URL} --config-dir=/config ${ADDITIONAL_PARAMETERS}
