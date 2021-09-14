@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 import logging
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
@@ -25,34 +26,36 @@ class RangeAgent():
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
-        rangeStatus = self.vehicle.weConnectVehicle.statuses['rangeStatus']
-        current_totalRange_km = rangeStatus.totalRange_km.value
-        current_primary_currentSOC_pct = None
-        current_primary_remainingRange_km = None
-        if rangeStatus.primaryEngine.enabled:
-            current_primary_currentSOC_pct = rangeStatus.primaryEngine.currentSOC_pct.value
-            current_primary_remainingRange_km = rangeStatus.primaryEngine.remainingRange_km.value
-        current_secondary_currentSOC_pct = None
-        current_secondary_remainingRange_km = None
-        if rangeStatus.secondaryEngine.enabled:
-            current_secondary_currentSOC_pct = rangeStatus.secondaryEngine.currentSOC_pct.value
-            current_secondary_remainingRange_km = rangeStatus.secondaryEngine.remainingRange_km.value
+        # Check that the data to add is not too old
+        if element is not None and element.value > (datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=7)):
+            rangeStatus = self.vehicle.weConnectVehicle.statuses['rangeStatus']
+            current_totalRange_km = rangeStatus.totalRange_km.value
+            current_primary_currentSOC_pct = None
+            current_primary_remainingRange_km = None
+            if rangeStatus.primaryEngine.enabled:
+                current_primary_currentSOC_pct = rangeStatus.primaryEngine.currentSOC_pct.value
+                current_primary_remainingRange_km = rangeStatus.primaryEngine.remainingRange_km.value
+            current_secondary_currentSOC_pct = None
+            current_secondary_remainingRange_km = None
+            if rangeStatus.secondaryEngine.enabled:
+                current_secondary_currentSOC_pct = rangeStatus.secondaryEngine.currentSOC_pct.value
+                current_secondary_remainingRange_km = rangeStatus.secondaryEngine.remainingRange_km.value
 
-        if self.range is None or (rangeStatus.carCapturedTimestamp.value is not None
-                                  and self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value
-                                  and (self.range.totalRange_km != current_totalRange_km
-                                       or self.range.primary_currentSOC_pct != current_primary_currentSOC_pct
-                                       or self.range.primary_remainingRange_km != current_primary_remainingRange_km
-                                       or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
-                                       or self.range.secondary_remainingRange_km != current_secondary_remainingRange_km)):
+            if self.range is None or (rangeStatus.carCapturedTimestamp.value is not None
+                                      and self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value
+                                      and (self.range.totalRange_km != current_totalRange_km
+                                           or self.range.primary_currentSOC_pct != current_primary_currentSOC_pct
+                                           or self.range.primary_remainingRange_km != current_primary_remainingRange_km
+                                           or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
+                                           or self.range.secondary_remainingRange_km != current_secondary_remainingRange_km)):
 
-            self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
-                               current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
-            try:
-                with self.session.begin_nested():
-                    self.session.add(self.range)
-            except IntegrityError:
-                LOG.warning('Could not add range entry to the database, this is usually due to an error in the WeConnect API')
+                self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
+                                   current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.range)
+                except IntegrityError:
+                    LOG.warning('Could not add range entry to the database, this is usually due to an error in the WeConnect API')
 
     def commit(self):
         pass
