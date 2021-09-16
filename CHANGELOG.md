@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.5.3] - 2021-09-16
+### Fixed
+- Typo in default value in Dockerfile
+
 ## [0.5.2] - 2021-09-16
 ### Added
 - Use retry mechanism for all http requests
@@ -91,7 +95,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.5.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.3
 [0.5.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.2
 [0.5.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.1
 [0.5.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.0
