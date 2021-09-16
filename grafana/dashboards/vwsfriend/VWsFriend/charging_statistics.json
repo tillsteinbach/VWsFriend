@@ -27,6 +27,42 @@
   "iteration": 1631103510505,
   "links": [
     {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Year",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/${__dashboard.uid}/?from=now-1y&to=now"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Month",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/${__dashboard.uid}/?from=now-1M&to=now"
+    },
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Last Week",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/${__dashboard.uid}/?from=now-1w&to=now"
+    },
+    {
       "asDropdown": true,
       "icon": "dashboard",
       "includeVars": true,
