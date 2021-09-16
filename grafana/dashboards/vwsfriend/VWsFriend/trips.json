@@ -35,7 +35,7 @@
       "title": "Last Year",
       "tooltip": "",
       "type": "link",
-      "url": "/d/2wMSY9Mnk/?from=now-1y&to=now"
+      "url": "/d/${__dashboard.uid}/?from=now-1y&to=now"
     },
     {
       "asDropdown": false,
@@ -47,7 +47,7 @@
       "title": "Last Month",
       "tooltip": "",
       "type": "link",
-      "url": "/d/2wMSY9Mnk/?from=now-1M&to=now"
+      "url": "/d/${__dashboard.uid}/?from=now-1M&to=now"
     },
     {
       "asDropdown": false,
@@ -59,7 +59,7 @@
       "title": "Last Week",
       "tooltip": "",
       "type": "link",
-      "url": "/d/2wMSY9Mnk/?from=now-1w&to=now"
+      "url": "/d/${__dashboard.uid}/?from=now-1w&to=now"
     },
     {
       "asDropdown": true,
