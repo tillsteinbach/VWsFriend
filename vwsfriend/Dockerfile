@@ -16,13 +16,12 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip3 install --no-cache-dir wheel
 RUN pip3 install --no-cache-dir vwsfriend
 
-#RUN python setup.py install
 
 FROM ubuntu:20.04 AS runner-image
 
 ENV WECONNECT_USER=
 ENV WECONNECT_PASSWORD=
-ENV WECONNECT_INTERVAL=
+ENV WECONNECT_INTERVAL==300
 ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
 

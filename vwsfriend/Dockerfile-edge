@@ -19,7 +19,6 @@ RUN pip3 install --no-cache-dir wheel
 RUN pip3 install --no-cache-dir -r requirements.txt
 RUN pip3 install --no-cache-dir .
 
-#RUN python setup.py install
 
 FROM ubuntu:20.04 AS runner-image
 
