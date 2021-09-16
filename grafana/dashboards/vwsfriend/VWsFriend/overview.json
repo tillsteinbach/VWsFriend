@@ -32,8 +32,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 16,
-  "iteration": 1631102532903,
+  "iteration": 1631779207994,
   "links": [
     {
       "asDropdown": true,
@@ -65,7 +64,7 @@
         "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url}/status/vehicles/${VIN}-status_or_car.png\"/>\n</a>\n",
         "mode": "html"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "title": "$VIN",
       "type": "text"
     },
@@ -116,7 +115,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -205,7 +204,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -413,7 +412,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "alias": "Car is online",
@@ -495,7 +494,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "alias": "Last connection",
@@ -547,14 +546,17 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "max": 390,
           "min": 0,
           "thresholds": {
-            "mode": "absolute",
+            "mode": "percentage",
             "steps": [
               {
                 "color": "red",
                 "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 5
               },
               {
                 "color": "green",
@@ -585,7 +587,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -598,7 +600,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"cruisingRangeElectric_km\" AS \"Electric Range\"\nFROM battery\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
+          "rawSql": "(SELECT\n  to_timestamp(0) AS \"time\",\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"Electric Range\"\nFROM vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN')\nUNION\n(SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"cruisingRangeElectric_km\" AS \"Electric Range\"\nFROM battery\nWHERE\n  battery.vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -646,7 +648,6 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "max": 30,
           "min": 0,
           "thresholds": {
             "mode": "percentage",
@@ -680,7 +681,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -693,7 +694,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingClimatisationTime_min\"\nFROM climatization\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
+          "rawSql": "(SELECT\n  to_timestamp(0) AS \"time\",\n  MAX(\"remainingClimatisationTime_min\")\nFROM climatization\nWHERE\n  vehicle_vin = '$VIN')\nUNION\n(SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  CASE WHEN \"climatisationState\" != 'OFF' THEN \"remainingClimatisationTime_min\"\n  ELSE 0 END\nFROM climatization\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -757,7 +758,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1128,7 +1129,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -1211,7 +1212,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -1224,7 +1225,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingChargingTimeToComplete_min\"\nFROM charges\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1",
+          "rawSql": "(SELECT\n  to_timestamp(0) AS \"time\",\n  MAX(\"remainingChargingTimeToComplete_min\")\nFROM charges\nWHERE\n  vehicle_vin = '$VIN')\nUNION\n(SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingChargingTimeToComplete_min\"\nFROM charges\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1286,7 +1287,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1433,7 +1434,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1583,7 +1584,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2341,6 +2342,10 @@
         "type": "query"
       }
     ]
+  },
+  "time": {
+    "from": "now-12h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
