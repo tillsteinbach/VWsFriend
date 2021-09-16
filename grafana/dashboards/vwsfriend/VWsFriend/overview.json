@@ -32,7 +32,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1631779207994,
+  "iteration": 1631790306211,
   "links": [
     {
       "asDropdown": true,
@@ -1258,6 +1258,23 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WLTP"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
+          }
+        ]
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1296,6 +1313,15 @@
           "$$hashKey": "object:135",
           "alias": "Calculated consumption",
           "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:767",
+          "alias": "WLTP",
+          "color": "#73BF69",
+          "fill": 2,
+          "hideTooltip": true,
+          "legend": false,
+          "linewidth": 0
         }
       ],
       "spaceLength": 10,
@@ -1320,6 +1346,7 @@
               "type": "fill"
             }
           ],
+          "hide": false,
           "measurement": "",
           "metricColumn": "none",
           "orderByTime": "ASC",
@@ -1327,8 +1354,61 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  \"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC AS \"Current Range at 100%\",\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END / (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) * 100::NUMERIC AS \"Calculated consumption\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'",
+          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  CASE WHEN \"currentSOC_pct\"::NUMERIC > 0 THEN \"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC END AS \"Current Range at 100%\",\n  CASE WHEN \"currentSOC_pct\"::NUMERIC = 0 OR \"cruisingRangeElectric_km\"::NUMERIC = 0 THEN NULL\n       WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END / (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) * 100::NUMERIC AS \"Calculated consumption\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'",
           "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "alias": "Extrapolated range at 100% SoC",
+          "format": "table",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "",
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"WLTP\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -1376,7 +1456,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:142",
-          "format": "lengthkm",
+          "format": "km",
           "label": "Extrapolated range at 100% SoC",
           "logBase": 1,
           "max": null,
@@ -1443,6 +1523,15 @@
           "$$hashKey": "object:362",
           "alias": "Temperature",
           "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:964",
+          "alias": "100% = WLTP Range",
+          "color": "#c9c9c9",
+          "dashes": true,
+          "fill": 0,
+          "hideTooltip": true,
+          "legend": false
         }
       ],
       "spaceLength": 10,
@@ -1476,6 +1565,59 @@
           "rawQuery": true,
           "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) / \n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END * 100::NUMERIC AS \"Efficiency\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\n",
           "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "alias": "Efficiency (Compared to WLTP range)",
+          "format": "time_series",
+          "group": [],
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "",
+          "metricColumn": "none",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  100 AS \"100% = WLTP Range\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -1771,7 +1913,7 @@
       "datasource": null,
       "description": "",
       "display": "timeline",
-      "expandFromQueryS": 0,
+      "expandFromQueryS": 1209600,
       "extendLastValue": true,
       "gridPos": {
         "h": 4,
@@ -1946,7 +2088,7 @@
       "datasource": null,
       "description": "",
       "display": "timeline",
-      "expandFromQueryS": 0,
+      "expandFromQueryS": 1209600,
       "extendLastValue": true,
       "gridPos": {
         "h": 4,
@@ -2138,7 +2280,7 @@
       "datasource": null,
       "description": "",
       "display": "timeline",
-      "expandFromQueryS": 0,
+      "expandFromQueryS": 1209600,
       "extendLastValue": true,
       "gridPos": {
         "h": 5,
@@ -2344,7 +2486,7 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
