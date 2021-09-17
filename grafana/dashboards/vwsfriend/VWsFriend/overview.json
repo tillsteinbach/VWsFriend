@@ -26,13 +26,27 @@
         "name": "Online",
         "rawQuery": "SELECT\n  \"onlineTime\" as \"time\",\n  \"offlineTime\" as \"timeend\",\n  CASE WHEN \"onlineTime\"=\"offlineTime\" THEN 'Car sent update'\n            ELSE 'Car went online (' || (\"offlineTime\"-\"onlineTime\") || ')'\n  END as \"text\"\nFROM\n  onlinestates\nWHERE\n  vehicle_vin = '$VIN' and\n  $__timeFilter(\"onlineTime\")",
         "showIn": 0
+      },
+      {
+        "datasource": "VWsFriend",
+        "enable": false,
+        "iconColor": "red",
+        "name": "Climatization",
+        "rawQuery": "SELECT \"time\",\n       \"timeend\",\n       'Climatization on ('\n              || (\"timeend\"-\"time\")\n              || ')' AS \"text\"\nFROM   (\n                SELECT   *,\n                         \"carCapturedTimestamp\"                                           AS \"time\",\n                         Lag(\"climatisationState\") OVER (ORDER BY \"carCapturedTimestamp\") AS \"beforeClimatisationState\",\n                         (\n                                  SELECT   \"carCapturedTimestamp\" AS \"timeend\"\n                                  FROM     climatization          AS climatization2\n                                  WHERE    climatization2.\"climatisationState\" = 'OFF'\n                                  AND      climatization.vehicle_vin = climatization2.vehicle_vin\n                                  AND      climatization.\"carCapturedTimestamp\" < climatization2.\"carCapturedTimestamp\"\n                                  ORDER BY \"carCapturedTimestamp\" limit 1) \"timeend\"\n                FROM     climatization\n                WHERE    vehicle_vin = '$VIN'\n                AND $__timeFilter(\"carCapturedTimestamp\")) AS data\nWHERE  \"climatisationState\" != 'OFF'\nAND (\"timeend\"-\"time\") < INTERVAL '1 hour'\nAND    \"beforeClimatisationState\" = 'OFF'"
+      },
+      {
+        "datasource": "VWsFriend",
+        "enable": false,
+        "iconColor": "blue",
+        "name": "Charging",
+        "rawQuery": "SELECT \"time\",\n       \"timeend\",\n       'Charging ('\n              || (\"timeend\"-\"time\")\n              || ')' AS \"text\"\nFROM   (\n                SELECT   *,\n                         \"carCapturedTimestamp\"                                           AS \"time\",\n                         Lag(\"chargingState\") OVER (ORDER BY \"carCapturedTimestamp\") AS \"beforeChargingState\",\n                         (\n                                  SELECT   \"carCapturedTimestamp\" AS \"timeend\"\n                                  FROM     charges          AS charges2\n                                  WHERE    charges2.\"chargingState\" != 'CHARGING'\n                                  AND      charges.vehicle_vin = charges2.vehicle_vin\n                                  AND      charges.\"carCapturedTimestamp\" < charges2.\"carCapturedTimestamp\"\n                                  ORDER BY \"carCapturedTimestamp\" limit 1) \"timeend\"\n                FROM     charges\n                WHERE    vehicle_vin = '${VIN}'\n                AND $__timeFilter(\"carCapturedTimestamp\")) AS data\nWHERE  \"chargingState\" = 'CHARGING'\nAND (\"timeend\"-\"time\") < INTERVAL '1 day'\nAND    \"beforeChargingState\" != 'CHARGING'"
       }
     ]
   },
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1631796965176,
+  "iteration": 1631862595729,
   "links": [
     {
       "asDropdown": true,
@@ -2382,7 +2396,7 @@
       "writeMetricNames": false
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
