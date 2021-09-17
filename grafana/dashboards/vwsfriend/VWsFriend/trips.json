@@ -22,8 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 9,
-  "iteration": 1631099458193,
+  "iteration": 1631812723894,
   "links": [
     {
       "asDropdown": false,
@@ -206,7 +205,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -242,6 +241,7 @@
     },
     {
       "datasource": null,
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -270,58 +270,17 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "/(id|[a-zA-Z0-9]*_date_ts)/"
+              "id": "byName",
+              "options": "# Drives"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 1
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Length"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "km"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Date"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 100
+                "value": 60
               },
               {
-                "id": "links",
-                "value": [
-                  {
-                    "title": "Trip Details",
-                    "url": "d/6JFDUrG7z?from=${__data.fields.start_date_ts}&to=${__data.fields.end_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Length"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 100
+                "id": "custom.minWidth",
+                "value": 60
               }
             ]
           }
@@ -329,22 +288,23 @@
       },
       "gridPos": {
         "h": 13,
-        "w": 5,
+        "w": 7,
         "x": 17,
         "y": 0
       },
       "id": 4,
       "options": {
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"endDate\" AS \"Date\",\n  destination_location.display_name AS \"Destination\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  id,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  (\"end_mileage_km\"-\"start_mileage_km\") IS NOT NULL AND\n  trips.vehicle_vin = '$VIN'\nORDER BY \"Length\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  start_locations.display_name AS \"Start\",\n  destination_location.display_name AS \"Destination\",\n  count(*) AS \"# Drives\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_locations.display_name IS NOT NULL AND destination_location.display_name IS NOT NULL AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY start_locations.display_name, destination_location.display_name\nORDER BY \"# Drives\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -368,7 +328,7 @@
           ]
         }
       ],
-      "title": "Longest Trips by km",
+      "title": "Most popular Trips",
       "type": "table"
     },
     {
@@ -448,15 +408,16 @@
       },
       "gridPos": {
         "h": 13,
-        "w": 5,
+        "w": 7,
         "x": 17,
         "y": 13
       },
       "id": 5,
       "options": {
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
