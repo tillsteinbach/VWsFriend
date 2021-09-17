@@ -24,7 +24,7 @@
         "hide": false,
         "iconColor": "#73BF69",
         "name": "Online",
-        "rawQuery": "SELECT\n  \"onlineTime\" as \"time\",\n  \"offlineTime\" as \"timeend\",\n  CASE WHEN \"onlineTime\"=\"offlineTime\" THEN 'Car sent update'\n            ELSE 'Car went online (' || (\"offlineTime\"-\"onlineTime\") || ')'\n  END as \"text\"\nFROM\n  onlinestates\nWHERE\n  vehicle_vin = '$VIN' and\n  $__timeFilter(\"onlineTime\")",
+        "rawQuery": "SELECT\n  \"onlineTime\" as \"time\",\n  \"offlineTime\" as \"timeend\",\n  CASE WHEN \"onlineTime\"=\"offlineTime\" THEN 'Car sent update'\n            ELSE 'Car went online (' || (\"offlineTime\"-\"onlineTime\") || ')'\n  END AS \"text\"\nFROM\n  onlinestates\nWHERE\n  vehicle_vin = '$VIN' and\n  ($__timeFilter(\"onlineTime\") OR $__timeFilter(\"offlineTime\"))",
         "showIn": 0
       },
       {
