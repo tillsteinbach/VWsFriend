@@ -21,7 +21,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1628603592227,
+  "iteration": 1631858782494,
   "links": [
     {
       "asDropdown": false,
@@ -89,7 +89,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -152,7 +152,7 @@
           "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct\" WHERE $timeFilter GROUP BY time($__interval) fill(previous)",
+          "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
           "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"currentSOC_pct\" AS \"Battery SoC\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
@@ -285,7 +285,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -357,7 +357,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -390,67 +390,15 @@
               "type": "fill"
             }
           ],
-          "measurement": "vw-connect.0.$VIN.status.batteryStatus.currentSOC_pct",
+          "measurement": "",
           "metricColumn": "none",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargePower_kW\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargePower_kW\" AS \"Charge Power\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "rawSql": "(SELECT\r\n  \"carCapturedTimestamp\" AS \"time\",\r\n  \"chargePower_kW\" AS \"Charge Power\",\r\n  \"chargeRate_kmph\" AS \"Charge Rate\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN'\r\nORDER BY \"carCapturedTimestamp\")\r\nUNION ALL\r\n(SELECT\r\n  \"carCapturedTimestamp\" AS \"time\",\r\n  CASE WHEN \"chargingState\" = 'CHARGING' THEN \"delta\"::decimal*( CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\r\n  ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END::decimal/100::decimal) / (EXTRACT(epoch FROM \"timedelta\") / 3600)\r\n  ELSE NULL END AS \"Charge Power\",\r\n  CASE WHEN \"chargingState\" = 'CHARGING' THEN \"deltakm\"::decimal / (EXTRACT(epoch FROM \"timedelta\") / 3600)\r\n  ELSE NULL END AS \"Charge Rate\"\r\nFROM\r\n  (SELECT *,\r\n  DATE_TRUNC('minute', \"carCapturedTimestamp\") AS \"batteryTime\",\r\n  (\"carCapturedTimestamp\" - LAG(\"carCapturedTimestamp\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"timedelta\",\r\n  (\"currentSOC_pct\" - LAG(\"currentSOC_pct\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"delta\",\r\n  (\"cruisingRangeElectric_km\" - LAG(\"cruisingRangeElectric_km\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"deltakm\"\r\nFROM\r\n  battery\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN'\r\nORDER BY \"carCapturedTimestamp\") AS delta\r\nLEFT JOIN\r\n(\r\nSELECT\r\n\"chargingState\",\r\nDATE_TRUNC('minute', charges.\"carCapturedTimestamp\") AS \"chargeTime\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN') as charging ON \"chargeTime\" = \"batteryTime\"\r\nLEFT JOIN vehicles ON delta.vehicle_vin = vehicles.vin\r\nLEFT JOIN vehicle_settings ON delta.vehicle_vin = vehicle_settings.vehicle_vin\r\nWHERE\r\n  \"delta\" > 0 AND\r\n  NOT EXISTS (SELECT 1 FROM charges WHERE \"chargePower_kW\" IS NOT NULL AND \"chargeRate_kmph\" IS NOT NULL AND $__timeFilter(\"carCapturedTimestamp\") AND vehicle_vin = '$VIN' LIMIT 1)\r\nORDER BY \"carCapturedTimestamp\")",
           "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "alias": "Charge Rate",
-          "format": "time_series",
-          "group": [],
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "vw-connect.0.$VIN.status.batteryStatus.cruisingRangeElectric_km",
-          "metricColumn": "none",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT mean(\"value\") FROM \"vw-connect.0.$VIN.status.chargingStatus.chargeRate_kmph\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargeRate_kmph\" AS \"Charge Rate\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
-          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -658,7 +606,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -756,7 +704,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -919,7 +867,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -963,11 +911,6 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
         "description": null,
         "error": null,
         "hide": 2,
@@ -985,11 +928,6 @@
         "type": "textbox"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
         "description": null,
         "error": null,
         "hide": 2,
