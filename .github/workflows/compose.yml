@@ -28,7 +28,7 @@ jobs:
     - name: Check logs for vwsfriend
       run: |
         docker logs vwsfriend_vwsfriend_1
-        docker logs vwsfriend_vwsfriend_1 2>&1 | grep -q 'CRITICAL:VWsFriend:There was a problem when authenticating with WeConnect: Your account for test@test.de was not found. Would you like to create a new account?'
+        docker logs vwsfriend_vwsfriend_1 2>&1 | grep -q 'CRITICAL:VWsFriend:There was a problem when authenticating with WeConnect: Your account for test@test.de was not found. Would you like to create a new account?\|CRITICAL:VWsFriend:There was a problem when authenticating with WeConnect: Login throttled, probably too many wrong logins. You have to wait some minutes until a new login attempt is possible'
     - name: Check logs for postgresdb
       run: docker logs vwsfriend_postgresdb_1
     - name: Check logs for grafana
