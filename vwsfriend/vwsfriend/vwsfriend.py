@@ -62,7 +62,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         prog='vwsfriend',
         description='TBD')
     parser.add_argument('--version', action='version',
-                        version='%(prog)s {version} (using WeConnect-python {weversion})'.format(version=__version__, weversion=__weconnect_version__))
+                        version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__})')
     weConnectGroup = parser.add_argument_group('WeConnect')
     weConnectGroup.add_argument('-u', '--username', help='Username of Volkswagen id', required=False)
     weConnectGroup.add_argument('-p', '--password', help='Password of Volkswagen id', required=False)
