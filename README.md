@@ -67,6 +67,16 @@ docker-compose -f docker-compose-homekit-macvlan.yml
 Macvlan needs the variables for the IP to choose, the subnetmask and the gateway to be set in your configuration.
 Macvlan mode is not supported on macOS! See also [Known Issues](#known-issues).
 
+## Automated Updates
+As there are continuously updates to the WeConnect API VWsFriend my stop unexpectedly working. I try to push updates in this case as fast as possible. You can configure to get these updates automatically by adding watchtower to your docker-compose.yml file:
+```bash
+watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --cleanup
+```
+
 ## Known Issues
 * Ironically you cannot host VWsFriend with Homekit support on a macOS machine. The reason is that there is no way to get the advertisements via multicast out of the container into the network. If you want to use the Homekit feature you have to host VWsFriend on a Linux machine. If someone is able to make a setup work on macOS, please let me know to allow me to update the documentation!
 
