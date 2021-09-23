@@ -2,8 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- no unreleased changes so far
+
+## [0.5.1] - 2021-09-13
 ### Fixed
-- Fixed vehicle image loading in Grafana car overview dashboard (thanks to cmantsch)
+- Fixed vehicle image loading in Grafana car overview dashboard (thanks to [cmantsch](https://github.com/cmantsch))
 - Database migration process
 - VWsFriend is now waiting for the database to be available
 
@@ -81,7 +84,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.1
 [0.5.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.0
 [0.4.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.4.3
 [0.4.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.4.2
