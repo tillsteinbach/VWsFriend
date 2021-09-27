@@ -19,7 +19,7 @@ def vehicle(vin):
 
 
 @bp.route('/vehicles/<string:vin>-status.png', methods=['GET'])
-def vehicleStatusImg(vin):
+def vehicleStatusImg(vin, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
@@ -28,13 +28,21 @@ def vehicleStatusImg(vin):
         abort(404, "Status picture doesn't exist.")
     else:
         img_io = BytesIO()
-        pictures['status'].value.save(img_io, 'PNG')
+        if badge:
+            pictures['statusWithBadge'].value.save(img_io, 'PNG')
+        else:
+            pictures['status'].value.save(img_io, 'PNG')
         img_io.seek(0)
     return send_file(img_io, mimetype='image/png')
 
 
+@bp.route('/vehicles/<string:vin>-status-badge.png', methods=['GET'])
+def vehicleStatusBadgeImg(vin):
+    return vehicleStatusImg(vin, badge=True)
+
+
 @bp.route('/vehicles/<string:vin>-car.png', methods=['GET'])
-def vehicleImg(vin):
+def vehicleImg(vin, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
@@ -43,17 +51,30 @@ def vehicleImg(vin):
         abort(404, "Status picture doesn't exist.")
     else:
         img_io = BytesIO()
-        pictures['car'].value.save(img_io, 'PNG')
+        if badge:
+            pictures['carWithBadge'].value.save(img_io, 'PNG')
+        else:
+            pictures['car'].value.save(img_io, 'PNG')
         img_io.seek(0)
     return send_file(img_io, mimetype='image/png')
 
 
+@bp.route('/vehicles/<string:vin>-car-badge.png', methods=['GET'])
+def vehicleImgBadge(vin):
+    return vehicleImg(vin, badge=True)
+
+
 @bp.route('/vehicles/<string:vin>-status_or_car.png', methods=['GET'])
-def vehicleStatusOrImg(vin):
+def vehicleStatusOrImg(vin, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     statuses = vehicles[vin].statuses
     if 'accessStatus' in statuses:
-        return vehicleStatusImg(vin)
-    return vehicleImg(vin)
+        return vehicleStatusImg(vin, badge)
+    return vehicleImg(vin, badge)
+
+
+@bp.route('/vehicles/<string:vin>-status_or_car-badge.png', methods=['GET'])
+def vehicleStatusOrImgBadge(vin, badge=False):
+    return vehicleStatusOrImg(vin, badge=True)

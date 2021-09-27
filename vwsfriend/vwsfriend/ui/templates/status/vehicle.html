@@ -22,7 +22,7 @@
 <div>
   <div style="display: flex; margin-top: 5px;">
     <div style="flex: 0 0 250px;">
-      <img src="{{ url_for('status.vehicleStatusOrImg', vin=vehicle.vin.value) }}" class="status" />
+      <img src="{{ url_for('status.vehicleStatusOrImgBadge', vin=vehicle.vin.value) }}" class="status" />
     </div>
 
     {% if 'parkingPosition' in vehicle.statuses and vehicle.statuses['parkingPosition'].enabled and
