@@ -75,7 +75,7 @@
       },
       "id": 5,
       "options": {
-        "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url}/status/vehicles/${VIN}-status_or_car.png\"/>\n</a>\n",
+        "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
         "mode": "html"
       },
       "pluginVersion": "8.1.3",
