@@ -137,7 +137,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
     try:
         weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
-                                        updateAfterLogin=False, loginOnInit=(args.demo is None))
+                                        updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400)
 
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
                                    configDir=args.configDir)
