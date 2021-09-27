@@ -77,7 +77,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     weConnectGroup.add_argument('--no-token-storage', dest='noTokenStorage', help='Do not store token on filesystem (this'
                                 ' will cause a new login for every invokation!)', action='store_true')
 
-    parser.add_argument('-v', '--verbose', action="append_const", const=-1,)
     parser.add_argument('--config-dir', dest='configDir', help='directory to store configuration files (default: ./)', default='./')
     parser.add_argument('--demo', help='folder containing demo scenario, see README for more information')
     dbGroup = parser.add_argument_group('Database & visualization')
@@ -91,13 +90,20 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     homekitGroup = parser.add_argument_group('Homekit')
     homekitGroup.add_argument('--with-homekit', dest='withHomekit', help='Provide Apple Homekit functionality', action='store_true')
 
+    loggingGroup = parser.add_argument_group('Logging')
+    loggingGroup.add_argument('-v', '--verbose', action="append_const", help='Logging level (verbosity)', const=-1,)
+    loggingGroup.add_argument('--logging-format', dest='loggingFormat', help='Logging format configured for python logging '
+                              '(default: %%(asctime)s:%%(levelname)s:%%(module)s:%%(message)s)', default='%(asctime)s:%(levelname)s:%(module)s:%(message)s')
+    loggingGroup.add_argument('--logging-date-format', dest='loggingDateFormat', help='Logging format configured for python logging '
+                              '(default: %%Y-%%m-%%dT%%H:%%M:%%S%%z)', default='%Y-%m-%dT%H:%M:%S%z')
+
     args = parser.parse_args()
 
     logLevel = LOG_LEVELS.index(DEFAULT_LOG_LEVEL)
     for adjustment in args.verbose or ():
         logLevel = min(len(LOG_LEVELS) - 1, max(logLevel + adjustment, 0))
 
-    logging.basicConfig(level=LOG_LEVELS[logLevel])
+    logging.basicConfig(level=LOG_LEVELS[logLevel], format=args.loggingFormat, datefmt=args.loggingDateFormat)
     logging.getLogger("pyhap").setLevel(level="CRITICAL")
     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
