@@ -40,6 +40,8 @@ class ChargingSession(Base):
     location = relationship("Location")
     charger_id = Column(String, ForeignKey('chargers.id'))
     charger = relationship("Charger")
+    realCharged_kWh = Column(Float)
+    realCost_ct = Column(Integer)
 
     def __init__(self, vehicle):
         self.vehicle = vehicle
