@@ -16,6 +16,7 @@ from vwsfriend.agents.state_agent import StateAgent
 from vwsfriend.agents.climatization_agent import ClimatizationAgent
 from vwsfriend.agents.refuel_agent import RefuelAgent
 from vwsfriend.agents.trip_agent import TripAgent
+from vwsfriend.agents.weconnect_error_agent import WeconnectErrorAgent
 from vwsfriend.agents.abrp.abrp_agent import ABRPAgent
 from vwsfriend.model.base import Base
 from vwsfriend.model import Vehicle
@@ -60,6 +61,10 @@ class AgentConnector():
         self.configDir = configDir
 
         weConnect.addObserver(self.onEnable, AddressableLeaf.ObserverEvent.ENABLED, onUpdateComplete=True)
+
+        self.agents["none"] = []
+        if self.withDB:
+            self.agents["none"].append(WeconnectErrorAgent(self.session, weConnect))
 
     def onEnable(self, element, flags):
         if (flags & AddressableLeaf.ObserverEvent.ENABLED) and isinstance(element, vehicle.Vehicle):
