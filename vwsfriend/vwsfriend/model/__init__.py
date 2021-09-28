@@ -11,3 +11,4 @@ from .vehicle_settings import VehicleSettings
 from .vehicle import Vehicle
 from .charger import Charger, Operator
 from .settings import Settings
+from .weconnect_error import WeConnectError
