@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block header %}
-  <h1>{% block title %}Edit Settings for Trip{% endblock %}</h1>
+  <h1>{% block title %}{% if form and form.id.data %}Edit settings for {% else %}Add a new {% endif %}Trip{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -213,8 +213,12 @@
           
         }
       </script>
-
-      {{ form.save }}{{ form.delete }}
+      {% if form.id.data %}
+      {{ form.save }}
+      {% else %}
+      {{ form.add }}
+      {% endif %}
+      {{ form.delete }}
 
   </form>
 </div>
