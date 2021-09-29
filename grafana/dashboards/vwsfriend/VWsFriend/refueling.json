@@ -26,6 +26,18 @@
   "links": [
     {
       "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Add Refueling",
+      "tooltip": "Add a missing refuel session to the database",
+      "type": "link",
+      "url": "${vwsfriend_url}/database/refuel-session/edit?vin=${VIN}"
+    },
+    {
+      "asDropdown": false,
       "icon": "dashboard",
       "includeVars": true,
       "keepTime": false,
