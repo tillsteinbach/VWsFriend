@@ -6,14 +6,16 @@ import flask
 
 import sqlalchemy
 
+from datetime import datetime, timezone
+
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 
 from werkzeug.serving import make_server
 
 from vwsfriend.model.base import Base
-
 from vwsfriend.model.settings import Settings
+from vwsfriend.model import Vehicle
 
 import vwsfriend.ui.status as status
 import vwsfriend.ui.settings as settings
@@ -99,6 +101,15 @@ class VWsFriendUI:
 
         @self.app.route('/healthcheck', methods=['GET'])
         def healthcheck():
+            vehicle = flask.current_app.db.session.query(Vehicle).order_by(sqlalchemy.desc(Vehicle.lastUpdate)).first()
+            time_since_update = datetime.now(timezone.utc) - vehicle.lastUpdate
+            update_interval = flask.current_app.connector.interval
+            LOG.debug('/healthcheck: last update from server %d seconds ago', time_since_update.total_seconds())
+            if time_since_update.total_seconds() > update_interval * 2:
+                LOG.debug('/healthcheck: no update from server for more than %d seconds. Server stuck? Returning error', update_interval * 2)
+                msg = f"Vehicle data not fresh enough. Should update every {update_interval} seconds. Latest data is from {time_since_update.total_seconds():d} seconds ago."
+                LOG.error(msg)
+                return f"Not healthy: {msg}", 400
             return 'ok'
 
     def run(self, host="0.0.0.0", port=4000, loglevel=logging.INFO):  # nosec
