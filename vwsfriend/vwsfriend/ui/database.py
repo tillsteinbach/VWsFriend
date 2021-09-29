@@ -308,7 +308,7 @@ def chargingSessionEdit():  # noqa: C901
             chargingSession.started = form.started.data
             if chargingSession.started is not None:
                 chargingSession.started = chargingSession.started.replace(tzinfo=timezone.utc, microsecond=0)
-            chargingSession.ended = form.locked.data
+            chargingSession.ended = form.ended.data
             if chargingSession.ended is not None:
                 chargingSession.ended = chargingSession.ended.replace(tzinfo=timezone.utc, microsecond=0)
             chargingSession.unlocked = form.unlocked.data
