@@ -27,23 +27,28 @@ def chargerFromLatLon(weConnect, session, latitude, longitude, searchRadius):
     try:
         chargers = sorted(weConnect.getChargingStations(latitude, longitude, searchRadius=searchRadius).values(), key=lambda station: station.distance.value)
         if len(chargers) > 0:
-            charger = Charger(id=chargers[0].id.value)
-            if chargers[0].name.enabled:
-                charger.name = chargers[0].name.value
-            if chargers[0].latitude.enabled:
-                charger.latitude = chargers[0].latitude.value
-            if chargers[0].longitude.enabled:
-                charger.longitude = chargers[0].longitude.value
-            if chargers[0].address.enabled:
-                charger.address = str(chargers[0].address)
-            if chargers[0].chargingPower.enabled:
-                charger.max_power = chargers[0].chargingPower.value
-            if chargers[0].chargingSpots.enabled:
-                charger.num_spots = len(chargers[0].chargingSpots)
-
-            charger.operator = Operator(id=chargers[0].operator.id.value, name=chargers[0].operator.name.value, phone=chargers[0].operator.phoneNumber.value)
-
-            return session.merge(charger)
+            return addCharger(session, chargers[0])
     except RetrievalError:
         pass
     return None
+
+
+def addCharger(session, weConnectCharger):
+    charger = Charger(id=weConnectCharger.id.value)
+    if weConnectCharger.name.enabled:
+        charger.name = weConnectCharger.name.value
+    if weConnectCharger.latitude.enabled:
+        charger.latitude = weConnectCharger.latitude.value
+    if weConnectCharger.longitude.enabled:
+        charger.longitude = weConnectCharger.longitude.value
+    if weConnectCharger.address.enabled:
+        charger.address = str(weConnectCharger.address)
+    if weConnectCharger.chargingPower.enabled:
+        charger.max_power = weConnectCharger.chargingPower.value
+    if weConnectCharger.chargingSpots.enabled:
+        charger.num_spots = len(weConnectCharger.chargingSpots)
+
+    charger.operator = Operator(id=weConnectCharger.operator.id.value, name=weConnectCharger.operator.name.value,
+                                phone=weConnectCharger.operator.phoneNumber.value)
+
+    return session.merge(charger)
