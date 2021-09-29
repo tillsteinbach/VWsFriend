@@ -26,6 +26,18 @@
   "links": [
     {
       "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Add Trip",
+      "tooltip": "Add a missing trip to the database",
+      "type": "link",
+      "url": "${vwsfriend_url}/database/trips/edit?vin=${VIN}"
+    },
+    {
+      "asDropdown": false,
       "icon": "dashboard",
       "includeVars": true,
       "keepTime": false,

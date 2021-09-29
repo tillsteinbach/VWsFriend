@@ -26,6 +26,18 @@
   "links": [
     {
       "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Add Charging",
+      "tooltip": "Add a missing charging session to the database",
+      "type": "link",
+      "url": "${vwsfriend_url}/database/charging-session/edit?vin=${VIN}"
+    },
+    {
+      "asDropdown": false,
       "icon": "dashboard",
       "includeVars": true,
       "keepTime": false,
