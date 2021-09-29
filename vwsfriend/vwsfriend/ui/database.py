@@ -4,15 +4,19 @@ from sqlalchemy import and_
 
 from flask import Blueprint, render_template, current_app, abort, request, flash, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, HiddenField, StringField
+from wtforms import SubmitField, HiddenField, StringField, SelectField
 from wtforms.fields.html5 import DateTimeField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, NumberRange, Optional
 
+from weconnect.errors import RetrievalError
+
 from vwsfriend.model.trip import Trip
+from vwsfriend.model.charging_session import ACDC, ChargingSession
+from vwsfriend.model.refuel_session import RefuelSession
 from vwsfriend.model.vehicle import Vehicle
 from vwsfriend.model.settings import Settings, UnitOfLength, UnitOfTemperature
 
-from vwsfriend.util.location_util import locationFromLatLon
+from vwsfriend.util.location_util import locationFromLatLon, addCharger
 
 bp = Blueprint('database', __name__, url_prefix='/database')
 
@@ -41,6 +45,48 @@ class TripEditForm(FlaskForm):
     save = SubmitField('Save changes')
     add = SubmitField('Add Trip')
     delete = SubmitField('Delete Trip')
+
+
+class ChargingSessionEditForm(FlaskForm):
+    id = HiddenField('id', validators=[Optional()])
+    vehicle_vin = HiddenField('id', validators=[DataRequired()])
+    connected = DateTimeField('Plug Connection Date and Time (UTC)', validators=[Optional()])
+    locked = DateTimeField('Plug Locked Date and Time (UTC)', validators=[Optional()])
+    started = DateTimeField('Charging Start Date and Time (UTC)', validators=[DataRequired()])
+    ended = DateTimeField('Charging End Date and Time (UTC)', validators=[Optional()])
+    unlocked = DateTimeField('Plug Unlocked Date and Time (UTC)', validators=[Optional()])
+    disconnected = DateTimeField('Plug Disconnect Date and Time (UTC)', validators=[Optional()])
+    # maxChargeCurrentACSetting
+    targetSOCSetting_pct = IntegerField('Target SoC Setting', validators=[Optional(), NumberRange(min=0, max=100)])
+    maximumChargePower_kW = IntegerField('Maximum Power during session', validators=[Optional(), NumberRange(min=0)])
+    acdc = SelectField("AC/DC", choices=ACDC.choices(), coerce=ACDC.coerce, validators=[DataRequired()])
+    startSOC_pct = IntegerField('SoC at start', validators=[Optional(), NumberRange(min=0, max=100)])
+    endSOC_pct = IntegerField('SoC at end', validators=[Optional(), NumberRange(min=0, max=100)])
+    mileage_km = IntegerField('Mileage in km when charging', validators=[Optional(), NumberRange(min=0)])
+    position_latitude = DecimalField('Position Latitude', places=10, validators=[Optional(), NumberRange(min=-90, max=90)])
+    position_longitude = DecimalField('Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
+    charger_id = SelectField("Charger", validators=[Optional()])
+    realCharged_kWh = DecimalField('Real kWh charged', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
+    realCost_ct = IntegerField('Real cost in cents', validators=[Optional(), NumberRange(min=0)])
+
+    save = SubmitField('Save changes')
+    add = SubmitField('Add Session')
+    delete = SubmitField('Delete Session')
+
+
+class RefuelSessionEditForm(FlaskForm):
+    id = HiddenField('id', validators=[Optional()])
+    vehicle_vin = HiddenField('id', validators=[DataRequired()])
+    date = DateTimeField('Date and Time (UTC)', validators=[Optional()])
+    startSOC_pct = IntegerField('SoC at start', validators=[Optional(), NumberRange(min=0, max=100)])
+    endSOC_pct = IntegerField('SoC at end', validators=[Optional(), NumberRange(min=0, max=100)])
+    mileage_km = IntegerField('Mileage in km when charging', validators=[Optional(), NumberRange(min=0)])
+    position_latitude = DecimalField('Position Latitude', places=10, validators=[Optional(), NumberRange(min=-90, max=90)])
+    position_longitude = DecimalField('Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
+
+    save = SubmitField('Save changes')
+    add = SubmitField('Add Session')
+    delete = SubmitField('Delete Session')
 
 
 @bp.route('/settings/edit', methods=['GET', 'POST'])
@@ -73,7 +119,7 @@ def settingsEdit():
     return render_template('database/settings_edit.html', current_app=current_app, form=form)
 
 
-@bp.route('/trips/edit', methods=['GET', 'POST'])
+@bp.route('/trips/edit', methods=['GET', 'POST'])  # noqa: C901
 def tripEdit():  # noqa: C901
     id = None
     vin = None
@@ -94,14 +140,14 @@ def tripEdit():  # noqa: C901
         if trip is None:
             abort(404, f"Trip with id {id} doesn't exist.")
     elif vin is None:
-        flash('You need to provide a vin to add a trip')
+        flash(message='You need to provide a vin to add a trip', category='error')
     else:
         vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
         if vehicle is None:
-            flash(f'Vehicle with VIN {vin} does not exist')
+            flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
 
     if trip is not None and form.delete.data:
-        flash(f'Successfully deleted trip {id}')
+        flash(f'Successfully deleted trip {id}', category='info')
         with current_app.db.session.begin_nested():
             current_app.db.session.delete(trip)
         current_app.db.session.commit()
@@ -126,7 +172,7 @@ def tripEdit():  # noqa: C901
             trip.start_mileage_km = form.start_mileage_km.data
             trip.end_mileage_km = form.end_mileage_km.data
         current_app.db.session.commit()
-        flash(f'Successfully updated trip {id}')
+        flash(message=f'Successfully updated trip {id}', category='info')
 
     elif trip is None and form.add.data and form.validate_on_submit():
         startDate = form.startDate.data
@@ -161,7 +207,7 @@ def tripEdit():  # noqa: C901
             current_app.db.session.add(trip)
         current_app.db.session.commit()
         current_app.db.session.refresh(trip)
-        flash(f'Successfully added a new trip {trip.id}')
+        flash(message=f'Successfully added a new trip {trip.id}', category='info')
 
     if trip is not None:
         form.id.data = trip.id
@@ -185,3 +231,274 @@ def tripEdit():  # noqa: C901
             form.end_mileage_km.data = lasttrip.end_mileage_km
 
     return render_template('database/trip_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/charging-session/edit', methods=['GET', 'POST'])  # noqa: C901
+def chargingSessionEdit():  # noqa: C901
+    id = None
+    vin = None
+    vehicle = None
+
+    form = ChargingSessionEditForm()
+
+    if request.args is not None:
+        id = request.args.get('id')
+        vin = request.args.get('vin')
+    if id is None and form.id.data is not None and form.id.data.isdigit():
+        id = form.id.data
+    chargingSession = None
+
+    if id is not None:
+        chargingSession = current_app.db.session.query(ChargingSession).filter(ChargingSession.id == id).first()
+
+        if chargingSession is None:
+            abort(404, f"Charging session with id {id} doesn't exist.")
+
+    elif vin is None:
+        flash(message='You need to provide a vin to add a charging session', category='error')
+    else:
+        vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
+        if vehicle is None:
+            flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
+
+    try:
+        if form.position_latitude.data is not None:
+            latitude = form.position_latitude.data
+        elif chargingSession is not None:
+            latitude = chargingSession.position_latitude
+        else:
+            latitude = None
+
+        if form.position_longitude.data is not None:
+            longitude = form.position_longitude.data
+        elif chargingSession is not None:
+            longitude = chargingSession.position_longitude
+        else:
+            longitude = None
+
+        if latitude is not None and longitude is not None:
+            chargers = sorted(current_app.weConnect.getChargingStations(latitude, longitude, searchRadius=500).values(),
+                              key=lambda station: station.distance.value)
+            choices = [(None, 'unknown')]
+            for charger in chargers:
+                label = f'{charger.name.value} ({round(charger.distance.value)} m away)'
+                choices.append((charger.id.value, label))
+            form.charger_id.choices = choices
+        else:
+            form.charger_id.choices = [(None, 'You need to first save the position of the charging session')]
+    except RetrievalError as e:
+        flash(message=f'Cannot retrieve chargers: {e}', category='error')
+        pass
+
+    if chargingSession is not None and form.delete.data:
+        flash(message=f'Successfully deleted charging session {id}', category='info')
+        with current_app.db.session.begin_nested():
+            current_app.db.session.delete(chargingSession)
+        current_app.db.session.commit()
+        return render_template('database/charging_session_edit.html', current_app=current_app, form=None)
+
+    if chargingSession is not None and form.save.data and form.validate_on_submit():
+        with current_app.db.session.begin_nested():
+            chargingSession.connected = form.connected.data
+            if chargingSession.connected is not None:
+                chargingSession.connected = chargingSession.connected.replace(tzinfo=timezone.utc, microsecond=0)
+            chargingSession.locked = form.locked.data
+            if chargingSession.locked is not None:
+                chargingSession.locked = chargingSession.locked.replace(tzinfo=timezone.utc, microsecond=0)
+            chargingSession.started = form.started.data
+            if chargingSession.started is not None:
+                chargingSession.started = chargingSession.started.replace(tzinfo=timezone.utc, microsecond=0)
+            chargingSession.ended = form.locked.data
+            if chargingSession.ended is not None:
+                chargingSession.ended = chargingSession.ended.replace(tzinfo=timezone.utc, microsecond=0)
+            chargingSession.unlocked = form.unlocked.data
+            if chargingSession.unlocked is not None:
+                chargingSession.unlocked = chargingSession.unlocked.replace(tzinfo=timezone.utc, microsecond=0)
+            chargingSession.disconnected = form.disconnected.data
+            if chargingSession.disconnected is not None:
+                chargingSession.disconnected = chargingSession.disconnected.replace(tzinfo=timezone.utc, microsecond=0)
+            chargingSession.targetSOCSetting_pct = form.targetSOCSetting_pct.data
+            chargingSession.maximumChargePower_kW = form.maximumChargePower_kW.data
+            chargingSession.acdc = form.acdc.data
+            chargingSession.startSOC_pct = form.startSOC_pct.data
+            chargingSession.endSOC_pct = form.endSOC_pct.data
+            chargingSession.mileage_km = form.mileage_km.data
+            chargingSession.position_latitude = form.position_latitude.data
+            chargingSession.position_longitude = form.position_longitude.data
+            if chargingSession.position_latitude is not None and chargingSession.position_longitude is not None:
+                chargingSession.location = locationFromLatLon(current_app.db.session, chargingSession.position_latitude, chargingSession.position_longitude)
+
+            chargingSession.realCharged_kWh = form.realCharged_kWh.data
+            chargingSession.realCost_ct = form.realCost_ct.data
+            if form.charger_id.data is None or form.charger_id.data == 'None':
+                chargingSession.charger = None
+            else:
+                chargerAdded = False
+                for charger in chargers:
+                    if charger.id.value == form.charger_id.data:
+                        chargingSession.charger = addCharger(current_app.db.session, charger)
+                        chargerAdded = True
+                if not chargerAdded:
+                    flash(message='Charger not valid anymore', category='error')
+
+        current_app.db.session.commit()
+        flash(message=f'Successfully updated charging session {id}', category='error')
+
+    elif chargingSession is None and form.add.data and form.validate_on_submit():
+        chargingSession = ChargingSession(vehicle)
+
+        chargingSession.connected = form.connected.data
+        chargingSession.locked = form.locked.data
+        chargingSession.started = form.started.data
+        chargingSession.ended = form.ended.data
+        chargingSession.unlocked = form.unlocked.data
+        chargingSession.disconnected = form.disconnected.data
+        chargingSession.targetSOCSetting_pct = form.targetSOCSetting_pct.data
+        chargingSession.maximumChargePower_kW = form.maximumChargePower_kW.data
+        chargingSession.acdc = form.acdc.data
+        chargingSession.startSOC_pct = form.startSOC_pct.data
+        chargingSession.endSOC_pct = form.endSOC_pct.data
+        chargingSession.mileage_km = form.mileage_km.data
+        chargingSession.position_latitude = form.position_latitude.data
+        chargingSession.position_longitude = form.position_longitude.data
+        if chargingSession.position_latitude is not None and chargingSession.position_longitude is not None:
+            chargingSession.location = locationFromLatLon(current_app.db.session, chargingSession.position_latitude, chargingSession.position_longitude)
+        else:
+            chargingSession.location = None
+        chargingSession.charger_id = form.charger_id.data
+        chargingSession.realCharged_kWh = form.realCharged_kWh.data
+        chargingSession.realCost_ct = form.realCost_ct.data
+
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(chargingSession)
+        current_app.db.session.commit()
+        current_app.db.session.refresh(chargingSession)
+        flash(message=f'Successfully added a new charging session {chargingSession.id}', category='info')
+
+    if chargingSession is not None:
+        form.id.data = chargingSession.id
+        form.vehicle_vin.data = chargingSession.vehicle_vin
+        form.connected.data = chargingSession.connected
+        form.locked.data = chargingSession.locked
+        form.started.data = chargingSession.started
+        form.ended.data = chargingSession.ended
+        form.unlocked.data = chargingSession.unlocked
+        form.disconnected.data = chargingSession.disconnected
+        form.targetSOCSetting_pct.data = chargingSession.targetSOCSetting_pct
+        form.maximumChargePower_kW.data = chargingSession.maximumChargePower_kW
+        form.acdc.data = chargingSession.acdc
+        form.startSOC_pct.data = chargingSession.startSOC_pct
+        form.endSOC_pct.data = chargingSession.endSOC_pct
+        form.mileage_km.data = chargingSession.mileage_km
+        form.position_latitude.data = chargingSession.position_latitude
+        form.position_longitude.data = chargingSession.position_longitude
+
+        form.charger_id.data = chargingSession.charger_id
+        form.realCharged_kWh.data = chargingSession.realCharged_kWh
+        form.realCost_ct.data = chargingSession.realCost_ct
+    else:
+        form.vehicle_vin.data = vehicle.vin
+        form.started.data = datetime.utcnow()
+        form.ended.data = datetime.utcnow()
+
+        lasttrip = current_app.db.session.query(Trip).filter(and_(Trip.vehicle == vehicle, Trip.startDate.isnot(None))).order_by(Trip.startDate.desc()).first()
+        if lasttrip is not None and lasttrip.start_mileage_km is not None:
+            form.mileage_km.data = lasttrip.start_mileage_km
+
+        choices = [(None, 'You need to first save the location of the charging session')]
+        form.charger_id.choices = choices
+
+    return render_template('database/charging_session_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/refuel-session/edit', methods=['GET', 'POST'])  # noqa: C901
+def refuelSessionEdit():  # noqa: C901
+    id = None
+    vin = None
+    vehicle = None
+
+    form = RefuelSessionEditForm()
+
+    if request.args is not None:
+        id = request.args.get('id')
+        vin = request.args.get('vin')
+    if id is None and form.id.data is not None and form.id.data.isdigit():
+        id = form.id.data
+    refuelSession = None
+
+    if id is not None:
+        refuelSession = current_app.db.session.query(RefuelSession).filter(RefuelSession.id == id).first()
+
+        if refuelSession is None:
+            abort(404, f"Refuel session with id {id} doesn't exist.")
+
+    elif vin is None:
+        flash(message='You need to provide a vin to add a refuel session', category='error')
+    else:
+        vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
+        if vehicle is None:
+            flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
+
+    if refuelSession is not None and form.delete.data:
+        flash(message=f'Successfully deleted refuel session {id}', category='info')
+        with current_app.db.session.begin_nested():
+            current_app.db.session.delete(refuelSession)
+        current_app.db.session.commit()
+        return render_template('database/refuel_session_edit.html', current_app=current_app, form=None)
+
+    if refuelSession is not None and form.save.data and form.validate_on_submit():
+        with current_app.db.session.begin_nested():
+            refuelSession.date = form.date.data
+            if refuelSession.date is not None:
+                refuelSession.date = refuelSession.date.replace(tzinfo=timezone.utc, microsecond=0)
+            refuelSession.startSOC_pct = form.startSOC_pct.data
+            refuelSession.endSOC_pct = form.endSOC_pct.data
+            refuelSession.mileage_km = form.mileage_km.data
+            refuelSession.position_latitude = form.position_latitude.data
+            refuelSession.position_longitude = form.position_longitude.data
+            if refuelSession.position_latitude is not None and refuelSession.position_longitude is not None:
+                refuelSession.location = locationFromLatLon(current_app.db.session, refuelSession.position_latitude, refuelSession.position_longitude)
+
+        current_app.db.session.commit()
+        flash(message=f'Successfully updated refuel session {id}', category='info')
+
+    elif refuelSession is None and form.add.data and form.validate_on_submit():
+        date = form.date.data
+        if date is not None:
+            date = date.replace(tzinfo=timezone.utc, microsecond=0)
+
+        latitude = form.position_latitude.data
+        longitude = form.position_longitude.data
+        if latitude is not None and longitude is not None:
+            location = locationFromLatLon(current_app.db.session, latitude, longitude)
+        else:
+            location = None
+        refuelSession = RefuelSession(vehicle=vehicle, date=date, startSOC_pct=form.startSOC_pct.data, endSOC_pct=form.endSOC_pct.data,
+                                      mileage_km=form.mileage_km.data, position_latitude=latitude, position_longitude=longitude, location=location)
+
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(refuelSession)
+        current_app.db.session.commit()
+        current_app.db.session.refresh(refuelSession)
+        flash(message=f'Successfully added a new charging session {refuelSession.id}', category='info')
+
+    if refuelSession is not None:
+        form.id.data = refuelSession.id
+        form.vehicle_vin.data = refuelSession.vehicle_vin
+        form.date.data = refuelSession.date
+        form.startSOC_pct.data = refuelSession.startSOC_pct
+        form.endSOC_pct.data = refuelSession.endSOC_pct
+        form.mileage_km.data = refuelSession.mileage_km
+        form.position_latitude.data = refuelSession.position_latitude
+        form.position_longitude.data = refuelSession.position_longitude
+
+    else:
+        form.vehicle_vin.data = vehicle.vin
+        form.date.data = datetime.utcnow()
+
+        lasttrip = current_app.db.session.query(Trip).filter(and_(Trip.vehicle == vehicle, Trip.startDate.isnot(None))).order_by(Trip.startDate.desc()).first()
+        if lasttrip is not None and lasttrip.start_mileage_km is not None:
+            form.mileage_km.data = lasttrip.start_mileage_km
+        form.endSOC_pct.data = 100
+
+    return render_template('database/refuel_session_edit.html', current_app=current_app, form=form)

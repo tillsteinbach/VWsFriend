@@ -14,6 +14,17 @@ class ACDC(enum.Enum,):
     DC = enum.auto()
     UNKNOWN = enum.auto()
 
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def choices(cls):
+        return [(choice, choice.name) for choice in cls]
+
+    @classmethod
+    def coerce(cls, item):
+        return item if isinstance(item, ACDC) else ACDC[item]
+
 
 class ChargingSession(Base):
     __tablename__ = 'charging_sessions'
