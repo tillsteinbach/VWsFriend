@@ -22,7 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1628602044664,
+  "iteration": 1632990661901,
   "links": [
     {
       "asDropdown": false,
@@ -207,6 +207,28 @@
                 "value": "litre"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Edit"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Edit this refuel session",
+                    "url": "${vwsfriend_url}/database/refuel-session/edit?id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -220,14 +242,14 @@
       "options": {
         "showHeader": true
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date AS \"Date\",\n  locations.display_name AS \"Location\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\",\n  \"mileage_km\" AS \"Odometer\",\n  id,\n  (round(extract(epoch FROM date)) * 1000) AS start_date_ts\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  refuel_sessions.vehicle_vin = '$VIN'\nORDER BY date",
+          "rawSql": "SELECT\n  date AS \"Date\",\n  locations.display_name AS \"Location\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM date)) * 1000) AS start_date_ts\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  refuel_sessions.vehicle_vin = '$VIN'\nORDER BY date",
           "refId": "A",
           "select": [
             [
