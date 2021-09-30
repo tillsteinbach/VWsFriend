@@ -21,8 +21,20 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1631858782494,
+  "iteration": 1632982592260,
   "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Edit Session",
+      "tooltip": "Edit the session in the database",
+      "type": "link",
+      "url": "${vwsfriend_url}/database/charging-session/edit?id=${id}"
+    },
     {
       "asDropdown": false,
       "icon": "dashboard",
@@ -41,8 +53,7 @@
       "includeVars": true,
       "keepTime": false,
       "tags": [
-        "electric",
-        "hybrid"
+        "vwsfriend"
       ],
       "targetBlank": false,
       "title": "Dashboards",
@@ -522,18 +533,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Amount"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "kwatth"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Maximum Charge Power"
             },
             "properties": [
@@ -578,6 +577,34 @@
                 "value": "dtdhms"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Amount.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatth"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Cost.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "currencyEUR"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
           }
         ]
       },
@@ -613,7 +640,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)) AS \"Duration\",\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount\",\n  \"mileage_km\" AS \"Odometer\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  id = $id",
+          "rawSql": "SELECT\n  COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)) AS \"Duration\",\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realCharged_kWh\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -953,6 +980,25 @@
         "query": "",
         "skipUrlSync": false,
         "type": "textbox"
+      },
+      {
+        "allValue": null,
+        "datasource": null,
+        "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "vwsfriend_url",
+        "options": [],
+        "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
