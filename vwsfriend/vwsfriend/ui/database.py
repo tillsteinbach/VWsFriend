@@ -365,7 +365,10 @@ def chargingSessionEdit():  # noqa: C901
             chargingSession.location = locationFromLatLon(current_app.db.session, chargingSession.position_latitude, chargingSession.position_longitude)
         else:
             chargingSession.location = None
-        chargingSession.charger_id = form.charger_id.data
+        if form.charger_id.data is None or form.charger_id.data == 'None':
+            chargingSession.charger = None
+        else:
+            chargingSession.charger_id = form.charger_id.data
         chargingSession.realCharged_kWh = form.realCharged_kWh.data
         chargingSession.realCost_ct = form.realCost_ct.data
 
