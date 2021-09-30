@@ -25,6 +25,18 @@
   "links": [
     {
       "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Edit Session",
+      "tooltip": "Edit the session in the database",
+      "type": "link",
+      "url": "${vwsfriend_url}/database/refuel-session/edit?id=${id}"
+    },
+    {
+      "asDropdown": false,
       "icon": "dashboard",
       "includeVars": true,
       "keepTime": false,
@@ -41,7 +53,7 @@
       "includeVars": true,
       "keepTime": false,
       "tags": [
-        "hybrid"
+        "vwsfriend"
       ],
       "targetBlank": false,
       "title": "Dashboards",
@@ -487,6 +499,25 @@
         "query": "",
         "skipUrlSync": false,
         "type": "textbox"
+      },
+      {
+        "allValue": null,
+        "datasource": null,
+        "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "vwsfriend_url",
+        "options": [],
+        "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
