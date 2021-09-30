@@ -285,6 +285,25 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "datasource": null,
+        "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "vwsfriend_url",
+        "options": [],
+        "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
