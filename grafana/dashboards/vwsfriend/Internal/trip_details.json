@@ -30,7 +30,7 @@
       "includeVars": false,
       "keepTime": false,
       "tags": [],
-      "targetBlank": false,
+      "targetBlank": true,
       "title": "Edit Trip",
       "tooltip": "Edit the trip in the database",
       "type": "link",
@@ -54,8 +54,7 @@
       "includeVars": true,
       "keepTime": false,
       "tags": [
-        "electric",
-        "hybrid"
+        "vwsfriend"
       ],
       "targetBlank": false,
       "title": "Dashboards",

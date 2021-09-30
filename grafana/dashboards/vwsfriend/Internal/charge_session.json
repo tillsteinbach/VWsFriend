@@ -29,7 +29,7 @@
       "includeVars": false,
       "keepTime": false,
       "tags": [],
-      "targetBlank": false,
+      "targetBlank": true,
       "title": "Edit Session",
       "tooltip": "Edit the session in the database",
       "type": "link",
