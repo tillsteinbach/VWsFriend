@@ -23,7 +23,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1631777044662,
+  "iteration": 1632984982791,
   "links": [
     {
       "asDropdown": false,
@@ -101,6 +101,12 @@
         },
         "overrides": []
       },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
       "id": 2,
       "options": {
         "colorMode": "value",
@@ -174,8 +180,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 6,
-        "x": 6,
+        "w": 4,
+        "x": 4,
         "y": 0
       },
       "id": 3,
@@ -201,7 +207,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n   SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "rawSql": "SELECT\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
           "refId": "A",
           "select": [
             [
@@ -226,6 +232,164 @@
         }
       ],
       "title": "Total Amount",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "No real charging values",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.1.3",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n   (SUM(\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) - SUM(\"realCharged_kWh\"::NUMERIC)) / SUM(\"realCharged_kWh\"::NUMERIC) * 100 AS \"Delta %\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  \"realCharged_kWh\" IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Difference estimated/real",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "No cost added",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.1.3",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n   SUM(\"realCost_ct\"::NUMERIC/100::NUMERIC) AS \"Cost\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Total Cost",
       "type": "stat"
     },
     {
@@ -282,7 +446,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n   COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n   SUM((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY acdc",
+          "rawSql": "SELECT\n   COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY acdc",
           "refId": "A",
           "select": [
             [
