@@ -4,7 +4,7 @@ FROM ubuntu:20.04 as builder
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
 
-RUN mount -t tmpfs none /root/.cargo
+RUN mkdir -p /root/.cargo && mount -t tmpfs none /root/.cargo
 RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
     apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev rustc cargo libjpeg-dev zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
