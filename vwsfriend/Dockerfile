@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:experimental
 # Here is the build image
 FROM ubuntu:20.04 as builder
 
@@ -8,12 +9,12 @@ RUN apt-get update && apt-get install --no-install-recommends -y python3.9 pytho
     apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev cargo libjpeg-dev zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 RUN python3.9 -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip3 install --no-cache-dir wheel
+RUN --security=insecure mkdir -p /root/.cargo && chmod 777 /root/.cargo && mount -t tmpfs none /root/.cargo && pip3 install --no-cache-dir cryptography
 RUN pip3 install --no-cache-dir vwsfriend
 
 
