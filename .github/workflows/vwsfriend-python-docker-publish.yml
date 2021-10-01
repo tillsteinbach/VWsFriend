@@ -106,6 +106,7 @@ jobs:
         uses: docker/build-push-action@v2.7.0
         with:
           context: vwsfriend
+          allow: security.insecure
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
