@@ -42,10 +42,10 @@ class Climatization(GenericAccessory):
             # Add Characteristic that is not planned for the service. This is still visible in other Apps than Apple Home
             self.charRemainingDuration = self.service.configure_char('RemainingDuration', value=climatizationStatus.remainingClimatisationTime_min.value * 60)
 
-        if climatizationSettings is not None and climatizationSettings.targetTemperature_C.enabled:
-            climatizationSettings.targetTemperature_C.addObserver(self.onTargetTemperatureChange,
+        if climatizationSettings is not None and climatizationSettings.targetTemperature_K.enabled:
+            climatizationSettings.targetTemperature_K.addObserver(self.onTargetTemperatureChange,
                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-            self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=climatizationSettings.targetTemperature_C.value,
+            self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=(climatizationSettings.targetTemperature_K.value - 273.15),
                                                                      setter_callback=self.__onTargetTemperatureChanged)
 
         if batteryStatus is not None and batteryStatus.currentSOC_pct.enabled:
@@ -89,8 +89,8 @@ class Climatization(GenericAccessory):
 
     def onTargetTemperatureChange(self, element, flags):
         if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
-            self.charTargetTemperature.set_value(element.value)
-            LOG.info('targetTemperature_C Changed: %f', element.value)
+            self.charTargetTemperature.set_value((element.value - 273.15))
+            LOG.info('targetTemperature_K Changed: %f', (element.value - 273.15))
         else:
             LOG.debug('Unsupported event %s', flags)
 
@@ -116,8 +116,8 @@ class Climatization(GenericAccessory):
 
     def __onTargetTemperatureChanged(self, value):
         if self.climatizationSettings.enabled:
-            self.climatizationSettings.targetTemperature_C.value = value
-            LOG.debug('Changed climatization target temperature to: %f', value)
+            self.climatizationSettings.targetTemperature_K.value = (value + 273.15)
+            LOG.debug('Changed climatization target temperature to: %f', (value + 273.15))
         else:
             LOG.error('Climatization target temperature cannot be controled')
 
