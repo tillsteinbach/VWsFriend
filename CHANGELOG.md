@@ -4,14 +4,20 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
-## [0.6.0] - 2021-09-27
+## [0.6.0] - 2021-10-06
 ### Fixed
 - Fixed recording of trips
+- Fixed lost room assignment in HomeKit setup
+- Problems with HomeKit setting climatization correctly
+- Small improvements on Grafana Dashboards
+- Fixed 32Bit ARM docker image building
 
 ### Changed
-- Updated API to 0.20.14
+- Updated API to 0.21.0
 
 ### Added
+- collecting errors in database for future visualization
+- Possibility to correct recorded data and add missing information
 - Status page car images now displays badges indicating lock/charging/etc
 - Possiblity to configure logging output format
 - Added time in logging
