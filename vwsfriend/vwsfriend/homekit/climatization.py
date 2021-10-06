@@ -72,7 +72,7 @@ class Climatization(GenericAccessory):
             if climatisationState.value == ClimatizationStatus.ClimatizationState.HEATING:
                 self.charCurrentHeatingCoolingState.set_value(1)
             elif climatisationState.value == ClimatizationStatus.ClimatizationState.COOLING \
-                    or climatisationState == ClimatizationStatus.ClimatizationState.VENTILATION:
+                    or climatisationState.value == ClimatizationStatus.ClimatizationState.VENTILATION:
                 self.charCurrentHeatingCoolingState.set_value(2)
             elif climatisationState.value == ClimatizationStatus.ClimatizationState.OFF:
                 self.charCurrentHeatingCoolingState.set_value(0)
@@ -90,7 +90,7 @@ class Climatization(GenericAccessory):
     def onTargetTemperatureChange(self, element, flags):
         if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
             self.charTargetTemperature.set_value((element.value - 273.15))
-            LOG.info('targetTemperature_K Changed: %f', (element.value - 273.15))
+            LOG.info('targetTemperature Changed: %f', (element.value - 273.15))
         else:
             LOG.debug('Unsupported event %s', flags)
 
