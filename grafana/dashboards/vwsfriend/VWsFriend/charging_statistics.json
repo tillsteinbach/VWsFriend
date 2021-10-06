@@ -23,7 +23,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1632984982791,
+  "iteration": 1633534899337,
   "links": [
     {
       "asDropdown": false,
@@ -513,7 +513,7 @@
             ],
             "rangemode": "between",
             "showgrid": true,
-            "title": "Occurrences",
+            "title": "%",
             "type": "linear",
             "zeroline": true
           },
@@ -535,7 +535,7 @@
             "mapping": {
               "color": "Number",
               "size": null,
-              "text": null,
+              "text": "Text",
               "x": "Hour",
               "y": "Number",
               "z": null
@@ -563,7 +563,7 @@
                 "sizeref": 0.2,
                 "symbol": "circle"
               },
-              "textposition": "top"
+              "textposition": ""
             },
             "show": {
               "line": true,
@@ -579,7 +579,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n EXTRACT(HOUR FROM \"carCapturedTimestamp\" AT TIME ZONE '${__to:date:Z}') AS \"Hour\",\n COUNT(*) AS \"Number\"\nFROM charges\nWHERE\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n EXTRACT(HOUR FROM \"carCapturedTimestamp\" AT TIME ZONE '${__to:date:Z}') AS \"Hour\",\n (COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100) AS \"Number\",\n ROUND((COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100))::TEXT || '% of charging time' AS \"Text\"\nFROM charges\nWHERE\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -665,7 +665,7 @@
             "mapping": {
               "color": "soc",
               "size": null,
-              "text": null,
+              "text": "maxText",
               "x": "soc",
               "y": "max",
               "z": null
@@ -693,7 +693,7 @@
                 "sizeref": 0.2,
                 "symbol": "circle"
               },
-              "textposition": "top"
+              "textposition": ""
             },
             "show": {
               "line": true,
@@ -705,7 +705,7 @@
             "mapping": {
               "color": "soc",
               "size": null,
-              "text": null,
+              "text": "avgText",
               "x": "soc",
               "y": "avg",
               "z": null
@@ -733,7 +733,7 @@
                 "sizeref": 0.2,
                 "symbol": "circle"
               },
-              "textposition": "bottom"
+              "textposition": ""
             },
             "show": {
               "line": true,
@@ -745,7 +745,7 @@
             "mapping": {
               "color": "soc",
               "size": null,
-              "text": null,
+              "text": "minText",
               "x": "soc",
               "y": "min",
               "z": null
@@ -773,7 +773,7 @@
                 "sizeref": 0.2,
                 "symbol": "circle"
               },
-              "textposition": "top"
+              "textposition": ""
             },
             "show": {
               "line": true,
@@ -788,9 +788,10 @@
         {
           "format": "table",
           "group": [],
+          "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  soc,\n  MAX(power),\n  AVG(power),\n  MIN(power)\nFROM\n  (\n  SELECT\n    DATE_TRUNC('minute', charges.\"carCapturedTimestamp\") AS \"chargeTime\",\n    charges.\"chargePower_kW\" AS \"power\"\n  FROM charges\n  WHERE\n    charges.\"chargePower_kW\" > 0 AND\n    $__timeFilter(\"carCapturedTimestamp\") AND\n    charges.vehicle_vin = '$VIN'\n  ) AS chargepower\nLEFT JOIN\n  (\n  SELECT\n    DATE_TRUNC('minute', battery.\"carCapturedTimestamp\") AS \"batteryTime\",\n    battery.\"currentSOC_pct\" AS \"soc\"\n  FROM battery\n  WHERE\n    battery.\"currentSOC_pct\" IS NOT NULL AND\n    $__timeFilter(\"carCapturedTimestamp\") AND\n    battery.vehicle_vin = '$VIN'\n  ) AS batterysoc ON \"chargeTime\" = \"batteryTime\"\nGROUP BY soc\nORDER by soc ASC",
+          "rawSql": "SELECT\n  battery.\"currentSOC_pct\" AS \"soc\",\n  MAX(charges.\"chargePower_kW\") AS \"max\",\n  AVG(charges.\"chargePower_kW\") AS \"avg\",\n  MIN(charges.\"chargePower_kW\") AS \"min\",\n  'max. ' || MAX(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"maxText\",\n  'avg. ' || ROUND(AVG(charges.\"chargePower_kW\"),2)::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"avgText\",\n  'min. ' || MIN(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"minText\"\nFROM\n  charges\nINNER JOIN battery ON battery.\"carCapturedTimestamp\" = (SELECT battery.\"carCapturedTimestamp\" FROM battery WHERE battery.\"carCapturedTimestamp\" > charges.\"carCapturedTimestamp\" - interval '120 SECONDS' AND battery.\"carCapturedTimestamp\" < charges.\"carCapturedTimestamp\" + interval '120 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (battery.\"carCapturedTimestamp\" - charges.\"carCapturedTimestamp\"))) ASC LIMIT 1)\nWHERE\n    charges.\"chargePower_kW\" > 0 AND\n    $__timeFilter(charges.\"carCapturedTimestamp\") AND\n    charges.vehicle_vin = '$VIN'\nGROUP BY soc\nORDER by soc ASC",
           "refId": "A",
           "select": [
             [
