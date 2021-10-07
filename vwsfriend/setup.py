@@ -28,7 +28,7 @@ setup(
     install_requires=INSTALL_REQUIRED,
     entry_points={
         'console_scripts': [
-            'vwsfriend = vwsfriend.vwsfriend:main',
+            'vwsfriend = vwsfriend.vwsfriend_base:main',
         ],
     },
     classifiers=[
