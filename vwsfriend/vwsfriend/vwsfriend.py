@@ -194,6 +194,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                             LOG.info('Stage completed')
             LOG.info('Demo completed')
         else:
+            starttime = time.time()
             while True:
                 try:
                     LOG.info('Updating data from WeConnect')
@@ -204,7 +205,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         bridge.update()
                 except weconnect.RetrievalError:
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
-                time.sleep(args.interval)
+                #  Execute exactly every interval but if it misses its deadline only after the next interval
+                time.sleep(args.interval - ((time.time() - starttime) % args.interval))
 
     except weconnect.AuthentificationError as e:
         LOG.critical('There was a problem when authenticating with WeConnect: %s', e)

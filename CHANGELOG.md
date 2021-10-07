@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Fixed
+- Interval is executed more precisely
 
 ## [0.6.0] - 2021-10-06
 ### Fixed
