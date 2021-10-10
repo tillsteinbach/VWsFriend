@@ -23,7 +23,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1633534899337,
+  "iteration": 1633891326958,
   "links": [
     {
       "asDropdown": false,
@@ -579,7 +579,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n EXTRACT(HOUR FROM \"carCapturedTimestamp\" AT TIME ZONE '${__to:date:Z}') AS \"Hour\",\n (COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100) AS \"Number\",\n ROUND((COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100))::TEXT || '% of charging time' AS \"Text\"\nFROM charges\nWHERE\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n EXTRACT(HOUR FROM \"carCapturedTimestamp\" AT TIME ZONE '${__to:date:Z}') AS \"Hour\",\n (COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100) AS \"Number\",\n ROUND((COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100))::TEXT || '% of charging time' AS \"Text\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -833,7 +833,7 @@
       "version": 1
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
