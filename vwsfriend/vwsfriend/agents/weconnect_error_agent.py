@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from vwsfriend.model.weconnect_error import WeConnectError
 
 from weconnect.weconnect import WeConnect
+from weconnect.weconnect_errors import ErrorEventType
 
 LOG = logging.getLogger("VWsFriend")
 
@@ -15,7 +16,7 @@ class WeconnectErrorAgent():
         self.weconnect = weconnect
 
         # register for updates:
-        weconnect.addErrorObserver(self.__onError, WeConnect.ErrorEventType.ALL)
+        weconnect.addErrorObserver(self.__onError, ErrorEventType.ALL)
 
     def __onError(self, element, errortype, detail, message):
         error = WeConnectError(datetime.utcnow().replace(tzinfo=timezone.utc), errortype, detail)
