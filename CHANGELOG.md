@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated API to 0.21.1
 - Getting mileage from new odometerMeasurement instead of maintenanceStatus field
+- Updated requirements for alembic to 1.7.4 and hyp-python to 4.3.0
 
 ## [0.6.0] - 2021-10-06
 ### Fixed
