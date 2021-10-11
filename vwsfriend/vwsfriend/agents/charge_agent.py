@@ -204,10 +204,10 @@ class ChargeAgent():
                                                                      searchRadius=100)
 
     def updateMileage(self):
-        if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses:
-            maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
-            if self.chargingSession is not None and maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
-                self.chargingSession.mileage_km = maintenanceStatus.mileage_km.value
+        if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses:
+            odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+            if self.chargingSession is not None and odometerMeasurement.odometer.enabled and odometerMeasurement.odometer.value is not None:
+                self.chargingSession.mileage_km = odometerMeasurement.odometer.value
 
     def commit(self):
         pass

@@ -1,0 +1,71 @@
+{
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/status": [
+        {
+            "data": {
+                "batteryStatus": {
+                    "carCapturedTimestamp": "demodate(-300)",
+                    "currentSOC_pct": 71,
+                    "cruisingRangeElectric_km": 30
+                },
+                "chargingStatus": {
+                    "carCapturedTimestamp": "demodate(-5)",
+                    "remainingChargingTimeToComplete_min": 0,
+                    "chargingState": "off",
+                    "chargeMode": "invalid",
+                    "chargePower_kW": 0
+                },
+                "chargingSettings": {
+                    "carCapturedTimestamp": "demodate(-5)",
+                    "maxChargeCurrentAC": "maximum"
+                },
+                "plugStatus": {
+                    "carCapturedTimestamp": "demodate(-5)",
+                    "plugConnectionState": "disconnected",
+                    "plugLockState": "unlocked"
+                },
+                "maintenanceStatus": {
+                    "carCapturedTimestamp": "demodate(-300)",
+                    "inspectionDue_days": 644,
+                    "inspectionDue_km": 25900,
+                    "oilServiceDue_days": 279,
+                    "oilServiceDue_km": 10900
+                },
+                "odometerMeasurement": {
+                    "carCapturedTimestamp": "demodate(-300)",
+                    "odometer": 4266
+                },
+                "capabilityStatus": {
+                    "capabilities": []
+                }
+            }
+        },
+        "now(+0)"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
+        {
+            "data": {
+                "latitude": 53.64895,
+                "longitude": 10.16238,
+                "carCapturedTimestamp": "demodate(-300)"
+            }
+        },
+        "now(+0)"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+        {
+            "data": [
+                {
+                    "vin": "AAABBBCCCDDD12345",
+                    "role": "PRIMARY_USER",
+                    "enrollmentStatus": "COMPLETED",
+                    "model": "Demo Test Vehicle",
+                    "nickname": "Test Vehicle",
+                    "capabilities": [],
+                    "images": {},
+                    "coUsers": []
+                }
+            ]
+        },
+        "now(+0)"
+    ]
+}

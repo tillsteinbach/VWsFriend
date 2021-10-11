@@ -75,10 +75,10 @@ class TripAgent():
                          self.lastParkingPositionLongitude, None, None)
         self.trip.start_location = locationFromLatLon(self.session, self.lastParkingPositionLatitude, self.lastParkingPositionLongitude)
 
-        if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['maintenanceStatus'].enabled:
-            maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
-            if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km is not None:
-                self.trip.start_mileage_km = maintenanceStatus.mileage_km.value
+        if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['odometerMeasurement'].enabled:
+            odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+            if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
+                self.trip.start_mileage_km = odometerMeasurement.odometer.value
         try:
             with self.session.begin_nested():
                 self.session.add(self.trip)
@@ -113,10 +113,10 @@ class TripAgent():
                 self.trip.destination_position_longitude = parkingPosition.longitude.value
                 self.trip.destination_location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
 
-            if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['maintenanceStatus'].enabled:
-                maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
-                if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km is not None:
-                    self.trip.end_mileage_km = maintenanceStatus.mileage_km.value
+            if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['odometerMeasurement'].enabled:
+                odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+                if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
+                    self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
             self.trip = None
 
