@@ -98,6 +98,30 @@
         {% endif %}
       </fieldset>
 
+      <fieldset class="form-field">
+        {{ form.realRefueled_l.label }}
+        {{ form.realRefueled_l }}
+        {% if form.realRefueled_l.errors %}
+          <ul class="errors">
+            {% for error in form.realRefueled_l.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.realCost_ct.label }}
+        {{ form.realCost_ct }}
+        {% if form.realCost_ct.errors %}
+          <ul class="errors">
+            {% for error in form.realCost_ct.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
       <div id="positions" style="height:400px"></div>
       <script>
         const lat = {{ form.position_latitude.data or '0' }}

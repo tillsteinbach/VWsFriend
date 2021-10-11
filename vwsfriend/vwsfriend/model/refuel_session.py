@@ -19,6 +19,8 @@ class RefuelSession(Base):
     position_longitude = Column(Float)
     location_id = Column(BigInteger, ForeignKey('locations.osm_id'))
     location = relationship("Location")
+    realRefueled_l = Column(Float)
+    realCost_ct = Column(Integer)
 
     def __init__(self, vehicle, date, startSOC_pct, endSOC_pct, mileage_km, position_latitude, position_longitude, location):
         self.vehicle = vehicle
