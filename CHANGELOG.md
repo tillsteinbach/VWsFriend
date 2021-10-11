@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Updated API to 0.21.1
+- Getting mileage from new odometerMeasurement instead of maintenanceStatus field
 
 ## [0.6.0] - 2021-10-06
 ### Fixed
