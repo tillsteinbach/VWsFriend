@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Corrupted graphs for consumption, range and efficiency
 - Unwanted refuel session entries when the car suddenly finds one or two percent of fuel
 
+### Added
+- It is now possible to add real amount and cost for refueling of gasoline cars and hybrids
+- Statistics for the responsetime are collected
+
 ### Changed
 - Updated API to 0.21.1
 - Getting mileage from new odometerMeasurement instead of maintenanceStatus field
