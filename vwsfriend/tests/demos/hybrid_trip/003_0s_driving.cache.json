@@ -1,0 +1,52 @@
+{
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/status": [
+        {
+            "data": {
+                "maintenanceStatus": {
+                    "carCapturedTimestamp": "demodate(600)",
+                    "inspectionDue_days": 644,
+                    "inspectionDue_km": 25900,
+                    "mileage_km": 4166,
+                    "oilServiceDue_days": 279,
+                    "oilServiceDue_km": 10900
+                },
+                "odometerMeasurement": {
+                    "carCapturedTimestamp": "demodate(600)",
+                    "odometer": 4166
+                },
+                "capabilityStatus": {
+                    "capabilities": []
+                }
+            }
+        },
+        "now(+0)"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
+        {
+            "error": {
+              "code": 5102,
+              "message": "Underlying system respond with invalid payload",
+              "group": 2,
+              "info": "Internal error, please try again later. If the problem persists, please contact our support."
+            }
+        },
+        "now(+0)"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+        {
+            "data": [
+                {
+                    "vin": "AAABBBCCCDDD12345",
+                    "role": "PRIMARY_USER",
+                    "enrollmentStatus": "COMPLETED",
+                    "model": "Demo Test Vehicle",
+                    "nickname": "Test Vehicle",
+                    "capabilities": [],
+                    "images": {},
+                    "coUsers": []
+                }
+            ]
+        },
+        "now(+0)"
+    ]
+}

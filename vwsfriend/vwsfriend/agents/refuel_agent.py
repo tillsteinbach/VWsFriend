@@ -32,10 +32,10 @@ class RefuelAgent():
             current_primary_currentSOC_pct = rangeStatus.primaryEngine.currentSOC_pct.value
 
             mileage_km = None
-            if 'maintenanceStatus' in self.vehicle.weConnectVehicle.statuses:
-                maintenanceStatus = self.vehicle.weConnectVehicle.statuses['maintenanceStatus']
-                if maintenanceStatus.mileage_km.enabled:
-                    mileage_km = maintenanceStatus.mileage_km.value
+            if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses:
+                odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+                if odometerMeasurement.odometer.enabled:
+                    mileage_km = odometerMeasurement.odometer.value
 
             position_latitude = None
             position_longitude = None

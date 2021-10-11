@@ -1,0 +1,208 @@
+{
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/status": [
+        {
+            "data": {
+                "accessStatus": {
+                    "overallStatus": "safe",
+                    "carCapturedTimestamp": "2021-08-04T13:00:49Z",
+                    "doors": [
+                        {
+                            "name": "bonnet",
+                            "status": [
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "frontLeft",
+                            "status": [
+                                "locked",
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "frontRight",
+                            "status": [
+                                "locked",
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "rearLeft",
+                            "status": [
+                                "locked",
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "rearRight",
+                            "status": [
+                                "locked",
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "trunk",
+                            "status": [
+                                "locked",
+                                "closed"
+                            ]
+                        }
+                    ],
+                    "windows": [
+                        {
+                            "name": "frontLeft",
+                            "status": [
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "frontRight",
+                            "status": [
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "rearLeft",
+                            "status": [
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "rearRight",
+                            "status": [
+                                "closed"
+                            ]
+                        },
+                        {
+                            "name": "roofCover",
+                            "status": [
+                                "unsupported"
+                            ]
+                        },
+                        {
+                            "name": "sunRoof",
+                            "status": [
+                                "closed"
+                            ]
+                        }
+                    ]
+                },
+                "batteryStatus": {
+                    "carCapturedTimestamp": "2021-08-04T10:58:13Z",
+                    "currentSOC_pct": 71,
+                    "cruisingRangeElectric_km": 16383
+                },
+                "chargingStatus": {
+                    "carCapturedTimestamp": "2021-08-04T10:58:13Z",
+                    "remainingChargingTimeToComplete_min": 0,
+                    "chargingState": "off",
+                    "chargeMode": "invalid"
+                },
+                "chargingSettings": {
+                    "carCapturedTimestamp": "2021-08-04T10:58:09Z",
+                    "maxChargeCurrentAC": "maximum"
+                },
+                "plugStatus": {
+                    "carCapturedTimestamp": "2021-08-04T10:58:13Z",
+                    "plugConnectionState": "disconnected",
+                    "plugLockState": "unlocked"
+                },
+                "climatisationStatus": {
+                    "carCapturedTimestamp": "2021-08-04T10:58:13Z",
+                    "remainingClimatisationTime_min": 0,
+                    "climatisationState": "off"
+                },
+                "climatisationSettings": {
+                    "carCapturedTimestamp": "2021-08-02T04:16:14Z",
+                    "targetTemperature_K": 293.5,
+                    "targetTemperature_C": 20.5,
+                    "climatisationWithoutExternalPower": true
+                },
+                "windowHeatingStatus": {
+                    "carCapturedTimestamp": "2021-08-04T10:58:14Z",
+                    "windowHeatingStatus": [
+                        {
+                            "windowLocation": "front",
+                            "windowHeatingState": "off"
+                        },
+                        {
+                            "windowLocation": "rear",
+                            "windowHeatingState": "off"
+                        }
+                    ]
+                },
+                "lightsStatus": {
+                    "carCapturedTimestamp": "2021-08-04T13:00:49Z",
+                    "lights": [
+                        {
+                            "name": "right",
+                            "status": "off"
+                        },
+                        {
+                            "name": "left",
+                            "status": "off"
+                        }
+                    ]
+                },
+                "maintenanceStatus": {
+                    "carCapturedTimestamp": "2021-08-04T11:00:51Z",
+                    "inspectionDue_days": 644,
+                    "inspectionDue_km": 25900,
+                    "mileage_km": 4166,
+                    "oilServiceDue_days": 279,
+                    "oilServiceDue_km": 10900
+                },
+                "odometerMeasurement": {
+                    "carCapturedTimestamp": "2021-08-04T11:00:51Z",
+                    "odometer": 4166
+                },
+                "capabilityStatus": {
+                    "capabilities": []
+                }
+            },
+            "error": {
+                "chargeMode": {
+                    "code": 4104,
+                    "message": "The vehicle does not support the requested operation",
+                    "group": 4,
+                    "info": "Looks like your service has expired. Please update your service subscription."
+                },
+                "rangeStatus": {
+                    "code": 9999,
+                    "message": "502, 5002, Underlying system respond unexpected - VCF respond unexpected with status code: 502",
+                    "group": 2,
+                    "info": "Internal error, please try again later. If the problem persists, please contact our support.",
+                    "retry": true
+                }
+            }
+        },
+        "2021-08-04 14:10:53.941458"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
+        {
+            "data": {
+                "latitude": 53.662387,
+                "longitude": 10.159876,
+                "carCapturedTimestamp": "2021-08-04T10:58:44Z"
+            }
+        },
+        "2021-08-04 14:10:54.463272"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+        {
+            "data": [
+                {
+                    "vin": "AAABBBCCCDDD12345",
+                    "role": "PRIMARY_USER",
+                    "enrollmentStatus": "COMPLETED",
+                    "model": "Demo Test Vehicle",
+                    "nickname": "Test Vehicle",
+                    "capabilities": [],
+                    "images": {},
+                    "coUsers": []
+                }
+            ]
+        },
+        "2021-08-04 14:10:54.916902"
+    ]
+}

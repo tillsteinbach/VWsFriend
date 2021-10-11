@@ -98,10 +98,10 @@ class ABRPAgent():
         else:
             self.telemetryData['is_parked'] = False
 
-        if 'maintenanceStatus' in self.weConnectVehicle.statuses and self.weConnectVehicle.statuses['maintenanceStatus'].enabled:
-            maintenanceStatus = self.weConnectVehicle.statuses['maintenanceStatus']
-            if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km is not None:
-                self.telemetryData['odometer'] = maintenanceStatus.mileage_km.value
+        if 'odometerMeasurement' in self.weConnectVehicle.statuses and self.weConnectVehicle.statuses['odometerMeasurement'].enabled:
+            odometerMeasurement = self.weConnectVehicle.statuses['odometerMeasurement']
+            if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
+                self.telemetryData['odometer'] = odometerMeasurement.odometer.value
 
         if 'chargingStatus' in self.weConnectVehicle.statuses and self.weConnectVehicle.statuses['chargingStatus'].enabled:
             chargingStatus = self.weConnectVehicle.statuses['chargingStatus']
