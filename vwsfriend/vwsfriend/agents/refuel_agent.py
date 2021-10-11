@@ -48,8 +48,8 @@ class RefuelAgent():
                     position_longitude = parkingPosition.longitude.value
                     location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
 
-            # Refuel event took place
-            if self.primary_currentSOC_pct is not None and current_primary_currentSOC_pct > self.primary_currentSOC_pct:
+            # Refuel event took place (as the car somethimes finds one or two percent of fuel somewhere lets give a 5 percent margin)
+            if self.primary_currentSOC_pct is not None and ((current_primary_currentSOC_pct - 5) > self.primary_currentSOC_pct):
                 LOG.info('Vehicle %s refueled from %d percent to %d percent', self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
                 self.range = RefuelSession(self.vehicle, element.value, self.primary_currentSOC_pct, current_primary_currentSOC_pct, mileage_km,
                                            position_latitude, position_longitude, location)
