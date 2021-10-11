@@ -83,6 +83,8 @@ class RefuelSessionEditForm(FlaskForm):
     mileage_km = IntegerField('Mileage in km when charging', validators=[Optional(), NumberRange(min=0)])
     position_latitude = DecimalField('Position Latitude', places=10, validators=[Optional(), NumberRange(min=-90, max=90)])
     position_longitude = DecimalField('Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
+    realRefueled_l = DecimalField('Real l refueled', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
+    realCost_ct = IntegerField('Real cost in cents', validators=[Optional(), NumberRange(min=0)])
 
     save = SubmitField('Save changes')
     add = SubmitField('Add Session')
@@ -461,6 +463,8 @@ def refuelSessionEdit():  # noqa: C901
             refuelSession.position_longitude = form.position_longitude.data
             if refuelSession.position_latitude is not None and refuelSession.position_longitude is not None:
                 refuelSession.location = locationFromLatLon(current_app.db.session, refuelSession.position_latitude, refuelSession.position_longitude)
+            refuelSession.realRefueled_l = form.realRefueled_l.data
+            refuelSession.realCost_ct = form.realCost_ct.data
 
         current_app.db.session.commit()
         flash(message=f'Successfully updated refuel session {id}', category='info')
@@ -478,6 +482,8 @@ def refuelSessionEdit():  # noqa: C901
             location = None
         refuelSession = RefuelSession(vehicle=vehicle, date=date, startSOC_pct=form.startSOC_pct.data, endSOC_pct=form.endSOC_pct.data,
                                       mileage_km=form.mileage_km.data, position_latitude=latitude, position_longitude=longitude, location=location)
+        refuelSession.realRefueled_l = form.realRefueled_l.data
+        refuelSession.realCost_ct = form.realCost_ct.data
 
         with current_app.db.session.begin_nested():
             current_app.db.session.add(refuelSession)
@@ -494,7 +500,8 @@ def refuelSessionEdit():  # noqa: C901
         form.mileage_km.data = refuelSession.mileage_km
         form.position_latitude.data = refuelSession.position_latitude
         form.position_longitude.data = refuelSession.position_longitude
-
+        form.realRefueled_l.data = refuelSession.realRefueled_l
+        form.realCost_ct.data = refuelSession.realCost_ct
     else:
         form.vehicle_vin.data = vehicle.vin
         form.date.data = datetime.utcnow()
