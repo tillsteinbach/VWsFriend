@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - Will deal with corrupted cache file by deleting cache
 - Various improvements in dashboards (e.g. optimized queries)
 - Corrupted graphs for consumption, range and efficiency
+- Unwanted refuel session entries when the car suddenly finds one or two percent of fuel
 
 ### Changed
 - Updated API to 0.21.1
