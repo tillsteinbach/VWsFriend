@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - Interval is executed more precisely
 - Will deal with corrupted cache file by deleting cache
 - Various improvements in dashboards (e.g. optimized queries)
+- Corrupted graphs for consumption, range and efficiency
 
 ### Changed
 - Updated API to 0.21.1

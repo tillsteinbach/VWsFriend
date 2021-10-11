@@ -46,7 +46,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1631862595729,
+  "iteration": 1633955001857,
   "links": [
     {
       "asDropdown": true,
@@ -1368,7 +1368,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  CASE WHEN \"currentSOC_pct\"::NUMERIC > 0 THEN \"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC END AS \"Current Range at 100%\",\n  CASE WHEN \"currentSOC_pct\"::NUMERIC = 0 OR \"cruisingRangeElectric_km\"::NUMERIC = 0 THEN NULL\n       WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END / (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) * 100::NUMERIC AS \"Calculated consumption\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'",
+          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  CASE WHEN \"currentSOC_pct\"::NUMERIC > 0 THEN \"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC END AS \"Current Range at 100%\",\n  CASE WHEN \"currentSOC_pct\"::NUMERIC = 0 OR \"cruisingRangeElectric_km\"::NUMERIC = 0 THEN NULL\n       WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END / (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) * 100::NUMERIC AS \"Calculated consumption\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\nORDER BY 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1421,7 +1421,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"WLTP\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'",
+          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"WLTP\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'\nORDER BY 1",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -1577,7 +1577,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) / \n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END * 100::NUMERIC AS \"Efficiency\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\n",
+          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) / \n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END * 100::NUMERIC AS \"Efficiency\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\nORDER BY 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1630,7 +1630,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  100 AS \"100% = WLTP Range\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'",
+          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  100 AS \"100% = WLTP Range\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'\nORDER BY 1",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
