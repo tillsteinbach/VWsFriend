@@ -1,8 +1,9 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import logging
 from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.weconnect_error import WeConnectError
+from vwsfriend.model.weconnect_responsetime import WeConnectResponsetime
 
 from weconnect.weconnect import WeConnect
 from weconnect.weconnect_errors import ErrorEventType
@@ -25,7 +26,17 @@ class WeconnectErrorAgent():
                 self.session.add(error)
             self.session.commit()
         except IntegrityError:
-            LOG.warning('Could not add error entry to the database, this is usually due to an error in the WeConnect API')
+            LOG.warning('Could not add error entry to the database')
 
     def commit(self):
-        pass
+        min = self.weconnect.getMinElapsed() / timedelta(microseconds=1)
+        avg = self.weconnect.getAvgElapsed() / timedelta(microseconds=1)
+        max = self.weconnect.getMaxElapsed() / timedelta(microseconds=1)
+        total = self.weconnect.getTotalElapsed() / timedelta(microseconds=1)
+        responsetime = WeConnectResponsetime(datetime.utcnow().replace(tzinfo=timezone.utc), min, avg, max, total)
+        try:
+            with self.session.begin_nested():
+                self.session.add(responsetime)
+            self.session.commit()
+        except IntegrityError:
+            LOG.warning('Could not add responsetime entry to the database')
