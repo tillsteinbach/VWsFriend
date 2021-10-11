@@ -2,6 +2,7 @@ from .battery import Battery
 from .charge import Charge
 from .charging_session import ChargingSession
 from .climatization import Climatization
+from .journey import Journey
 from .location import Location
 from .online import Online
 from .range import Range
