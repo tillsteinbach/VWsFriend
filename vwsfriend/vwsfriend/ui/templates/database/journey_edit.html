@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}{% if form and form.id.data %}Edit settings for {% else %}Add a new {% endif %}journey{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if form %}
+<div class="form-wrapper">
+  <form method="POST">
+      {{ form.csrf_token }}
+
+      {{ form.id }}
+      {{ form.vehicle_vin }}
+
+      <fieldset class="form-field">
+        {{ form.start.label }}
+        {{ form.start }}
+        {% if form.start.errors %}
+          <ul class="errors">
+            {% for error in form.start.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.end.label }}
+        {{ form.end }}
+        {% if form.end.errors %}
+          <ul class="errors">
+            {% for error in form.end.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.title.label }}
+        {{ form.title }}
+        {% if form.title.errors %}
+          <ul class="errors">
+            {% for error in form.title.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.description.label }}
+        {{ form.description }}
+        {% if form.description.errors %}
+          <ul class="errors">
+            {% for error in form.description.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      {% if form.id.data %}
+      {{ form.save }}
+      {% else %}
+      {{ form.add }}
+      {% endif %}
+      {{ form.delete }}
+
+  </form>
+</div>
+{% endif %}
+{% endblock %}

@@ -15,6 +15,7 @@ from vwsfriend.model.charging_session import ACDC, ChargingSession
 from vwsfriend.model.refuel_session import RefuelSession
 from vwsfriend.model.vehicle import Vehicle
 from vwsfriend.model.settings import Settings, UnitOfLength, UnitOfTemperature
+from vwsfriend.model.journey import Journey
 
 from vwsfriend.util.location_util import locationFromLatLon, addCharger
 
@@ -89,6 +90,19 @@ class RefuelSessionEditForm(FlaskForm):
     save = SubmitField('Save changes')
     add = SubmitField('Add Session')
     delete = SubmitField('Delete Session')
+
+
+class JourneyEditForm(FlaskForm):
+    id = HiddenField('id', validators=[Optional()])
+    vehicle_vin = HiddenField('id', validators=[DataRequired()])
+    start = DateTimeField('Start date and Time (UTC)', validators=[DataRequired()])
+    end = DateTimeField('End date and Time (UTC)', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+
+    save = SubmitField('Save changes')
+    add = SubmitField('Add journey')
+    delete = SubmitField('Delete journey')
 
 
 @bp.route('/settings/edit', methods=['GET', 'POST'])
@@ -512,3 +526,85 @@ def refuelSessionEdit():  # noqa: C901
         form.endSOC_pct.data = 100
 
     return render_template('database/refuel_session_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/journey/edit', methods=['GET', 'POST'])  # noqa: C901
+def journeyEdit():  # noqa: C901
+    id = None
+    vin = None
+    vehicle = None
+
+    form = JourneyEditForm()
+
+    if request.args is not None:
+        id = request.args.get('id')
+        vin = request.args.get('vin')
+    if id is None and form.id.data is not None and form.id.data.isdigit():
+        id = form.id.data
+    journey = None
+
+    if id is not None:
+        journey = current_app.db.session.query(Journey).filter(Journey.id == id).first()
+
+        if journey is None:
+            abort(404, f"Journey with id {id} doesn't exist.")
+
+    elif vin is None:
+        flash(message='You need to provide a vin to add a journey', category='error')
+    else:
+        vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
+        if vehicle is None:
+            flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
+
+    if journey is not None and form.delete.data:
+        flash(message=f'Successfully deleted journey {id}', category='info')
+        with current_app.db.session.begin_nested():
+            current_app.db.session.delete(journey)
+        current_app.db.session.commit()
+        return render_template('database/journey_edit.html', current_app=current_app, form=None)
+
+    if journey is not None and form.save.data and form.validate_on_submit():
+        with current_app.db.session.begin_nested():
+            journey.start = form.start.data
+            journey.end = form.end.data
+            journey.title = form.title.data
+            journey.description = form.description.data
+
+        current_app.db.session.commit()
+        flash(message=f'Successfully updated journey {id}', category='info')
+
+    elif journey is None and form.add.data and form.validate_on_submit():
+        start = form.start.data
+        if start is not None:
+            start = start.replace(tzinfo=timezone.utc, microsecond=0)
+        end = form.end.data
+        if end is not None:
+            end = end.replace(tzinfo=timezone.utc, microsecond=0)
+
+        journey = Journey(vehicle=vehicle, start=start, end=end, title=form.title.data)
+        journey.description = form.description.data
+
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(journey)
+        current_app.db.session.commit()
+        current_app.db.session.refresh(journey)
+        flash(message=f'Successfully added a new journey {journey.id}', category='info')
+
+    if journey is not None:
+        form.id.data = journey.id
+        form.vehicle_vin.data = journey.vehicle_vin
+        form.start.data = journey.start
+        form.end.data = journey.end
+        form.title.data = journey.title
+        form.description.data = journey.description
+    else:
+        form.vehicle_vin.data = vehicle.vin
+        if request.args is not None:
+            tripstart = request.args.get('tripstart')
+            if tripstart is not None:
+                form.start.data = datetime.utcfromtimestamp(int(tripstart) / 1000)
+            tripend = request.args.get('tripend')
+            if tripend is not None:
+                form.end.data = datetime.utcfromtimestamp(int(tripend) / 1000)
+
+    return render_template('database/journey_edit.html', current_app=current_app, form=form)
