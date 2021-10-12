@@ -44,7 +44,8 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
                                                                                                            AddressableLeaf.ObserverEvent.DISABLED,
                                                                                                            onUpdateComplete=True)
-                LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips')
+                if not self.vehicle.weConnectVehicle.statuses['parkingPosition'].error.enabled:
+                    LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips')
             else:
                 self.vehicle.weConnectVehicle.statuses.addObserver(self.__onStatusesChange,
                                                                    AddressableLeaf.ObserverEvent.ENABLED,
