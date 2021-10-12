@@ -204,7 +204,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  trips.\"endDate\" AS time,\n  trips.end_mileage_km AS \"Mileage\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  trips.vehicle_vin = '$VIN' AND\n  trips.\"endDate\" IS NOT NULL AND\n  trips.end_mileage_km IS NOT NULL\nORDER BY \"endDate\" ASC",
+          "rawSql": "SELECT\n  $__timeGroup(\"endDate\", $__interval),\n  MAX(trips.end_mileage_km) AS \"Mileage\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  trips.vehicle_vin = '$VIN' AND\n  trips.\"endDate\" IS NOT NULL AND\n  trips.end_mileage_km IS NOT NULL\nGROUP BY time\nORDER BY time ASC",
           "refId": "A",
           "select": [
             [
