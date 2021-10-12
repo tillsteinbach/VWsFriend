@@ -22,7 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1632989052450,
+  "iteration": 1634050266217,
   "links": [
     {
       "asDropdown": true,
@@ -226,13 +226,6 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Period"
-            },
-            "properties": []
-          },
-          {
-            "matcher": {
               "id": "byRegexp",
               "options": "Cost"
             },
@@ -248,6 +241,26 @@
               {
                 "id": "custom.width",
                 "value": 60
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "F. Cost"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 60
+              },
+              {
+                "id": "unit",
+                "value": "currencyEUR"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           }
@@ -330,7 +343,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(date_trunc('month', \"date\" AT TIME ZONE '${__to:date:Z}'), 'YYYY Month')\n    WHEN 'year' THEN to_char(date_trunc('year', \"date\" AT TIME ZONE '${__to:date:Z}'), 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(date_trunc('week', \"date\" AT TIME ZONE '${__to:date:Z}'), 'WW') || ' starting ' || to_char(date_trunc('week', \"date\" AT TIME ZONE '${__to:date:Z}'), 'YYYY-MM-DD')\n    ELSE to_char(\"date\" AT TIME ZONE '${__to:date:Z}', 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Refuels\",\n  SUM((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)) AS \"Fuel Added\",\n  AVG((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)) AS \"Avg. Added\"\nFROM \n  refuel_sessions\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"date\") AND\n  refuel_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to\nORDER BY \"date_from\" DESC",
+          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"date\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(date_trunc('month', \"date\" AT TIME ZONE '${__to:date:Z}'), 'YYYY Month')\n    WHEN 'year' THEN to_char(date_trunc('year', \"date\" AT TIME ZONE '${__to:date:Z}'), 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(date_trunc('week', \"date\" AT TIME ZONE '${__to:date:Z}'), 'WW') || ' starting ' || to_char(date_trunc('week', \"date\" AT TIME ZONE '${__to:date:Z}'), 'YYYY-MM-DD')\n    ELSE to_char(\"date\" AT TIME ZONE '${__to:date:Z}', 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Refuels\",\n  SUM(COALESCE(\"realRefueled_l\",((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)))) AS \"Fuel Added\",\n  AVG(COALESCE(\"realRefueled_l\",((\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)))) AS \"Avg. Added\",\n  SUM(\"realCost_ct\"::NUMERIC / 100::NUMERIC) AS \"F. Cost\"\nFROM \n  refuel_sessions\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"date\") AND\n  refuel_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to\nORDER BY \"date_from\" DESC",
           "refId": "C",
           "select": [
             [
@@ -374,13 +387,14 @@
               "Cost": 10,
               "Distance": 3,
               "Energy Charged": 8,
+              "F. Cost": 14,
               "Fuel Added": 12,
               "Median Distance": 4,
               "Period": 0,
               "Time charging": 6,
               "Time driven": 2,
-              "date_from": 14,
-              "date_to": 15
+              "date_from": 15,
+              "date_to": 16
             },
             "renameByName": {}
           }
