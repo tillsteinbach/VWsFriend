@@ -22,7 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1634047838996,
+  "iteration": 1634050108675,
   "links": [
     {
       "asDropdown": false,
@@ -330,7 +330,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date AS \"Date\",\n  locations.display_name AS \"Location\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\",\n  CASE WHEN \"realRefueled_l\" IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM date)) * 1000) AS start_date_ts\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  refuel_sessions.vehicle_vin = '$VIN'\nORDER BY date",
+          "rawSql": "SELECT\n  date AS \"Date\",\n  locations.display_name AS \"Location\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\",\n  CASE WHEN \"realRefueled_l\" IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM date)) * 1000) AS start_date_ts\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(date) AND\n  refuel_sessions.vehicle_vin = '$VIN'\nORDER BY date",
           "refId": "A",
           "select": [
             [
