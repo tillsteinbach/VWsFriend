@@ -22,8 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 22,
-  "iteration": 1634049792347,
+  "iteration": 1634049981391,
   "links": [
     {
       "asDropdown": false,
@@ -40,7 +39,7 @@
     {
       "asDropdown": false,
       "icon": "dashboard",
-      "includeVars": false,
+      "includeVars": true,
       "keepTime": false,
       "tags": [],
       "targetBlank": false,
