@@ -21,7 +21,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1628503798675,
+  "iteration": 1634050919663,
   "links": [
     {
       "asDropdown": false,
@@ -193,7 +193,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
@@ -280,7 +280,19 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Amount"
+              "options": "Odometer"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/Amount.*/"
             },
             "properties": [
               {
@@ -292,19 +304,23 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Odometer"
+              "options": "Cost (real)"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "km"
+                "value": "currencyEUR"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 7,
         "w": 6,
         "x": 12,
         "y": 3
@@ -328,14 +344,14 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\",\n  \"mileage_km\" AS \"Odometer\"\nFROM refuel_sessions\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  id = $id",
+          "rawSql": "SELECT\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realRefueled_l\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\"\nFROM refuel_sessions\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -389,10 +405,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 13,
+        "h": 10,
         "w": 6,
         "x": 12,
-        "y": 8
+        "y": 10
       },
       "id": 12,
       "options": {
@@ -413,7 +429,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.1.3",
       "targets": [
         {
           "format": "table",
