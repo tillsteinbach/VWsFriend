@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No unreleased changes so far
+
+## [0.7.0] - 2021-10-12
 ### Fixed
 - Interval is executed more precisely
 - Will deal with corrupted cache file by deleting cache
@@ -10,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Unwanted refuel session entries when the car suddenly finds one or two percent of fuel
 
 ### Added
+- New dashboard for journeys added
 - It is now possible to add real amount and cost for refueling of gasoline cars and hybrids
 - Statistics for the responsetime are collected
 
@@ -134,7 +138,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.6.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.7.0
 [0.6.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.6.0
 [0.5.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.4
 [0.5.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.5.3
