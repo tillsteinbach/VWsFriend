@@ -6,6 +6,8 @@ services:
      - 4000:4000
     networks:
       backend:
+    volumes:
+      - vwsfriend_data:/config
     environment:
       - WECONNECT_USER
       - WECONNECT_PASSWORD
@@ -72,5 +74,6 @@ networks:
   backend:
 
 volumes:
+  vwsfriend_data:
   postgresdb_data:
   grafana_data:
