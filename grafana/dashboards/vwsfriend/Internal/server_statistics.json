@@ -21,7 +21,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 21,
   "links": [],
   "panels": [
     {
@@ -183,7 +182,7 @@
       },
       "targets": [
         {
-          "format": "table",
+          "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
@@ -228,7 +227,7 @@
             "axisPlacement": "auto",
             "axisWidth": 16,
             "barAlignment": 0,
-            "drawStyle": "points",
+            "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
@@ -256,7 +255,6 @@
             }
           },
           "mappings": [],
-          "max": 1,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -278,6 +276,7 @@
         "y": 20
       },
       "id": 4,
+      "interval": "5m",
       "options": {
         "legend": {
           "calcs": [],
@@ -290,11 +289,11 @@
       },
       "targets": [
         {
-          "format": "table",
+          "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(\"datetime\", $__interval),\n  SUM(1) AS \"HTTP Error\"\nFROM weconnect_errors\nWHERE\n  $__timeFilter(\"datetime\") AND\n  \"errortype\" = 'HTTP'\nGROUP BY time\nORDER BY time",
+          "rawSql": "SELECT\n  $__timeGroup(\"datetime\", $__interval, 0),\n  COUNT(*) AS \"HTTP Error\"\nFROM weconnect_errors\nWHERE\n  $__timeFilter(\"datetime\") AND\n  \"errortype\" = 'HTTP'\nGROUP BY time\nORDER BY time",
           "refId": "A",
           "select": [
             [
