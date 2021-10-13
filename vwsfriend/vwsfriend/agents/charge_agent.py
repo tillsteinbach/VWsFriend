@@ -200,8 +200,8 @@ class ChargeAgent():
                     self.chargingSession.location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
                 if self.chargingSession.charger is None:
                     self.chargingSession.charger = chargerFromLatLon(weConnect=self.vehicle.weConnectVehicle.weConnect, session=self.session,
-                                                                     latitude=parkingPosition.latitude.value, longitude=parkingPosition.longitude.value,
-                                                                     searchRadius=100)
+                                                                     latitude=round(parkingPosition.latitude.value, 4),
+                                                                     longitude=round(parkingPosition.longitude.value, 4), searchRadius=100)
 
     def updateMileage(self):
         if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses:

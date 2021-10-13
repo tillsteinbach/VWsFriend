@@ -293,7 +293,7 @@ def chargingSessionEdit():  # noqa: C901
             longitude = None
 
         if latitude is not None and longitude is not None:
-            chargers = sorted(current_app.weConnect.getChargingStations(latitude, longitude, searchRadius=500).values(),
+            chargers = sorted(current_app.weConnect.getChargingStations(round(latitude, 4), round(longitude, 4), searchRadius=500).values(),
                               key=lambda station: station.distance.value)
             choices = [(None, 'unknown')]
             for charger in chargers:
