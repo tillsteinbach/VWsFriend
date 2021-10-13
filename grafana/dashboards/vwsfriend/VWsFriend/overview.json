@@ -46,7 +46,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1633955001857,
+  "iteration": 1634114518435,
   "links": [
     {
       "asDropdown": true,
@@ -1853,61 +1853,107 @@
       }
     },
     {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:372",
-          "color": "#CCC",
-          "text": "N/A"
-        },
-        {
-          "$$hashKey": "object:373",
-          "color": "#73BF69",
-          "text": "online"
-        },
-        {
-          "$$hashKey": "object:374",
-          "color": "rgb(103, 103, 103)",
-          "text": "offline"
-        }
-      ],
-      "crosshairColor": "#8F070C",
       "datasource": null,
       "description": "",
-      "display": "timeline",
-      "expandFromQueryS": 1209600,
-      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 0
+          },
+          "mappings": [
+            {
+              "options": {
+                "CHARGING": {
+                  "color": "blue",
+                  "index": 9,
+                  "text": "charging"
+                },
+                "COOLING": {
+                  "color": "blue",
+                  "index": 5,
+                  "text": "cooling"
+                },
+                "ERROR": {
+                  "color": "red",
+                  "index": 8,
+                  "text": "error"
+                },
+                "HEATING": {
+                  "color": "red",
+                  "index": 3,
+                  "text": "heating"
+                },
+                "OFF": {
+                  "color": "#3d3d3d",
+                  "index": 2,
+                  "text": "off"
+                },
+                "ON": {
+                  "color": "green",
+                  "index": 4,
+                  "text": "on"
+                },
+                "READY_FOR_CHARGING": {
+                  "color": "green",
+                  "index": 7,
+                  "text": "ready for charging"
+                },
+                "VENTILATION": {
+                  "color": "purple",
+                  "index": 6,
+                  "text": "ventilation"
+                },
+                "offline": {
+                  "color": "#3d3d3d",
+                  "index": 1
+                },
+                "online": {
+                  "color": "green",
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 4,
+        "h": 9,
         "w": 12,
         "x": 6,
         "y": 40
       },
-      "highlightOnMouseover": true,
       "id": 21,
       "interval": "5m",
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#FFFFFF",
-      "pluginVersion": "7.5.2",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:385",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
+      "options": {
+        "alignValue": "center",
+        "legend": {
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
         }
-      ],
-      "rowHeight": 50,
-      "showDistinctCount": false,
-      "showLegend": true,
-      "showLegendCounts": false,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendTime": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "showTransitionCount": true,
+      },
+      "pluginVersion": "7.5.2",
       "targets": [
         {
           "alias": "Car state",
@@ -1921,7 +1967,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(SELECT\n  \"onlineTime\" AS \"time\",\n  'online' AS \"state\"\nFROM onlinestates\nWHERE\n  \"onlineTime\" != \"offlineTime\" AND\n  $__timeFilter(\"onlineTime\") AND\n  vehicle_vin = '$VIN')\nUNION ALL\n(SELECT\n  \"offlineTime\" AS \"time\",\n  'offline' AS \"state\"\nFROM onlinestates\nWHERE\n  \"onlineTime\" != \"offlineTime\" AND\n  $__timeFilter(\"offlineTime\") AND\n  vehicle_vin = '$VIN')\nORDER BY \"time\"",
+          "rawSql": "(SELECT\n  \"onlineTime\" AS \"time\",\n  'online' AS \"Online\"\nFROM onlinestates\nWHERE\n  \"onlineTime\" != \"offlineTime\" AND\n  $__timeFilter(\"onlineTime\") AND\n  vehicle_vin = '$VIN')\nUNION ALL\n(SELECT\n  \"offlineTime\" AS \"time\",\n  'offline' AS \"state\"\nFROM onlinestates\nWHERE\n  \"onlineTime\" != \"offlineTime\" AND\n  $__timeFilter(\"offlineTime\") AND\n  vehicle_vin = '$VIN')\nORDER BY \"time\"",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1943,150 +1989,13 @@
               "type": "macro"
             }
           ]
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
         },
         {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Online State",
-      "type": "natel-discrete-panel",
-      "units": "none",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:381",
-          "op": "=",
-          "text": "online",
-          "value": "true"
-        },
-        {
-          "$$hashKey": "object:382",
-          "op": "=",
-          "text": "offline",
-          "value": "false"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": true,
-      "writeLastValue": true,
-      "writeMetricNames": false
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:330",
-          "color": "#CCC",
-          "text": "N/A"
-        },
-        {
-          "$$hashKey": "object:331",
-          "color": "rgb(117, 117, 117)",
-          "text": "off"
-        },
-        {
-          "$$hashKey": "object:332",
-          "color": "#F2495C",
-          "text": "heating"
-        },
-        {
-          "$$hashKey": "object:333",
-          "color": "#73BF69",
-          "text": "on"
-        },
-        {
-          "$$hashKey": "object:334",
-          "color": "#5794F2",
-          "text": "cooling"
-        },
-        {
-          "$$hashKey": "object:335",
-          "color": "#B877D9",
-          "text": "ventilation"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "description": "",
-      "display": "timeline",
-      "expandFromQueryS": 1209600,
-      "extendLastValue": true,
-      "gridPos": {
-        "h": 4,
-        "w": 12,
-        "x": 6,
-        "y": 44
-      },
-      "highlightOnMouseover": true,
-      "id": 7,
-      "interval": "5m",
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#FFFFFF",
-      "pluginVersion": "7.5.2",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:353",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendTime": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "showTransitionCount": true,
-      "targets": [
-        {
-          "alias": "Climatization",
+          "alias": "Car state",
           "format": "table",
           "group": [],
           "groupBy": [],
+          "hide": false,
           "measurement": "",
           "metricColumn": "none",
           "orderByTime": "ASC",
@@ -2094,8 +2003,8 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"climatisationState\" AS \"State\"\nFROM climatization\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
-          "refId": "A",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"climatisationState\" AS \"Climatization\"\nFROM climatization\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -2116,191 +2025,28 @@
               "type": "macro"
             }
           ]
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
         },
         {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Climatization",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:351",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        },
-        {
-          "$$hashKey": "object:1023",
-          "op": "=",
-          "text": "off",
-          "value": "OFF"
-        },
-        {
-          "$$hashKey": "object:1025",
-          "op": "=",
-          "text": "heating",
-          "value": "HEATING"
-        },
-        {
-          "$$hashKey": "object:1027",
-          "op": "=",
-          "text": "on",
-          "value": "ON"
-        },
-        {
-          "$$hashKey": "object:1029",
-          "op": "=",
-          "text": "cooling",
-          "value": "COOLING"
-        },
-        {
-          "$$hashKey": "object:1031",
-          "op": "=",
-          "text": "ventilation",
-          "value": "VENTILATION"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": true,
-      "writeLastValue": true,
-      "writeMetricNames": false
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:404",
-          "color": "#CCC",
-          "text": "N/A"
-        },
-        {
-          "$$hashKey": "object:405",
-          "color": "#7EB26D",
-          "text": "readyForCharging"
-        },
-        {
-          "$$hashKey": "object:406",
-          "color": "#F2495C",
-          "text": "error"
-        },
-        {
-          "$$hashKey": "object:407",
-          "color": "#5794F2",
-          "text": "charging"
-        },
-        {
-          "$$hashKey": "object:178",
-          "color": "rgb(117, 117, 117)",
-          "text": "off"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "description": "",
-      "display": "timeline",
-      "expandFromQueryS": 1209600,
-      "extendLastValue": true,
-      "gridPos": {
-        "h": 5,
-        "w": 12,
-        "x": 6,
-        "y": 48
-      },
-      "highlightOnMouseover": true,
-      "id": 10,
-      "interval": "5m",
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
-      "pluginVersion": "7.5.2",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:418",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 75,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendTime": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "showTransitionCount": true,
-      "targets": [
-        {
-          "alias": "Charging State",
           "format": "table",
           "group": [],
-          "groupBy": [],
-          "measurement": "",
+          "hide": false,
           "metricColumn": "none",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "",
-          "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\" AS \"State\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
-          "refId": "A",
-          "resultFormat": "time_series",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\" AS \"Charging\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "C",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "position_latitude"
                 ],
-                "type": "field"
+                "type": "column"
               }
             ]
           ],
-          "tags": [],
-          "timeColumn": "time",
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
           "where": [
             {
               "name": "$__timeFilter",
@@ -2310,90 +2056,10 @@
           ]
         }
       ],
-      "textSize": 24,
-      "textSizeTime": 12,
       "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
       "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Charging State",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:416",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        },
-        {
-          "$$hashKey": "object:172",
-          "op": "=",
-          "text": "readyForCharging",
-          "value": "READY_FOR_CHARGING"
-        },
-        {
-          "$$hashKey": "object:174",
-          "op": "=",
-          "text": "error",
-          "value": "ERROR"
-        },
-        {
-          "$$hashKey": "object:176",
-          "op": "=",
-          "text": "charging",
-          "value": "CHARGING"
-        },
-        {
-          "$$hashKey": "object:181",
-          "op": "=",
-          "text": "off",
-          "value": "OFF"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": true,
-      "writeLastValue": true,
-      "writeMetricNames": false
+      "title": "States",
+      "type": "state-timeline"
     }
   ],
   "refresh": false,

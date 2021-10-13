@@ -22,8 +22,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 20,
-  "iteration": 1634048469246,
+  "iteration": 1634115734598,
   "links": [
     {
       "asDropdown": false,
@@ -543,55 +542,83 @@
       "type": "piechart"
     },
     {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:407",
-          "color": "#5794F2",
-          "text": "charging"
-        },
-        {
-          "$$hashKey": "object:178",
-          "color": "rgb(117, 117, 117)",
-          "text": "off"
-        }
-      ],
-      "crosshairColor": "#8F070C",
       "datasource": null,
       "description": "",
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "fillOpacity": 100,
+            "lineWidth": 0
+          },
+          "mappings": [
+            {
+              "options": {
+                "CHARGING": {
+                  "color": "blue",
+                  "index": 3,
+                  "text": "charging"
+                },
+                "DRIVING": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "driving"
+                },
+                "OFF": {
+                  "color": "#3d3d3d",
+                  "index": 2,
+                  "text": "off"
+                },
+                "READY_FOR_CHARGING": {
+                  "color": "#3d3d3d",
+                  "index": 1,
+                  "text": "off"
+                },
+                "charging": {
+                  "color": "#5794F2",
+                  "index": 4
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
         "x": 0,
         "y": 15
       },
-      "highlightOnMouseover": true,
       "id": 12,
       "interval": "5m",
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
-      "pluginVersion": "7.5.2",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:418",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
+      "options": {
+        "alignValue": "center",
+        "legend": {
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
         }
-      ],
-      "rowHeight": 30,
-      "showLegend": false,
-      "showLegendCounts": false,
-      "showLegendNames": true,
-      "showLegendPercent": false,
-      "showLegendTime": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "showTransitionCount": true,
+      },
+      "pluginVersion": "7.5.2",
       "targets": [
         {
           "alias": "Charging State",
@@ -630,90 +657,10 @@
           ]
         }
       ],
-      "textSize": 12,
-      "textSizeTime": 9,
       "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
       "timeShift": null,
-      "timeTextColor": "#d8d9da",
       "title": "States",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:416",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        },
-        {
-          "$$hashKey": "object:176",
-          "op": "=",
-          "text": "charging",
-          "value": "CHARGING"
-        },
-        {
-          "$$hashKey": "object:181",
-          "op": "=",
-          "text": "off",
-          "value": "OFF"
-        },
-        {
-          "$$hashKey": "object:98",
-          "op": "=",
-          "text": "off",
-          "value": "READY_FOR_CHARGING"
-        },
-        {
-          "$$hashKey": "object:93",
-          "op": "=",
-          "text": "driving",
-          "value": "DRIVING"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": true,
-      "writeLastValue": true,
-      "writeMetricNames": false
+      "type": "state-timeline"
     },
     {
       "aliasColors": {},
@@ -1666,7 +1613,7 @@
       "type": "table"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 30,
   "style": "dark",
   "tags": [
