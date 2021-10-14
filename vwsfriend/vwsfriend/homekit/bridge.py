@@ -35,8 +35,12 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
         except FileNotFoundError:
             pass
 
-        for accessory in self.__accessoryConfig.values():
-            placeholderAccessory = DummyAccessory(driver=driver, displayName=accessory['ConfiguredName'], aid=accessory['aid'])
+        for identifier, accessory in self.__accessoryConfig.items():
+            if 'ConfiguredName' in accessory:
+                displayName = accessory['ConfiguredName']
+            else:
+                displayName = identifier
+            placeholderAccessory = DummyAccessory(driver=driver, displayName=displayName, aid=accessory['aid'])
             self.add_accessory(placeholderAccessory)
 
     def persistConfig(self):
