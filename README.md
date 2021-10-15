@@ -78,7 +78,7 @@ watchtower:
 ```
 If you want to be sure that the update only happens at a certain time of the day to prevent updating in times where you use the car you can also schedule update times like this:
 ```bash
-    command: --schedule "0 0 2 * * *“ 30 --cleanup
+    command: --schedule "0 0 2 * * *“ --cleanup
 ```
 The example shifts the update time to 2:00 (UTC)
 
