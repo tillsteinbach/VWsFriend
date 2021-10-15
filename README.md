@@ -76,6 +76,11 @@ watchtower:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 30 --cleanup
 ```
+If you want to be sure that the update only happens at a certain time of the day to prevent updating in times where you use the car you can also schedule update times like this:
+```bash
+    command: --schedule "0 0 2 * * *“ 30 --cleanup
+```
+The example shifts the update time to 2:00 (UTC)
 
 ## Known Issues
 * Ironically you cannot host VWsFriend with Homekit support on a macOS machine. The reason is that there is no way to get the advertisements via multicast out of the container into the network. If you want to use the Homekit feature you have to host VWsFriend on a Linux machine. If someone is able to make a setup work on macOS, please let me know to allow me to update the documentation!
