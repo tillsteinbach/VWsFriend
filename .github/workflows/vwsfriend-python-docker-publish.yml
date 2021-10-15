@@ -9,7 +9,7 @@ jobs:
   vwsfriend-python-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Set up Python
         uses: actions/setup-python@v2.2.2
         with:
@@ -68,7 +68,7 @@ jobs:
           while [ $? -ne 0 ]; do sleep 10; pip3 download vwsfriend==${{ env.version }}; done
         shell: bash {0}
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3.4.1
