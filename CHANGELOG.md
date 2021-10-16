@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.8.1] - 2021-10-16
+### Fixed
+- installation of panomap plugin
+
 ## [0.8.0] - 2021-10-14
 ### Added
 - Charging map in charging statistics
@@ -150,7 +154,9 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.7.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.8.1...HEAD
+[0.8.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.8.1
+[0.8.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.8.0
 [0.7.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.7.1
 [0.7.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.7.0
 [0.6.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.6.0
