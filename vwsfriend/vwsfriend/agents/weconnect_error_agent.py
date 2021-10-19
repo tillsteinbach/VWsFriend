@@ -29,10 +29,18 @@ class WeconnectErrorAgent():
             LOG.warning('Could not add error entry to the database')
 
     def commit(self):
-        min = self.weconnect.getMinElapsed() / timedelta(microseconds=1)
-        avg = self.weconnect.getAvgElapsed() / timedelta(microseconds=1)
-        max = self.weconnect.getMaxElapsed() / timedelta(microseconds=1)
-        total = self.weconnect.getTotalElapsed() / timedelta(microseconds=1)
+        min = self.weconnect.getMinElapsed()
+        if min is not None:
+            min /= timedelta(microseconds=1)
+        avg = self.weconnect.getAvgElapsed()
+        if avg is not None:
+            avg /= timedelta(microseconds=1)
+        max = self.weconnect.getMaxElapsed()
+        if max is not None:
+            max /= timedelta(microseconds=1)
+        total = self.weconnect.getTotalElapsed()
+        if total is not None:
+            total /= timedelta(microseconds=1)
         responsetime = WeConnectResponsetime(datetime.utcnow().replace(tzinfo=timezone.utc), min, avg, max, total)
         try:
             with self.session.begin_nested():
