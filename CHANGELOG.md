@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.8.2] - 2021-10-19
+### Fixed
+- Refueling seperated in two parts is now joined into one session
+
 ## [0.8.1] - 2021-10-16
 ### Fixed
 - installation of panomap plugin
