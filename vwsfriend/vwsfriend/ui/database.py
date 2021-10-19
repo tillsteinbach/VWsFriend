@@ -1,10 +1,12 @@
+from io import BytesIO
+import subprocess  # nosec
 from datetime import datetime, timezone
 
 from sqlalchemy import and_
 
-from flask import Blueprint, render_template, current_app, abort, request, flash, redirect, url_for
+from flask import Blueprint, render_template, current_app, abort, request, flash, redirect, url_for, send_file
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, HiddenField, StringField, SelectField
+from wtforms import SubmitField, HiddenField, StringField, SelectField, FileField
 from wtforms.fields.html5 import DateTimeField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, NumberRange, Optional
 
@@ -103,6 +105,13 @@ class JourneyEditForm(FlaskForm):
     save = SubmitField('Save changes')
     add = SubmitField('Add journey')
     delete = SubmitField('Delete journey')
+
+
+class BackupRestoreForm(FlaskForm):
+    file = FileField('Restore file', validators=[Optional()])
+
+    restore = SubmitField('restore')
+    backup = SubmitField('backup')
 
 
 @bp.route('/settings/edit', methods=['GET', 'POST'])
@@ -608,3 +617,40 @@ def journeyEdit():  # noqa: C901
                 form.end.data = datetime.utcfromtimestamp(int(tripend) / 1000)
 
     return render_template('database/journey_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/backup', methods=['GET', 'POST'])
+def backup():
+    form = BackupRestoreForm()
+
+    if form.restore.data and form.validate_on_submit():
+        if not form.file.data:
+            flash('No file part')
+        else:
+            file = form.file.data
+            # If the user does not select a file, the browser submits an
+            # empty file without a filename.
+            if file.filename == '':
+                flash('No selected file')
+            elif file and file.filename.endswith('.vwsfriendbackup'):
+                dburl = current_app.config['SQLALCHEMY_DATABASE_URI']
+                process = subprocess.run(['pg_restore', '--clean', '--format', 't', '--dbname', dburl], stdin=file, stdout=subprocess.PIPE,  # nosec
+                                         stderr=subprocess.PIPE)
+                if process.returncode != 0:
+                    flash(f"pg_restore returned {process.returncode}: {process.stderr.decode('ascii')}")
+                flash('Restore successful')
+            else:
+                flash('File needs to be a .vwsfriendbackup')
+    elif form.backup.data:
+        try:
+            dburl = current_app.config['SQLALCHEMY_DATABASE_URI']
+            process = subprocess.run(['pg_dump', '--format', 't', dburl], stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
+
+            if process.returncode != 0:
+                return abort(500, f"pg_dump returned {process.returncode}: {process.stderr.decode('ascii')}")
+            return send_file(BytesIO(process.stdout), mimetype='application/gzip', as_attachment=True,
+                             download_name=f'{datetime.now().strftime("%Y%m%dT%H%M%S")}.vwsfriendbackup')
+        except FileNotFoundError as e:
+            return abort(500, f"pg_dump was not found, you have to install it in order to be able to make database backups: {e}")
+
+    return render_template('database/backup.html', current_app=current_app, form=form)

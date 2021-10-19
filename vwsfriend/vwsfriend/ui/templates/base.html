@@ -17,6 +17,9 @@
     {% if current_app.homekitDriver %}
     <li><a href="{{ url_for('settings.homekit') }}">Homekit</a>
     {% endif %}
+    {% if current_app.connector.withDB and current_app.config['SQLALCHEMY_DATABASE_URI'].startswith('postgresql://') %}
+    <li><a href="{{ url_for('database.backup') }}">Backup</a>
+    {% endif %}
   </ul>
 </nav>
 <section class="content">
