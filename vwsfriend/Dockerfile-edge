@@ -17,7 +17,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR ./vwsfriend/
 RUN pip3 install --no-cache-dir wheel
 # This line is a workaround necessary for linux/arm/v7 architecture that has a bug with qemu: https://github.com/rust-lang/cargo/issues/8719
-RUN --security=insecure mkdir -p /root/.cargo && chmod 777 /root/.cargo && mount -t tmpfs none /root/.cargo && pip3 install --no-cache-dir cryptography
+RUN --security=insecure mkdir -p /root/.cargo/registry/index && chmod 777 /root/.cargo/registry/index && mount -t tmpfs none /root/.cargo/registry/index && pip3 install --no-cache-dir cryptography
 RUN pip3 install --no-cache-dir -r requirements.txt
 RUN pip3 install --no-cache-dir .
 
@@ -30,9 +30,13 @@ ENV WECONNECT_INTERVAL=300
 ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3-venv wget && \
-    apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g postgresql-client && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install --no-install-recommends -y lsb-release gnupg2 python3.9 python3-venv wget && \
+    apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g
+RUN echo "deb [arch=$(dpkg --print-architecture)] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+RUN wget --no-check-certificate --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN apt-get update
+RUN apt-get install --no-install-recommends -y postgresql-client-13
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/venv /opt/venv
 ENV VIRTUAL_ENV=/opt/venv
