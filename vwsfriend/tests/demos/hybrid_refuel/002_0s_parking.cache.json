@@ -32,7 +32,7 @@
                     "plugLockState": "unlocked"
                 },
                 "maintenanceStatus": {
-                    "carCapturedTimestamp": "demodate(-300)",
+                    "carCapturedTimestamp": "demodate(0)",
                     "inspectionDue_days": 644,
                     "inspectionDue_km": 25900,
                     "mileage_km": 4166,
@@ -40,19 +40,19 @@
                     "oilServiceDue_km": 10900
                 },
                 "odometerMeasurement": {
-                    "carCapturedTimestamp": "demodate(-300)",
+                    "carCapturedTimestamp": "demodate(0)",
                     "odometer": 4166
                 },
                 "capabilityStatus": {
                     "capabilities": []
                 },
                 "rangeStatus": {
-                    "carCapturedTimestamp": "demodate(-300)",
+                    "carCapturedTimestamp": "demodate(0)",
                     "carType": "hybrid",
                     "primaryEngine": {
                         "type": "gasoline",
                         "currentSOC_pct": 10,
-                        "remainingRange_km": 50
+                        "remainingRange_km": 51
                     },
                     "secondaryEngine": {
                         "type": "electric",
