@@ -1,4 +1,6 @@
+import os
 import time
+import subprocess  # nosec
 import logging
 
 from sqlalchemy import create_engine, text, inspect
@@ -31,6 +33,19 @@ class AgentConnector():
         self.agents = {}
 
         if withDB:
+            if os.path.isfile(configDir + '/' + 'restore.vwsfriendbackup'):
+                try:
+                    with open(configDir + '/' + 'restore.vwsfriendbackup', mode='rb') as file:
+                        LOG.info('Trying to restore database backup')
+                        process = subprocess.run(['pg_restore', '--clean', '--if-exists', '--format', 'c', '--dbname', dbUrl], stdin=file,  # nosec
+                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+                        if process.returncode != 0:
+                            LOG.error('pg_restore returned %d: %s', process.returncode, process.stderr.decode('ascii'))
+                        else:
+                            LOG.info('It looks like the backup could be successfully restored')
+                finally:
+                    os.remove(configDir + '/' + 'restore.vwsfriendbackup')
+
             engine = create_engine(dbUrl, pool_pre_ping=True)
             self.session = Session(engine)
 

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script>
+  var timer = setTimeout(function() {
+      window.location="{{ url_for('status.vehicles') }}"
+  }, 30000);
+</script>
+
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}Restart{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+Restart is in progress...
+{% endblock %}
