@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.9.0] - 2021-10-20
+### Added
+- Possibility to backup and restore the database
+
 ## [0.8.2] - 2021-10-19
 ### Fixed
 - Refueling seperated in two parts is now joined into one session
@@ -158,7 +162,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.8.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.0
 [0.8.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.8.1
 [0.8.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.8.0
 [0.7.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.7.1

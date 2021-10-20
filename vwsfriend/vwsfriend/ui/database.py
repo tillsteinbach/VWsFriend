@@ -636,7 +636,7 @@ def backup():
                 if current_app.configDir is None:
                     flash('Config directory is not configured')
                 else:
-                    form.file.data.save(current_app.configDir + '/' + 'restore.vwsfriendbackup')
+                    form.file.data.save(current_app.configDir + '/provisioning/database.vwsfrienddbbackup')
                     flash('backup was uploaded, now restarting to apply the backup')
                     return redirect(url_for('restart'))
             else:
@@ -649,7 +649,7 @@ def backup():
             if process.returncode != 0:
                 return abort(500, f"pg_dump returned {process.returncode}: {process.stderr.decode('ascii')}")
             return send_file(BytesIO(process.stdout), mimetype='application/gzip', as_attachment=True,
-                             download_name=f'{datetime.now().strftime("%Y%m%dT%H%M%S")}.vwsfriendbackup')
+                             download_name=f'{datetime.now().strftime("%Y%m%dT%H%M%S")}.vwsfrienddbbackup')
         except FileNotFoundError as e:
             return abort(500, f"pg_dump was not found, you have to install it in order to be able to make database backups: {e}")
 

@@ -33,9 +33,9 @@ class AgentConnector():
         self.agents = {}
 
         if withDB:
-            if os.path.isfile(configDir + '/' + 'restore.vwsfriendbackup'):
+            if os.path.isfile(configDir + '/provisioning/database.vwsfrienddbbackup'):
                 try:
-                    with open(configDir + '/' + 'restore.vwsfriendbackup', mode='rb') as file:
+                    with open(configDir + '/provisioning/database.vwsfrienddbbackup', mode='rb') as file:
                         LOG.info('Trying to restore database backup')
                         process = subprocess.run(['pg_restore', '--clean', '--if-exists', '--format', 'c', '--dbname', dbUrl], stdin=file,  # nosec
                                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
@@ -44,7 +44,7 @@ class AgentConnector():
                         else:
                             LOG.info('It looks like the backup could be successfully restored')
                 finally:
-                    os.remove(configDir + '/' + 'restore.vwsfriendbackup')
+                    os.remove(configDir + '/provisioning/database.vwsfrienddbbackup')
 
             engine = create_engine(dbUrl, pool_pre_ping=True)
             self.session = Session(engine)
