@@ -633,18 +633,18 @@ def backup():
             if file.filename == '':
                 flash('No selected file')
             elif file and file.filename.endswith('.vwsfriendbackup'):
-                dburl = current_app.config['SQLALCHEMY_DATABASE_URI']
-                process = subprocess.run(['pg_restore', '--clean', '--format', 't', '--dbname', dburl], stdin=file, stdout=subprocess.PIPE,  # nosec
-                                         stderr=subprocess.PIPE)
-                if process.returncode != 0:
-                    flash(f"pg_restore returned {process.returncode}: {process.stderr.decode('ascii')}")
-                flash('Restore successful')
+                if current_app.configDir is None:
+                    flash('Config directory is not configured')
+                else:
+                    form.file.data.save(current_app.configDir + '/' + 'restore.vwsfriendbackup')
+                    flash('backup was uploaded, now restarting to apply the backup')
+                    return redirect(url_for('restart'))
             else:
                 flash('File needs to be a .vwsfriendbackup')
     elif form.backup.data:
         try:
             dburl = current_app.config['SQLALCHEMY_DATABASE_URI']
-            process = subprocess.run(['pg_dump', '--format', 't', dburl], stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
+            process = subprocess.run(['pg_dump', '--compress', '9', '--format', 'c', dburl], stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
 
             if process.returncode != 0:
                 return abort(500, f"pg_dump returned {process.returncode}: {process.stderr.decode('ascii')}")

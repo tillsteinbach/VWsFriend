@@ -1,5 +1,7 @@
 import threading
+import time
 import os
+import sys
 import uuid
 import logging
 import flask
@@ -31,7 +33,7 @@ csrf = CSRFProtect()
 
 
 class VWsFriendUI:
-    def __init__(self, weConnect=None, connector=None, homekitDriver=None, dbUrl=None):  # noqa: C901
+    def __init__(self, weConnect=None, connector=None, homekitDriver=None, dbUrl=None, configDir=None):  # noqa: C901
         self.app = flask.Flask('VWsFriend', template_folder=os.path.dirname(__file__) + '/templates', static_folder=os.path.dirname(__file__) + '/static')
         self.app.debug = True
         self.app.config.from_mapping(
@@ -53,6 +55,7 @@ class VWsFriendUI:
         self.app.weConnect = weConnect
         self.app.connector = connector
         self.app.homekitDriver = homekitDriver
+        self.app.configDir = configDir
 
         if connector.withDB and dbUrl is not None:
             self.app.config['SQLALCHEMY_DATABASE_URI'] = dbUrl
@@ -100,6 +103,21 @@ class VWsFriendUI:
         @self.app.route('/healthcheck', methods=['GET'])
         def healthcheck():
             return 'ok'
+
+        @self.app.route('/restart', methods=['GET'])
+        def restart():
+            def delayed_restart():
+                time.sleep(10)
+                python = sys.executable
+                os.execl(python, python, * sys.argv)  # nosec
+
+            t = threading.Thread(target=delayed_restart)
+            t.start()
+            return flask.redirect(flask.url_for('restartrefresh'))
+
+        @self.app.route('/restartrefresh', methods=['GET'])
+        def restartrefresh():
+            return flask.render_template('restart.html', current_app=flask.current_app)
 
     def run(self, host="0.0.0.0", port=4000, loglevel=logging.INFO):  # nosec
         os.environ['WERKZEUG_RUN_MAIN'] = 'true'

@@ -165,7 +165,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             hapThread = threading.Thread(target=driver.start)
             hapThread.start()
 
-        ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl)
+        ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl, configDir=args.configDir)
         ui.run()
 
         if args.demo is not None:
