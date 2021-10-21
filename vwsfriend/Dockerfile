@@ -1,12 +1,12 @@
 # syntax = docker/dockerfile:experimental
 # Here is the build image
-FROM ubuntu:20.04 as builder
+FROM ubuntu:21.04 as builder
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
 
 RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
-    apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev cargo libjpeg-dev zlib1g-dev && \
+    apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev rustc cargo libjpeg-dev zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
@@ -15,11 +15,11 @@ RUN python3.9 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip3 install --no-cache-dir wheel
 # This line is a workaround necessary for linux/arm/v7 architecture that has a bug with qemu: https://github.com/rust-lang/cargo/issues/8719
-RUN --security=insecure mkdir -p /root/.cargo && chmod 777 /root/.cargo && mount -t tmpfs none /root/.cargo && pip3 install --no-cache-dir cryptography
+RUN --security=insecure mkdir -p /root/.cargo/registry/index && chmod 777 /root/.cargo/registry/index && mount -t tmpfs none /root/.cargo/registry/index && pip3 install --no-cache-dir cryptography
 RUN pip3 install --no-cache-dir vwsfriend
 
 
-FROM ubuntu:20.04 AS runner-image
+FROM ubuntu:21.04 AS runner-image
 
 ENV WECONNECT_USER=
 ENV WECONNECT_PASSWORD=
