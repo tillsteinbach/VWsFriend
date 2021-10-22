@@ -548,9 +548,9 @@
         "geohashField": "geohash",
         "labelField": "Charger",
         "labelLocationKeyField": null,
-        "latitudeField": "latitude",
+        "latitudeField": "final_latitude",
         "linkField": "",
-        "longitudeField": "longitude",
+        "longitudeField": "final_longitude",
         "metricField": "Amount",
         "queryType": "coordinates"
       },
@@ -560,7 +560,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  chargers.latitude,\n  chargers.longitude,\n  chargers.name AS \"Charger\",\n  SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN chargers ON charging_sessions.\"charger_id\" = chargers.id\nWHERE\n  \"charger_id\" IS NOT NULL AND\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY \"charger_id\", chargers.latitude, chargers.longitude, chargers.name",
+          "rawSql": "SELECT\n  COALESCE(chargers.latitude, ROUND(charging_sessions.\"position_latitude\"::NUMERIC,3)) AS \"final_latitude\",\n  COALESCE(chargers.longitude, ROUND(charging_sessions.\"position_longitude\"::NUMERIC,3)) AS \"final_longitude\",\n  COALESCE(chargers.name, 'unkown') AS \"Charger\",\n  SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN chargers ON charging_sessions.\"charger_id\" = chargers.id\nWHERE\n  COALESCE(chargers.latitude, charging_sessions.\"position_latitude\") IS NOT NULL AND\n  COALESCE(chargers.longitude, charging_sessions.\"position_longitude\") IS NOT NULL AND\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY \"final_latitude\", \"final_longitude\", chargers.name",
           "refId": "A",
           "select": [
             [
