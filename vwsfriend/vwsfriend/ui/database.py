@@ -632,7 +632,7 @@ def backup():
             # empty file without a filename.
             if file.filename == '':
                 flash('No selected file')
-            elif file and file.filename.endswith('.vwsfriendbackup'):
+            elif file and file.filename.endswith('.vwsfrienddbbackup'):
                 if current_app.configDir is None:
                     flash('Config directory is not configured')
                 else:
@@ -640,7 +640,7 @@ def backup():
                     flash('backup was uploaded, now restarting to apply the backup')
                     return redirect(url_for('restart'))
             else:
-                flash('File needs to be a .vwsfriendbackup')
+                flash('File needs to be a .vwsfrienddbbackup')
     elif form.backup.data:
         try:
             dburl = current_app.config['SQLALCHEMY_DATABASE_URI']
