@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 import subprocess  # nosec
 from datetime import datetime, timezone
@@ -619,8 +620,8 @@ def journeyEdit():  # noqa: C901
     return render_template('database/journey_edit.html', current_app=current_app, form=form)
 
 
-@bp.route('/backup', methods=['GET', 'POST'])
-def backup():
+@bp.route('/backup', methods=['GET', 'POST'])  # noqa: C901
+def backup():  # noqa: C901
     form = BackupRestoreForm()
 
     if form.restore.data and form.validate_on_submit():
@@ -633,9 +634,11 @@ def backup():
             if file.filename == '':
                 flash('No selected file')
             elif file and file.filename.endswith('.vwsfrienddbbackup'):
-                if current_app.configDir is None:
-                    flash('Config directory is not configured')
+                if current_app.configDir is None or not os.path.isdir(current_app.configDir):
+                    flash('Config directory is not configured or does not exist')
                 else:
+                    if not os.path.isdir(current_app.configDir + '/provisioning'):
+                        os.makedirs(current_app.configDir + '/provisioning')
                     form.file.data.save(current_app.configDir + '/provisioning/database.vwsfrienddbbackup')
                     flash('backup was uploaded, now restarting to apply the backup')
                     return redirect(url_for('restart'))
