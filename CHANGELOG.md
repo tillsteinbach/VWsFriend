@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.9.3] - 2021-10-22
+### Fixed
+- Create provisioning folder if not existing
+
 ## [0.9.2] - 2021-10-22
 ### Fixed
 - Corrected filename when restoring
@@ -173,7 +177,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.9.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.9.3...HEAD
+[0.9.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.3
 [0.9.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.2
 [0.9.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.1
 [0.9.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.0
