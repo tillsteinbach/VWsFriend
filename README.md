@@ -74,7 +74,7 @@ watchtower:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 30 --cleanup
+    command: --interval 3600 --cleanup
 ```
 If you want to be sure that the update only happens at a certain time of the day to prevent updating in times where you use the car you can also schedule update times like this:
 ```bash
