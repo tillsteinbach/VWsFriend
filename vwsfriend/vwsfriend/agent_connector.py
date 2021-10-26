@@ -52,8 +52,8 @@ class AgentConnector():
             while True:
                 try:
                     self.session.query(text('1')).from_statement(text('SELECT 1')).all()
-                except OperationalError:
-                    LOG.error('Could not establish a connection to database, will try again after 10 seconds')
+                except OperationalError as err:
+                    LOG.error('Could not establish a connection to database, will try again after 10 seconds: %s', err)
                     time.sleep(10)
                     continue
                 break
