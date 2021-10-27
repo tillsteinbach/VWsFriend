@@ -6,14 +6,14 @@ datasources:
     orgId: 1
     type: postgres
     access: proxy
-    database: vwsfriend
+    database: $DB_NAME
     user: $DB_USER
     secureJsonData:
       password: $DB_PASSWORD
     jsonData:
       sslmode: "disable"
       postgresVersion: 1200
-    url: postgresdbbackend:5432
+    url: $DB_HOSTNAME:$DB_PORT
     basicAuth: false
     withCredentials: false
     isDefault: true
