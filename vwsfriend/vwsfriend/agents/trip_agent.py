@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
@@ -13,9 +13,10 @@ LOG = logging.getLogger("VWsFriend")
 
 
 class TripAgent():
-    def __init__(self, session, vehicle):
+    def __init__(self, session, vehicle, updateInterval):
         self.session = session
         self.vehicle = vehicle
+        self.updateInterval = updateInterval
 
         self.trip = session.query(Trip).filter(and_(Trip.vehicle == vehicle, Trip.startDate.isnot(None))).order_by(Trip.startDate.desc()).first()
         if self.trip is not None:
@@ -75,7 +76,8 @@ class TripAgent():
         if self.trip is not None:
             LOG.info(f'Vehicle {self.vehicle.vin} removed a parkingPosition but there was an open trip, closing it now')
             self.trip = None
-        self.trip = Trip(self.vehicle, datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0), self.lastParkingPositionLatitude,
+        time = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0) - timedelta(seconds=self.updateInterval)
+        self.trip = Trip(self.vehicle, time, self.lastParkingPositionLatitude,
                          self.lastParkingPositionLongitude, None, None)
         self.trip.start_location = locationFromLatLon(self.session, self.lastParkingPositionLatitude, self.lastParkingPositionLongitude)
 
