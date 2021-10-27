@@ -105,7 +105,7 @@ class AgentConnector():
                 self.agents[element.vin.value].append(StateAgent(self.session, foundVehicle, updateInterval=self.interval))
                 self.agents[element.vin.value].append(ClimatizationAgent(self.session, foundVehicle))
                 self.agents[element.vin.value].append(RefuelAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(TripAgent(self.session, foundVehicle))
+                self.agents[element.vin.value].append(TripAgent(self.session, foundVehicle, updateInterval=self.interval))
                 if foundVehicle.carType == RangeStatus.CarType.UNKNOWN:
                     LOG.warning('Vehicle %s has an unkown carType, thus some features won\'t be available until the correct carType could be detected',
                                 foundVehicle.vin)
