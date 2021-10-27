@@ -55,14 +55,14 @@ Connecting VWsFriend to ABRP enables you to use the current SoC, position, parki
 
 * Replace the docker-compose file by [docker-compose-homekit-host.yml](./docker-compose-homekit-host.yml) to use the homekit override
 ```bash
-docker-compose -f docker-compose-homekit-host.yml
+docker-compose -f docker-compose-homekit-host.yml --env-file ./myconfig.env up
 ```
 This will use host mode for vwsfriend. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
 Host mode is not working on macOS. The reson is that the network is still virtualized. See also [Known Issues](#known-issues).
 
 If you do not like to share the host network with vwsfriend you can use macvlan mode [docker-compose-homekit-macvlan.yml](./docker-compose-homekit-macvlan.yml):
 ```bash
-docker-compose -f docker-compose-homekit-macvlan.yml
+docker-compose -f docker-compose-homekit-macvlan.yml --env-file ./myconfig.env up
 ```
 Macvlan needs the variables for the IP to choose, the subnetmask and the gateway to be set in your configuration.
 Macvlan mode is not supported on macOS! See also [Known Issues](#known-issues).
