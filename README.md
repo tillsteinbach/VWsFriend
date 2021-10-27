@@ -83,6 +83,13 @@ If you want to be sure that the update only happens at a certain time of the day
 The example shifts the update time to 2:00 (UTC)
 
 ## Known Issues
+* On Raspberry Pi the library libseccomp2 needs to be at least 2.4.4. Most current images for the Raspberry Pi still ship an outdated version. You can update it like that:
+```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
+echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list.d/buster-backports.list
+sudo apt update
+sudo apt install -t buster-backports libseccomp2
+```
 * Ironically you cannot host VWsFriend with Homekit support on a macOS machine. The reason is that there is no way to get the advertisements via multicast out of the container into the network. If you want to use the Homekit feature you have to host VWsFriend on a Linux machine. If someone is able to make a setup work on macOS, please let me know to allow me to update the documentation!
 
 ## Open improvements
