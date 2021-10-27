@@ -68,7 +68,10 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.statuses.removeObserver(self.__onStatusesChange)
                 self.__onCarCapturedTimestampEnabled(element, flags)
 
-    def __onCarCapturedTimestampDisabled(self, element, flags):
+    def __onCarCapturedTimestampDisabled(self, element: AddressableAttribute, flags):
+        if element.parent.error.enabled:
+            LOG.debug(f'Vehicle {self.vehicle.vin} removed a parkingPosition but there was an error set')
+            return
         if self.trip is not None:
             LOG.info(f'Vehicle {self.vehicle.vin} removed a parkingPosition but there was an open trip, closing it now')
             self.trip = None
