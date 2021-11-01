@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:experimental
 # Here is the build image
-FROM ubuntu:21.04 as builder
+FROM ubuntu:21.10 as builder
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
@@ -19,7 +19,7 @@ RUN --security=insecure mkdir -p /root/.cargo/registry/index && chmod 777 /root/
 RUN pip3 install --no-cache-dir vwsfriend
 
 
-FROM ubuntu:21.04 AS runner-image
+FROM ubuntu:21.10 AS runner-image
 
 ENV WECONNECT_USER=
 ENV WECONNECT_PASSWORD=
