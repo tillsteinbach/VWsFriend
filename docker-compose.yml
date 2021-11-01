@@ -12,7 +12,7 @@ services:
       - WECONNECT_USER
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL
-      - DATABASE_URL=postgresql://${DB_USER-admin}:${DB_PASSWORD-secret}@postgresdbbackend/vwsfriend
+      - DATABASE_URL=postgresql://${DB_USER-admin}:${DB_PASSWORD-secret}@${DB_HOSTNAME-postgresdbbackend}:${DB_PORT-5432}/${DB_NAME-vwsfriend}
       - ADDITIONAL_PARAMETERS=--with-database --with-abrp -vv
     depends_on:
       postgresdb:
@@ -29,19 +29,20 @@ services:
     networks:
       backend:
         aliases:
-          - postgresdbbackend
+          - ${DB_HOSTNAME-postgresdbbackend}
     volumes:
       - postgresdb_data:/var/lib/postgresql/data
     user: postgres
     environment:
       - POSTGRES_USER=${DB_USER-admin}
       - POSTGRES_PASSWORD=${DB_PASSWORD-secret}
-      - POSTGRES_DB=vwsfriend
+      - POSTGRES_DB=${DB_NAME-vwsfriend}
       - TZ=UTC
       - PGTZ=UTC
+    command: -p ${DB_PORT-5432}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready --username=${DB_USER-admin} --dbname=vwsfriend"]
+      test: ["CMD-SHELL", "pg_isready --username=${DB_USER-admin} --dbname=${DB_NAME-vwsfriend}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,7 +50,7 @@ services:
   grafana:
     image: tillsteinbach/vwsfriend-grafana:${VWSFRIEND_GRAFANA_VERSION-latest}
     ports:
-      - 3000:3000
+      - ${GF_SERVER_HTTP_PORT-3000}:${GF_SERVER_HTTP_PORT-3000}
     networks:
       bridge:
       backend:
@@ -60,11 +61,15 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${USERNAME-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${PASSWORD-secret}
+      - GF_SERVER_HTTP_PORT=${GF_SERVER_HTTP_PORT-3000}
       - DB_USER=${DB_USER-admin}
       - DB_PASSWORD=${DB_PASSWORD-secret}
+      - DB_HOSTNAME=${DB_HOSTNAME-postgresdbbackend}
+      - DB_PORT=${DB_PORT-5432}
+      - DB_NAME=${DB_NAME-vwsfriend}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "(wget -qO- http://localhost:3000/api/health | grep '\"database\": \"ok\"' -q) || exit 1"]
+      test: ["CMD-SHELL", "(wget -qO- http://localhost:${GF_SERVER_HTTP_PORT-3000}/api/health | grep '\"database\": \"ok\"' -q) || exit 1"]
       interval: 60s
       timeout: 10s
       retries: 3
