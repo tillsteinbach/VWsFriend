@@ -1,8 +1,15 @@
-# Changelog
+ # Changelog
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
+
+## [0.9.6] - 2021-11-01
+### Fixed
+- Fixed an error occuring when the server unexpectedly closes the connection
+
+### Changed
+- Updated API to 0.22.1
 
 ## [0.9.5] - 2021-11-01
 ### Fixed
@@ -191,7 +198,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.9.5...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.9.6...HEAD
+[0.9.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.6
 [0.9.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.5
 [0.9.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.4
 [0.9.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.3
