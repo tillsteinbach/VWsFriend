@@ -7,8 +7,7 @@ from sqlalchemy import and_
 
 from flask import Blueprint, render_template, current_app, abort, request, flash, redirect, url_for, send_file
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, HiddenField, StringField, SelectField, FileField
-from wtforms.fields.html5 import DateTimeField, IntegerField, DecimalField
+from wtforms import SubmitField, HiddenField, StringField, SelectField, FileField, DateTimeField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, NumberRange, Optional
 
 from weconnect.errors import RetrievalError
