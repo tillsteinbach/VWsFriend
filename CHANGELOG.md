@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Updated Grafana to 8.2.3
+- Updated requirements for forms
 
 ## [0.9.6] - 2021-11-01
 ### Fixed
