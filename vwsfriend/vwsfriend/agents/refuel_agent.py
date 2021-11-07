@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from vwsfriend.model.refuel_session import RefuelSession
 from vwsfriend.util.location_util import locationFromLatLon
 
-from weconnect.addressable import AddressableLeaf
+from weconnect.addressable import AddressableLeaf, AddressableAttribute
 from weconnect.elements.range_status import RangeStatus
 
 LOG = logging.getLogger("VWsFriend")
@@ -17,6 +17,7 @@ class RefuelAgent():
         self.vehicle = vehicle
         self.primary_currentSOC_pct = None
         self.previousRefuelSession = None
+        self.lastPosition = None
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
@@ -25,6 +26,26 @@ class RefuelAgent():
                                                                                                        AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                        onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
+            if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['parkingPosition'].enabled:
+                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onParkingPositionCarCapturedTimestampChanged,
+                                                                                                           AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                           onUpdateComplete=True)
+                self.__onParkingPositionCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
+            else:
+                self.vehicle.weConnectVehicle.statuses.addObserver(self.__onStatusesChange,
+                                                                   AddressableLeaf.ObserverEvent.ENABLED,
+                                                                   onUpdateComplete=True)
+
+    def __onStatusesChange(self, element, flags):
+        if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
+            # only add if not in list of observers
+            if self.__onParkingPositionCarCapturedTimestampChanged not in element.getObservers(flags=AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                               onUpdateComplete=True):
+                element.addObserver(self.__onParkingPositionCarCapturedTimestampChanged,
+                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                    onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.statuses.removeObserver(self.__onStatusesChange)
+                self.__onParkingPositionCarCapturedTimestampChanged(element, flags)
 
     def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
         rangeStatus = self.vehicle.weConnectVehicle.statuses['rangeStatus']
@@ -48,6 +69,9 @@ class RefuelAgent():
                     position_latitude = parkingPosition.latitude.value
                     position_longitude = parkingPosition.longitude.value
                     location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+            if position_latitude is None and self.lastPosition is not None and (self.lastPosition[0] > (element.value - timedelta(minutes=15))):
+                _, position_latitude, position_longitude = self.lastPosition
+                location = locationFromLatLon(self.session, position_latitude, position_longitude)
 
             # Refuel event took place (as the car somethimes finds one or two percent of fuel somewhere lets give a 5 percent margin)
             if self.primary_currentSOC_pct is not None and ((current_primary_currentSOC_pct - 5) > self.primary_currentSOC_pct):
@@ -77,6 +101,19 @@ class RefuelAgent():
             # SoC decreased, normal usage
             elif self.primary_currentSOC_pct is None or current_primary_currentSOC_pct < self.primary_currentSOC_pct:
                 self.primary_currentSOC_pct = current_primary_currentSOC_pct
+
+    def __onParkingPositionCarCapturedTimestampChanged(self, element, flags):
+        if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses:
+            parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+            if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None \
+                    and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                    and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                position_timestamp = parkingPosition.carCapturedTimestamp.value
+                position_latitude = parkingPosition.latitude.value
+                position_longitude = parkingPosition.longitude.value
+                self.lastPosition = (position_timestamp, position_latitude, position_longitude)
+                return
+        self.lastPosition = None
 
     def commit(self):
         pass
