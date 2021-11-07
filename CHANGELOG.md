@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Ordering of refueling sessions
 
+### Changed
+- Updated Grafana to 8.2.3
+
 ## [0.9.6] - 2021-11-01
 ### Fixed
 - Fixed an error occuring when the server unexpectedly closes the connection
