@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Fixed
+- Ordering of refueling sessions
 
 ## [0.9.6] - 2021-11-01
 ### Fixed
