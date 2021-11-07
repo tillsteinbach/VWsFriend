@@ -1,9 +1,10 @@
- # Changelog
+../CHANGELOG.md # Changelog
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 ### Fixed
 - Ordering of refueling sessions
+- Also use parking position from the past 15 mins when refueling
 
 ### Changed
 - Updated Grafana to 8.2.3
