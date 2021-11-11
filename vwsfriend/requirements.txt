@@ -8,4 +8,4 @@ flask~=2.0.2
 WTForms~=3.0.0
 flask_wtf~=1.0.0
 flask_sqlalchemy~=2.5.1
-alembic~=1.7.4
+alembic~=1.7.5
