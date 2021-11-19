@@ -1902,6 +1902,11 @@
                   "index": 7,
                   "text": "ready for charging"
                 },
+                "CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING": {
+                  "color": "green",
+                  "index": 10,
+                  "text": "charge purpose reached"
+                },
                 "VENTILATION": {
                   "color": "purple",
                   "index": 6,

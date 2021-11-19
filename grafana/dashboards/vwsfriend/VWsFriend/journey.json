@@ -579,6 +579,11 @@
                 "charging": {
                   "color": "#5794F2",
                   "index": 4
+                },
+                "CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING": {
+                  "color": "#3d3d3d",
+                  "index": 5,
+                  "text": "off"
                 }
               },
               "type": "value"
