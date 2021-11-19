@@ -7,8 +7,9 @@ All notable changes to this project will be documented in this file.
 - Also use parking position from the past 15 mins when refueling
 
 ### Changed
-- Updated Grafana to 8.2.3
+- Updated Grafana to 8.2.5
 - Updated requirements for forms
+- Updated API to 0.23.0
 
 ## [0.9.6] - 2021-11-01
 ### Fixed
