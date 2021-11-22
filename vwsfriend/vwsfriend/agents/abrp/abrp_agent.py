@@ -86,6 +86,8 @@ class ABRPAgent():
                 self.telemetryData['utc'] = batteryStatus.carCapturedTimestamp.value.timestamp()
             if batteryStatus.currentSOC_pct.enabled and batteryStatus.currentSOC_pct.value is not None:
                 self.telemetryData['soc'] = batteryStatus.currentSOC_pct.value
+            if batteryStatus.cruisingRangeElectric_km.enabled and batteryStatus.cruisingRangeElectric_km.value is not None:
+                self.telemetryData['est_battery_range'] = batteryStatus.cruisingRangeElectric_km.value
 
         if 'parkingPosition' in self.weConnectVehicle.statuses:
             parkingPosition = self.weConnectVehicle.statuses['parkingPosition']
