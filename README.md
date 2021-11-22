@@ -108,5 +108,8 @@ sudo apt install -t buster-backports libseccomp2
 - [WeConnect-cli](https://github.com/tillsteinbach/WeConnect-cli): A commandline interface to interact with WeConnect
 - [WeConnect-MQTT](https://github.com/tillsteinbach/WeConnect-mqtt): A MQTT Client that provides WeConnect data to the MQTT Broker of your choice (e.g. your home automation solution such as [ioBroker](https://www.iobroker.net), [FHEM](https://fhem.de) or [Home Assistant](https://www.home-assistant.io))
 
+## Seat, Cupra, Skoda IV, ...
+In an effort to try to make VWsFriend also to work with latest generation of vehicles from other volkswagen brands I'm looking for users to temporarily share access to their accounts. If you are willing to support please send me a message.
+
 ## Other
 We Connect© Volkswagen AG
