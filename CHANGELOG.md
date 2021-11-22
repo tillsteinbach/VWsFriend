@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+### Added
+- ABRP now receives the new est_battery_range parameter
+
 ### Fixed
 - Ordering of refueling sessions
 - Also use parking position from the past 15 mins when refueling
