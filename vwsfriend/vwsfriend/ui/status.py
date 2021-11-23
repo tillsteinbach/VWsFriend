@@ -1,5 +1,5 @@
 from io import BytesIO
-from flask import Blueprint, render_template, current_app, abort, send_file
+from flask import Blueprint, render_template, current_app, abort, send_file, request, redirect, url_for
 
 bp = Blueprint('status', __name__, url_prefix='/status')
 
@@ -22,10 +22,16 @@ def vehicle(vin):
 def vehicleStatusImg(vin, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
-        abort(404, f"Vehicle with VIN {vin} doesn't exist.")
+        if 'fallback' in request.args:
+            return redirect(url_for('static', filename=request.args.get('fallback')))
+        else:
+            abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     pictures = vehicles[vin].pictures
     if 'status' not in pictures:
-        abort(404, "Status picture doesn't exist.")
+        if 'fallback' in request.args:
+            return redirect(url_for('static', filename=request.args.get('fallback')))
+        else:
+            abort(404, "Status picture doesn't exist.")
     else:
         img_io = BytesIO()
         if badge:
@@ -45,10 +51,16 @@ def vehicleStatusBadgeImg(vin):
 def vehicleImg(vin, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
-        abort(404, f"Vehicle with VIN {vin} doesn't exist.")
+        if 'fallback' in request.args:
+            return redirect(url_for('static', filename=request.args.get('fallback')))
+        else:
+            abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     pictures = vehicles[vin].pictures
     if 'car' not in pictures:
-        abort(404, "Status picture doesn't exist.")
+        if 'fallback' in request.args:
+            return redirect(url_for('static', filename=request.args.get('fallback')))
+        else:
+            abort(404, "Status picture doesn't exist.")
     else:
         img_io = BytesIO()
         if badge:
@@ -68,7 +80,10 @@ def vehicleImgBadge(vin):
 def vehicleStatusOrImg(vin, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
-        abort(404, f"Vehicle with VIN {vin} doesn't exist.")
+        if 'fallback' in request.args:
+            return redirect(url_for('static', filename=request.args.get('fallback')))
+        else:
+            abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     statuses = vehicles[vin].statuses
     if 'accessStatus' in statuses:
         return vehicleStatusImg(vin, badge)

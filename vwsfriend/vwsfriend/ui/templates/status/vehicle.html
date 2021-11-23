@@ -22,7 +22,7 @@
 <div>
   <div style="display: flex; margin-top: 5px;">
     <div style="flex: 0 0 250px;">
-      <img src="{{ url_for('status.vehicleStatusOrImgBadge', vin=vehicle.vin.value) }}" class="status" />
+      <img src="{{ url_for('status.vehicleStatusOrImgBadge', vin=vehicle.vin.value) }}" onerror="this.style.display='none'" class="status" />
     </div>
 
     {% if 'parkingPosition' in vehicle.statuses and vehicle.statuses['parkingPosition'].enabled and
@@ -38,7 +38,7 @@
       const parkingTime = new Date('{{vehicle.statuses['parkingPosition'].carCapturedTimestamp.value.isoformat()}}');
 
       var vehicleIcon = L.icon({
-        iconUrl: '{{ url_for("status.vehicleImg", vin=vehicle.vin.value) }}',
+        iconUrl: '{{ url_for("status.vehicleImg", vin=vehicle.vin.value, fallback='icons/pin.png')}}',
         iconSize: [77, 43],
         iconAnchor: [37, 22],
         popupAnchor: [0, -10],
