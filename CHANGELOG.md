@@ -8,11 +8,14 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Ordering of refueling sessions
 - Also use parking position from the past 15 mins when refueling
+- Grouping by operator if there are several entries for a operator
+- Deal with missing vehicle images
 
 ### Changed
 - Updated Grafana to 8.2.5
 - Updated requirements for forms
 - Updated API to 0.23.0
+- Changed all graphs from old version to the new time-series variant
 
 ## [0.9.6] - 2021-11-01
 ### Fixed

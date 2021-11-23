@@ -9,7 +9,7 @@
   <!-- Table headers not necessary-->
   {% for vehicle in vehicles %}
   <tr>
-      <td style="width: 400px"><a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}"><img src="{{ url_for('status.vehicleImg', vin=vehicle.vin.value) }}" class="status"/></a></td>
+      <td style="width: 400px"><a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}"><img src="{{ url_for('status.vehicleImg', vin=vehicle.vin.value) }}" onerror="this.style.display='none'" class="status"/></a></td>
       <td>
         <div><h3><a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}">{{vehicle.nickname.value}}</a> (<a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}">{{vehicle.model.value}}</a>)</h3>
           <p>
