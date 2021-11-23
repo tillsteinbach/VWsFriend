@@ -76,6 +76,7 @@
       "url": ""
     }
   ],
+  "liveNow": true,
   "panels": [
     {
       "datasource": null,

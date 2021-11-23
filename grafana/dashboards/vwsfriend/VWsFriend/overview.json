@@ -64,7 +64,7 @@
       "url": ""
     }
   ],
-  "liveNow": false,
+  "liveNow": true,
   "panels": [
     {
       "datasource": "",

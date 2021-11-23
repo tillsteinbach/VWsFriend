@@ -22,6 +22,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "links": [],
+  "liveNow": true,
   "panels": [
     {
       "datasource": null,
