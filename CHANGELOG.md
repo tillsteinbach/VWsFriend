@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 ### Added
 - ABRP now receives the new est_battery_range parameter
+- Enabled grafana livenow mode
 
 ### Fixed
 - Ordering of refueling sessions

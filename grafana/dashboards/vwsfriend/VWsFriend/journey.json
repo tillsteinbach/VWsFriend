@@ -76,7 +76,7 @@
       "url": ""
     }
   ],
-  "liveNow": false,
+  "liveNow": true,
   "panels": [
     {
       "autoZoom": true,
