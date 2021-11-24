@@ -20,7 +20,6 @@ jobs:
         uses: pierotofy/set-swap-space@v1.0
         with:
           swap-size-gb: 10
-      - name: Move docker folder to tmpfs
       - run: |
            # Workaround for https://github.com/rust-lang/cargo/issues/8719
            sudo mkdir -p /var/lib/docker
