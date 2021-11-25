@@ -1942,6 +1942,11 @@
           "mappings": [
             {
               "options": {
+                "CHARGE_PURPOSE_REACHED_CONSERVATION": {
+                  "color": "blue",
+                  "index": 11,
+                  "text": "conservation charging"
+                },
                 "CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING": {
                   "color": "green",
                   "index": 10,

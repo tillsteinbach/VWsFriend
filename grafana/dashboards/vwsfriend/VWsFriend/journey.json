@@ -558,6 +558,11 @@
           "mappings": [
             {
               "options": {
+                "CHARGE_PURPOSE_REACHED_CONSERVATION": {
+                  "color": "blue",
+                  "index": 6,
+                  "text": "charging"
+                },
                 "CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING": {
                   "color": "#3d3d3d",
                   "index": 5,
