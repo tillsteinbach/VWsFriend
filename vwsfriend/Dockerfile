@@ -15,7 +15,7 @@ RUN python3.9 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip3 install --no-cache-dir wheel
 # This line is a workaround necessary for linux/arm/v7 architecture that has a bug with qemu: https://github.com/rust-lang/cargo/issues/8719
-RUN --security=insecure mkdir -p /root/.cargo/registry/index && chmod 777 /root/.cargo/registry/index && mount -t tmpfs none /root/.cargo/registry/index && pip3 install --no-cache-dir cryptography
+# RUN --security=insecure mkdir -p /root/.cargo/registry/index && chmod 777 /root/.cargo/registry/index && mount -t tmpfs none /root/.cargo/registry/index && pip3 install --no-cache-dir cryptography
 RUN pip3 install --no-cache-dir vwsfriend
 
 
