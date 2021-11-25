@@ -32,10 +32,10 @@ class Climatization(GenericAccessory):
         if climatizationStatus.climatisationState.enabled:
             climatizationStatus.climatisationState.addObserver(self.onClimatizationState,
                                                                AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-            self.charCurrentHeatingCoolingState = self.service.configure_char('CurrentHeatingCoolingState')
-            self.setCurrentHeatingCoolingState(climatizationStatus.climatisationState)
             self.charTargetHeatingCoolingState = self.service.configure_char('TargetHeatingCoolingState',
                                                                              setter_callback=self.__onTargetHeatingCoolingStateChanged)
+            self.charCurrentHeatingCoolingState = self.service.configure_char('CurrentHeatingCoolingState')
+            self.setCurrentHeatingCoolingState(climatizationStatus.climatisationState)
 
             climatizationStatus.remainingClimatisationTime_min.addObserver(self.onRemainingClimatisationTime,
                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED)
