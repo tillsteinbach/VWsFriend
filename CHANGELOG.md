@@ -2,9 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No unreleased changes so far
+
+## [0.10.0] - 2021-12-01
 ### Added
 - ABRP now receives the new est_battery_range parameter
 - Enabled grafana livenow mode
+- New attributes in status page
 
 ### Fixed
 - Ordering of refueling sessions
@@ -15,7 +19,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated Grafana to 8.2.5
 - Updated requirements for forms
-- Updated API to 0.23.0
+- Updated API to 0.25.1
 - Changed all graphs from old version to the new time-series variant
 
 ## [0.9.6] - 2021-11-01
@@ -212,7 +216,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.9.6...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.10.0
 [0.9.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.6
 [0.9.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.5
 [0.9.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.4
