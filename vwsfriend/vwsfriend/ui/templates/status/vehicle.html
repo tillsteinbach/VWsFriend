@@ -271,6 +271,44 @@
       </ul>
       </p>
       {% endif %}
+      
+      {% if 'readinessStatus' in vehicle.statuses and vehicle.statuses['readinessStatus'].enabled %}
+      <p>
+      <h2>Readiness status</h2>
+      <ul>
+        {% if vehicle.statuses['readinessStatus'].connectionState.enabled %}
+        <li> Connection State:
+          <ul>
+            {% if vehicle.statuses['readinessStatus'].connectionState.isOnline.enabled %}
+            <li> Is Online: {{vehicle.statuses['readinessStatus'].connectionState.isOnline.value}}</li>
+            {% endif %}
+            {% if vehicle.statuses['readinessStatus'].connectionState.isActive.enabled %}
+            <li> Is Active: {{vehicle.statuses['readinessStatus'].connectionState.isActive.value}}</li>
+            {% endif %}
+            {% if vehicle.statuses['readinessStatus'].connectionState.batteryPowerLevel.enabled %}
+            <li> Battery Power Level: {{vehicle.statuses['readinessStatus'].connectionState.batteryPowerLevel.value.value}}</li>
+            {% endif %}
+            {% if vehicle.statuses['readinessStatus'].connectionState.dailyPowerBudgetAvailable.enabled %}
+            <li> Daily Power Budget Available: {{vehicle.statuses['readinessStatus'].connectionState.dailyPowerBudgetAvailable.value}}</li>
+            {% endif %}
+          </ul>
+        </li>
+        {% endif %}
+        {% if vehicle.statuses['readinessStatus'].connectionWarning.enabled %}
+        <li> Connection Warning:
+          <ul>
+            {% if vehicle.statuses['readinessStatus'].connectionWarning.insufficientBatteryLevelWarning.enabled %}
+            <li> Insufficient Battery Level Warning {{vehicle.statuses['readinessStatus'].connectionWarning.insufficientBatteryLevelWarning.value}}</li>
+            {% endif %}
+            {% if vehicle.statuses['readinessStatus'].connectionWarning.dailyPowerBudgetWarning.enabled %}
+            <li> Daily Power Budget Warning: {{vehicle.statuses['readinessStatus'].connectionWarning.dailyPowerBudgetWarning.value}}</li>
+            {% endif %}
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+      </p>
+      {% endif %}
 
       {% if 'accessStatus' in vehicle.statuses and vehicle.statuses['accessStatus'].enabled and
       vehicle.statuses['accessStatus'].carCapturedTimestamp.enabled %}
