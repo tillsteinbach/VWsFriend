@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.10.1] - 2021-12-03
+### Fixed
+- Adding missing Enum types to database
+
 ## [0.10.0] - 2021-12-01
 ### Added
 - ABRP now receives the new est_battery_range parameter
@@ -216,7 +220,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.10.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.10.1...HEAD
+[0.10.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.10.1
 [0.10.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.10.0
 [0.9.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.6
 [0.9.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.9.5
