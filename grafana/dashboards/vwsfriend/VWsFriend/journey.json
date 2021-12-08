@@ -645,8 +645,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(\nSELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\"::TEXT AS \"State\"\nFROM charges\nWHERE\n  (\"chargingState\" = 'CHARGING' OR \"chargingState\" = 'OFF' OR \"chargingState\" = 'READY_FOR_CHARGING') AND\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"startDate\" AS time,\n  'DRIVING' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"endDate\" AS time,\n  'OFF' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  vehicle_vin = '$VIN'\n)\nORDER BY 1  ",
-          "refId": "A",
+          "rawSql": "(\nSELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\"::TEXT AS \"State\"\nFROM charges\nWHERE\n  (\"chargingState\" = 'CHARGING' OR \"chargingState\" = 'OFF' OR \"chargingState\" = 'READY_FOR_CHARGING' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_CONSERVATION' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING') AND\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"startDate\" AS time,\n  'DRIVING' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"endDate\" AS time,\n  'OFF' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  vehicle_vin = '$VIN'\n)\nORDER BY 1  ","refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
