@@ -16,16 +16,18 @@ depends_on = None
 
 
 def upgrade():
-    with op.get_context().autocommit_block():
-        op.execute("ALTER TYPE chargingstate ADD VALUE 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING'")
-        op.execute("ALTER TYPE chargingstate ADD VALUE 'CHARGE_PURPOSE_REACHED_CONSERVATION'")
+    if op.get_context().dialect.name == 'postgresql':
+        with op.get_context().autocommit_block():
+            op.execute("ALTER TYPE chargingstate ADD VALUE 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING'")
+            op.execute("ALTER TYPE chargingstate ADD VALUE 'CHARGE_PURPOSE_REACHED_CONSERVATION'")
 
 
 def downgrade():
-    op.execute("ALTER TYPE chargingstate RENAME TO chargingstate_old")
-    op.execute("CREATE TYPE chargingstate AS ENUM('ERROR', 'CHARGING', 'READY_FOR_CHARGING', 'OFF', 'UNKNOWN')")
-    op.execute((
-        "ALTER TABLE transactions ALTER COLUMN chargingstate TYPE chargingstate USING "
-        "chargingstate::text::chargingstate"
-    ))
-    op.execute("DROP TYPE chargingstate_old")
+    if op.get_context().dialect.name == 'postgresql':
+        op.execute("ALTER TYPE chargingstate RENAME TO chargingstate_old")
+        op.execute("CREATE TYPE chargingstate AS ENUM('ERROR', 'CHARGING', 'READY_FOR_CHARGING', 'OFF', 'UNKNOWN')")
+        op.execute((
+            "ALTER TABLE transactions ALTER COLUMN chargingstate TYPE chargingstate USING "
+            "chargingstate::text::chargingstate"
+        ))
+        op.execute("DROP TYPE chargingstate_old")
