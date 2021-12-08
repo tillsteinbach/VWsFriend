@@ -2,7 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Added
+- Added cartype gasoline
+
+### Changed
+- Updated API to 0.26.0
+
 
 ## [0.10.1] - 2021-12-03
 ### Fixed
