@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 ### Added
 - Added cartype gasoline
+- Added UnlockPlugState permanent
 
 ### Changed
-- Updated API to 0.26.0
+- Updated API to 0.27.0
+- Updated Grafana to 8.3.1
 
 
 ## [0.10.1] - 2021-12-03
