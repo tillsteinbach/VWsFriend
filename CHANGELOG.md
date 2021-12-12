@@ -12,7 +12,6 @@ All notable changes to this project will be documented in this file.
 - Added UnlockPlugState permanent
 
 ### Changed
-- Interval can be decresed to 180 seconds
 - Updated API to 0.27.0
 - Updated Grafana to 8.3.1
 
