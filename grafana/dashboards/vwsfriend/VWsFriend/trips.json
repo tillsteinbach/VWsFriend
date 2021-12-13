@@ -136,8 +136,8 @@
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 1
+                "id": "custom.hidden",
+                "value": true
               }
             ]
           },
@@ -378,8 +378,8 @@
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 1
+                "id": "custom.hidden",
+                "value": true
               }
             ]
           },
