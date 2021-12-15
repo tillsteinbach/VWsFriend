@@ -2,9 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No changes so far
+
+## [0.12.0] - 2021-12-15
+### Added
+- Recording of trips for ID vehicles
 
 ### Changed
 - Interval can be decresed to 180 seconds
+- Technical fields are now hidden in the tables
+- Removed interpolation from charging graph
 
 ## [0.11.0] - 2021-12-11
 ### Added
