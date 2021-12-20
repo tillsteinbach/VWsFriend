@@ -1,4 +1,4 @@
-../CHANGELOG.md # Changelog
+# Changelog
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
