@@ -1,21 +1,21 @@
 {
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/status": [
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=access,automation,userCapabilities,charging,climatisation,fuelStatus,vehicleLights,lvBattery,readiness,maintenance,measurements,batterySupport": [
         {
-            "data": {
-                "maintenanceStatus": {
-                    "carCapturedTimestamp": "demodate(800)",
-                    "inspectionDue_days": 644,
-                    "inspectionDue_km": 25900,
-                    "mileage_km": 4180,
-                    "oilServiceDue_days": 279,
-                    "oilServiceDue_km": 10900
-                },
-                "odometerMeasurement": {
-                    "carCapturedTimestamp": "demodate(800)",
-                    "odometer": 4180
-                },
-                "capabilityStatus": {
-                    "capabilities": []
+            "userCapabilities": {
+                "capabilitiesStatus": {
+                    "value": [{
+                        "id": "parkingPosition",
+                        "expirationDate": "2051-05-12T11:53:00Z",
+                        "userDisablingAllowed": false
+                    }]
+                }
+            },
+            "measurements": {
+                "odometerStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(800)",
+                        "odometer": 4180
+                    }
                 }
             }
         },
@@ -40,7 +40,11 @@
                     "enrollmentStatus": "COMPLETED",
                     "model": "Demo Test Vehicle",
                     "nickname": "Test Vehicle",
-                    "capabilities": [],
+                    "capabilities": [{
+                        "id": "parkingPosition",
+                        "expirationDate": "2051-05-12T11:53:00Z",
+                        "userDisablingAllowed": false
+                    }],
                     "images": {},
                     "coUsers": []
                 }

@@ -1,57 +1,40 @@
 {
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/status": [
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=access,automation,userCapabilities,charging,climatisation,fuelStatus,vehicleLights,lvBattery,readiness,maintenance,measurements,batterySupport": [
         {
-            "data": {
-                "batteryStatus": {
-                    "carCapturedTimestamp": "demodate(300)",
-                    "currentSOC_pct": 64,
-                    "cruisingRangeElectric_km": 35
-                },
-                "chargingStatus": {
-                    "carCapturedTimestamp": "demodate(-5)",
-                    "remainingChargingTimeToComplete_min": 0,
-                    "chargingState": "off",
-                    "chargeMode": "invalid",
-                    "chargePower_kW": 0
-                },
-                "chargingSettings": {
-                    "carCapturedTimestamp": "demodate(-5)",
-                    "maxChargeCurrentAC": "maximum"
-                },
-                "plugStatus": {
-                    "carCapturedTimestamp": "demodate(-5)",
-                    "plugConnectionState": "disconnected",
-                    "plugLockState": "unlocked"
-                },
-                "maintenanceStatus": {
-                    "carCapturedTimestamp": "demodate(-300)",
-                    "inspectionDue_days": 644,
-                    "inspectionDue_km": 25900,
-                    "mileage_km": 4166,
-                    "oilServiceDue_days": 279,
-                    "oilServiceDue_km": 10900
-                },
-                "odometerMeasurement": {
-                    "carCapturedTimestamp": "demodate(-300)",
-                    "odometer": 4166
-                },
-                "capabilityStatus": {
-                    "capabilities": []
-                },
+            "userCapabilities": {
+                "capabilitiesStatus": {
+                    "value": [{
+                        "id": "parkingPosition",
+                        "expirationDate": "2051-05-12T11:53:00Z",
+                        "userDisablingAllowed": false
+                    }]
+                }
+            },
+            "fuelStatus": {
                 "rangeStatus": {
-                    "carCapturedTimestamp": "demodate(300)",
-                    "carType": "hybrid",
-                    "primaryEngine": {
-                        "type": "gasoline",
-                        "currentSOC_pct": 100,
-                        "remainingRange_km": 550
-                    },
-                    "secondaryEngine": {
-                        "type": "electric",
-                        "currentSOC_pct": 64,
-                        "remainingRange_km": 35
-                    },
-                    "totalRange_km": 585
+                    "value": {
+                        "carCapturedTimestamp": "demodate(300)",
+                        "carType": "hybrid",
+                        "primaryEngine": {
+                            "type": "gasoline",
+                            "currentSOC_pct": 100,
+                            "remainingRange_km": 550
+                        },
+                        "secondaryEngine": {
+                            "type": "electric",
+                            "currentSOC_pct": 64,
+                            "remainingRange_km": 35
+                        },
+                        "totalRange_km": 585
+                    }
+                }
+            },
+            "measurements": {
+                "odometerStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(0)",
+                        "odometer": 4166
+                    }
                 }
             }
         },
@@ -76,7 +59,11 @@
                     "enrollmentStatus": "COMPLETED",
                     "model": "Demo Test Vehicle",
                     "nickname": "Test Vehicle",
-                    "capabilities": [],
+                    "capabilities": [{
+                        "id": "parkingPosition",
+                        "expirationDate": "2051-05-12T11:53:00Z",
+                        "userDisablingAllowed": false
+                    }],
                     "images": {},
                     "coUsers": []
                 }

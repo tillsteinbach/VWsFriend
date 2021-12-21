@@ -25,7 +25,11 @@ class TripAgent():
         self.vehicle = vehicle
         self.updateInterval = updateInterval
 
+        self.lastParkingPositionTimestamp = None
+        self.lastParkingPositionLatitude = None
+        self.lastParkingPositionLongitude = None
         self.trip = session.query(Trip).filter(and_(Trip.vehicle == vehicle, Trip.startDate.isnot(None))).order_by(Trip.startDate.desc()).first()
+
         if self.trip is not None:
             if self.trip.endDate is not None:
                 self.lastParkingPositionTimestamp = self.trip.endDate
@@ -34,41 +38,40 @@ class TripAgent():
             else:
                 LOG.info(f'Vehicle {self.vehicle.vin} has still an open trip during startup, closing it now')
             self.trip = None
-        else:
-            self.lastParkingPositionTimestamp = None
-            self.lastParkingPositionLatitude = None
-            self.lastParkingPositionLongitude = None
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
-            if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['parkingPosition'].enabled:
-                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampEnabled,
-                                                                                                           AddressableLeaf.ObserverEvent.ENABLED,
-                                                                                                           onUpdateComplete=True)
-                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChanged,
-                                                                                                           AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                           onUpdateComplete=True)
-                self.__onCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
-                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
-                                                                                                           AddressableLeaf.ObserverEvent.DISABLED,
-                                                                                                           onUpdateComplete=True)
-                if not self.vehicle.weConnectVehicle.statuses['parkingPosition'].error.enabled:
+            if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition') \
+                    and self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].enabled:
+                self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampEnabled,
+                                                                                                                     AddressableLeaf.ObserverEvent.ENABLED,
+                                                                                                                     onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(
+                    self.__onCarCapturedTimestampChanged,
+                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                    onUpdateComplete=True)
+                self.__onCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp, None)
+                self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
+                                                                                                                     AddressableLeaf.ObserverEvent.DISABLED,
+                                                                                                                     onUpdateComplete=True)
+                if not self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].error.enabled:
                     LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips based on position')
                     self.mode = TripAgent.Mode.PARKING_POSITION
 
             if self.mode == TripAgent.Mode.NONE:
-                if 'readinessStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['readinessStatus'].enabled:
-                    if self.vehicle.weConnectVehicle.statuses['readinessStatus'].connectionState is not None \
-                            and self.vehicle.weConnectVehicle.statuses['readinessStatus'].connectionState.enabled:
-                        self.vehicle.weConnectVehicle.statuses['readinessStatus'].connectionState.isActive \
+                if self.vehicle.weConnectVehicle.statusExists('readiness', 'readinessStatus') \
+                        and self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].enabled:
+                    if self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].connectionState is not None \
+                            and self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].connectionState.enabled:
+                        self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].connectionState.isActive \
                             .addObserver(self.__onIsActiveChanged, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
                         LOG.info(f'Vehicle {self.vehicle.vin} provides isActive flag in readinessStatus and thus allows to record trips with several minutes'
                                  ' inaccuracy')
                         self.mode = TripAgent.Mode.READINESS_STATUS
                 else:
-                    self.vehicle.weConnectVehicle.statuses.addObserver(self.__onStatusesChange,
-                                                                       AddressableLeaf.ObserverEvent.ENABLED,
-                                                                       onUpdateComplete=True)
+                    self.vehicle.weConnectVehicle.domains.addObserver(self.__onStatusesChange,
+                                                                      AddressableLeaf.ObserverEvent.ENABLED,
+                                                                      onUpdateComplete=True)
 
     def __onStatusesChange(self, element, flags):
         if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
@@ -85,7 +88,7 @@ class TripAgent():
                                     onUpdateComplete=True)
                 LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips based on position')
                 self.mode = TripAgent.Mode.PARKING_POSITION
-                self.vehicle.weConnectVehicle.statuses.removeObserver(self.__onStatusesChange)
+                self.vehicle.weConnectVehicle.domains.removeObserver(self.__onStatusesChange)
                 self.__onCarCapturedTimestampEnabled(element, flags)
 
     def __onCarCapturedTimestampDisabled(self, element: AddressableAttribute, flags):
@@ -101,8 +104,9 @@ class TripAgent():
                              self.lastParkingPositionLongitude, None, None)
             self.trip.start_location = locationFromLatLon(self.session, self.lastParkingPositionLatitude, self.lastParkingPositionLongitude)
 
-            if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['odometerMeasurement'].enabled:
-                odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+            if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+                    and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
+                odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                 if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                     self.trip.start_mileage_km = odometerMeasurement.odometer.value
             try:
@@ -115,7 +119,7 @@ class TripAgent():
 
     def __onCarCapturedTimestampChanged(self, element, flags):
         if self.mode == TripAgent.Mode.PARKING_POSITION:
-            parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+            parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
             if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
                 self.lastParkingPositionTimestamp = parkingPosition.carCapturedTimestamp.value
             if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
@@ -125,7 +129,7 @@ class TripAgent():
 
     def __onCarCapturedTimestampEnabled(self, element, flags):
         if self.mode == TripAgent.Mode.PARKING_POSITION:
-            parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+            parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
             if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
                 self.lastParkingPositionTimestamp = parkingPosition.carCapturedTimestamp.value
             if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
@@ -141,8 +145,9 @@ class TripAgent():
                     self.trip.destination_position_longitude = parkingPosition.longitude.value
                     self.trip.destination_location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
 
-                if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['odometerMeasurement'].enabled:
-                    odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+                if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+                        and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
+                    odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                     if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                         self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
@@ -161,8 +166,9 @@ class TripAgent():
                     self.trip = None
                 time = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0) - timedelta(seconds=self.updateInterval)
                 self.trip = Trip(self.vehicle, time, None, None, None, None)
-                if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['odometerMeasurement'].enabled:
-                    odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+                if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+                        and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
+                    odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                     if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                         self.trip.start_mileage_km = odometerMeasurement.odometer.value
                 try:
@@ -175,9 +181,9 @@ class TripAgent():
             else:
                 if self.trip is not None:
                     self.trip.endDate = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0)
-                    if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses \
-                            and self.vehicle.weConnectVehicle.statuses['odometerMeasurement'].enabled:
-                        odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+                    if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+                            and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
+                        odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                         if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                             self.trip.end_mileage_km = odometerMeasurement.odometer.value
 

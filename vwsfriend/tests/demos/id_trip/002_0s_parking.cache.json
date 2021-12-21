@@ -1,29 +1,28 @@
 {
     "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=access,automation,userCapabilities,charging,climatisation,fuelStatus,vehicleLights,lvBattery,readiness,maintenance,measurements,batterySupport": [
         {
-            "userCapabilities": {
-                "capabilitiesStatus": {
-                    "value": [{
-                        "id": "parkingPosition",
-                        "expirationDate": "2051-05-12T11:53:00Z",
-                        "userDisablingAllowed": false
-                    }]
-                }
-            },
             "measurements": {
                 "odometerStatus": {
                     "value": {
-                        "carCapturedTimestamp": "demodate(600)",
+                        "carCapturedTimestamp": "demodate(300)",
                         "odometer": 4166
                     }
                 }
+            },
+            "readiness": {
+                "readinessStatus": {
+                    "connectionState": {
+                        "isOnline": true,
+                        "isActive": false,
+                        "batteryPowerLevel": "comfort",
+                        "dailyPowerBudgetAvailable": true
+                    },
+                    "connectionWarning": {
+                        "insufficientBatteryLevelWarning": false,
+                        "dailyPowerBudgetWarning": false
+                    }
+                }
             }
-        },
-        "now(+0)"
-    ],
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
-        {
-            "data": {}
         },
         "now(+0)"
     ],
@@ -36,11 +35,7 @@
                     "enrollmentStatus": "COMPLETED",
                     "model": "Demo Test Vehicle",
                     "nickname": "Test Vehicle",
-                    "capabilities": [{
-                        "id": "parkingPosition",
-                        "expirationDate": "2051-05-12T11:53:00Z",
-                        "userDisablingAllowed": false
-                    }],
+                    "capabilities": [],
                     "images": {},
                     "coUsers": []
                 }

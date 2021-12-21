@@ -35,9 +35,11 @@ class StateAgent():
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
-            for status in self.vehicle.weConnectVehicle.statuses.values():
-                status.carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
-                self.__onCarCapturedTimestampChange(element=status.carCapturedTimestamp, flags=None)
+            for domain in self.vehicle.weConnectVehicle.domains.values():
+                for status in domain.values():
+                    status.carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                            onUpdateComplete=True)
+                    self.__onCarCapturedTimestampChange(element=status.carCapturedTimestamp, flags=None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
         if element.enabled and (self.lastCarCapturedTimestamp is None or self.lastCarCapturedTimestamp < element.value):
@@ -49,8 +51,8 @@ class StateAgent():
 
     def checkOnlineOffline(self):
         if self.onlineState == StateAgent.OnlineState.ONLINE:
-            if self.online is not None and (self.lastCarCapturedTimestamp + timedelta(seconds=self.offlineTimeout)) \
-                    < datetime.utcnow().replace(tzinfo=timezone.utc):
+            if self.online is not None and self.lastCarCapturedTimestamp is not None \
+                    and (self.lastCarCapturedTimestamp + timedelta(seconds=self.offlineTimeout)) < datetime.utcnow().replace(tzinfo=timezone.utc):
                 LOG.info(f'Vehicle {self.vehicle.vin} went offline')
                 self.onlineState = StateAgent.OnlineState.OFFLINE
                 self.vehicle.online = False

@@ -19,14 +19,16 @@ class ClimatizationAgent():
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
-            if 'climatisationStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['climatisationStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['climatisationStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
-                                                                                                               AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                               onUpdateComplete=True)
+            if self.vehicle.weConnectVehicle.statusExists('climatisation', 'climatisationStatus') \
+                    and self.vehicle.weConnectVehicle.domains['climatisation']['climatisationStatus'].enabled:
+                self.vehicle.weConnectVehicle.domains['climatisation']['climatisationStatus'].carCapturedTimestamp.addObserver(
+                    self.__onCarCapturedTimestampChange,
+                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                    onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
-        chargeStatus = self.vehicle.weConnectVehicle.statuses['climatisationStatus']
+        chargeStatus = self.vehicle.weConnectVehicle.domains['climatisation']['climatisationStatus']
         current_remainingClimatisationTime_min = None
         current_climatisationState = None
         if chargeStatus.remainingClimatisationTime_min.enabled:

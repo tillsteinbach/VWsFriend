@@ -18,14 +18,15 @@ class BatteryAgent():
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
-            if 'batteryStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['batteryStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['batteryStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
-                                                                                                         AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                         onUpdateComplete=True)
+            if self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus') \
+                    and self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].enabled:
+                self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
+                                                                                                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                                    onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
-        batteryStatus = self.vehicle.weConnectVehicle.statuses['batteryStatus']
+        batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
         current_currentSOC_pct = batteryStatus.currentSOC_pct.value
         current_cruisingRangeElectric_km = batteryStatus.cruisingRangeElectric_km.value
 
