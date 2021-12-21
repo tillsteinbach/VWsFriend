@@ -21,20 +21,24 @@ class RefuelAgent():
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
-            if 'rangeStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['rangeStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
-                                                                                                       AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                       onUpdateComplete=True)
+            if self.vehicle.weConnectVehicle.statusExists('fuelStatus', 'rangeStatus') \
+                    and self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].enabled:
+                self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
+                                                                                                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                                    onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
-            if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['parkingPosition'].enabled:
-                self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp.addObserver(self.__onParkingPositionCarCapturedTimestampChanged,
-                                                                                                           AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                           onUpdateComplete=True)
-                self.__onParkingPositionCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.statuses['parkingPosition'].carCapturedTimestamp, None)
+            if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition') \
+                    and self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].enabled:
+                self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(
+                    self.__onParkingPositionCarCapturedTimestampChanged,
+                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                    onUpdateComplete=True)
+                self.__onParkingPositionCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp,
+                                                                    None)
             else:
-                self.vehicle.weConnectVehicle.statuses.addObserver(self.__onStatusesChange,
-                                                                   AddressableLeaf.ObserverEvent.ENABLED,
-                                                                   onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.domains.addObserver(self.__onStatusesChange,
+                                                                  AddressableLeaf.ObserverEvent.ENABLED,
+                                                                  onUpdateComplete=True)
 
     def __onStatusesChange(self, element, flags):
         if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
@@ -44,26 +48,26 @@ class RefuelAgent():
                 element.addObserver(self.__onParkingPositionCarCapturedTimestampChanged,
                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                     onUpdateComplete=True)
-                self.vehicle.weConnectVehicle.statuses.removeObserver(self.__onStatusesChange)
+                self.vehicle.weConnectVehicle.domains.removeObserver(self.__onStatusesChange)
                 self.__onParkingPositionCarCapturedTimestampChanged(element, flags)
 
     def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
-        rangeStatus = self.vehicle.weConnectVehicle.statuses['rangeStatus']
+        rangeStatus = self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus']
         if self.vehicle.carType in [RangeStatus.CarType.HYBRID] and rangeStatus.primaryEngine.currentSOC_pct.enabled \
                 and element is not None and element.value > (datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=1)):
             current_primary_currentSOC_pct = rangeStatus.primaryEngine.currentSOC_pct.value
 
             mileage_km = None
-            if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses:
-                odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+            if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus'):
+                odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                 if odometerMeasurement.odometer.enabled:
                     mileage_km = odometerMeasurement.odometer.value
 
             position_latitude = None
             position_longitude = None
             location = None
-            if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses:
-                parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+            if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
+                parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
                 if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
                         and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
                     position_latitude = parkingPosition.latitude.value
@@ -103,8 +107,8 @@ class RefuelAgent():
                 self.primary_currentSOC_pct = current_primary_currentSOC_pct
 
     def __onParkingPositionCarCapturedTimestampChanged(self, element, flags):
-        if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses:
-            parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+        if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
+            parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
             if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None \
                     and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
                     and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:

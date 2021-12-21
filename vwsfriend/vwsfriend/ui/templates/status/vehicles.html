@@ -14,8 +14,8 @@
         <div><h3><a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}">{{vehicle.nickname.value}}</a> (<a href="{{ url_for('status.vehicle', vin=vehicle.vin.value) }}">{{vehicle.model.value}}</a>)</h3>
           <p>
             
-            {% if 'batteryStatus' in vehicle.statuses and vehicle.statuses['batteryStatus'].enabled and vehicle.statuses['batteryStatus'].currentSOC_pct.enabled %} {{vehicle.statuses['batteryStatus'].currentSOC_pct}}% electric SoC,{% endif %}
-            {% if 'parkingPosition' in vehicle.statuses and vehicle.statuses['parkingPosition'].enabled and vehicle.statuses['parkingPosition'].carCapturedTimestamp.enabled %} parked, {% endif %}
+            {% if vehicle.statusExists('charging', 'batteryStatus') and vehicle.domains['charging']['batteryStatus'].currentSOC_pct.enabled %} {{vehicle.domains['charging']['batteryStatus'].currentSOC_pct}}% electric SoC,{% endif %}
+            {% if vehicle.statusExists('parking', 'parkingPosition') and vehicle.domains['parking']['parkingPosition'].enabled and not vehicle.domains['parking']['parkingPosition'].hasError() %} parked, {% endif %}
 
           </p>
         </div>

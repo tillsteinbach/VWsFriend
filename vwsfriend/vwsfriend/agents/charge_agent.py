@@ -24,22 +24,24 @@ class ChargeAgent():
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
-            if 'chargingStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['chargingStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['chargingStatus'].carCapturedTimestamp.addObserver(self.__onChargingStatusCarCapturedTimestampChange,
-                                                                                                          AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                          onUpdateComplete=True)
+            if self.vehicle.weConnectVehicle.statusExists('charging', 'chargingStatus') \
+                    and self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].enabled:
+                self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].carCapturedTimestamp.addObserver(
+                    self.__onChargingStatusCarCapturedTimestampChange,
+                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                    onUpdateComplete=True)
                 self.__onChargingStatusCarCapturedTimestampChange(None, None)
 
-                self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargingState.addObserver(self.__onChargingStateChange,
-                                                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                   onUpdateComplete=True)
-                self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargePower_kW.addObserver(self.__onChargePowerChange,
-                                                                                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                    onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].chargingState.addObserver(self.__onChargingStateChange,
+                                                                                                              AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                              onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].chargePower_kW.addObserver(self.__onChargePowerChange,
+                                                                                                               AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                               onUpdateComplete=True)
 
                 # If the vehicle is charging check if you can catch up an open charging session:
-                if self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargingState.enabled \
-                        and self.vehicle.weConnectVehicle.statuses['chargingStatus'].chargingState.value == ChargingStatus.ChargingState.CHARGING:
+                if self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].chargingState.enabled \
+                        and self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].chargingState.value == ChargingStatus.ChargingState.CHARGING:
                     chargingSession = session.query(ChargingSession).filter(ChargingSession.vehicle == vehicle).order_by(ChargingSession.started.desc()).first()
                     if chargingSession is not None and not chargingSession.isClosed():
                         self.chargingSession = chargingSession
@@ -47,16 +49,17 @@ class ChargeAgent():
                     else:
                         LOG.warning('Vehicle is charging but no open charging session entry was found in the database. This session cannot be recorded.')
 
-            if 'plugStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['plugStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['plugStatus'].plugConnectionState.addObserver(self.__onPlugConnectionStateChange,
-                                                                                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                     onUpdateComplete=True)
-                self.vehicle.weConnectVehicle.statuses['plugStatus'].plugLockState.addObserver(self.__onPlugLockStateChange,
-                                                                                               AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                               onUpdateComplete=True)
+            if self.vehicle.weConnectVehicle.statusExists('charging', 'plugStatus') \
+                    and self.vehicle.weConnectVehicle.domains['charging']['plugStatus'].enabled:
+                self.vehicle.weConnectVehicle.domains['charging']['plugStatus'].plugConnectionState.addObserver(self.__onPlugConnectionStateChange,
+                                                                                                                AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                                onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.domains['charging']['plugStatus'].plugLockState.addObserver(self.__onPlugLockStateChange,
+                                                                                                          AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                          onUpdateComplete=True)
 
     def __onChargingStatusCarCapturedTimestampChange(self, element, flags):
-        chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
+        chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
         current_remainingChargingTimeToComplete_min = None
         current_chargingState = None
         current_chargeMode = None
@@ -90,7 +93,7 @@ class ChargeAgent():
                 LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API')
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
-        chargeStatus = self.vehicle.weConnectVehicle.statuses['chargingStatus']
+        chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
         if element.value == ChargingStatus.ChargingState.CHARGING:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
@@ -105,8 +108,8 @@ class ChargeAgent():
                 self.chargingSession.started = chargeStatus.carCapturedTimestamp.value
             # also write start SoC
             if self.chargingSession is not None and self.chargingSession.startSOC_pct is None \
-                    and 'batteryStatus' in self.vehicle.weConnectVehicle.statuses:
-                batteryStatus = self.vehicle.weConnectVehicle.statuses['batteryStatus']
+                    and self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus'):
+                batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
                 if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
                     self.chargingSession.startSOC_pct = batteryStatus.currentSOC_pct.value
 
@@ -126,8 +129,8 @@ class ChargeAgent():
                         self.chargingSession.acdc = ACDC.AC
                 # also write end SoC
                 if self.chargingSession is not None and self.chargingSession.endSOC_pct is None \
-                        and 'batteryStatus' in self.vehicle.weConnectVehicle.statuses:
-                    batteryStatus = self.vehicle.weConnectVehicle.statuses['batteryStatus']
+                        and self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus'):
+                    batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
                     if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
                         self.chargingSession.endSOC_pct = batteryStatus.currentSOC_pct.value
 
@@ -138,7 +141,7 @@ class ChargeAgent():
                 self.updateMileage()
 
     def __onPlugConnectionStateChange(self, element, flags):
-        plugStatus = self.vehicle.weConnectVehicle.statuses['plugStatus']
+        plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
@@ -164,7 +167,7 @@ class ChargeAgent():
             self.updateMileage()
 
     def __onPlugLockStateChange(self, element, flags):
-        plugStatus = self.vehicle.weConnectVehicle.statuses['plugStatus']
+        plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
         if element.value == PlugStatus.PlugLockState.LOCKED:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
@@ -190,8 +193,8 @@ class ChargeAgent():
             self.chargingSession.maximumChargePower_kW = element.value
 
     def updatePosition(self):
-        if 'parkingPosition' in self.vehicle.weConnectVehicle.statuses:
-            parkingPosition = self.vehicle.weConnectVehicle.statuses['parkingPosition']
+        if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
+            parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
             if self.chargingSession is not None and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
                     and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
                 self.chargingSession.position_latitude = parkingPosition.latitude.value
@@ -204,8 +207,8 @@ class ChargeAgent():
                                                                      longitude=round(parkingPosition.longitude.value, 4), searchRadius=100)
 
     def updateMileage(self):
-        if 'odometerMeasurement' in self.vehicle.weConnectVehicle.statuses:
-            odometerMeasurement = self.vehicle.weConnectVehicle.statuses['odometerMeasurement']
+        if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus'):
+            odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
             if self.chargingSession is not None and odometerMeasurement.odometer.enabled and odometerMeasurement.odometer.value is not None:
                 self.chargingSession.mileage_km = odometerMeasurement.odometer.value
 

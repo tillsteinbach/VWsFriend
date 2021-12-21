@@ -84,8 +84,9 @@ def vehicleStatusOrImg(vin, badge=False):
             return redirect(url_for('static', filename=request.args.get('fallback')))
         else:
             abort(404, f"Vehicle with VIN {vin} doesn't exist.")
-    statuses = vehicles[vin].statuses
-    if 'accessStatus' in statuses:
+
+    if vehicles[vin].statusExists('access', 'accessStatus') \
+            and vehicles[vin].domains['access']['accessStatus'].carCapturedTimestamp.enabled:
         return vehicleStatusImg(vin, badge)
     return vehicleImg(vin, badge)
 

@@ -19,16 +19,17 @@ class RangeAgent():
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
-            if 'rangeStatus' in self.vehicle.weConnectVehicle.statuses and self.vehicle.weConnectVehicle.statuses['rangeStatus'].enabled:
-                self.vehicle.weConnectVehicle.statuses['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
-                                                                                                       AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                       onUpdateComplete=True)
+            if self.vehicle.weConnectVehicle.statusExists('fuelStatus', 'rangeStatus') \
+                    and self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].enabled:
+                self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
+                                                                                                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                                                                                                                    onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
         # Check that the data to add is not too old
         if element is not None and element.value > (datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=7)):
-            rangeStatus = self.vehicle.weConnectVehicle.statuses['rangeStatus']
+            rangeStatus = self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus']
             current_totalRange_km = rangeStatus.totalRange_km.value
             current_primary_currentSOC_pct = None
             current_primary_remainingRange_km = None

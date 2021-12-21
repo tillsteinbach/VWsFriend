@@ -10,60 +10,29 @@
                     }]
                 }
             },
-            "charging": {
-                "batteryStatus": {
-                    "value": {
-                        "carCapturedTimestamp": "demodate(+1500)",
-                        "currentSOC_pct": 99,
-                        "cruisingRangeElectric_km": 50
-                    }
-                },
-                "chargingStatus": {
-                    "value": {
-                        "carCapturedTimestamp": "demodate(+1500)",
-                        "remainingChargingTimeToComplete_min": 15,
-                        "chargingState": "off",
-                        "chargeMode": "invalid",
-                        "chargePower_kW": 0
-                    }
-                },
-                "chargingSettings": {
-                    "value": {
-                        "carCapturedTimestamp": "demodate(-5)",
-                        "maxChargeCurrentAC": "maximum"
-                    }
-                },
-                "plugStatus": {
-                    "value": {
-                        "carCapturedTimestamp": "demodate(+1500)",
-                        "plugConnectionState": "disconnected",
-                        "plugLockState": "unlocked"
-                    }
-                }
-            },
             "fuelStatus": {
                 "rangeStatus": {
                     "value": {
-                        "carCapturedTimestamp": "demodate(-5)",
+                        "carCapturedTimestamp": "demodate(300)",
                         "carType": "hybrid",
                         "primaryEngine": {
                             "type": "gasoline",
                             "currentSOC_pct": 100,
-                            "remainingRange_km": 500
+                            "remainingRange_km": 550
                         },
                         "secondaryEngine": {
                             "type": "electric",
-                            "currentSOC_pct": 71,
-                            "remainingRange_km": 30
+                            "currentSOC_pct": 64,
+                            "remainingRange_km": 35
                         },
-                        "totalRange_km": 530
+                        "totalRange_km": 585
                     }
                 }
             },
             "measurements": {
                 "odometerStatus": {
                     "value": {
-                        "carCapturedTimestamp": "demodate(-300)",
+                        "carCapturedTimestamp": "demodate(0)",
                         "odometer": 4166
                     }
                 }
@@ -73,11 +42,7 @@
     ],
     "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
         {
-            "data": {
-                "latitude": 53.64895,
-                "longitude": 10.16238,
-                "carCapturedTimestamp": "demodate(-300)"
-            }
+            "data": {}
         },
         "now(+0)"
     ],

@@ -32,10 +32,11 @@ class Vehicle(Base):
         self.weConnectVehicle.nickname.addObserver(self.__onNicknameChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
         if self.weConnectVehicle.nickname.enabled and self.nickname != self.weConnectVehicle.nickname.value:
             self.nickname = self.weConnectVehicle.nickname.value
-        if 'rangeStatus' in self.weConnectVehicle.statuses and self.weConnectVehicle.statuses['rangeStatus'].enabled:
-            self.weConnectVehicle.statuses['rangeStatus'].carType.addObserver(self.__onCarTypeChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-            if self.weConnectVehicle.statuses['rangeStatus'].carType.enabled:
-                self.carType = self.weConnectVehicle.statuses['rangeStatus'].carType.value
+        if self.weConnectVehicle.statusExists('fuelStatus', 'rangeStatus') \
+                and self.weConnectVehicle.domains['fuelStatus']['rangeStatus'].enabled:
+            self.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carType.addObserver(self.__onCarTypeChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+            if self.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carType.enabled:
+                self.carType = self.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carType.value
             elif self.carType is None:
                 self.carType = RangeStatus.CarType.UNKNOWN
 

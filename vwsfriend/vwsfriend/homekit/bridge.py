@@ -70,21 +70,21 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
             model = vehicle.nickname.value
             vin = vehicle.vin.value
             # Climatization
-            if 'climatisationStatus' in vehicle.statuses:
-                climatizationStatus = vehicle.statuses['climatisationStatus']
+            if vehicle.statusExists('climatisation', 'climatisationStatus'):
+                climatizationStatus = vehicle.domains['climatisation']['climatisationStatus']
 
-                if 'climatisationSettings' in vehicle.statuses:
-                    climatizationSettings = vehicle.statuses['climatisationSettings']
+                if vehicle.statusExists('climatisation', 'climatisationSettings'):
+                    climatizationSettings = vehicle.domains['climatisation']['climatisationSettings']
                 else:
                     climatizationSettings = None
 
-                if 'batteryStatus' in vehicle.statuses:
-                    batteryStatus = vehicle.statuses['batteryStatus']
+                if vehicle.statusExists('charging', 'batteryStatus'):
+                    batteryStatus = vehicle.domains['charging']['batteryStatus']
                 else:
                     batteryStatus = None
 
-                if 'chargingStatus' in vehicle.statuses:
-                    chargingStatus = vehicle.statuses['chargingStatus']
+                if vehicle.statusExists('charging', 'chargingStatus'):
+                    chargingStatus = vehicle.domains['charging']['chargingStatus']
                 else:
                     chargingStatus = None
 
@@ -99,30 +99,16 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                     self.accessories[climatizationAccessory.aid] = climatizationAccessory
                 configChanged = True
 
-            # if 'batteryStatus' in vehicle.statuses:
-            #     batteryStatus = vehicle.statuses['batteryStatus']
+            if vehicle.statusExists('charging', 'chargingStatus'):
+                chargingStatus = vehicle.domains['charging']['chargingStatus']
 
-            #     if 'chargingStatus' in vehicle.statuses:
-            #         chargingStatus = vehicle.statuses['chargingStatus']
-            #     else:
-            #         chargingStatus = None
-
-            #     batteryAccessory = Battery(driver=self.driver, bridge=self, aid=self.selectAID('Battery', vin), id='Battery', vin=vin,
-            #                                displayName=f'{nickname} Battery', batteryStatus=batteryStatus, chargingStatus=chargingStatus)
-            #     batteryAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-battery')
-            #     self.add_accessory(batteryAccessory)
-            #     configChanged = True
-
-            if 'chargingStatus' in vehicle.statuses:
-                chargingStatus = vehicle.statuses['chargingStatus']
-
-                if 'plugStatus' in vehicle.statuses:
-                    plugStatus = vehicle.statuses['plugStatus']
+                if vehicle.statusExists('charging', 'plugStatus'):
+                    plugStatus = vehicle.domains['charging']['plugStatus']
                 else:
                     plugStatus = None
 
-                if 'batteryStatus' in vehicle.statuses:
-                    batteryStatus = vehicle.statuses['batteryStatus']
+                if vehicle.statusExists('charging', 'batteryStatus'):
+                    batteryStatus = vehicle.domains['charging']['batteryStatus']
                 else:
                     batteryStatus = None
 
@@ -136,8 +122,8 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                     self.accessories[chargingAccessory.aid] = chargingAccessory
                 configChanged = True
 
-            if 'plugStatus' in vehicle.statuses:
-                plugStatus = vehicle.statuses['plugStatus']
+            if vehicle.statusExists('charging', 'plugStatus'):
+                plugStatus = vehicle.domains['charging']['plugStatus']
 
                 plugAccessory = Plug(driver=self.driver, bridge=self, aid=self.selectAID('ChargingPlug', vin), id='ChargingPlug', vin=vin,
                                      displayName=f'{nickname} Charging Plug', plugStatus=plugStatus)
@@ -148,8 +134,8 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                     self.accessories[plugAccessory.aid] = plugAccessory
                 configChanged = True
 
-            if 'accessStatus' in vehicle.statuses:
-                accessStatus = vehicle.statuses['accessStatus']
+            if vehicle.statusExists('access', 'accessStatus') and vehicle.domains['access']['accessStatus'].carCapturedTimestamp.enabled:
+                accessStatus = vehicle.domains['access']['accessStatus']
 
                 lockingSystemAccessory = LockingSystem(driver=self.driver, bridge=self, aid=self.selectAID('LockingSystem', vin), id='LockingSystem', vin=vin,
                                                        displayName=f'{nickname} Locking System', accessStatus=accessStatus)
