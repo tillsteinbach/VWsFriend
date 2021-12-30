@@ -80,7 +80,7 @@ class ABRPAgent():
                 LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after next interval')
 
     def commit(self):  # noqa: C901
-        if self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus'):
+        if self.weConnectVehicle.statusExists('charging', 'batteryStatus'):
             batteryStatus = self.weConnectVehicle.domains['charging']['batteryStatus']
             if batteryStatus.carCapturedTimestamp.enabled and batteryStatus.carCapturedTimestamp.value is not None:
                 self.telemetryData['utc'] = batteryStatus.carCapturedTimestamp.value.timestamp()
@@ -89,7 +89,7 @@ class ABRPAgent():
             if batteryStatus.cruisingRangeElectric_km.enabled and batteryStatus.cruisingRangeElectric_km.value is not None:
                 self.telemetryData['est_battery_range'] = batteryStatus.cruisingRangeElectric_km.value
 
-        if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
+        if self.weConnectVehicle.statusExists('parking', 'parkingPosition'):
             parkingPosition = self.weConnectVehicle.domains['parking']['parkingPosition']
             if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
                     and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
@@ -100,13 +100,13 @@ class ABRPAgent():
         else:
             self.telemetryData['is_parked'] = False
 
-        if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+        if self.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
                 and self.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
             odometerMeasurement = self.weConnectVehicle.domains['measurements']['odometerStatus']
             if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                 self.telemetryData['odometer'] = odometerMeasurement.odometer.value
 
-        if self.vehicle.weConnectVehicle.statusExists('charging', 'chargingStatus') \
+        if self.weConnectVehicle.statusExists('charging', 'chargingStatus') \
                 and self.weConnectVehicle.domains['charging']['chargingStatus'].enabled:
             chargingStatus = self.weConnectVehicle.domains['charging']['chargingStatus']
             if chargingStatus.chargingState.enabled and chargingStatus.chargingState.value in [ChargingStatus.ChargingState.CHARGING]:
