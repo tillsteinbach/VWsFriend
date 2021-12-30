@@ -13,7 +13,7 @@ class ClimatizationAgent():
     def __init__(self, session, vehicle):
         self.session = session
         self.vehicle = vehicle
-        self.charge = session.query(Climatization).filter(and_(Climatization.vehicle == vehicle,
+        self.climate = session.query(Climatization).filter(and_(Climatization.vehicle == vehicle,
                                                                Climatization.carCapturedTimestamp.isnot(None))) \
                                                   .order_by(Climatization.carCapturedTimestamp.desc()).first()
 
@@ -28,26 +28,27 @@ class ClimatizationAgent():
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
-        chargeStatus = self.vehicle.weConnectVehicle.domains['climatisation']['climatisationStatus']
-        current_remainingClimatisationTime_min = None
-        current_climatisationState = None
-        if chargeStatus.remainingClimatisationTime_min.enabled:
-            current_remainingClimatisationTime_min = chargeStatus.remainingClimatisationTime_min.value
-        if chargeStatus.climatisationState.enabled:
-            current_climatisationState = chargeStatus.climatisationState.value
+        if element is not None and element.value is not None:
+            climateStatus = self.vehicle.weConnectVehicle.domains['climatisation']['climatisationStatus']
+            current_remainingClimatisationTime_min = None
+            current_climatisationState = None
+            if climateStatus.remainingClimatisationTime_min.enabled:
+                current_remainingClimatisationTime_min = climateStatus.remainingClimatisationTime_min.value
+            if climateStatus.climatisationState.enabled:
+                current_climatisationState = climateStatus.climatisationState.value
 
-        if self.charge is None or (self.charge.carCapturedTimestamp != chargeStatus.carCapturedTimestamp.value and (
-                self.charge.remainingClimatisationTime_min != current_remainingClimatisationTime_min
-                or self.charge.climatisationState != current_climatisationState)):
+            if self.climate is None or (self.climate.carCapturedTimestamp != climateStatus.carCapturedTimestamp.value and (
+                    self.climate.remainingClimatisationTime_min != current_remainingClimatisationTime_min
+                    or self.climate.climatisationState != current_climatisationState)):
 
-            self.charge = Climatization(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
-                                        current_climatisationState)
-            try:
-                with self.session.begin_nested():
-                    self.session.add(self.charge)
-                self.session.commit()
-            except IntegrityError:
-                LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API')
+                self.climate = Climatization(self.vehicle, climateStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
+                                            current_climatisationState)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.climate)
+                    self.session.commit()
+                except IntegrityError as err:
+                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def commit(self):
         pass

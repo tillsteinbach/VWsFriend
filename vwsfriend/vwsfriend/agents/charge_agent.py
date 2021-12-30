@@ -59,38 +59,39 @@ class ChargeAgent():
                                                                                                           onUpdateComplete=True)
 
     def __onChargingStatusCarCapturedTimestampChange(self, element, flags):
-        chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
-        current_remainingChargingTimeToComplete_min = None
-        current_chargingState = None
-        current_chargeMode = None
-        current_chargePower_kW = None
-        current_chargeRate_kmph = None
-        if chargeStatus.remainingChargingTimeToComplete_min.enabled:
-            current_remainingChargingTimeToComplete_min = chargeStatus.remainingChargingTimeToComplete_min.value
-        if chargeStatus.chargingState.enabled:
-            current_chargingState = chargeStatus.chargingState.value
-        if chargeStatus.chargeMode.enabled:
-            current_chargeMode = chargeStatus.chargeMode.value
-        if chargeStatus.chargePower_kW.enabled:
-            current_chargePower_kW = chargeStatus.chargePower_kW.value
-        if chargeStatus.chargeRate_kmph.enabled:
-            current_chargeRate_kmph = chargeStatus.chargeRate_kmph.value
+        if element is not None and element.value is not None:
+            chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
+            current_remainingChargingTimeToComplete_min = None
+            current_chargingState = None
+            current_chargeMode = None
+            current_chargePower_kW = None
+            current_chargeRate_kmph = None
+            if chargeStatus.remainingChargingTimeToComplete_min.enabled:
+                current_remainingChargingTimeToComplete_min = chargeStatus.remainingChargingTimeToComplete_min.value
+            if chargeStatus.chargingState.enabled:
+                current_chargingState = chargeStatus.chargingState.value
+            if chargeStatus.chargeMode.enabled:
+                current_chargeMode = chargeStatus.chargeMode.value
+            if chargeStatus.chargePower_kW.enabled:
+                current_chargePower_kW = chargeStatus.chargePower_kW.value
+            if chargeStatus.chargeRate_kmph.enabled:
+                current_chargeRate_kmph = chargeStatus.chargeRate_kmph.value
 
-        if self.charge is None or (self.charge.carCapturedTimestamp != chargeStatus.carCapturedTimestamp.value and (
-                self.charge.remainingChargingTimeToComplete_min != current_remainingChargingTimeToComplete_min
-                or self.charge.chargingState != current_chargingState
-                or self.charge.chargeMode != current_chargeMode
-                or self.charge.chargePower_kW != current_chargePower_kW
-                or self.charge.chargeRate_kmph != current_chargeRate_kmph)):
+            if self.charge is None or (self.charge.carCapturedTimestamp != chargeStatus.carCapturedTimestamp.value and (
+                    self.charge.remainingChargingTimeToComplete_min != current_remainingChargingTimeToComplete_min
+                    or self.charge.chargingState != current_chargingState
+                    or self.charge.chargeMode != current_chargeMode
+                    or self.charge.chargePower_kW != current_chargePower_kW
+                    or self.charge.chargeRate_kmph != current_chargeRate_kmph)):
 
-            self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
-                                 current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
-            try:
-                with self.session.begin_nested():
-                    self.session.add(self.charge)
-                self.session.commit()
-            except IntegrityError:
-                LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API')
+                self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
+                                    current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.charge)
+                    self.session.commit()
+                except IntegrityError as err:
+                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
@@ -150,8 +151,8 @@ class ChargeAgent():
                     with self.session.begin_nested():
                         self.session.add(self.chargingSession)
                     self.session.commit()
-                except IntegrityError:
-                    LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
+                except IntegrityError as err:
+                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
             if self.chargingSession.connected is None:
                 self.chargingSession.connected = plugStatus.carCapturedTimestamp.value
             # also write position if available

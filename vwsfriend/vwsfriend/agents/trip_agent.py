@@ -51,12 +51,14 @@ class TripAgent():
                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                     onUpdateComplete=True)
                 self.__onCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp, None)
-                self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
-                                                                                                                     AddressableLeaf.ObserverEvent.DISABLED,
-                                                                                                                     onUpdateComplete=True)
+
                 if not self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].error.enabled:
                     LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips based on position')
                     self.mode = TripAgent.Mode.PARKING_POSITION
+
+                    self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
+                                                                                                                         AddressableLeaf.ObserverEvent.DISABLED,
+                                                                                                                         onUpdateComplete=True)
 
             if self.mode == TripAgent.Mode.NONE:
                 if self.vehicle.weConnectVehicle.statusExists('readiness', 'readinessStatus') \
@@ -113,8 +115,8 @@ class TripAgent():
                 with self.session.begin_nested():
                     self.session.add(self.trip)
                 self.session.commit()
-            except IntegrityError:
-                LOG.warning('Could not add trip entry to the database, this is usually due to an error in the WeConnect API')
+            except IntegrityError as err:
+                LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
             LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
 
     def __onCarCapturedTimestampChanged(self, element, flags):
@@ -175,8 +177,8 @@ class TripAgent():
                     with self.session.begin_nested():
                         self.session.add(self.trip)
                     self.session.commit()
-                except IntegrityError:
-                    LOG.warning('Could not add trip entry to the database, this is usually due to an error in the WeConnect API')
+                except IntegrityError as err:
+                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
             else:
                 if self.trip is not None:
