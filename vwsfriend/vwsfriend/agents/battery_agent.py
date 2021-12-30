@@ -26,21 +26,22 @@ class BatteryAgent():
                 self.__onCarCapturedTimestampChange(None, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
-        batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
-        current_currentSOC_pct = batteryStatus.currentSOC_pct.value
-        current_cruisingRangeElectric_km = batteryStatus.cruisingRangeElectric_km.value
+        if element is not None and element.value is not None:
+            batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
+            current_currentSOC_pct = batteryStatus.currentSOC_pct.value
+            current_cruisingRangeElectric_km = batteryStatus.cruisingRangeElectric_km.value
 
-        if self.battery is None or (self.battery.carCapturedTimestamp != batteryStatus.carCapturedTimestamp.value and (
-                self.battery.currentSOC_pct != current_currentSOC_pct
-                or self.battery.cruisingRangeElectric_km != current_cruisingRangeElectric_km)):
+            if self.battery is None or (self.battery.carCapturedTimestamp != batteryStatus.carCapturedTimestamp.value and (
+                    self.battery.currentSOC_pct != current_currentSOC_pct
+                    or self.battery.cruisingRangeElectric_km != current_cruisingRangeElectric_km)):
 
-            self.battery = Battery(self.vehicle, batteryStatus.carCapturedTimestamp.value, current_currentSOC_pct, current_cruisingRangeElectric_km)
-            try:
-                with self.session.begin_nested():
-                    self.session.add(self.battery)
-                self.session.commit()
-            except IntegrityError:
-                LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API')
+                self.battery = Battery(self.vehicle, batteryStatus.carCapturedTimestamp.value, current_currentSOC_pct, current_cruisingRangeElectric_km)
+                try:
+                    with self.session.begin_nested():
+                        self.session.add(self.battery)
+                    self.session.commit()
+                except IntegrityError as err:
+                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def commit(self):
         pass

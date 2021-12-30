@@ -75,8 +75,8 @@ class StateAgent():
                     with self.session.begin_nested():
                         self.session.add(self.online)
                     self.session.commit()
-                except IntegrityError:
-                    LOG.warning('Could not add online state entry to the database, this is usually due to an error in the WeConnect API')
+                except IntegrityError as err:
+                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 self.earliestCarCapturedTimestampInInterval = None
 
     def commit(self):

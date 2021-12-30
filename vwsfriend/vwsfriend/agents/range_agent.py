@@ -28,7 +28,7 @@ class RangeAgent():
 
     def __onCarCapturedTimestampChange(self, element, flags):
         # Check that the data to add is not too old
-        if element is not None and element.value > (datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=7)):
+        if element is not None and element.value is not None and element.value > (datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=7)):
             rangeStatus = self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus']
             current_totalRange_km = rangeStatus.totalRange_km.value
             current_primary_currentSOC_pct = None
@@ -55,8 +55,8 @@ class RangeAgent():
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.range)
-                except IntegrityError:
-                    LOG.warning('Could not add range entry to the database, this is usually due to an error in the WeConnect API')
+                except IntegrityError as err:
+                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def commit(self):
         pass
