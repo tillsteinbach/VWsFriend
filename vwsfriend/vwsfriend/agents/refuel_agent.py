@@ -81,9 +81,10 @@ class RefuelAgent():
                 # Refuel event took place (as the car somethimes finds one or two percent of fuel somewhere lets give a 5 percent margin)
                 if self.primary_currentSOC_pct is not None and ((current_primary_currentSOC_pct - 5) > self.primary_currentSOC_pct):
                     if self.previousRefuelSession is None or (self.previousRefuelSession.date < (element.value - timedelta(minutes=30))):
-                        LOG.info('Vehicle %s refueled from %d percent to %d percent', self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
+                        LOG.info('Vehicle %s refueled from %d percent to %d percent', self.vehicle.vin, self.primary_currentSOC_pct,
+                                 current_primary_currentSOC_pct)
                         refuelSession = RefuelSession(self.vehicle, element.value, self.primary_currentSOC_pct, current_primary_currentSOC_pct, mileage_km,
-                                                    position_latitude, position_longitude, location)
+                                                      position_latitude, position_longitude, location)
                         try:
                             with self.session.begin_nested():
                                 self.session.add(refuelSession)
@@ -93,7 +94,7 @@ class RefuelAgent():
                             LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     else:
                         LOG.info('Vehicle %s refueled from %d percent to %d percent. It looks like this session is continueing the previous refuel session',
-                                self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
+                                 self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
                         self.previousRefuelSession.endSOC_pct = current_primary_currentSOC_pct
                         if self.previousRefuelSession.mileage_km is None:
                             self.previousRefuelSession.mileage_km = mileage_km

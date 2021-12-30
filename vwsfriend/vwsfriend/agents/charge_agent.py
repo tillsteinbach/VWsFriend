@@ -85,7 +85,7 @@ class ChargeAgent():
                     or self.charge.chargeRate_kmph != current_chargeRate_kmph)):
 
                 self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
-                                    current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
+                                     current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.charge)

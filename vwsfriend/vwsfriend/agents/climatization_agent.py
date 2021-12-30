@@ -14,8 +14,8 @@ class ClimatizationAgent():
         self.session = session
         self.vehicle = vehicle
         self.climate = session.query(Climatization).filter(and_(Climatization.vehicle == vehicle,
-                                                               Climatization.carCapturedTimestamp.isnot(None))) \
-                                                  .order_by(Climatization.carCapturedTimestamp.desc()).first()
+                                                                Climatization.carCapturedTimestamp.isnot(None))) \
+                                                   .order_by(Climatization.carCapturedTimestamp.desc()).first()
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
@@ -42,7 +42,7 @@ class ClimatizationAgent():
                     or self.climate.climatisationState != current_climatisationState)):
 
                 self.climate = Climatization(self.vehicle, climateStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
-                                            current_climatisationState)
+                                             current_climatisationState)
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.climate)
