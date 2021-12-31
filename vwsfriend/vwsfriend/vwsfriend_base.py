@@ -14,6 +14,7 @@ import threading
 from pyhap.accessory_driver import AccessoryDriver
 
 from weconnect import weconnect
+from weconnect.util import DuplicateFilter
 from weconnect.__version import __version__ as __weconnect_version__
 
 from vwsfriend.ui.vwsfriend_ui import VWsFriendUI
@@ -96,6 +97,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                               '(default: %%(asctime)s:%%(levelname)s:%%(module)s:%%(message)s)', default='%(asctime)s:%(levelname)s:%(module)s:%(message)s')
     loggingGroup.add_argument('--logging-date-format', dest='loggingDateFormat', help='Logging format configured for python logging '
                               '(default: %%Y-%%m-%%dT%%H:%%M:%%S%%z)', default='%Y-%m-%dT%H:%M:%S%z')
+    loggingGroup.add_argument('--hide-repeated-log', dest='hideRepeatedLog', help='Hide repeated log messages from the same module', action='store_true')
 
     args = parser.parse_args()
 
@@ -105,6 +107,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
     logging.basicConfig(level=LOG_LEVELS[logLevel], format=args.loggingFormat, datefmt=args.loggingDateFormat)
     logging.getLogger("pyhap").setLevel(level="CRITICAL")
+    if args.hideRepeatedLog:
+        for handler in logging.root.handlers:
+            handler.addFilter(DuplicateFilter())
     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
     LOG.info('vwsfriend %s (using WeConnect-python %s)', __version__, __weconnect_version__)

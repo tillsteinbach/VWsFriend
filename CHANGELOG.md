@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated API to 0.29.0
 
+### Added
+- new parameter --hide-repeated-log that suppresses repeating messages from logging (does not apply to errors)
+
 ## [0.12.0] - 2021-12-15
 ### Added
 - Recording of trips for ID vehicles
