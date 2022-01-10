@@ -81,7 +81,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
     parser.add_argument('--config-dir', dest='configDir', help='directory to store configuration files (default: ./)', default='./')
     parser.add_argument('--demo', help='folder containing demo scenario, see README for more information')
-    parser.add_argument('--privacy', help='Options to control privacy of the cars users', default=None, required=False, action='append',
+    parser.add_argument('--privacy', help='Options to control privacy of the cars users', default=[], required=False, action='append',
                         type=Privacy, choices=list(Privacy))
     dbGroup = parser.add_argument_group('Database & visualization')
 

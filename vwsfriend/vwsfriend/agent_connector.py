@@ -29,7 +29,7 @@ LOG = logging.getLogger("VWsFriend")
 
 
 class AgentConnector():
-    def __init__(self, weConnect, dbUrl, interval, withDB=False, withABRP=False, configDir='./', privacy=None):
+    def __init__(self, weConnect, dbUrl, interval, withDB=False, withABRP=False, configDir='./', privacy=None):  # noqa: C901
         self.agents = {}
 
         if withDB:
@@ -75,7 +75,10 @@ class AgentConnector():
         self.interval = interval
         self.configDir = configDir
 
-        self.privacy = privacy
+        if privacy is None:
+            self.privacy = []
+        else:
+            self.privacy = privacy
 
         weConnect.addObserver(self.onEnable, AddressableLeaf.ObserverEvent.ENABLED, onUpdateComplete=True)
 
