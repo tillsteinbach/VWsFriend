@@ -25,7 +25,7 @@ pip3 install vwsfriend --upgrade
 ```
 
 ## Privacy
-Depending on the data provided by your car usage profiles of the cars users can be made (including the locations of trips, refueling and charging). If you need to protect the privacy of the cars users please add ` --privacy no-locations` to the `ADDITIONAL_PARAMETERS` in your docker-compose file 
+Depending on the data provided by your car usage profiles of the cars users can be made (including the locations of trips, refueling and charging). If you need to protect the privacy of the cars users please add ` --privacy no-locations` to the start parameters 
 
 ## More information
 More information can be found in the Wiki: https://github.com/tillsteinbach/VWsFriend/wiki
