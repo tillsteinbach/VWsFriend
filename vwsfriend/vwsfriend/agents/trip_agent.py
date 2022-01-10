@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.trip import Trip
 from vwsfriend.util.location_util import locationFromLatLon
+from vwsfriend.privacy import Privacy
 
 from weconnect.addressable import AddressableLeaf, AddressableAttribute
 
@@ -19,10 +20,13 @@ class TripAgent():
         READINESS_STATUS = auto()
         NONE = auto()
 
-    def __init__(self, session, vehicle, updateInterval):
+    def __init__(self, session, vehicle, updateInterval, privacy):  # noqa: C901
         self.mode = TripAgent.Mode.NONE
         self.session = session
         self.vehicle = vehicle
+        self.privacy = privacy
+        if Privacy.NO_LOCATIONS in self.privacy:
+            LOG.info(f'Privacy option \'no-locations\' is set. Vehicle {self.vehicle.vin} will not record start and destination location')
         self.updateInterval = updateInterval
 
         self.lastParkingPositionTimestamp = None
@@ -33,8 +37,9 @@ class TripAgent():
         if self.trip is not None:
             if self.trip.endDate is not None:
                 self.lastParkingPositionTimestamp = self.trip.endDate
-                self.lastParkingPositionLatitude = self.trip.destination_position_latitude
-                self.lastParkingPositionLongitude = self.trip.destination_position_longitude
+                if Privacy.NO_LOCATIONS not in self.privacy:
+                    self.lastParkingPositionLatitude = self.trip.destination_position_latitude
+                    self.lastParkingPositionLongitude = self.trip.destination_position_longitude
             else:
                 LOG.info(f'Vehicle {self.vehicle.vin} has still an open trip during startup, closing it now')
             self.trip = None
@@ -102,9 +107,16 @@ class TripAgent():
                 LOG.info(f'Vehicle {self.vehicle.vin} removed a parkingPosition but there was an open trip, closing it now')
                 self.trip = None
             time = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0) - timedelta(seconds=self.updateInterval)
-            self.trip = Trip(self.vehicle, time, self.lastParkingPositionLatitude,
-                             self.lastParkingPositionLongitude, None, None)
-            self.trip.start_location = locationFromLatLon(self.session, self.lastParkingPositionLatitude, self.lastParkingPositionLongitude)
+
+            if Privacy.NO_LOCATIONS not in self.privacy:
+                startPositionLatitude = self.lastParkingPositionLatitude
+                startPositionLongitude = self.lastParkingPositionLongitude
+            else:
+                startPositionLatitude = None
+                startPositionLongitude = None
+            self.trip = Trip(self.vehicle, time, startPositionLatitude, startPositionLongitude, None, None)
+            if Privacy.NO_LOCATIONS not in self.privacy:
+                self.trip.start_location = locationFromLatLon(self.session, startPositionLatitude, startPositionLongitude)
 
             if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
                     and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
@@ -129,7 +141,7 @@ class TripAgent():
                 self.lastParkingPositionLatitude = parkingPosition.latitude.value
                 self.lastParkingPositionLongitude = parkingPosition.longitude.value
 
-    def __onCarCapturedTimestampEnabled(self, element, flags):
+    def __onCarCapturedTimestampEnabled(self, element, flags):  # noqa: C901
         if self.mode == TripAgent.Mode.PARKING_POSITION:
             parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
             if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
@@ -141,11 +153,12 @@ class TripAgent():
             if self.trip is not None:
                 if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
                     self.trip.endDate = parkingPosition.carCapturedTimestamp.value
-                if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
-                        and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
-                    self.trip.destination_position_latitude = parkingPosition.latitude.value
-                    self.trip.destination_position_longitude = parkingPosition.longitude.value
-                    self.trip.destination_location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                if Privacy.NO_LOCATIONS not in self.privacy:
+                    if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                            and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                        self.trip.destination_position_latitude = parkingPosition.latitude.value
+                        self.trip.destination_position_longitude = parkingPosition.longitude.value
+                        self.trip.destination_location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
 
                 if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
                         and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:

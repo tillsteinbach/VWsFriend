@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.refuel_session import RefuelSession
 from vwsfriend.util.location_util import locationFromLatLon
+from vwsfriend.privacy import Privacy
 
 from weconnect.addressable import AddressableLeaf, AddressableAttribute
 from weconnect.elements.range_status import RangeStatus
@@ -12,9 +13,12 @@ LOG = logging.getLogger("VWsFriend")
 
 
 class RefuelAgent():
-    def __init__(self, session, vehicle):
+    def __init__(self, session, vehicle, privacy):
         self.session = session
         self.vehicle = vehicle
+        self.privacy = privacy
+        if Privacy.NO_LOCATIONS in self.privacy:
+            LOG.info(f'Privacy option \'no-locations\' is set. Vehicle {self.vehicle.vin} will not record refuel locations')
         self.primary_currentSOC_pct = None
         self.previousRefuelSession = None
         self.lastPosition = None
@@ -67,16 +71,17 @@ class RefuelAgent():
                 position_latitude = None
                 position_longitude = None
                 location = None
-                if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
-                    parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
-                    if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
-                            and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
-                        position_latitude = parkingPosition.latitude.value
-                        position_longitude = parkingPosition.longitude.value
-                        location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
-                if position_latitude is None and self.lastPosition is not None and (self.lastPosition[0] > (element.value - timedelta(minutes=15))):
-                    _, position_latitude, position_longitude = self.lastPosition
-                    location = locationFromLatLon(self.session, position_latitude, position_longitude)
+                if Privacy.NO_LOCATIONS not in self.privacy:
+                    if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
+                        parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
+                        if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                                and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                            position_latitude = parkingPosition.latitude.value
+                            position_longitude = parkingPosition.longitude.value
+                            location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                    if position_latitude is None and self.lastPosition is not None and (self.lastPosition[0] > (element.value - timedelta(minutes=15))):
+                        _, position_latitude, position_longitude = self.lastPosition
+                        location = locationFromLatLon(self.session, position_latitude, position_longitude)
 
                 # Refuel event took place (as the car somethimes finds one or two percent of fuel somewhere lets give a 5 percent margin)
                 if self.primary_currentSOC_pct is not None and ((current_primary_currentSOC_pct - 5) > self.primary_currentSOC_pct):
@@ -109,17 +114,18 @@ class RefuelAgent():
                     self.primary_currentSOC_pct = current_primary_currentSOC_pct
 
     def __onParkingPositionCarCapturedTimestampChanged(self, element, flags):
-        if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
-            parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
-            if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None \
-                    and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
-                    and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
-                position_timestamp = parkingPosition.carCapturedTimestamp.value
-                position_latitude = parkingPosition.latitude.value
-                position_longitude = parkingPosition.longitude.value
-                self.lastPosition = (position_timestamp, position_latitude, position_longitude)
-                return
-        self.lastPosition = None
+        if Privacy.NO_LOCATIONS not in self.privacy:
+            if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
+                parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
+                if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None \
+                        and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                        and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                    position_timestamp = parkingPosition.carCapturedTimestamp.value
+                    position_latitude = parkingPosition.latitude.value
+                    position_longitude = parkingPosition.longitude.value
+                    self.lastPosition = (position_timestamp, position_latitude, position_longitude)
+                    return
+            self.lastPosition = None
 
     def commit(self):
         pass

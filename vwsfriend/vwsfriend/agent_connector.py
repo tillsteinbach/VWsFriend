@@ -29,7 +29,7 @@ LOG = logging.getLogger("VWsFriend")
 
 
 class AgentConnector():
-    def __init__(self, weConnect, dbUrl, interval, withDB=False, withABRP=False, configDir='./'):
+    def __init__(self, weConnect, dbUrl, interval, withDB=False, withABRP=False, configDir='./', privacy=None):
         self.agents = {}
 
         if withDB:
@@ -75,6 +75,8 @@ class AgentConnector():
         self.interval = interval
         self.configDir = configDir
 
+        self.privacy = privacy
+
         weConnect.addObserver(self.onEnable, AddressableLeaf.ObserverEvent.ENABLED, onUpdateComplete=True)
 
         self.agents["none"] = []
@@ -101,11 +103,11 @@ class AgentConnector():
 
                 self.agents[element.vin.value].append(RangeAgent(self.session, foundVehicle))
                 self.agents[element.vin.value].append(BatteryAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(ChargeAgent(self.session, foundVehicle))
+                self.agents[element.vin.value].append(ChargeAgent(self.session, foundVehicle, privacy=self.privacy))
                 self.agents[element.vin.value].append(StateAgent(self.session, foundVehicle, updateInterval=self.interval))
                 self.agents[element.vin.value].append(ClimatizationAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(RefuelAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(TripAgent(self.session, foundVehicle, updateInterval=self.interval))
+                self.agents[element.vin.value].append(RefuelAgent(self.session, foundVehicle, privacy=self.privacy))
+                self.agents[element.vin.value].append(TripAgent(self.session, foundVehicle, updateInterval=self.interval, privacy=self.privacy))
                 if foundVehicle.carType == RangeStatus.CarType.UNKNOWN:
                     LOG.warning('Vehicle %s has an unkown carType, thus some features won\'t be available until the correct carType could be detected',
                                 foundVehicle.vin)

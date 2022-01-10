@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
 from vwsfriend.util.location_util import locationFromLatLon, chargerFromLatLon
+from vwsfriend.privacy import Privacy
 
 from weconnect.addressable import AddressableLeaf
 from weconnect.elements.charging_status import ChargingStatus
@@ -14,9 +15,12 @@ LOG = logging.getLogger("VWsFriend")
 
 
 class ChargeAgent():
-    def __init__(self, session, vehicle):
+    def __init__(self, session, vehicle, privacy):
         self.session = session
         self.vehicle = vehicle
+        self.privacy = privacy
+        if Privacy.NO_LOCATIONS in self.privacy:
+            LOG.info(f'Privacy option \'no-locations\' is set. Vehicle {self.vehicle.vin} will not record charging locations')
         self.charge = session.query(Charge).filter(and_(Charge.vehicle == vehicle, Charge.carCapturedTimestamp.isnot(None))
                                                    ).order_by(Charge.carCapturedTimestamp.desc()).first()
         self.chargingSession = None
@@ -194,18 +198,19 @@ class ChargeAgent():
             self.chargingSession.maximumChargePower_kW = element.value
 
     def updatePosition(self):
-        if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
-            parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
-            if self.chargingSession is not None and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
-                    and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
-                self.chargingSession.position_latitude = parkingPosition.latitude.value
-                self.chargingSession.position_longitude = parkingPosition.longitude.value
-                if self.chargingSession.location is None:
-                    self.chargingSession.location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
-                if self.chargingSession.charger is None:
-                    self.chargingSession.charger = chargerFromLatLon(weConnect=self.vehicle.weConnectVehicle.weConnect, session=self.session,
-                                                                     latitude=round(parkingPosition.latitude.value, 4),
-                                                                     longitude=round(parkingPosition.longitude.value, 4), searchRadius=100)
+        if Privacy.NO_LOCATIONS not in self.privacy:
+            if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition'):
+                parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
+                if self.chargingSession is not None and parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                        and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                    self.chargingSession.position_latitude = parkingPosition.latitude.value
+                    self.chargingSession.position_longitude = parkingPosition.longitude.value
+                    if self.chargingSession.location is None:
+                        self.chargingSession.location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                    if self.chargingSession.charger is None:
+                        self.chargingSession.charger = chargerFromLatLon(weConnect=self.vehicle.weConnectVehicle.weConnect, session=self.session,
+                                                                         latitude=round(parkingPosition.latitude.value, 4),
+                                                                         longitude=round(parkingPosition.longitude.value, 4), searchRadius=100)
 
     def updateMileage(self):
         if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus'):
