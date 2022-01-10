@@ -1,4 +1,4 @@
-# VWsFriend
+../README.md# VWsFriend
 [![GitHub sourcecode](https://img.shields.io/badge/Source-GitHub-green)](https://github.com/tillsteinbach/VWsFriend/)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tillsteinbach/VWsFriend)](https://github.com/tillsteinbach/VWsFriend/releases/latest)
 [![GitHub](https://img.shields.io/github/license/tillsteinbach/VWsFriend)](https://github.com/tillsteinbach/VWsFriend/blob/master/LICENSE)
@@ -45,6 +45,9 @@ More information can be found in the Wiki: https://github.com/tillsteinbach/VWsF
 docker-compose pull
 docker-compose --env-file ./myconfig.env up
 ```
+
+## Privacy
+Depending on the data provided by your car usage profiles of the cars users can be made (including the locations of trips, refueling and charging). If you need to protect the privacy of the cars users please add ` --privacy no-locations` to the `ADDITIONAL_PARAMETERS` in your docker-compose file
 
 ## ABPR (A better Route Planner) support
 VWsFriend supports sending its data to ABPR out of the box. You just have to generate a user-token in ABRP and configure it for your car in the UI.
