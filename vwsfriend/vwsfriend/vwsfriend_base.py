@@ -20,6 +20,7 @@ from weconnect.__version import __version__ as __weconnect_version__
 from vwsfriend.ui.vwsfriend_ui import VWsFriendUI
 from vwsfriend.homekit.bridge import VWsFriendBridge
 from vwsfriend.agent_connector import AgentConnector
+from vwsfriend.privacy import Privacy
 
 from vwsfriend.homekit.custom_characteristics import CUSTOM_CHARACTERISTICS
 
@@ -80,6 +81,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
     parser.add_argument('--config-dir', dest='configDir', help='directory to store configuration files (default: ./)', default='./')
     parser.add_argument('--demo', help='folder containing demo scenario, see README for more information')
+    parser.add_argument('--privacy', help='Options to control privacy of the cars users', default=None, required=False, action='append',
+                        type=Privacy, choices=list(Privacy))
     dbGroup = parser.add_argument_group('Database & visualization')
 
     dbGroup.add_argument('--with-database', dest='withDatabase', help='Connect VWsFriend to database for visualization', action='store_true')
@@ -151,7 +154,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                         updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400)
 
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
-                                   configDir=args.configDir)
+                                   configDir=args.configDir, privacy=args.privacy)
 
         driver = None
         if args.withHomekit:
@@ -169,6 +172,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             # Start it!
             hapThread = threading.Thread(target=driver.start)
             hapThread.start()
+
+            # Enable status tracking:
+            weConnect.enableTracker()
 
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl, configDir=args.configDir)
         ui.run()
