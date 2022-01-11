@@ -3,12 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 ### Changed
-- Updated API to 0.30.1
+- Updated API to 0.30.3
 - Homekit gives faster feedback when controling the car
 
 ### Added
 - new parameter --hide-repeated-log that suppresses repeating messages from logging (does not apply to errors)
 - new parameter --privacy allowing to disable location tracking
+
+### Fixed
+- More robust against server errors
+- Hides status 204 on missing parking position
 
 ## [0.12.0] - 2021-12-15
 ### Added
