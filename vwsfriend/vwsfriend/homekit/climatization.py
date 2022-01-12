@@ -33,6 +33,7 @@ class Climatization(GenericAccessory):
             climatizationStatus.climatisationState.addObserver(self.onClimatizationState,
                                                                AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charTargetHeatingCoolingState = self.service.configure_char('TargetHeatingCoolingState',
+                                                                             valid_values={'Auto': 3, 'Off': 0},
                                                                              setter_callback=self.__onTargetHeatingCoolingStateChanged)
             self.charCurrentHeatingCoolingState = self.service.configure_char('CurrentHeatingCoolingState')
             self.setCurrentHeatingCoolingState(climatizationStatus.climatisationState)
@@ -46,6 +47,7 @@ class Climatization(GenericAccessory):
             climatizationSettings.targetTemperature_K.addObserver(self.onTargetTemperatureChange,
                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=(climatizationSettings.targetTemperature_K.value - 273.15),
+                                                                     properties={'maxValue': 29.5, 'minStep': 0.5, 'minValue': 16},
                                                                      setter_callback=self.__onTargetTemperatureChanged)
 
         if batteryStatus is not None and batteryStatus.currentSOC_pct.enabled:
