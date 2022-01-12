@@ -1,4 +1,4 @@
-../README.md# VWsFriend
+# VWsFriend
 [![GitHub sourcecode](https://img.shields.io/badge/Source-GitHub-green)](https://github.com/tillsteinbach/VWsFriend/)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tillsteinbach/VWsFriend)](https://github.com/tillsteinbach/VWsFriend/releases/latest)
 [![GitHub](https://img.shields.io/github/license/tillsteinbach/VWsFriend)](https://github.com/tillsteinbach/VWsFriend/blob/master/LICENSE)
@@ -18,7 +18,7 @@ Volkswagen WeConnect© API visualization and control (HomeKit) inspired by Tesla
 <img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/id3.png" width="100%">
 
 ## Requirements
-* Docker (if you are new to Docker, see [Installing Docker and Docker Compose](https://docs.docker.com/engine/install/) or for [Raspberry Pi](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl)), docker-compose needs to be at least version 1.25.5 (you can check with `docker-compose --version`)
+* Docker (if you are new to Docker, see [Installing Docker and Docker Compose](https://docs.docker.com/engine/install/) or for [Raspberry Pi](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl)), docker-compose needs to be at least version 1.27.0 (you can check with `docker-compose --version`)
 * A Machine that's always on, so VWsFriend can continually fetch data
 * External internet access, to talk to the servers
 
