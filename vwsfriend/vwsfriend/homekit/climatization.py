@@ -34,8 +34,8 @@ class Climatization(GenericAccessory):
                                                                AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charTargetHeatingCoolingState = self.service.configure_char('TargetHeatingCoolingState',
                                                                              valid_values={'Auto': 3, 'Off': 0},
-                                                                             allow_invalid_client_values=True,
                                                                              setter_callback=self.__onTargetHeatingCoolingStateChanged)
+            self.charTargetHeatingCoolingState.allow_invalid_client_values = True
             self.charCurrentHeatingCoolingState = self.service.configure_char('CurrentHeatingCoolingState')
             self.setCurrentHeatingCoolingState(climatizationStatus.climatisationState)
 
