@@ -23,7 +23,7 @@ class LockingSystem(GenericAccessory):
         if accessStatus is not None and accessStatus.overallStatus.enabled:
             accessStatus.overallStatus.addObserver(self.onOverallStatusChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charLockCurrentState = self.service.configure_char('LockCurrentState')
-            self.charLockTargetState = self.service.configure_char('LockTargetState')
+            self.charLockTargetState = self.service.configure_char('LockTargetState', valid_values={}, allow_invalid_client_values=True)
             self.setLockCurrentState(accessStatus.overallStatus)
 
         self.addNameCharacteristics()
