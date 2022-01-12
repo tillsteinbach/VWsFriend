@@ -34,6 +34,7 @@ class Climatization(GenericAccessory):
                                                                AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charTargetHeatingCoolingState = self.service.configure_char('TargetHeatingCoolingState',
                                                                              valid_values={'Auto': 3, 'Off': 0},
+                                                                             allow_invalid_client_values=True,
                                                                              setter_callback=self.__onTargetHeatingCoolingStateChanged)
             self.charCurrentHeatingCoolingState = self.service.configure_char('CurrentHeatingCoolingState')
             self.setCurrentHeatingCoolingState(climatizationStatus.climatisationState)
@@ -109,7 +110,7 @@ class Climatization(GenericAccessory):
 
     def __onTargetHeatingCoolingStateChanged(self, value):
         if self.climatizationControl.enabled:
-            if value == 1 or value == 2:
+            if value == 1 or value == 2 or value == 3:
                 LOG.info('Switch climatization on')
                 self.climatizationControl.value = ControlOperation.START
             elif value == 0:
