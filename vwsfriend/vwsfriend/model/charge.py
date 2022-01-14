@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, Float, String, Enum, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
@@ -19,8 +19,8 @@ class Charge(Base):
     remainingChargingTimeToComplete_min = Column(Integer)
     chargingState = Column(Enum(ChargingStatus.ChargingState, length=63))
     chargeMode = Column(Enum(ChargingStatus.ChargeMode, length=63))
-    chargePower_kW = Column(Integer)
-    chargeRate_kmph = Column(Integer)
+    chargePower_kW = Column(Float)
+    chargeRate_kmph = Column(Float)
 
     def __init__(self, vehicle, carCapturedTimestamp, remainingChargingTimeToComplete_min, chargingState, chargeMode, chargePower_kW, chargeRate_kmph):
         self.vehicle = vehicle

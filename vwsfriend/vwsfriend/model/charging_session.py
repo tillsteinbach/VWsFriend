@@ -40,7 +40,7 @@ class ChargingSession(Base):
     disconnected = Column(DatetimeDecorator)
     maxChargeCurrentACSetting = Column(Enum(ChargingSettings.MaximumChargeCurrent, length=63))
     targetSOCSetting_pct = Column(Integer)
-    maximumChargePower_kW = Column(Integer)
+    maximumChargePower_kW = Column(Float)
     acdc = Column(Enum(ACDC, length=63))
     startSOC_pct = Column(Integer)
     endSOC_pct = Column(Integer)
