@@ -224,3 +224,5 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     except weconnect.APICompatibilityError as e:
         LOG.critical('There was a problem when communicating with WeConnect.'
                      ' If this problem persists please open a bug report: %s', e)
+    finally:
+        weConnect.disconnect()
