@@ -143,7 +143,7 @@ class Climatization(GenericAccessory):
     def __onTargetTemperatureChanged(self, value):
         if self.climatizationSettings.enabled:
             self.setTemperature(value)
-            LOG.debug('Changed climatization target temperature to: %f', value)
+            LOG.info('Changed climatization target temperature to: %f', value)
         else:
             LOG.error('Climatization target temperature cannot be controled')
 
