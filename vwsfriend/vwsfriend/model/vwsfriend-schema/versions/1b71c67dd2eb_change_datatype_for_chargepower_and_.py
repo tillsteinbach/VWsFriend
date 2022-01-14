@@ -19,10 +19,9 @@ depends_on = None
 def upgrade():
     if op.get_context().dialect.name == 'postgresql':
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE chargingstate ADD VALUE 'CONSERVATION'")
+            op.execute("ALTER TYPE chargingstate ADD VALUE 'NOT_READY_FOR_CHARGING'")
 
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE chargemode ADD VALUE 'OFF'")
             op.execute("ALTER TYPE chargemode ADD VALUE 'TIMER'")
             op.execute("ALTER TYPE chargemode ADD VALUE 'ONLY_OWN_CURRENT'")
             op.execute("ALTER TYPE chargemode ADD VALUE 'PREFERRED_CHARGING_TIMES'")
@@ -59,7 +58,7 @@ def downgrade():
 
     
         op.execute("ALTER TYPE chargingstate RENAME TO chargingstate_old")
-        op.execute("CREATE TYPE chargingstate AS ENUM('ERROR', 'CHARGING', 'READY_FOR_CHARGING', 'OFF', 'UNKNOWN', 'CHARGE_PURPOSE_REACHED_CONSERVATION', 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING', 'NOT_READY_FOR_CHARGING')")
+        op.execute("CREATE TYPE chargingstate AS ENUM('ERROR', 'CHARGING', 'READY_FOR_CHARGING', 'OFF', 'UNKNOWN', 'CHARGE_PURPOSE_REACHED_CONSERVATION', 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING', 'CONSERVATION')")
         op.execute((
             "ALTER TABLE transactions ALTER COLUMN chargingstate TYPE chargingstate USING "
             "chargingstate::text::chargingstate"
@@ -68,7 +67,7 @@ def downgrade():
 
     if op.get_context().dialect.name == 'postgresql':
         op.execute("ALTER TYPE chargemode RENAME TO chargemode_old")
-        op.execute("CREATE TYPE chargemode AS ENUM('MANUAL', 'INVALID', 'UNKNOWN')")
+        op.execute("CREATE TYPE chargemode AS ENUM('MANUAL', 'INVALID', 'UNKNOWN', 'OFF')")
         op.execute((
             "ALTER TABLE transactions ALTER COLUMN chargemode TYPE chargemode USING "
             "chargemode::text::chargemode"
