@@ -164,6 +164,9 @@
               {
                 "id": "custom.width",
                 "value": 95
+              },
+              {
+                "id": "decimals"
               }
             ]
           },
@@ -344,7 +347,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 50
+                "value": 60
               },
               {
                 "id": "unit",
