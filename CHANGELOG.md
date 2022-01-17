@@ -1,9 +1,9 @@
-# Changelog
+../CHANGELOG.md# Changelog
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 ### Changed
-- Updated API to 0.30.3
+- Updated API to 0.32.1
 - Homekit gives faster feedback when controling the car
 
 ### Added
