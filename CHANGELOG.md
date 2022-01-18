@@ -3,8 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 ### Changed
-- Updated API to 0.32.1
+- Updated API to 0.33.0
 - Homekit gives faster feedback when controling the car
+- Minor improvements to grafana dashboards
 
 ### Added
 - new parameter --hide-repeated-log that suppresses repeating messages from logging (does not apply to errors)
@@ -13,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - More robust against server errors
 - Hides status 204 on missing parking position
+- Charging power is recorded with decimals
 
 ## [0.12.0] - 2021-12-15
 ### Added
