@@ -6,6 +6,7 @@ from weconnect.addressable import AddressableLeaf
 from weconnect.elements.charging_status import ChargingStatus
 from weconnect.elements.plug_status import PlugStatus
 from weconnect.elements.control_operation import ControlOperation
+from weconnect.errors import SetterError
 
 from vwsfriend.homekit.genericAccessory import GenericAccessory
 
@@ -113,12 +114,15 @@ class Charging(GenericAccessory):
 
     def __onOnChanged(self, value):
         if self.chargingControl.enabled:
-            if value:
-                LOG.debug('Switch charging on')
-                self.chargingControl.value = ControlOperation.START
-            else:
-                LOG.debug('Switch charging off')
-                self.chargingControl.value = ControlOperation.STOP
+            try:
+                if value:
+                    LOG.debug('Switch charging on')
+                    self.chargingControl.value = ControlOperation.START
+                else:
+                    LOG.debug('Switch charging off')
+                    self.chargingControl.value = ControlOperation.STOP
+            except SetterError as setterError:
+                LOG.error('Error starting charging: %s', setterError)
         else:
             LOG.error('Charging cannot be controled')
 
