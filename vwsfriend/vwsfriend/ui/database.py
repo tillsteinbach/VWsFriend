@@ -61,7 +61,7 @@ class ChargingSessionEditForm(FlaskForm):
     disconnected = DateTimeField('Plug Disconnect Date and Time (UTC)', validators=[Optional()])
     # maxChargeCurrentACSetting
     targetSOCSetting_pct = IntegerField('Target SoC Setting', validators=[Optional(), NumberRange(min=0, max=100)])
-    maximumChargePower_kW = IntegerField('Maximum Power during session', validators=[Optional(), NumberRange(min=0)])
+    maximumChargePower_kW = DecimalField('Maximum Power during session', places=4, validators=[Optional(), NumberRange(min=0)])
     acdc = SelectField("AC/DC", choices=ACDC.choices(), coerce=ACDC.coerce, validators=[DataRequired()])
     startSOC_pct = IntegerField('SoC at start', validators=[Optional(), NumberRange(min=0, max=100)])
     endSOC_pct = IntegerField('SoC at end', validators=[Optional(), NumberRange(min=0, max=100)])
