@@ -6,6 +6,7 @@ from weconnect.addressable import AddressableLeaf
 from weconnect.elements.charging_status import ChargingStatus
 from weconnect.elements.climatization_status import ClimatizationStatus
 from weconnect.elements.control_operation import ControlOperation
+from weconnect.errors import SetterError
 
 from vwsfriend.homekit.genericAccessory import GenericAccessory
 
@@ -93,17 +94,17 @@ class Climatization(GenericAccessory):
         if self.charCurrentHeatingCoolingState is not None:
             if climatisationState.value == ClimatizationStatus.ClimatizationState.HEATING:
                 self.charCurrentHeatingCoolingState.set_value(1)
-                self.charTargetHeatingCoolingState.set_value(3)
+                self.charTargetHeatingCoolingState.set_value(3, should_callback=False)
             elif climatisationState.value == ClimatizationStatus.ClimatizationState.COOLING \
                     or climatisationState.value == ClimatizationStatus.ClimatizationState.VENTILATION:
                 self.charCurrentHeatingCoolingState.set_value(2)
-                self.charTargetHeatingCoolingState.set_value(3)
+                self.charTargetHeatingCoolingState.set_value(3, should_callback=False)
             elif climatisationState.value == ClimatizationStatus.ClimatizationState.OFF:
                 self.charCurrentHeatingCoolingState.set_value(0)
-                self.charTargetHeatingCoolingState.set_value(0)
+                self.charTargetHeatingCoolingState.set_value(0, should_callback=False)
             else:
                 self.charCurrentHeatingCoolingState.set_value(0)
-                self.charTargetHeatingCoolingState.set_value(0)
+                self.charTargetHeatingCoolingState.set_value(0, should_callback=False)
                 LOG.warn('unsupported climatisationState: %s', climatisationState.value.value)
 
     def onClimatizationState(self, element, flags):
@@ -129,21 +130,31 @@ class Climatization(GenericAccessory):
 
     def __onTargetHeatingCoolingStateChanged(self, value):
         if self.climatizationControl.enabled:
-            if value == 1 or value == 2 or value == 3:
-                LOG.info('Switch climatization on')
-                self.climatizationControl.value = ControlOperation.START
-            elif value == 0:
-                LOG.info('Switch climatization off')
-                self.climatizationControl.value = ControlOperation.STOP
-            else:
-                LOG.debug('Inout for climatization not understood: %d', value)
+            try:
+                if value == 1 or value == 2 or value == 3:
+                    LOG.info('Switch climatization on')
+                    self.climatizationControl.value = ControlOperation.START
+                elif value == 0:
+                    LOG.info('Switch climatization off')
+                    self.climatizationControl.value = ControlOperation.STOP
+                else:
+                    LOG.debug('Input for climatization not understood: %d', value)
+            except SetterError as setterError:
+                LOG.error('Error starting climatization: %s', setterError)
+                if self.charCurrentHeatingCoolingState.value in [1, 2]:
+                    self.charTargetHeatingCoolingState.set_value(3, should_callback=False)
+                else:
+                    self.charTargetHeatingCoolingState.set_value(0, should_callback=False)
         else:
             LOG.error('Climatization cannot be controled')
 
     def __onTargetTemperatureChanged(self, value):
         if self.climatizationSettings.enabled:
-            self.setTemperature(value)
-            LOG.info('Changed climatization target temperature to: %f', value)
+            try:
+                self.setTemperature(value)
+                LOG.info('Changed climatization target temperature to: %f', value)
+            except SetterError as setterError:
+                LOG.error('Error setting target temperature: %s', setterError)
         else:
             LOG.error('Climatization target temperature cannot be controled')
 
