@@ -93,11 +93,11 @@ class Climatization(GenericAccessory):
         if self.charCurrentHeatingCoolingState is not None:
             if climatisationState.value == ClimatizationStatus.ClimatizationState.HEATING:
                 self.charCurrentHeatingCoolingState.set_value(1)
-                self.charTargetHeatingCoolingState.set_value(1)
+                self.charTargetHeatingCoolingState.set_value(3)
             elif climatisationState.value == ClimatizationStatus.ClimatizationState.COOLING \
                     or climatisationState.value == ClimatizationStatus.ClimatizationState.VENTILATION:
                 self.charCurrentHeatingCoolingState.set_value(2)
-                self.charTargetHeatingCoolingState.set_value(2)
+                self.charTargetHeatingCoolingState.set_value(3)
             elif climatisationState.value == ClimatizationStatus.ClimatizationState.OFF:
                 self.charCurrentHeatingCoolingState.set_value(0)
                 self.charTargetHeatingCoolingState.set_value(0)
