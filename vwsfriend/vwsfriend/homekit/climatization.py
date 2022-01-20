@@ -25,6 +25,7 @@ class Climatization(GenericAccessory):
 
         self.climatizationControl = climatizationControl
         self.climatizationSettings = climatizationSettings
+        self.climatizationStatus = climatizationStatus
         self.service = self.add_preload_service('Thermostat', ['Name', 'ConfiguredName', 'CurrentHeatingCoolingState', 'TargetHeatingCoolingState',
                                                 'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration', 'StatusFault'])
         self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
@@ -43,7 +44,13 @@ class Climatization(GenericAccessory):
             climatizationStatus.remainingClimatisationTime_min.addObserver(self.onRemainingClimatisationTime,
                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             # Add Characteristic that is not planned for the service. This is still visible in other Apps than Apple Home
-            self.charRemainingDuration = self.service.configure_char('RemainingDuration', value=climatizationStatus.remainingClimatisationTime_min.value * 60)
+            remainingTime = 0
+            if climatizationStatus.climatisationState.value in [ClimatizationStatus.ClimatizationState.HEATING,
+                                                                ClimatizationStatus.ClimatizationState.COOLING,
+                                                                ClimatizationStatus.ClimatizationState.VENTILATION] \
+                    and climatizationStatus.remainingClimatisationTime_min.enabled:
+                remainingTime = climatizationStatus.remainingClimatisationTime_min.value * 60
+            self.charRemainingDuration = self.service.configure_char('RemainingDuration', value=remainingTime)
 
         if climatizationSettings is not None and climatizationSettings.targetTemperature_C.enabled:
             climatizationSettings.targetTemperature_C.addObserver(self.onTargetTemperatureChange,
@@ -107,6 +114,13 @@ class Climatization(GenericAccessory):
                 self.charCurrentHeatingCoolingState.set_value(0)
                 self.charTargetHeatingCoolingState.set_value(0)
                 LOG.warn('unsupported climatisationState: %s', climatisationState.value.value)
+        if climatisationState.value in [ClimatizationStatus.ClimatizationState.HEATING,
+                                        ClimatizationStatus.ClimatizationState.COOLING,
+                                        ClimatizationStatus.ClimatizationState.VENTILATION] \
+                and self.climatizationStatus.remainingClimatisationTime_min.enabled:
+            self.charRemainingDuration.set_value(self.climatizationStatus.remainingClimatisationTime_min.value * 60)
+        else:
+            self.charRemainingDuration.set_value(0)
 
     def onClimatizationState(self, element, flags):
         if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
@@ -124,7 +138,12 @@ class Climatization(GenericAccessory):
 
     def onRemainingClimatisationTime(self, element, flags):
         if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED:
-            self.charRemainingDuration.set_value(element.value * 60)
+            if self.climatizationStatus.climatisationState.value in [ClimatizationStatus.ClimatizationState.HEATING,
+                                                                     ClimatizationStatus.ClimatizationState.COOLING,
+                                                                     ClimatizationStatus.ClimatizationState.VENTILATION]:
+                self.charRemainingDuration.set_value(element.value * 60)
+            else:
+                self.charRemainingDuration.set_value(0)
             LOG.debug('RemainingClimatisationTime Changed: %d', element.value)
         else:
             LOG.debug('Unsupported event %s', flags)
