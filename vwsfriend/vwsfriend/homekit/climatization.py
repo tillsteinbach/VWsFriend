@@ -39,7 +39,6 @@ class Climatization(GenericAccessory):
                                                                              setter_callback=self.__onTargetHeatingCoolingStateChanged)
             self.charTargetHeatingCoolingState.allow_invalid_client_values = True
             self.charCurrentHeatingCoolingState = self.service.configure_char('CurrentHeatingCoolingState')
-            self.setCurrentHeatingCoolingState(climatizationStatus.climatisationState)
 
             climatizationStatus.remainingClimatisationTime_min.addObserver(self.onRemainingClimatisationTime,
                                                                            AddressableLeaf.ObserverEvent.VALUE_CHANGED)
@@ -51,6 +50,8 @@ class Climatization(GenericAccessory):
                     and climatizationStatus.remainingClimatisationTime_min.enabled:
                 remainingTime = climatizationStatus.remainingClimatisationTime_min.value * 60
             self.charRemainingDuration = self.service.configure_char('RemainingDuration', value=remainingTime)
+
+            self.setCurrentHeatingCoolingState(climatizationStatus.climatisationState)
 
         if climatizationSettings is not None and climatizationSettings.targetTemperature_C.enabled:
             climatizationSettings.targetTemperature_C.addObserver(self.onTargetTemperatureChange,
