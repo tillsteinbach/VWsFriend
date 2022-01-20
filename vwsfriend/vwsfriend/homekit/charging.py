@@ -23,7 +23,7 @@ class Charging(GenericAccessory):
 
         self.chargingControl = chargingControl
 
-        self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration', 'Consumption'])
+        self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration', 'Consumption', 'StatusFault'])
         self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
         self.service.add_linked_service(self.batteryService)
 
@@ -59,6 +59,7 @@ class Charging(GenericAccessory):
             self.setChargingState(chargingStatus.chargingState)
 
         self.addNameCharacteristics()
+        self.addStatusFaultCharacteristic()
 
     def setOnState(self, chargingState):
         if self.charOn is not None:
@@ -116,13 +117,14 @@ class Charging(GenericAccessory):
         if self.chargingControl.enabled:
             try:
                 if value:
-                    LOG.debug('Switch charging on')
+                    LOG.info('Switch charging on')
                     self.chargingControl.value = ControlOperation.START
                 else:
-                    LOG.debug('Switch charging off')
+                    LOG.info('Switch charging off')
                     self.chargingControl.value = ControlOperation.STOP
             except SetterError as setterError:
                 LOG.error('Error starting charging: %s', setterError)
+                self.setStatusFault(1, timeout=120)
         else:
             LOG.error('Charging cannot be controled')
 
