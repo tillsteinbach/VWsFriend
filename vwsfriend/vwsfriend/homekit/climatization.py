@@ -26,7 +26,7 @@ class Climatization(GenericAccessory):
         self.climatizationControl = climatizationControl
         self.climatizationSettings = climatizationSettings
         self.service = self.add_preload_service('Thermostat', ['Name', 'ConfiguredName', 'CurrentHeatingCoolingState', 'TargetHeatingCoolingState',
-                                                'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration'])
+                                                'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration', 'StatusFault'])
         self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
         self.service.add_linked_service(self.batteryService)
 
@@ -76,6 +76,7 @@ class Climatization(GenericAccessory):
         self.charTemperatureDisplayUnits.set_value(0)
 
         self.addNameCharacteristics()
+        self.addStatusFaultCharacteristic()
 
     def getTemperature(self):
         if self.climatizationSettings.targetTemperature_C is not None and self.climatizationSettings.targetTemperature_C.enabled:
@@ -138,13 +139,14 @@ class Climatization(GenericAccessory):
                     LOG.info('Switch climatization off')
                     self.climatizationControl.value = ControlOperation.STOP
                 else:
-                    LOG.debug('Input for climatization not understood: %d', value)
+                    LOG.error('Input for climatization not understood: %d', value)
             except SetterError as setterError:
                 LOG.error('Error starting climatization: %s', setterError)
                 if self.charCurrentHeatingCoolingState.value in [1, 2]:
                     self.charTargetHeatingCoolingState.set_value(3)
                 else:
                     self.charTargetHeatingCoolingState.set_value(0)
+                self.setStatusFault(1, timeout=120)
         else:
             LOG.error('Climatization cannot be controled')
 
