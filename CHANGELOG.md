@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - More robust against server errors
 - Hides status 204 on missing parking position
 - Charging power is recorded with decimals
+- Fix division by zero in grafana dashboards
 
 ## [0.12.0] - 2021-12-15
 ### Added

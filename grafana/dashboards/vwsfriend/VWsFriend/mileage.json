@@ -234,7 +234,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  make_timestamp(${__to:date:Y,M,D,h,m,s}) AS time,\n  MIN(\"end_mileage_km\")+(MAX(\"end_mileage_km\") - MIN(\"end_mileage_km\"))/(DATE_PART('day', MAX(\"endDate\") - MIN(\"endDate\")))*DATE_PART('day', make_timestamp(${__to:date:Y,M,D,h,m,s}) - MIN(\"endDate\")) AS \"Milage Prognose\"\nFROM trips\n  WHERE\n    $__timeFilter(\"startDate\") AND\n    trips.vehicle_vin = '$VIN' AND\n    trips.\"endDate\" IS NOT NULL AND\n    trips.end_mileage_km IS NOT NULL\nunion\nSELECT\n  MIN(\"endDate\") AS time,\n  MIN(\"end_mileage_km\") AS \"Milage Prognose\"\nFROM trips\n  WHERE\n    $__timeFilter(\"startDate\") AND\n    trips.vehicle_vin = '$VIN' AND\n    trips.\"endDate\" IS NOT NULL AND\n    trips.end_mileage_km IS NOT NULL",
+          "rawSql": "SELECT\n  make_timestamp(${__to:date:Y,M,D,h,m,s}) AS time,\n  MIN(\"end_mileage_km\")+(MAX(\"end_mileage_km\") - MIN(\"end_mileage_km\")) / (DATE_PART('day', NULLIF(MAX(\"endDate\") - MIN(\"endDate\"),INTERVAL '0 days')))*DATE_PART('day', NULLIF(make_timestamp(${__to:date:Y,M,D,h,m,s}) - MIN(\"endDate\"), INTERVAL '0 days')) AS \"Milage Prognose\"\nFROM trips\n  WHERE\n    $__timeFilter(\"startDate\") AND\n    trips.vehicle_vin = '$VIN' AND\n    trips.\"endDate\" IS NOT NULL AND\n    trips.end_mileage_km IS NOT NULL\nunion\nSELECT\n  MIN(\"endDate\") AS time,\n  MIN(\"end_mileage_km\") AS \"Milage Prognose\"\nFROM trips\n  WHERE\n    $__timeFilter(\"startDate\") AND\n    trips.vehicle_vin = '$VIN' AND\n    trips.\"endDate\" IS NOT NULL AND\n    trips.end_mileage_km IS NOT NULL",
           "refId": "B",
           "select": [
             [
