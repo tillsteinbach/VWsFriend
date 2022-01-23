@@ -1,11 +1,14 @@
-../CHANGELOG.md# Changelog
+# Changelog
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No unreleased changes so far
+
+## [0.13.0] - 2022-01-23
 ### Changed
-- Updated API to 0.33.0
-- Homekit gives faster feedback when controling the car
+- Homekit gives now much faster feedback when controling the car (Even faster than WeConnect App)
 - Minor improvements to grafana dashboards
+- Updated API to 0.34.0
 
 ### Added
 - new parameter --hide-repeated-log that suppresses repeating messages from logging (does not apply to errors)
