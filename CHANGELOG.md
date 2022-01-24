@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Added
+- Logging can now send mails if an error occurs
 
 ## [0.13.1] - 2022-01-24
 ### Fixed

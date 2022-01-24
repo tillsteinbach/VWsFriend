@@ -4,6 +4,7 @@ import re
 import argparse
 from datetime import datetime, timedelta, timezone
 import logging
+import logging.handlers
 import time
 import tempfile
 import netrc
@@ -102,6 +103,17 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                               '(default: %%Y-%%m-%%dT%%H:%%M:%%S%%z)', default='%Y-%m-%dT%H:%M:%S%z')
     loggingGroup.add_argument('--hide-repeated-log', dest='hideRepeatedLog', help='Hide repeated log messages from the same module', action='store_true')
 
+    loggingMailGroup = parser.add_argument_group('Logging to Email (Errors only)')
+    loggingMailGroup.add_argument('--logging-mail-from', dest='loggingMailFrom', help='Mail address to send mails from', required=False)
+    loggingMailGroup.add_argument('--logging-mail-to', dest='loggingMailTo', help='Mail address to send mails to (can be used multiple times)', required=False,
+                                  action='append')
+    loggingMailGroup.add_argument('--logging-mail-host', dest='loggingMailHost', help='Mail server host', required=False)
+    loggingMailGroup.add_argument('--logging-mail-credentials', dest='loggingMailCredentials', help='Mail server credentials', required=False, nargs=2)
+    loggingMailGroup.add_argument('--logging-mail-subject', dest='loggingMailSubject', help='Mail subject', required=False, default='VWsFriend Log')
+    loggingMailGroup.add_argument('--logging-mail-notls', dest='loggingMailnotls', help='Mail do not use TLS', required=False, action='store_true')
+    loggingMailGroup.add_argument('--logging-mail-testmail', dest='loggingMailTestmail', help='Try to send Testmail at startup', required=False,
+                                  action='store_true')
+
     args = parser.parse_args()
 
     logLevel = LOG_LEVELS.index(DEFAULT_LOG_LEVEL)
@@ -114,6 +126,28 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         for handler in logging.root.handlers:
             handler.addFilter(DuplicateFilter())
     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+    if any(arg is not None for arg in [args.loggingMailFrom, args.loggingMailTo, args.loggingMailHost, args.loggingMailCredentials]):
+        if all(arg is not None for arg in [args.loggingMailFrom, args.loggingMailTo, args.loggingMailHost, args.loggingMailCredentials]):
+            secure = ()
+            if args.loggingMailnotls:
+                secure = None
+            smtpHandler = logging.handlers.SMTPHandler(mailhost=args.loggingMailHost,
+                                                       fromaddr=args.loggingMailFrom,
+                                                       toaddrs=args.loggingMailTo,
+                                                       subject=args.loggingMailSubject,
+                                                       credentials=args.loggingMailCredentials,
+                                                       secure=secure)
+            smtpHandler.setLevel(logging.INFO)
+            smtpHandler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-5s %(message)s"))
+            LOG.addHandler(smtpHandler)
+            if args.loggingMailTestmail:
+                msg = f'vwsfriend {__version__} (using WeConnect-python {__weconnect_version__})'
+                smtpHandler.emit(logging.LogRecord('VWsFriend', logging.INFO, pathname=None, lineno=None, msg=msg, args=None, exc_info=None))
+            smtpHandler.setLevel(logging.ERROR)
+        else:
+            LOG.error('You need to provide all --logging-mail options to make mail work')
+            sys.exit(1)
 
     LOG.info('vwsfriend %s (using WeConnect-python %s)', __version__, __weconnect_version__)
 
