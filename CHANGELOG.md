@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.13.1] - 2022-01-24
+### Fixed
+- Small bugfix in request tracking that will reduce the load of the server running VWsFriend
+
+### Changed
+- Updated API to 0.35.0
+
 ## [0.13.0] - 2022-01-23
 ### Changed
 - Homekit gives now much faster feedback when controling the car (Even faster than WeConnect App)
