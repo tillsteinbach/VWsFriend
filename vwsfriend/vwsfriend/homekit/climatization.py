@@ -56,15 +56,12 @@ class Climatization(GenericAccessory):
         if climatizationSettings is not None and climatizationSettings.targetTemperature_C.enabled:
             climatizationSettings.targetTemperature_C.addObserver(self.onTargetTemperatureChange,
                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-            self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=self.getTemperature(),
-                                                                     properties={'maxValue': 29.5, 'minStep': 0.5, 'minValue': 16},
-                                                                     setter_callback=self.__onTargetTemperatureChanged)
         elif climatizationSettings is not None and climatizationSettings.targetTemperature_K.enabled:
             climatizationSettings.targetTemperature_K.addObserver(self.onTargetTemperatureChange,
                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED)
-            self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=self.getTemperature(),
-                                                                     properties={'maxValue': 29.5, 'minStep': 0.5, 'minValue': 16},
-                                                                     setter_callback=self.__onTargetTemperatureChanged)
+        self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=self.getTemperature(),
+                                                                 properties={'maxValue': 29.5, 'minStep': 0.5, 'minValue': 16},
+                                                                 setter_callback=self.__onTargetTemperatureChanged)
 
         if batteryStatus is not None and batteryStatus.currentSOC_pct.enabled:
             batteryStatus.currentSOC_pct.addObserver(self.onCurrentSOCChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
@@ -91,7 +88,7 @@ class Climatization(GenericAccessory):
             return self.climatizationSettings.targetTemperature_C.value
         elif self.climatizationSettings.targetTemperature_K is not None and self.climatizationSettings.targetTemperature_K.enabled:
             return (self.climatizationSettings.targetTemperature_K.value - 273.15)
-        return 20.0
+        return 20.5
 
     def setTemperature(self, temperature):
         if self.climatizationSettings.targetTemperature_C is not None and self.climatizationSettings.targetTemperature_C.enabled:
@@ -177,6 +174,7 @@ class Climatization(GenericAccessory):
                 self.setTemperature(value)
             except SetterError as setterError:
                 LOG.error('Error setting target temperature: %s', setterError)
+                self.setStatusFault(1, timeout=120)
         else:
             LOG.error('Climatization target temperature cannot be controled')
 
