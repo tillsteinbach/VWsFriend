@@ -41,6 +41,11 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
             else:
                 displayName = identifier
             placeholderAccessory = DummyAccessory(driver=driver, displayName=displayName, aid=accessory['aid'])
+            if 'category' in accessory:
+                placeholderAccessory.category = accessory['category']
+            if 'services' in accessory:
+                for service in accessory['services']:
+                    placeholderAccessory.add_preload_service(service, chars=None)
             self.add_accessory(placeholderAccessory)
 
     def persistConfig(self):
@@ -93,6 +98,9 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                                                        climatizationSettings=climatizationSettings, batteryStatus=batteryStatus, chargingStatus=chargingStatus,
                                                        climatizationControl=vehicle.controls.climatizationControl)
                 climatizationAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-climatization')
+                self.setConfigItem(climatizationAccessory.id, climatizationAccessory.vin, 'category', climatizationAccessory.category)
+                self.setConfigItem(climatizationAccessory.id, climatizationAccessory.vin, 'services',
+                                   [service.display_name for service in climatizationAccessory.services])
                 if climatizationAccessory.aid not in self.accessories:
                     self.add_accessory(climatizationAccessory)
                 else:
@@ -116,6 +124,8 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                                              displayName=f'{nickname} Charging', chargingStatus=chargingStatus, plugStatus=plugStatus,
                                              batteryStatus=batteryStatus, chargingControl=vehicle.controls.chargingControl)
                 chargingAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-charging')
+                self.setConfigItem(chargingAccessory.id, chargingAccessory.vin, 'category', chargingAccessory.category)
+                self.setConfigItem(chargingAccessory.id, chargingAccessory.vin, 'services', [service.display_name for service in chargingAccessory.services])
                 if chargingAccessory.aid not in self.accessories:
                     self.add_accessory(chargingAccessory)
                 else:
@@ -128,6 +138,8 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 plugAccessory = Plug(driver=self.driver, bridge=self, aid=self.selectAID('ChargingPlug', vin), id='ChargingPlug', vin=vin,
                                      displayName=f'{nickname} Charging Plug', plugStatus=plugStatus)
                 plugAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-charging_plug')
+                self.setConfigItem(plugAccessory.id, plugAccessory.vin, 'category', plugAccessory.category)
+                self.setConfigItem(plugAccessory.id, plugAccessory.vin, 'services', [service.display_name for service in plugAccessory.services])
                 if plugAccessory.aid not in self.accessories:
                     self.add_accessory(plugAccessory)
                 else:
@@ -140,6 +152,9 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 lockingSystemAccessory = LockingSystem(driver=self.driver, bridge=self, aid=self.selectAID('LockingSystem', vin), id='LockingSystem', vin=vin,
                                                        displayName=f'{nickname} Locking System', accessStatus=accessStatus)
                 lockingSystemAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-locking_system')
+                self.setConfigItem(lockingSystemAccessory.id, lockingSystemAccessory.vin, 'category', lockingSystemAccessory.category)
+                self.setConfigItem(lockingSystemAccessory.id, lockingSystemAccessory.vin, 'services',
+                                   [service.display_name for service in lockingSystemAccessory.services])
                 if lockingSystemAccessory.aid not in self.accessories:
                     self.add_accessory(lockingSystemAccessory)
                 else:
