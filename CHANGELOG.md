@@ -2,8 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No unreleased changes so far
+
+## [0.14.0] - 2022-01-28
+### Fixed
+- Login to WeConnect works again after changes on login page
+- Homekit does not forget notification and favorit setting anymore
+
 ### Added
 - Logging can now send mails if an error occurs
+
+### Changed
+- Updated API to 0.35.1
 
 ## [0.13.1] - 2022-01-24
 ### Fixed
@@ -263,7 +273,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.13.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.0
 [0.13.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.13.1
 [0.13.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.13.0
 [0.12.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.12.0
