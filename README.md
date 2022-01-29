@@ -69,7 +69,9 @@ docker-compose -f docker-compose-homekit-macvlan.yml --env-file ./myconfig.env u
 ```
 In macvlan mode VWsFriend will appear as a seperate computer in the network thus you also have to set HOMEKIT_IP to a free IP address in your network in the .env-file.
 HOMEKIT_MASK and HOMEKIT_GW need to be configured with the correct netmask and gateway settings for your network. 
-IN macvlan mode you reach VWsFriends UI on the configured IP at port 4000
+
+In macvlan mode you reach VWsFriends UI on the configured IP at port 4000
+
 Macvlan mode is not supported on macOS! See also [Known Issues](#known-issues).
 
 ## Automated Updates
