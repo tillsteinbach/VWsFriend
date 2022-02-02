@@ -19,4 +19,4 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: tillsteinbach/vwsfriend
         short-description: "VWsFriend Software. See: https://github.com/tillsteinbach/VWsFriend/"
-        readme-filepath: ./vwsfriend/README.md
+        readme-filepath: ./README.md
