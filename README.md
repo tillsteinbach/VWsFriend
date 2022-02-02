@@ -26,8 +26,8 @@ Volkswagen WeConnect© API visualization and control (HomeKit) inspired by Tesla
 VWsFriend is based on the new WeConnect ID API that was introduced with the new series of ID cars. If you use another car or hybrid you probably need to agree to the terms and conditions of the WeConnect ID interface. Easiest to do so is by installing the WeConnect ID app on your smartphone and login there. If necessary you will be asked to agree to the terms and conditions.
 
 ## How to start
-* Clone or download the files [docker-compose.yml](./docker-compose.yml) and [.env](./.env)
-* To create myconfig.env copy [.env](./.env) file and make changes according to your needs
+* Clone or download the files [docker-compose.yml](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/docker-compose.yml) and [.env](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/.env)
+* To create myconfig.env copy [.env](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/.env) file and make changes according to your needs
 * Start the stack using your configuration.
 ```bash
 docker-compose --env-file ./myconfig.env up
@@ -56,14 +56,14 @@ Connecting VWsFriend to ABRP enables you to use the current SoC, position, parki
 ## VWsFriend with Apple Homekit support
 <img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit2.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit3.jpg" width="200"><img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit4.jpg" width="200">
 
-* Replace the docker-compose file by [docker-compose-homekit-host.yml](./docker-compose-homekit-host.yml) to use the homekit override
+* Replace the docker-compose file by [docker-compose-homekit-host.yml](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/docker-compose-homekit-host.yml) to use the homekit override
 ```bash
 docker-compose -f docker-compose-homekit-host.yml --env-file ./myconfig.env up
 ```
 This will use host mode for vwsfriend. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
 Host mode is not working on macOS. The reson is that the network is still virtualized. See also [Known Issues](#known-issues).
 
-If you do not like to share the host network with vwsfriend you can use macvlan mode [docker-compose-homekit-macvlan.yml](./docker-compose-homekit-macvlan.yml):
+If you do not like to share the host network with vwsfriend you can use macvlan mode [docker-compose-homekit-macvlan.yml](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/docker-compose-homekit-macvlan.yml):
 ```bash
 docker-compose -f docker-compose-homekit-macvlan.yml --env-file ./myconfig.env up
 ```
