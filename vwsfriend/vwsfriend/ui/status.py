@@ -1,16 +1,19 @@
 from io import BytesIO
-from flask import Blueprint, render_template, current_app, abort, send_file, request, redirect, url_for
+from flask import Blueprint, Response, render_template, current_app, abort, send_file, request, redirect, url_for
+from flask_login import login_required
 
 bp = Blueprint('status', __name__, url_prefix='/status')
 
 
 @bp.route('/vehicles', methods=['GET'])
+@login_required
 def vehicles():
     vehicles = current_app.weConnect.vehicles.values()
     return render_template('status/vehicles.html', vehicles=vehicles, current_app=current_app)
 
 
 @bp.route('/vehicle/<string:vin>/', methods=['GET'])
+@login_required
 def vehicle(vin):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
@@ -94,3 +97,10 @@ def vehicleStatusOrImg(vin, badge=False):
 @bp.route('/vehicles/<string:vin>-status_or_car-badge.png', methods=['GET'])
 def vehicleStatusOrImgBadge(vin, badge=False):
     return vehicleStatusOrImg(vin, badge=True)
+
+
+@bp.route('/json', methods=['GET'])
+@login_required
+def json():
+    json = current_app.weConnect.toJSON()
+    return Response(json, mimetype="text/json")

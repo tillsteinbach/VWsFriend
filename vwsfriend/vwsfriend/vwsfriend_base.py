@@ -8,13 +8,13 @@ import logging.handlers
 import time
 import tempfile
 import netrc
-import getpass
 
 import threading
 
 from pyhap.accessory_driver import AccessoryDriver
 
 from weconnect import weconnect
+from weconnect.errors import APICompatibilityError, AuthentificationError
 from weconnect.util import DuplicateFilter
 from weconnect.__version import __version__ as __weconnect_version__
 
@@ -66,9 +66,11 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         description='TBD')
     parser.add_argument('--version', action='version',
                         version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__})')
+    parser.add_argument('-u', '--username', help='Username of VWsFriend UI', required=False)
+    parser.add_argument('-p', '--password', help='Password of VWsFriend UI', required=False)
     weConnectGroup = parser.add_argument_group('WeConnect')
-    weConnectGroup.add_argument('-u', '--username', help='Username of Volkswagen id', required=False)
-    weConnectGroup.add_argument('-p', '--password', help='Password of Volkswagen id', required=False)
+    weConnectGroup.add_argument('--weconnect-username', dest='weConnectUsername', help='Username of Volkswagen id', required=False)
+    weConnectGroup.add_argument('--weconnect-password', dest='weConnectPassword', help='Password of Volkswagen id', required=False)
     defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
     weConnectGroup.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
                                 ' Netrc is only used when username and password are not provided  as arguments',
@@ -164,27 +166,44 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             netRcFilename = defaultNetRc
         try:
             secrets = netrc.netrc(file=args.netrc)
-            username, _, password = secrets.authenticators("volkswagen.de")
+            username, _, password = secrets.authenticators("VWsFriend")
         except TypeError:
-            if not args.username:
-                LOG.error('volkswagen.de entry was not found in %s netrc-file. Create it or provide at least a username'
-                          ' with --username', netRcFilename)
-                sys.exit(1)
-            username = args.username
-            password = getpass.getpass()
+            LOG.error('VWsFriend entry was not found in %s netrc-file. Create it or provide a username with --username and a password with --password'
+                      ' with --username', netRcFilename)
+            sys.exit(1)
         except FileNotFoundError:
-            if not args.username:
-                LOG.error('%s netrc-file was not found. Create it or provide at least a username with --username',
-                          netRcFilename)
-                sys.exit(1)
-            username = args.username
-            password = getpass.getpass()
+            LOG.error('%s netrc-file was not found. Create it or provide a username with --username and a password with --password',
+                      netRcFilename)
+            sys.exit(1)
+
+    if args.weConnectUsername is not None and args.weConnectPassword is not None:
+        weConnectUsername = args.weConnectUsername
+        weConnectPassword = args.weConnectPassword
+    else:
+        if args.netrc is not None:
+            netRcFilename = args.netrc
+        else:
+            netRcFilename = defaultNetRc
+        try:
+            secrets = netrc.netrc(file=args.netrc)
+            weConnectUsername, _, weConnectPassword = secrets.authenticators("volkswagen.de")
+        except TypeError:
+            weConnectUsername = username
+            weConnectPassword = password
+            LOG.warning('volkswagen.de entry was not found in %s netrc-file. Create it or provide a username with --weconnect-username and a password with'
+                        ' --weconnect-password', netRcFilename)
+        except FileNotFoundError:
+            weConnectUsername = username
+            weConnectPassword = password
+            LOG.warning('%s netrc-file was not found. Create it or provide a username with --weconnect-username and a password with --weconnect-password',
+                        netRcFilename)
+
     tokenfile = None
     if not args.noTokenStorage:
         tokenfile = args.tokenfile
 
     try:
-        weConnect = weconnect.WeConnect(username=username, password=password, tokenfile=tokenfile,
+        weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400)
 
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
@@ -210,7 +229,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             # Enable status tracking:
             weConnect.enableTracker()
 
-        ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl, configDir=args.configDir)
+        ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl, configDir=args.configDir, username=username,
+                         password=password)
         ui.run()
 
         if args.demo is not None:
@@ -231,7 +251,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         if args.withHomekit and not weConnectBridgeInitialized:
                             weConnectBridgeInitialized = True
                             bridge.update()
-                        weConnect.update(updateCapabilities=True)
+                        weConnect.update(updateCapabilities=True, updatePictures=False)
                         connector.commit()
                         if match.groupdict()['stage'] is not None:
                             LOG.info('Stage %s completed', match.groupdict()['stage'])
@@ -253,9 +273,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 #  Execute exactly every interval but if it misses its deadline only after the next interval
                 time.sleep(args.interval - ((time.time() - starttime) % args.interval))
 
-    except weconnect.AuthentificationError as e:
+    except AuthentificationError as e:
         LOG.critical('There was a problem when authenticating with WeConnect: %s', e)
-    except weconnect.APICompatibilityError as e:
+    except APICompatibilityError as e:
         LOG.critical('There was a problem when communicating with WeConnect.'
                      ' If this problem persists please open a bug report: %s', e)
     finally:

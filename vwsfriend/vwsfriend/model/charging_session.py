@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from vwsfriend.model.base import Base
 from vwsfriend.model.datetime_decorator import DatetimeDecorator
 
-from weconnect.elements.charging_settings import ChargingSettings
+from weconnect.elements.enums import MaximumChargeCurrent
 
 
 class ACDC(enum.Enum,):
@@ -38,7 +38,7 @@ class ChargingSession(Base):
     ended = Column(DatetimeDecorator)
     unlocked = Column(DatetimeDecorator)
     disconnected = Column(DatetimeDecorator)
-    maxChargeCurrentACSetting = Column(Enum(ChargingSettings.MaximumChargeCurrent, length=63))
+    maxChargeCurrentACSetting = Column(Enum(MaximumChargeCurrent, length=63))
     targetSOCSetting_pct = Column(Integer)
     maximumChargePower_kW = Column(Float)
     acdc = Column(Enum(ACDC, length=63))

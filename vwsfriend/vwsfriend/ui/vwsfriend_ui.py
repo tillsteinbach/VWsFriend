@@ -1,3 +1,4 @@
+import base64
 import threading
 import time
 import os
@@ -5,11 +6,16 @@ import sys
 import uuid
 import logging
 import flask
+import flask_login
 
 import sqlalchemy
 
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms.validators import Length
 
 from werkzeug.serving import make_server
 
@@ -32,14 +38,29 @@ LOG = logging.getLogger("VWsFriend")
 csrf = CSRFProtect()
 
 
+class LoginForm(FlaskForm):
+    username = StringField('User', validators=[Length(min=1, max=255)])
+    password = PasswordField('Password')
+    remember_me = BooleanField('Remember me')
+    submit = SubmitField('Submit')
+
+
 class VWsFriendUI:
-    def __init__(self, weConnect=None, connector=None, homekitDriver=None, dbUrl=None, configDir=None):  # noqa: C901
+    def __init__(self, weConnect=None, connector=None, homekitDriver=None, dbUrl=None, configDir=None, username=None, password=None):  # noqa: C901
         self.app = flask.Flask('VWsFriend', template_folder=os.path.dirname(__file__) + '/templates', static_folder=os.path.dirname(__file__) + '/static')
         self.app.debug = True
         self.app.config.from_mapping(
             SECRET_KEY=uuid.uuid4().hex,
         )
         csrf.init_app(self.app)
+
+        loginManager = flask_login.LoginManager()
+        loginManager.init_app(self.app)
+        loginManager.login_view = "login"
+        loginManager.login_message = "You have to login to see this page"
+        self.users = {}
+        if username is not None and password is not None:
+            self.users[username] = {'password': password}
 
         class NoHealth(logging.Filter):
             def filter(self, record):
@@ -105,6 +126,7 @@ class VWsFriendUI:
             return 'ok'
 
         @self.app.route('/restart', methods=['GET'])
+        @flask_login.login_required
         def restart():
             def delayed_restart():
                 time.sleep(10)
@@ -118,6 +140,59 @@ class VWsFriendUI:
         @self.app.route('/restartrefresh', methods=['GET'])
         def restartrefresh():
             return flask.render_template('restart.html', current_app=flask.current_app)
+
+        @loginManager.user_loader
+        def user_loader(username):
+            if username not in self.users:
+                return
+
+            user = flask_login.UserMixin()
+            user.id = username
+            return user
+
+        @loginManager.request_loader
+        def load_user_from_request(request):
+            auth = request.headers.get('Authorization')
+            if auth and 'Basic ' in auth:
+                auth = auth.replace('Basic ', '', 1)
+                try:
+                    auth = base64.b64decode(auth).decode("utf-8")
+                except TypeError:
+                    return None
+                if ':' in auth:
+                    userPass = auth.split(":", 1)
+                    if userPass[0] in self.users and 'password' in self.users[userPass[0]] and userPass[1] == self.users[userPass[0]]['password']:
+                        user = flask_login.UserMixin()
+                        user.id = userPass[0]
+                        return user
+            # finally, return None if both methods did not login the user
+            return None
+
+        @self.app.route('/login', methods=['GET', 'POST'])
+        def login():
+            form = LoginForm()
+
+            if form.validate_on_submit():
+                username = form.username.data
+                if username in self.users and 'password' in self.users[username] and form.password.data == self.users[username]['password']:
+                    user = flask_login.UserMixin()
+                    user.id = username
+                    remember = form.remember_me.data
+                    flask_login.login_user(user, remember=remember)
+
+                    next = flask.request.args.get('next', default='status/vehicles')
+                    return flask.redirect(next)
+                else:
+                    form.password.data = ''
+                    flask.flash('User unknown or password is wrong')
+
+            return flask.render_template('login/login.html', form=form, current_app=self.app)
+
+        @self.app.route("/logout")
+        @flask_login.login_required
+        def logout():
+            flask_login.logout_user()
+            return flask.redirect('login')
 
     def run(self, host="0.0.0.0", port=4000, loglevel=logging.INFO):  # nosec
         os.environ['WERKZEUG_RUN_MAIN'] = 'true'

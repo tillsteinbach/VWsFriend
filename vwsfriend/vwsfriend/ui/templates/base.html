@@ -20,6 +20,11 @@
     {% if current_app.connector.withDB and current_app.config['SQLALCHEMY_DATABASE_URI'].startswith('postgresql://') %}
     <li><a href="{{ url_for('database.backup') }}">Backup</a>
     {% endif %}
+    {% if current_user.is_authenticated %}
+    <li><a href="{{ url_for('logout') }}" class="button">Logout</a>
+    {% else %}
+    <li><a href="{{ url_for('login') }}" class="button">Login</a>
+    {% endif %}
   </ul>
 </nav>
 <section class="content">
