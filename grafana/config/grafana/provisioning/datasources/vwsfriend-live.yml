@@ -6,7 +6,7 @@ datasources:
     orgId: 1
     type: marcusolsson-json-datasource
     access: proxy
-    url: http://10.11.5.123:4000/status/json
+    url: http://$VWSFRIEND_HOSTNAME:$VWSFRIEND_PORT/status/json
     user: $VWSFRIEND_USERNAME
     password: $VWSFRIEND_PASSWORD
     jsonData:
