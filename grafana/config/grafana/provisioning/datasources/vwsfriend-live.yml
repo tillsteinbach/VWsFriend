@@ -1,0 +1,16 @@
+# config file version
+apiVersion: 1
+
+datasources:
+  - name: VWsFriend Live
+    orgId: 1
+    type: marcusolsson-json-datasource
+    access: proxy
+    url: http://10.11.5.123:4000/status/json
+    user: $VWSFRIEND_USERNAME
+    password: $VWSFRIEND_PASSWORD
+    jsonData:
+      timeout: "1"
+    basicAuth: true
+    isDefault: false
+    editable: true

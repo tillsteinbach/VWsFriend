@@ -71,6 +71,8 @@ services:
       - DB_USER=${DB_USER-admin}
       - DB_PASSWORD=${DB_PASSWORD-secret}
       - DB_HOSTNAME=${DB_HOSTNAME-postgresdbbackend}
+      - VWSFRIEND_USERNAME=${VWSFRIEND_USERNAME-admin}
+      - VWSFRIEND_PASSWORD=${VWSFRIEND_PASSWORD-secret}
       - DB_PORT=${DB_PORT-5432}
       - DB_NAME=${DB_NAME-vwsfriend}
     restart: unless-stopped
