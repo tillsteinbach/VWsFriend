@@ -4,6 +4,7 @@ from io import BytesIO
 from pyqrcode import pyqrcode
 
 from flask import Blueprint, render_template, current_app, abort, redirect, url_for, request, send_file, flash
+from flask_login import login_required
 from flask_wtf import FlaskForm
 from wtforms import FieldList, FormField, StringField, IntegerField, SubmitField, HiddenField
 from wtforms.validators import DataRequired, NumberRange, Optional, Length, Regexp, ValidationError
@@ -71,6 +72,7 @@ ABRPSettingsEntry = namedtuple('ABRPSettings', ('accounts'))
 
 
 @bp.route('/vehicle/<vin>', methods=['GET', 'POST'])
+@login_required
 def vehicle(vin):
     if vin not in current_app.weConnect.vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
@@ -80,6 +82,7 @@ def vehicle(vin):
 
 
 @bp.route('/vehicle/database/<vin>', methods=['GET', 'POST'])
+@login_required
 def vehicleDBParameters(vin):
     if vin not in current_app.weConnect.vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
@@ -116,6 +119,7 @@ def vehicleDBParameters(vin):
 
 
 @bp.route('/vehicle/abrp/<vin>', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def vehicleABRPSettings(vin):  # noqa: C901
     if vin not in current_app.weConnect.vehicles:
         abort(404, f"Vehicle with VIN {vin} doesn't exist.")
@@ -159,6 +163,7 @@ def vehicleABRPSettings(vin):  # noqa: C901
 
 
 @bp.route('/homekit', methods=['GET', 'POST'])
+@login_required
 def homekit():
     if current_app.homekitDriver is None:
         abort(404, 'Homekit support was not enabled. Enabled it with --with-homekit')
@@ -183,6 +188,7 @@ def homekit():
 
 
 @bp.route('/homekit/homekit-qr.png', methods=['GET'])
+@login_required
 def homekitQR():
     if current_app.homekitDriver is None or current_app.homekitDriver.accessory is None:
         abort(404, "VWsFriend is running without Homekit support")

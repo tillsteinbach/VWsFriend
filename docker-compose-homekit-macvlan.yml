@@ -13,6 +13,8 @@ services:
     volumes:
       - vwsfriend_data:/config
     environment:
+      - VWSFRIEND_USERNAME=${VWSFRIEND_USERNAME-admin}
+      - VWSFRIEND_PASSWORD=${VWSFRIEND_PASSWORD-secret}
       - WECONNECT_USER
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL

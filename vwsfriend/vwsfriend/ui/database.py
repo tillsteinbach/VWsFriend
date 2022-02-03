@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from sqlalchemy import and_
 
 from flask import Blueprint, render_template, current_app, abort, request, flash, redirect, url_for, send_file
+from flask_login import login_required
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, HiddenField, StringField, SelectField, FileField, DateTimeField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, NumberRange, Optional
@@ -115,6 +116,7 @@ class BackupRestoreForm(FlaskForm):
 
 
 @bp.route('/settings/edit', methods=['GET', 'POST'])
+@login_required
 def settingsEdit():
     settings = current_app.db.session.query(Settings).first()
     if settings is None:

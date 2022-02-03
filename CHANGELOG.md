@@ -2,7 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Added
+- Passwort protection for UI
+- /json endpoint to receive data in json format
+- Added status fail_charge_plug_not_connected
+
+### Changed
+- Refactors the OAuth procedure
+- Updated API to 0.36.0
 
 ## [0.14.0] - 2022-01-28
 ### Fixed

@@ -3,6 +3,16 @@ body { max-width: 960px; margin: 0 auto; background: white;}
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 h2 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
+
+a.button {
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+
+  text-decoration: none;
+  color: initial;
+}
+
 hr { border: none; border-top: 1px solid lightgray; }
 nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }
 nav h1 { flex: auto; margin: 0; }
