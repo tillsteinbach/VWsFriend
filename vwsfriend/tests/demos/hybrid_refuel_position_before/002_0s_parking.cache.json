@@ -7,7 +7,7 @@
      ],
      
      
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=access,automation,userCapabilities,charging,climatisation,fuelStatus,vehicleLights,lvBattery,readiness,maintenance,measurements,batterySupport": [
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=all": [
         {
             "userCapabilities": {
                 "capabilitiesStatus": {
