@@ -19,7 +19,7 @@ depends_on = None
 def upgrade():
     if op.get_context().dialect.name == 'postgresql':
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE chargingstate ADD VALUE 'CONSERVATION' IF NOT EXISTS")
+            op.execute("ALTER TYPE chargingstate ADD VALUE IF NOT EXISTS 'CONSERVATION'")
 
 
 def downgrade():
