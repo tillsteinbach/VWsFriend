@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 - Refactors the OAuth procedure
 - Updated API to 0.36.0
 
+## [0.14.2] - 2022-02-04
+### Fixed
+- Update of 0.14.1 fix that fails on some instances
+
 ## [0.14.1] - 2022-02-04
 ### Fixed
 - Add missing CONSERVATION Enum to database schema
@@ -284,7 +288,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.14.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.14.2...HEAD
+[0.14.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.2
 [0.14.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.1
 [0.14.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.0
 [0.13.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.13.1
