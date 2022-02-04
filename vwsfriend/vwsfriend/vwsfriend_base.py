@@ -167,6 +167,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         try:
             secrets = netrc.netrc(file=args.netrc)
             username, _, password = secrets.authenticators("VWsFriend")
+        except netrc.NetrcParseError as err:
+            LOG.error('Authentification using .netrc failed: %s', err)
+            sys.exit(1)
         except TypeError:
             LOG.error('VWsFriend entry was not found in %s netrc-file. Create it or provide a username with --username and a password with --password'
                       ' with --username', netRcFilename)
@@ -187,6 +190,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         try:
             secrets = netrc.netrc(file=args.netrc)
             weConnectUsername, _, weConnectPassword = secrets.authenticators("volkswagen.de")
+        except netrc.NetrcParseError as err:
+            LOG.error('Authentification using .netrc failed: %s', err)
+            sys.exit(1)
         except TypeError:
             weConnectUsername = username
             weConnectPassword = password
