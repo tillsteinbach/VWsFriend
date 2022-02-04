@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.14.1] - 2022-02-04
+### Fixed
+- Add missing CONSERVATION Enum to database schema
+
 ## [0.14.0] - 2022-01-28
 ### Fixed
 - Login to WeConnect works again after changes on login page
