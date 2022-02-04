@@ -6,6 +6,8 @@ services:
      - 4000:4000
     networks:
       backend:
+        aliases:
+          - vwsfriendbackend
     volumes:
       - vwsfriend_data:/config
     environment:
@@ -69,6 +71,10 @@ services:
       - DB_HOSTNAME=${DB_HOSTNAME-postgresdbbackend}
       - DB_PORT=${DB_PORT-5432}
       - DB_NAME=${DB_NAME-vwsfriend}
+      - VWSFRIEND_USERNAME=${VWSFRIEND_USERNAME-admin}
+      - VWSFRIEND_PASSWORD=${VWSFRIEND_PASSWORD-secret}
+      - VWSFRIEND_HOSTNAME=${VWSFRIEND_HOSTNAME-vwsfriendbackend}
+      - VWSFRIEND_PORT=${VWSFRIEND_PORT-4000}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "(wget -qO- http://localhost:${GF_SERVER_HTTP_PORT-3000}/api/health | grep '\"database\": \"ok\"' -q) || exit 1"]
