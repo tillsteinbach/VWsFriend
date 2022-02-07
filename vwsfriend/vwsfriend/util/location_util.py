@@ -1,8 +1,22 @@
+import requests
+from haversine import haversine, Unit
+from sqlalchemy import and_
+
+from vwsfriend.model.geofence import Geofence
 from vwsfriend.model.location import Location
 from vwsfriend.model.charger import Charger, Operator
-import requests
 
 from weconnect.errors import RetrievalError
+
+
+def locationFromLatLonWithGeofence(session, latitude, longitude):
+    geofences: Geofence = session.query(Geofence).filter(and_(Geofence.latitude.isnot(None), Geofence.longitude.isnot(None))).all()
+    geofenceDistance = [(haversine((latitude, longitude), (geofence.latitude, geofence.longitude), unit=Unit.METERS), geofence) for geofence in geofences]
+    geofenceDistance = sorted(geofenceDistance, key=lambda geofence: geofence[0])
+    for distance, geofence in geofenceDistance:
+        if distance < geofence.radius and geofence.location is not None:
+            return geofence.location
+    return locationFromLatLon(session, latitude, longitude)
 
 
 def locationFromLatLon(session, latitude, longitude):
@@ -21,6 +35,18 @@ def locationFromLatLon(session, latitude, longitude):
         location = Location(jsonDict=response.json())
         return session.merge(location)
     return None
+
+
+def chargerFromLatLonWithGeofence(weConnect, session, latitude, longitude, searchRadius):
+    geofences: Geofence = session.query(Geofence).filter(and_(Geofence.latitude.isnot(None), Geofence.longitude.isnot(None))).all()
+    geofenceDistance = [(haversine((latitude, longitude), (geofence.latitude, geofence.longitude), unit=Unit.METERS), geofence) for geofence in geofences]
+    geofenceDistance = sorted(geofenceDistance, key=lambda geofence: geofence[0])
+    print('LALALALALA')
+    print(geofenceDistance)
+    for distance, geofence in geofenceDistance:
+        if distance < (geofence.radius + searchRadius) and geofence.charger is not None:
+            return geofence.charger
+    return chargerFromLatLon(weConnect, session, latitude, longitude, searchRadius)
 
 
 def chargerFromLatLon(weConnect, session, latitude, longitude, searchRadius):
