@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />  
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>  
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}{% if form and form.id.data %}Edit settings for {% else %}Add a new {% endif %}geofence{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if form %}
+<div class="form-wrapper">
+  <form method="POST">
+      {{ form.csrf_token }}
+
+      {{ form.id }}
+
+      <fieldset class="form-field">
+        {{ form.name.label }}
+        {{ form.name }}
+        {% if form.name.errors %}
+          <ul class="errors">
+            {% for error in form.name.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.latitude.label }}
+        {{ form.latitude }}
+        {% if form.latitude.errors %}
+          <ul class="errors">
+            {% for error in form.latitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.longitude.label }}
+        {{ form.longitude }}
+        {% if form.longitude.errors %}
+          <ul class="errors">
+            {% for error in form.longitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.radius.label }}
+        {{ form.radius }}
+        {% if form.radius.errors %}
+          <ul class="errors">
+            {% for error in form.radius.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      {{ form.location.id_field }}
+
+      <fieldset class="form-field">
+        {{ form.location.display_name.label }}
+        {{ form.location.display_name }}
+        {% if form.location.display_name.errors %}
+          <ul class="errors">
+            {% for error in form.location.display_name.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.location.amenity.label }}
+        {{ form.location.amenity }}
+        {% if form.location.amenity.errors %}
+          <ul class="errors">
+            {% for error in form.location.amenity.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>  
+
+      <fieldset class="form-field">
+        {{ form.location.house_number.label }}
+        {{ form.location.house_number }}
+        {% if form.location.house_number.errors %}
+          <ul class="errors">
+            {% for error in form.location.house_number.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>   
+
+      <fieldset class="form-field">
+        {{ form.location.road.label }}
+        {{ form.location.road }}
+        {% if form.location.road.errors %}
+          <ul class="errors">
+            {% for error in form.location.road.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>   
+
+      <fieldset class="form-field">
+        {{ form.location.neighbourhood.label }}
+        {{ form.location.neighbourhood }}
+        {% if form.location.neighbourhood.errors %}
+          <ul class="errors">
+            {% for error in form.location.neighbourhood.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>   
+
+      <fieldset class="form-field">
+        {{ form.location.city.label }}
+        {{ form.location.city }}
+        {% if form.location.city.errors %}
+          <ul class="errors">
+            {% for error in form.location.city.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset> 
+
+      <fieldset class="form-field">
+        {{ form.location.postcode.label }}
+        {{ form.location.postcode }}
+        {% if form.location.postcode.errors %}
+          <ul class="errors">
+            {% for error in form.location.postcode.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset> 
+ 
+      <fieldset class="form-field">
+        {{ form.location.county.label }}
+        {{ form.location.county }}
+        {% if form.location.county.errors %}
+          <ul class="errors">
+            {% for error in form.location.county.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset> 
+ 
+      <fieldset class="form-field">
+        {{ form.location.country.label }}
+        {{ form.location.country }}
+        {% if form.location.country.errors %}
+          <ul class="errors">
+            {% for error in form.location.country.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset> 
+ 
+      <fieldset class="form-field">
+        {{ form.location.state.label }}
+        {{ form.location.state }}
+        {% if form.location.state.errors %}
+          <ul class="errors">
+            {% for error in form.location.state.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset> 
+ 
+      <fieldset class="form-field">
+        {{ form.location.state_district.label }}
+        {{ form.location.state_district }}
+        {% if form.location.state_district.errors %}
+          <ul class="errors">
+            {% for error in form.location.state_district.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>        
+
+      <fieldset class="form-field">
+        {{ form.charger_id.label }}
+        {{ form.charger_id }}
+        {% if form.charger_id.errors %}
+          <ul class="errors">
+            {% for error in form.charger_id.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <div id="positions" style="height:400px"></div>
+      <script>
+        const lat = {{ form.latitude.data or '0' }}
+        const lon = {{ form.longitude.data or '0'}}
+        var zoomlevel = 0
+
+        if(lat != 0 && lon != 0){
+          zoomlevel = 20
+        }
+
+        var startposition = L.latLng([lat, lon]);
+        var map = L.map('positions').setView(startposition, zoomlevel);
+        
+        const osm = new L.TileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 }
+          );
+
+        const hybrid = new L.TileLayer(
+            "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
+            { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+          );
+
+        new L.Control.Layers({ OSM: osm, Hybrid: hybrid }).addTo(map);
+        map.addLayer(osm);
+
+
+        const controlOpts = {
+          position: "topleft",
+          cutPolygon: false,
+          drawCircle: false,
+          drawCircleMarker: false,
+          drawMarker: false,
+          drawPolygon: false,
+          drawPolyline: false,
+          drawRectangle: false,
+          removalMode: false,
+        };
+
+        const editOpts = {
+          allowSelfIntersection: false,
+          preventMarkerRemoval: true,
+        };
+
+        const LANG = navigator.languages
+          ? navigator.languages[0]
+          : navigator.language || navigator.userLanguage;
+
+        map.pm.setLang(LANG);
+        map.pm.addControls(controlOpts);
+        map.pm.enableGlobalEditMode(editOpts);
+
+        inputradius = 100;
+        element = document.getElementById('radius');
+        if(element.value != null && element.value != ''){
+          inputradius = element.value;
+        }
+
+        var circle = new L.Circle([lat, lon], { radius: inputradius })
+        .addTo(map)
+        .on("pm:edit", (e) => {
+           if(e.target.getLatLng().lat != 0 && e.target.getLatLng().lng != 0){
+            element = document.getElementById('latitude');
+            element.value = e.target.getLatLng().lat;
+            element = document.getElementById('longitude');
+            element.value = e.target.getLatLng().lng;
+          }
+          if(e.target.getRadius() != 0){
+            element = document.getElementById('radius');
+            element.value = Math.round(e.target.getRadius());
+          }
+
+          const mBox = map.getBounds();
+          const cBox = circle.getBounds();
+          const bounds = mBox.contains(cBox) ? mBox : cBox;
+          map.fitBounds(bounds);
+        });
+
+        new L.Control.geocoder({ defaultMarkGeocode: false })
+          .on("markgeocode", (e) => {
+            const { bbox, center } = e.geocode;
+
+            const poly = L.polygon([
+              bbox.getSouthEast(),
+              bbox.getNorthEast(),
+              bbox.getNorthWest(),
+              bbox.getSouthWest(),
+            ]);
+
+            circle.setLatLng(center);
+
+            const lBox = poly.getBounds();
+            const cBox = circle.getBounds();
+            const bounds = cBox.contains(lBox) ? cBox : lBox;
+
+            map.fitBounds(bounds);
+            map.pm.enableGlobalEditMode();
+
+            const { lat, lng } = center;
+            element = document.getElementById('latitude');
+            element.value = lat
+            element = document.getElementById('longitude');
+            element.value = lng
+            element = document.getElementById('radius');
+            if(element.value != null && element.value == ''){
+              element.value = 100;
+            }
+          })
+          .addTo(map);
+
+      </script>
+
+      {% if form.id.data %}
+      {{ form.save }}
+      {% else %}
+      {{ form.add }}
+      {% endif %}
+      {{ form.delete }}
+
+  </form>
+</div>
+{% endif %}
+{% endblock %}

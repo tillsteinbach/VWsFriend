@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}{% if form and form.id.data %}Edit settings for {% else %}Add a new {% endif %}operator{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if form %}
+<div class="form-wrapper">
+  <form method="POST">
+      {{ form.csrf_token }}
+
+      {{ form.id }}
+
+      <fieldset class="form-field">
+        {{ form.name.label }}
+        {{ form.name }}
+        {% if form.name.errors %}
+          <ul class="errors">
+            {% for error in form.name.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.phone.label }}
+        {{ form.phone }}
+        {% if form.phone.errors %}
+          <ul class="errors">
+            {% for error in form.phone.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      {% if form.id.data %}
+      {{ form.save }}
+      {% else %}
+      {{ form.add }}
+      {% endif %}
+      {{ form.delete }}
+
+  </form>
+</div>
+{% endif %}
+{% endblock %}

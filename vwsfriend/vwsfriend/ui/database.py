@@ -2,14 +2,18 @@ import os
 from io import BytesIO
 import subprocess  # nosec
 from datetime import datetime, timezone
+import uuid
 
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 
 from flask import Blueprint, render_template, current_app, abort, request, flash, redirect, url_for, send_file
 from flask_login import login_required
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, HiddenField, StringField, SelectField, FileField, DateTimeField, IntegerField, DecimalField
+from vwsfriend.model.charger import Charger, Operator
+from wtforms import SubmitField, HiddenField, StringField, SelectField, FileField, DateTimeField, IntegerField, DecimalField, FormField
 from wtforms.validators import DataRequired, NumberRange, Optional
+
+from haversine import haversine, Unit
 
 from weconnect.errors import RetrievalError
 
@@ -19,6 +23,8 @@ from vwsfriend.model.refuel_session import RefuelSession
 from vwsfriend.model.vehicle import Vehicle
 from vwsfriend.model.settings import Settings, UnitOfLength, UnitOfTemperature
 from vwsfriend.model.journey import Journey
+from vwsfriend.model.geofence import Geofence
+from vwsfriend.model.location import Location
 
 from vwsfriend.util.location_util import locationFromLatLon, addCharger
 
@@ -33,6 +39,42 @@ class SettingsEditForm(FlaskForm):
     vwsfriend_url = StringField('URL where the VWsFriend installation is reachable', validators=[DataRequired()])
     locale = HiddenField('locale', validators=[Optional()])
     save = SubmitField('Save changes')
+
+
+class LocationEditForm(FlaskForm):
+    id_field = HiddenField('id', validators=[Optional()])
+    name_field = StringField('name', validators=[Optional()])
+    latitude = DecimalField('Position Latitude', places=10, validators=[Optional(), NumberRange(min=-90, max=90)])
+    longitude = DecimalField('Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
+    display_name = StringField('Display Name', validators=[Optional()])
+    amenity = StringField('Amenity', validators=[Optional()])
+    house_number = StringField('House Number', validators=[Optional()])
+    road = StringField('Road', validators=[Optional()])
+    neighbourhood = StringField('Neighbourhood', validators=[Optional()])
+    city = StringField('City', validators=[Optional()])
+    postcode = StringField('Postcode', validators=[Optional()])
+    county = StringField('County', validators=[Optional()])
+    country = StringField('Country', validators=[Optional()])
+    state = StringField('State', validators=[Optional()])
+    state_district = StringField('State district', validators=[Optional()])
+
+    save = SubmitField('Save location')
+    add = SubmitField('Add location')
+    delete = SubmitField('Delete location')
+
+
+class GeofenceEditForm(FlaskForm):
+    id = HiddenField('id', validators=[Optional()])
+    name = StringField('name', validators=[DataRequired()])
+    latitude = DecimalField('Position Latitude', places=10, validators=[DataRequired(), NumberRange(min=-90, max=90)])
+    longitude = DecimalField('Position Longitude', places=10, validators=[DataRequired(), NumberRange(min=-180, max=180)])
+    radius = DecimalField('Radius in meters', places=0, validators=[DataRequired(), NumberRange(min=1, max=1000)])
+    location = FormField(LocationEditForm, "Location")
+    charger_id = SelectField("Charger", validators=[Optional()])
+
+    save = SubmitField('Save geofence')
+    add = SubmitField('Add geofence')
+    delete = SubmitField('Delete geofence')
 
 
 class TripEditForm(FlaskForm):
@@ -106,6 +148,31 @@ class JourneyEditForm(FlaskForm):
     save = SubmitField('Save changes')
     add = SubmitField('Add journey')
     delete = SubmitField('Delete journey')
+
+
+class ChargerEditForm(FlaskForm):
+    id = HiddenField('id', validators=[Optional()])
+    name = StringField('Name', validators=[DataRequired()])
+    latitude = DecimalField('Position Latitude', places=10, validators=[DataRequired(), NumberRange(min=-90, max=90)])
+    longitude = DecimalField('Position Longitude', places=10, validators=[DataRequired(), NumberRange(min=-180, max=180)])
+    address = StringField('Address', validators=[Optional()])
+    max_power = DecimalField('Maximum Charge Power', places=1, validators=[Optional(), NumberRange(min=0, max=1000)])
+    num_spots = IntegerField('Number of Spots', validators=[Optional(), NumberRange(min=1)])
+    operator_id = SelectField("Operator", validators=[Optional()])
+
+    save = SubmitField('Save charger')
+    add = SubmitField('Add charger')
+    delete = SubmitField('Delete charger')
+
+
+class OperatorEditForm(FlaskForm):
+    id = HiddenField('id', validators=[Optional()])
+    name = StringField('Name', validators=[DataRequired()])
+    phone = StringField('Phone', validators=[Optional()])
+
+    save = SubmitField('Save operator')
+    add = SubmitField('Add operator')
+    delete = SubmitField('Delete operator')
 
 
 class BackupRestoreForm(FlaskForm):
@@ -282,7 +349,7 @@ def chargingSessionEdit():  # noqa: C901
             abort(404, f"Charging session with id {id} doesn't exist.")
 
     elif vin is None:
-        flash(message='You need to provide a vin to add a charging session', category='error')
+        abort(500, "You need to provide a vin to add a charging session")
     else:
         vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
         if vehicle is None:
@@ -304,12 +371,26 @@ def chargingSessionEdit():  # noqa: C901
             longitude = None
 
         if latitude is not None and longitude is not None:
-            chargers = sorted(current_app.weConnect.getChargingStations(round(latitude, 4), round(longitude, 4), searchRadius=500).values(),
+            chargers = sorted(current_app.weConnect.getChargingStations(round(latitude, 4), round(longitude, 4), searchRadius=150).values(),
                               key=lambda station: station.distance.value)
             choices = [(None, 'unknown')]
             for charger in chargers:
                 label = f'{charger.name.value} ({round(charger.distance.value)} m away)'
                 choices.append((charger.id.value, label))
+
+            customChargers = current_app.db.session.query(Charger).filter(Charger.custom).all()
+            positionCar = (latitude, longitude)
+            for charger in customChargers:
+                if charger.latitude is not None and charger.longitude is not None:
+                    positionCharger = (charger.latitude, charger.longitude)
+                    distanceToCar = haversine(positionCar, positionCharger, unit=Unit.METERS)
+                    if distanceToCar > 150:
+                        continue
+                else:
+                    distanceToCar = 0
+                label = f'{charger.name} (Custom, {round(distanceToCar)} m away))'
+                choices.append((charger.id, label))
+
             form.charger_id.choices = choices
         else:
             form.charger_id.choices = [(None, 'You need to first save the position of the charging session')]
@@ -361,12 +442,18 @@ def chargingSessionEdit():  # noqa: C901
                 chargingSession.charger = None
             else:
                 chargerAdded = False
-                for charger in chargers:
-                    if charger.id.value == form.charger_id.data:
-                        chargingSession.charger = addCharger(current_app.db.session, charger)
-                        chargerAdded = True
-                if not chargerAdded:
-                    flash(message='Charger not valid anymore', category='error')
+                if form.charger_id.data.startswith('custom_'):
+                    charger = current_app.db.session.query(Charger).filter(Charger.id == form.charger_id.data).first()
+                    if charger is None:
+                        flash(message='Charger not valid anymore', category='error')
+                    chargingSession.charger = charger
+                else:
+                    for charger in chargers:
+                        if charger.id.value == form.charger_id.data:
+                            chargingSession.charger = addCharger(current_app.db.session, charger)
+                            chargerAdded = True
+                    if not chargerAdded:
+                        flash(message='Charger not valid anymore', category='error')
 
         current_app.db.session.commit()
         flash(message=f'Successfully updated charging session {id}', category='error')
@@ -619,6 +706,300 @@ def journeyEdit():  # noqa: C901
                 form.end.data = datetime.utcfromtimestamp(int(tripend) / 1000)
 
     return render_template('database/journey_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/operator/edit', methods=['GET', 'POST'])  # noqa: C901
+def operatorEdit():  # noqa: C901
+    id = None
+
+    form = OperatorEditForm()
+
+    if request.args is not None:
+        id = request.args.get('id')
+    if id is None and form.id.data is not None:
+        id = form.id.data
+    operator = None
+
+    if id is not None:
+        operator = current_app.db.session.query(Operator).filter(Operator.id == id).first()
+
+        if operator is None:
+            abort(404, f"Operator with id {id} doesn't exist.")
+        elif operator.custom is False:
+            flash(message=f"Operator with id {id} is not a custom created operator and cannot be changed.")
+
+    if operator is not None and form.delete.data:
+        flash(message=f'Successfully deleted operator {id}', category='info')
+        with current_app.db.session.begin_nested():
+            current_app.db.session.delete(operator)
+        current_app.db.session.commit()
+        return render_template('database/operator_edit.html', current_app=current_app, form=None)
+
+    if operator is not None and form.save.data and form.validate_on_submit():
+        with current_app.db.session.begin_nested():
+            operator.name = form.name.data
+            operator.phone = form.phone.data
+
+        current_app.db.session.commit()
+        flash(message=f'Successfully updated operator {id}', category='info')
+
+    elif operator is None and form.add.data and form.validate_on_submit():
+        operator = Operator(id=None, name=form.name.data, phone=form.phone.data, custom=True)
+        operator.id = f'custom_{str(uuid.uuid4())}'
+
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(operator)
+        current_app.db.session.commit()
+        current_app.db.session.refresh(operator)
+        flash(message=f'Successfully added a new operator {operator.id}', category='info')
+
+    if operator is not None:
+        form.id.data = operator.id
+        form.name.data = operator.name
+        form.phone.data = operator.phone
+
+    return render_template('database/operator_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/charger/edit', methods=['GET', 'POST'])  # noqa: C901
+def chargerEdit():  # noqa: C901
+    id = None
+
+    form = ChargerEditForm()
+
+    if request.args is not None:
+        id = request.args.get('id')
+    if id is None and form.id.data is not None:
+        id = form.id.data
+    charger = None
+
+    if id is not None:
+        charger = current_app.db.session.query(Charger).filter(Charger.id == id).first()
+
+        if charger is None:
+            abort(404, f"Charger with id {id} doesn't exist.")
+        elif charger.custom is False:
+            flash(message=f"Charger with id {id} is not a custom created charger and cannot be changed.")
+
+    operators = current_app.db.session.query(Operator).filter(Charger.custom).all()
+    choices = [(None, 'unknown')]
+    for operator in operators:
+        label = f'{operator.name}'
+        choices.append((operator.id, label))
+    form.operator_id.choices = choices
+
+    if charger is not None and form.delete.data:
+        flash(message=f'Successfully deleted charger {id}', category='info')
+        with current_app.db.session.begin_nested():
+            current_app.db.session.delete(charger)
+        current_app.db.session.commit()
+        return render_template('database/charger_edit.html', current_app=current_app, form=None)
+
+    if charger is not None and form.save.data and form.validate_on_submit():
+        with current_app.db.session.begin_nested():
+            charger.name = form.name.data
+            charger.latitude = form.latitude.data
+            charger.longitude = form.longitude.data
+            charger.address = form.address.data
+            charger.max_power = form.max_power.data
+            charger.num_spots = form.num_spots.data
+            charger.operator_id = form.operator_id.data
+
+        current_app.db.session.commit()
+        flash(message=f'Successfully updated charger {id}', category='info')
+
+    elif charger is None and form.add.data and form.validate_on_submit():
+        charger = Charger(id=None, custom=True)
+        charger.id = f'custom_{str(uuid.uuid4())}'
+
+        charger.name = form.name.data
+        charger.latitude = form.latitude.data
+        charger.longitude = form.longitude.data
+        charger.address = form.address.data
+        charger.max_power = form.max_power.data
+        charger.num_spots = form.num_spots.data
+        charger.operator_id = form.operator_id.data
+
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(charger)
+        current_app.db.session.commit()
+        current_app.db.session.refresh(charger)
+        flash(message=f'Successfully added a new charger {charger.id}', category='info')
+
+    if charger is not None:
+        form.id.data = charger.id
+        form.name.data = charger.name
+        form.latitude.data = charger.latitude
+        form.longitude.data = charger.longitude
+        form.address.data = charger.address
+        form.max_power.data = charger.max_power
+        form.num_spots.data = charger.num_spots
+        form.operator_id.data = charger.operator_id
+
+    return render_template('database/charger_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/geofence/edit', methods=['GET', 'POST'])  # noqa: C901
+def geofenceEdit():  # noqa: C901
+    id = None
+
+    form = GeofenceEditForm()
+
+    if request.args is not None:
+        id = request.args.get('id')
+    if id is None and form.id.data is not None and form.id.data.isdigit():
+        id = form.id.data
+    geofence = None
+
+    if id is not None:
+        geofence = current_app.db.session.query(Geofence).filter(Geofence.id == id).first()
+
+        if geofence is None:
+            abort(404, f"Geofence with id {id} doesn't exist.")
+
+    if form.latitude.data is not None:
+        latitude = form.latitude.data
+    elif geofence is not None:
+        latitude = geofence.latitude
+    else:
+        latitude = None
+
+    if form.longitude.data is not None:
+        longitude = form.longitude.data
+    elif geofence is not None:
+        longitude = geofence.longitude
+    else:
+        longitude = None
+
+    if form.radius.data is not None:
+        radius = form.radius.data
+    elif geofence is not None:
+        radius = geofence.radius
+    else:
+        radius = 0
+
+    if latitude is not None and longitude is not None:
+        choices = [(None, 'unknown')]
+        try:
+            chargers = sorted(current_app.weConnect.getChargingStations(round(latitude, 4), round(longitude, 4), searchRadius=round(150 + radius)).values(),
+                              key=lambda station: station.distance.value)
+            for charger in chargers:
+                label = f'{charger.name.value} ({round(charger.distance.value)} m away)'
+                choices.append((charger.id.value, label))
+        except RetrievalError as e:
+            flash(message=f'Cannot retrieve chargers: {e}', category='error')
+            pass
+
+        customChargers = current_app.db.session.query(Charger).filter(Charger.custom).all()
+        positionCar = (latitude, longitude)
+        for charger in customChargers:
+            if charger.latitude is not None and charger.longitude is not None:
+                positionCharger = (charger.latitude, charger.longitude)
+                distanceToCar = haversine(positionCar, positionCharger, unit=Unit.METERS)
+                if distanceToCar > (150 + radius):
+                    continue
+            else:
+                distanceToCar = 0
+            label = f'{charger.name} (Custom, {round(distanceToCar)} m away))'
+            choices.append((charger.id, label))
+
+        form.charger_id.choices = choices
+    else:
+        form.charger_id.choices = [(None, 'You need to first save the position of the geofence')]
+
+    if geofence is not None and form.delete.data:
+        flash(message=f'Successfully deleted geofence {id}', category='info')
+        with current_app.db.session.begin_nested():
+            current_app.db.session.delete(geofence)
+        current_app.db.session.commit()
+        return render_template('database/geofence_edit.html', current_app=current_app, form=None)
+
+    if geofence is not None and form.save.data and form.validate_on_submit():
+        with current_app.db.session.begin_nested():
+            geofence.name = form.name.data
+            geofence.latitude = form.latitude.data
+            geofence.longitude = form.longitude.data
+            geofence.radius = form.radius.data
+            geofence.charger_id = form.charger_id.data
+            if form.location:
+                if geofence.location is None:
+                    geofence.location = Location()
+                    row = current_app.db.session.query(func.min(Location.osm_id).label("min_osm_id")).one()
+                    geofence.location.osm_id = (row.min_osm_id - 1) if row.min_osm_id is not None and row.min_osm_id < 0 else -1
+                    geofence.location.osm_type = 'VWsFriend custom'
+                geofence.location.latitude = form.latitude.data
+                geofence.location.longitude = form.longitude.data
+                geofence.location.display_name = form.location.display_name.data
+                geofence.location.name = form.name.data
+                geofence.location.amenity = form.location.amenity.data
+                geofence.location.house_number = form.location.house_number.data
+                geofence.location.road = form.location.road.data
+                geofence.location.neighbourhood = form.location.neighbourhood.data
+                geofence.location.city = form.location.city.data
+                geofence.location.postcode = form.location.postcode.data
+                geofence.location.county = form.location.county.data
+                geofence.location.country = form.location.country.data
+                geofence.location.state = form.location.state.data
+                geofence.location.state_district = form.location.state_district.data
+
+        current_app.db.session.commit()
+        flash(message=f'Successfully updated geofence {id}', category='info')
+
+    elif geofence is None and form.add.data and form.validate_on_submit():
+        geofence = Geofence(id=None)
+        geofence.name = form.name.data
+        geofence.latitude = form.latitude.data
+        geofence.longitude = form.longitude.data
+        geofence.radius = form.radius.data
+        geofence.location = form.location.data
+        geofence.charger_id = form.charger_id.data
+        if form.location.data:
+            geofence.location = Location()
+            row = current_app.db.session.query(func.min(Location.osm_id).label("min_osm_id")).one()
+            geofence.location.osm_id = (row.min_osm_id - 1) if row.min_osm_id is not None and row.min_osm_id < 0 else -1
+            geofence.location.osm_type = 'VWsFriend custom'
+            geofence.latitude = form.latitude.data
+            geofence.longitude = form.longitude.data
+            geofence.location.display_name = form.location.display_name.data
+            geofence.location.name = form.name.data
+            geofence.location.amenity = form.location.amenity.data
+            geofence.location.house_number = form.location.house_number.data
+            geofence.location.road = form.location.road.data
+            geofence.location.neighbourhood = form.location.neighbourhood.data
+            geofence.location.city = form.location.city.data
+            geofence.location.postcode = form.location.postcode.data
+            geofence.location.county = form.location.county.data
+            geofence.location.country = form.location.country.data
+            geofence.location.state = form.location.state.data
+            geofence.location.state_district = form.location.state_district.data
+
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(geofence)
+        current_app.db.session.commit()
+        current_app.db.session.refresh(geofence)
+        flash(message=f'Successfully added a new geofence {geofence.id}', category='info')
+
+    if geofence is not None:
+        form.id.data = geofence.id
+        form.name.data = geofence.name
+        form.latitude.data = geofence.latitude
+        form.longitude.data = geofence.longitude
+        form.radius.data = geofence.radius
+        form.charger_id.data = geofence.charger_id
+        if geofence.location is not None:
+            form.location.display_name.data = geofence.location.display_name
+            form.location.amenity.data = geofence.location.amenity
+            form.location.house_number.data = geofence.location.house_number
+            form.location.road.data = geofence.location.road
+            form.location.neighbourhood.data = geofence.location.neighbourhood
+            form.location.city.data = geofence.location.city
+            form.location.postcode.data = geofence.location.postcode
+            form.location.county.data = geofence.location.county
+            form.location.country.data = geofence.location.country
+            form.location.state.data = geofence.location.state
+            form.location.state_district.data = geofence.location.state_district
+
+    return render_template('database/geofence_edit.html', current_app=current_app, form=form)
 
 
 @bp.route('/backup', methods=['GET', 'POST'])  # noqa: C901

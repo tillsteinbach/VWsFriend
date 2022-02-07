@@ -4,6 +4,7 @@ from .charging_session import ChargingSession
 from .climatization import Climatization
 from .journey import Journey
 from .location import Location
+from .geofence import Geofence
 from .online import Online
 from .range import Range
 from .refuel_session import RefuelSession
