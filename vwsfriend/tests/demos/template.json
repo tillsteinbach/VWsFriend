@@ -181,8 +181,8 @@
     "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
         {
             "data": {
-                "latitude": 53.662387,
-                "longitude": 10.159876,
+                "lat": 53.662387,
+                "lon": 10.159876,
                 "carCapturedTimestamp": "2021-08-04T10:58:44Z"
             }
         },
