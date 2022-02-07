@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Versions{% endblock %}</h1>
+  <h1>{% block title %}About{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
+<p>VWsFriend is developed under the <a href="https://github.com/tillsteinbach/VWsFriend/blob/main/LICENSE">MIT</a> open-source license.</p>
+
+<h2>Donations</h1>
+<p>VWsFriend is free for everyone. If you think VWsFriend is usefull please consider donating through</p>
+<ul></ul>
+<li><a href="https://www.paypal.com/donate?hosted_button_id=2BVFF5GJ9SXAJ">PayPal</a></li>
+<li><a href="https://github.com/sponsors/tillsteinbach">GitHub Sponsors</a></li>
+</ul>
+<p>A big thanks to all sponsors for their support. With your contribution you make free software possible!</p>
+
+<h2>Versions</h1>
 <ul>
   {% for tool, version in g.versions.items() %}
   <li><strong>{{tool}}:</strong> {{version}}</li>
