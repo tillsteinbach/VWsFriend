@@ -123,7 +123,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         logLevel = min(len(LOG_LEVELS) - 1, max(logLevel + adjustment, 0))
 
     logging.basicConfig(level=LOG_LEVELS[logLevel], format=args.loggingFormat, datefmt=args.loggingDateFormat)
-    logging.getLogger("pyhap").setLevel(level="CRITICAL")
+    logging.getLogger("pyhap").setLevel(level=LOG_LEVELS[logLevel])
     if args.hideRepeatedLog:
         for handler in logging.root.handlers:
             handler.addFilter(DuplicateFilter())
