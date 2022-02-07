@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}{% if form and form.id.data %}Edit settings for {% else %}Add a new {% endif %}charger{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if form %}
+<div class="form-wrapper">
+  <form method="POST">
+      {{ form.csrf_token }}
+
+      {{ form.id }}
+
+      <fieldset class="form-field">
+        {{ form.name.label }}
+        {{ form.name }}
+        {% if form.name.errors %}
+          <ul class="errors">
+            {% for error in form.name.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.latitude.label }}
+        {{ form.latitude }}
+        {% if form.latitude.errors %}
+          <ul class="errors">
+            {% for error in form.latitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.longitude.label }}
+        {{ form.longitude }}
+        {% if form.longitude.errors %}
+          <ul class="errors">
+            {% for error in form.longitude.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.address.label }}
+        {{ form.address }}
+        {% if form.address.errors %}
+          <ul class="errors">
+            {% for error in form.address.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.max_power.label }}
+        {{ form.max_power }}
+        {% if form.max_power.errors %}
+          <ul class="errors">
+            {% for error in form.max_power.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.num_spots.label }}
+        {{ form.num_spots }}
+        {% if form.num_spots.errors %}
+          <ul class="errors">
+            {% for error in form.num_spots.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.operator_id.label }}
+        {{ form.operator_id }}
+        {% if form.operator_id.errors %}
+          <ul class="errors">
+            {% for error in form.operator_id.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        Add new operators <a href="{{ url_for('database.operatorEdit') }}">here</a>
+      </fieldset>
+
+      <div id="positions" style="height:400px"></div>
+      <script>
+        const lat = {{ form.latitude.data or '0' }}
+        const lon = {{ form.longitude.data or '0'}}
+        var zoomlevel = 0
+
+        if(lat != 0 && lon != 0){
+          zoomlevel = 20
+        }
+
+        var startposition = L.latLng([lat, lon]);
+        var map = L.map('positions').setView(startposition, zoomlevel);
+        
+        const osm = new L.TileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 }
+          );
+
+        const hybrid = new L.TileLayer(
+            "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
+            { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+          );
+
+        new L.Control.Layers({ OSM: osm, Hybrid: hybrid }).addTo(map);
+        map.addLayer(osm);
+
+
+        var position = L.marker([lat, lon], {draggable:'false'}).addTo(map);
+
+        L.Control.geocoder({defaultMarkGeocode: false}).on('markgeocode', function(e) {
+          map.fitBounds(e.geocode.bbox);
+          position.setLatLng(e.geocode.center)
+        }).addTo(map);
+
+        
+        position.on('move', function(e){
+          if(e.latlng.lat != 0 && e.latlng.lng != 0){
+            element = document.getElementById('latitude');
+            element.value = e.latlng.lat;
+            element = document.getElementById('longitude');
+            element.value = e.latlng.lng;
+            position = e.latlng
+            zoomlevel = 20
+          }
+        });
+
+        map.on('click', function(e){
+          var coord = e.latlng;
+          position.setLatLng(coord); 
+          map.panTo(coord)
+        });
+      </script>
+      {% if form.id.data %}
+      {{ form.save }}
+      {% else %}
+      {{ form.add }}
+      {% endif %}
+      {{ form.delete }}
+
+  </form>
+</div>
+{% endif %}
+{% endblock %}
