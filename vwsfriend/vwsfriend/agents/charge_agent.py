@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
-from vwsfriend.util.location_util import locationFromLatLon, chargerFromLatLon
+from vwsfriend.util.location_util import locationFromLatLonWithGeofence, chargerFromLatLonWithGeofence
 from vwsfriend.privacy import Privacy
 
 from weconnect.addressable import AddressableLeaf
@@ -206,11 +206,12 @@ class ChargeAgent():
                     self.chargingSession.position_latitude = parkingPosition.latitude.value
                     self.chargingSession.position_longitude = parkingPosition.longitude.value
                     if self.chargingSession.location is None:
-                        self.chargingSession.location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                        self.chargingSession.location = locationFromLatLonWithGeofence(self.session, parkingPosition.latitude.value,
+                                                                                       parkingPosition.longitude.value)
                     if self.chargingSession.charger is None:
-                        self.chargingSession.charger = chargerFromLatLon(weConnect=self.vehicle.weConnectVehicle.weConnect, session=self.session,
-                                                                         latitude=round(parkingPosition.latitude.value, 4),
-                                                                         longitude=round(parkingPosition.longitude.value, 4), searchRadius=100)
+                        self.chargingSession.charger = chargerFromLatLonWithGeofence(weConnect=self.vehicle.weConnectVehicle.weConnect, session=self.session,
+                                                                                     latitude=round(parkingPosition.latitude.value, 4),
+                                                                                     longitude=round(parkingPosition.longitude.value, 4), searchRadius=100)
 
     def updateMileage(self):
         if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus'):

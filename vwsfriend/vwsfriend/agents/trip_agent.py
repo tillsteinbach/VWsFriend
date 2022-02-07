@@ -6,7 +6,7 @@ from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.trip import Trip
-from vwsfriend.util.location_util import locationFromLatLon
+from vwsfriend.util.location_util import locationFromLatLonWithGeofence
 from vwsfriend.privacy import Privacy
 
 from weconnect.addressable import AddressableLeaf, AddressableAttribute
@@ -116,7 +116,7 @@ class TripAgent():
                 startPositionLongitude = None
             self.trip = Trip(self.vehicle, time, startPositionLatitude, startPositionLongitude, None, None)
             if Privacy.NO_LOCATIONS not in self.privacy:
-                self.trip.start_location = locationFromLatLon(self.session, startPositionLatitude, startPositionLongitude)
+                self.trip.start_location = locationFromLatLonWithGeofence(self.session, startPositionLatitude, startPositionLongitude)
 
             if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
                     and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
@@ -158,7 +158,8 @@ class TripAgent():
                             and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
                         self.trip.destination_position_latitude = parkingPosition.latitude.value
                         self.trip.destination_position_longitude = parkingPosition.longitude.value
-                        self.trip.destination_location = locationFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                        self.trip.destination_location = locationFromLatLonWithGeofence(self.session, parkingPosition.latitude.value,
+                                                                                        parkingPosition.longitude.value)
 
                 if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
                         and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
