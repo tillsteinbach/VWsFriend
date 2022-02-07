@@ -214,6 +214,7 @@ def settingsEdit():
 
 
 @bp.route('/trips/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def tripEdit():  # noqa: C901
     id = None
     vin = None
@@ -328,6 +329,7 @@ def tripEdit():  # noqa: C901
 
 
 @bp.route('/charging-session/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def chargingSessionEdit():  # noqa: C901
     id = None
     vin = None
@@ -529,6 +531,7 @@ def chargingSessionEdit():  # noqa: C901
 
 
 @bp.route('/refuel-session/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def refuelSessionEdit():  # noqa: C901
     id = None
     vin = None
@@ -627,6 +630,7 @@ def refuelSessionEdit():  # noqa: C901
 
 
 @bp.route('/journey/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def journeyEdit():  # noqa: C901
     id = None
     vin = None
@@ -709,6 +713,7 @@ def journeyEdit():  # noqa: C901
 
 
 @bp.route('/operator/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def operatorEdit():  # noqa: C901
     id = None
 
@@ -762,6 +767,7 @@ def operatorEdit():  # noqa: C901
 
 
 @bp.route('/charger/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def chargerEdit():  # noqa: C901
     id = None
 
@@ -840,6 +846,7 @@ def chargerEdit():  # noqa: C901
 
 
 @bp.route('/geofence/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def geofenceEdit():  # noqa: C901
     id = None
 
@@ -1003,6 +1010,7 @@ def geofenceEdit():  # noqa: C901
 
 
 @bp.route('/backup', methods=['GET', 'POST'])  # noqa: C901
+@login_required
 def backup():  # noqa: C901
     form = BackupRestoreForm()
 
