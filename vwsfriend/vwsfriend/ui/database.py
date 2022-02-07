@@ -821,7 +821,13 @@ def chargerEdit():  # noqa: C901
             charger.address = form.address.data
             charger.max_power = form.max_power.data
             charger.num_spots = form.num_spots.data
-            charger.operator_id = form.operator_id.data
+            if form.operator_id.data is None or form.operator_id.data == 'None':
+                charger.operator = None
+            else:
+                operator = current_app.db.session.query(Operator).filter(Operator.id == form.operator_id.data).first()
+                if operator is None:
+                    flash(message='Operator not valid anymore', category='error')
+                charger.operator = operator
 
         current_app.db.session.commit()
         flash(message=f'Successfully updated charger {id}', category='info')
@@ -837,6 +843,13 @@ def chargerEdit():  # noqa: C901
         charger.max_power = form.max_power.data
         charger.num_spots = form.num_spots.data
         charger.operator_id = form.operator_id.data
+        if form.operator_id.data is None or form.operator_id.data == 'None':
+            charger.operator = None
+        else:
+            operator = current_app.db.session.query(Operator).filter(Operator.id == form.operator_id.data).first()
+            if operator is None:
+                flash(message='Operator not valid anymore', category='error')
+            charger.operator = operator
 
         with current_app.db.session.begin_nested():
             current_app.db.session.add(charger)
