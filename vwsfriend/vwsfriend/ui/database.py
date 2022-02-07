@@ -733,7 +733,7 @@ def operatorEdit():  # noqa: C901
 
     if request.args is not None:
         id = request.args.get('id')
-    if id is None and form.id.data is not None:
+    if id is None and form.id.data is not None and form.id.data.isdigit():
         id = form.id.data
     operator = None
 
@@ -787,7 +787,7 @@ def chargerEdit():  # noqa: C901
 
     if request.args is not None:
         id = request.args.get('id')
-    if id is None and form.id.data is not None:
+    if id is None and form.id.data is not None and len(form.id.data) > 0:
         id = form.id.data
     charger = None
 
