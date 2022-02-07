@@ -484,7 +484,19 @@ def chargingSessionEdit():  # noqa: C901
         if form.charger_id.data is None or form.charger_id.data == 'None':
             chargingSession.charger = None
         else:
-            chargingSession.charger_id = form.charger_id.data
+            chargerAdded = False
+            if form.charger_id.data.startswith('custom_'):
+                charger = current_app.db.session.query(Charger).filter(Charger.id == form.charger_id.data).first()
+                if charger is None:
+                    flash(message='Charger not valid anymore', category='error')
+                chargingSession.charger = charger
+            else:
+                for charger in chargers:
+                    if charger.id.value == form.charger_id.data:
+                        chargingSession.charger = addCharger(current_app.db.session, charger)
+                        chargerAdded = True
+                if not chargerAdded:
+                    flash(message='Charger not valid anymore', category='error')
         chargingSession.realCharged_kWh = form.realCharged_kWh.data
         chargingSession.realCost_ct = form.realCost_ct.data
 
@@ -927,7 +939,22 @@ def geofenceEdit():  # noqa: C901
             geofence.latitude = form.latitude.data
             geofence.longitude = form.longitude.data
             geofence.radius = form.radius.data
-            geofence.charger_id = form.charger_id.data
+            if form.charger_id.data is None or form.charger_id.data == 'None':
+                geofence.charger = None
+            else:
+                chargerAdded = False
+                if form.charger_id.data.startswith('custom_'):
+                    charger = current_app.db.session.query(Charger).filter(Charger.id == form.charger_id.data).first()
+                    if charger is None:
+                        flash(message='Custom charger not valid anymore', category='error')
+                    geofence.charger = charger
+                else:
+                    for charger in chargers:
+                        if charger.id.value == form.charger_id.data:
+                            geofence.charger = addCharger(current_app.db.session, charger)
+                            chargerAdded = True
+                    if not chargerAdded:
+                        flash(message='Charger not valid anymore', category='error')
             if form.location:
                 if geofence.location is None:
                     geofence.location = Location()
@@ -959,7 +986,22 @@ def geofenceEdit():  # noqa: C901
         geofence.longitude = form.longitude.data
         geofence.radius = form.radius.data
         geofence.location = form.location.data
-        geofence.charger_id = form.charger_id.data
+        if form.charger_id.data is None or form.charger_id.data == 'None':
+            geofence.charger = None
+        else:
+            chargerAdded = False
+            if form.charger_id.data.startswith('custom_'):
+                charger = current_app.db.session.query(Charger).filter(Charger.id == form.charger_id.data).first()
+                if charger is None:
+                    flash(message='Custom charger not valid anymore', category='error')
+                geofence.charger = charger
+            else:
+                for charger in chargers:
+                    if charger.id.value == form.charger_id.data:
+                        geofence.charger = addCharger(current_app.db.session, charger)
+                        chargerAdded = True
+                if not chargerAdded:
+                    flash(message='Charger not valid anymore', category='error')
         if form.location.data:
             geofence.location = Location()
             row = current_app.db.session.query(func.min(Location.osm_id).label("min_osm_id")).one()
