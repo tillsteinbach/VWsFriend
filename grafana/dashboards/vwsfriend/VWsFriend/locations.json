@@ -23,7 +23,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644267493056,
+  "iteration": 1644310841258,
   "links": [
     {
       "asDropdown": false,
@@ -758,11 +758,15 @@
       "pluginVersion": "8.3.4",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  max(\"endDate\") AS \"Date\",\n  COALESCE(\"display_name\", CONCAT_WS(', ', COALESCE(name, nullif(CONCAT_WS(' ', road, house_number), '')), city)) AS \"Location\"\nFROM trips\nRIGHT JOIN locations ON trips.destination_location_id = locations.osm_id\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"display_name\", \"destination_location_id\", name, road, house_number, city\nORDER BY \"Date\" DESC\nLIMIT 20",
+          "rawSql": "SELECT\n  max(\"endDate\") AS \"Date\",\n  COALESCE(\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', name, amenity), nullif(CONCAT_WS(' ', road, house_number), '')), neighbourhood, city, postcode, country)) AS \"Location\"\nFROM trips\nRIGHT JOIN locations ON trips.destination_location_id = locations.osm_id\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"display_name\", \"destination_location_id\", name, amenity, road, house_number, neighbourhood, city, postcode, country\nORDER BY \"Date\" DESC\nLIMIT 20",
           "refId": "A",
           "select": [
             [
@@ -923,7 +927,10 @@
   "templating": {
     "list": [
       {
-        "datasource": "VWsFriend",
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,
