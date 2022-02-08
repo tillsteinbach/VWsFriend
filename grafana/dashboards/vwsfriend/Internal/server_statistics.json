@@ -19,13 +19,12 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "links": [],
   "liveNow": true,
   "panels": [
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -70,7 +69,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -105,7 +104,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -164,8 +162,6 @@
         "y": 6
       },
       "id": 2,
-      "interval": null,
-      "maxDataPoints": null,
       "options": {
         "legend": {
           "calcs": [
@@ -211,13 +207,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Server Response Time",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -322,7 +315,7 @@
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 30,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "internal"
@@ -338,5 +331,6 @@
   "timezone": "",
   "title": "Server Statistics",
   "uid": "Inmicrv7z",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }

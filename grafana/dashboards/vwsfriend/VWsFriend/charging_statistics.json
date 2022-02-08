@@ -22,9 +22,8 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1634138995697,
+  "iteration": 1644318350464,
   "links": [
     {
       "asDropdown": false,
@@ -80,7 +79,6 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -125,7 +123,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -160,7 +158,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -202,7 +199,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -237,7 +234,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -280,7 +276,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -315,7 +311,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -360,7 +355,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -395,7 +390,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -487,9 +481,7 @@
       },
       "circleSizeAbsoluteEnabled": false,
       "circleSizeAbsoluteFactor": 1,
-      "clickthroughOptions": {
-        "windowName": null
-      },
+      "clickthroughOptions": {},
       "clickthroughUrl": "",
       "colorMode": "threshold",
       "colors": [
@@ -500,16 +492,11 @@
         "#F2495C"
       ],
       "customAttribution": false,
-      "customAttributionText": null,
-      "datasource": null,
       "decimals": 2,
       "doubleClickZoom": true,
       "dragging": true,
       "enableOverlay": false,
       "enableReloadOverlay": false,
-      "esGeoPoint": null,
-      "esLink": null,
-      "esLocationName": null,
       "esMetric": "Count",
       "formatOmitEmptyValue": false,
       "gridPos": {
@@ -526,15 +513,12 @@
       "ignoreEscapeKey": false,
       "ignoreInvalidGeohashValues": false,
       "initialZoom": 1,
-      "legendContainerSelector": null,
       "locationData": "table",
       "mapCenter": "(0°, 0°)",
       "mapCenterLatitude": 0,
       "mapCenterLongitude": 0,
       "mapFitData": true,
-      "mapZoomByRadius": null,
       "maxDataPoints": 1,
-      "maximumZoom": null,
       "mouseWheelZoom": true,
       "overlayOpacity": 0.5,
       "overlayRangeLatitude": "0,10",
@@ -547,7 +531,6 @@
       "tableQueryOptions": {
         "geohashField": "geohash",
         "labelField": "Charger",
-        "labelLocationKeyField": null,
         "latitudeField": "final_latitude",
         "linkField": "",
         "longitudeField": "final_longitude",
@@ -592,7 +575,6 @@
       "valueName": "total"
     },
     {
-      "datasource": null,
       "description": "",
       "gridPos": {
         "h": 8,
@@ -652,11 +634,9 @@
           {
             "mapping": {
               "color": "Number",
-              "size": null,
               "text": "Text",
               "x": "Hour",
-              "y": "Number",
-              "z": null
+              "y": "Number"
             },
             "name": "Distribution",
             "settings": {
@@ -728,7 +708,6 @@
       "version": 1
     },
     {
-      "datasource": null,
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -783,11 +762,9 @@
           {
             "mapping": {
               "color": "soc",
-              "size": null,
               "text": "maxText",
               "x": "soc",
-              "y": "max",
-              "z": null
+              "y": "max"
             },
             "name": "Max",
             "settings": {
@@ -823,11 +800,9 @@
           {
             "mapping": {
               "color": "soc",
-              "size": null,
               "text": "avgText",
               "x": "soc",
-              "y": "avg",
-              "z": null
+              "y": "avg"
             },
             "name": "Average",
             "settings": {
@@ -863,11 +838,9 @@
           {
             "mapping": {
               "color": "soc",
-              "size": null,
               "text": "minText",
               "x": "soc",
-              "y": "min",
-              "z": null
+              "y": "min"
             },
             "name": "Min",
             "settings": {
@@ -953,7 +926,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 31,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -961,11 +934,12 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "datasource": "VWsFriend",
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Car",
@@ -992,5 +966,6 @@
   "timezone": "",
   "title": "Charging Statistics",
   "uid": "iM0RIRn7z",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
