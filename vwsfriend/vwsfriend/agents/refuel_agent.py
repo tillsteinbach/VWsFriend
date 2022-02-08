@@ -3,7 +3,7 @@ import logging
 from sqlalchemy.exc import IntegrityError
 
 from vwsfriend.model.refuel_session import RefuelSession
-from vwsfriend.util.location_util import locationFromLatLonWithGeofence
+from vwsfriend.util.location_util import locationFromLatLonWithGeofence, amenityFromLatLon
 from vwsfriend.privacy import Privacy
 
 from weconnect.addressable import AddressableLeaf, AddressableAttribute
@@ -78,10 +78,10 @@ class RefuelAgent():
                                 and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
                             position_latitude = parkingPosition.latitude.value
                             position_longitude = parkingPosition.longitude.value
-                            location = locationFromLatLonWithGeofence(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value)
+                            location = amenityFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value, 150, 'fuel', withFallback=True)
                     if position_latitude is None and self.lastPosition is not None and (self.lastPosition[0] > (element.value - timedelta(minutes=15))):
                         _, position_latitude, position_longitude = self.lastPosition
-                        location = locationFromLatLonWithGeofence(self.session, position_latitude, position_longitude)
+                        location = amenityFromLatLon(self.session, parkingPosition.latitude.value, parkingPosition.longitude.value, 150, 'fuel', withFallback=True)
 
                 # Refuel event took place (as the car somethimes finds one or two percent of fuel somewhere lets give a 5 percent margin)
                 if self.primary_currentSOC_pct is not None and ((current_primary_currentSOC_pct - 5) > self.primary_currentSOC_pct):
