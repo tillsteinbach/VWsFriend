@@ -45,50 +45,50 @@ class Location(Base):
             if 'address' in jsonDict and jsonDict['address'] is not None:
                 address = jsonDict['address']
 
-            if 'amenity' in address and address['amenity'] is not None:
-                self.amenity = address['amenity']
+                if 'amenity' in address and address['amenity'] is not None:
+                    self.amenity = address['amenity']
 
-            for attribute in ['house_number', 'street_number']:
-                if attribute in address and address[attribute] is not None:
-                    self.house_number = address[attribute]
-                    break
+                for attribute in ['house_number', 'street_number']:
+                    if attribute in address and address[attribute] is not None:
+                        self.house_number = address[attribute]
+                        break
 
-            for attribute in ['road', 'footway', 'street', 'street_name', 'residential', 'path', 'pedestrian', 'road_reference', 'road_reference_intl',
-                                'square', 'place']:
-                if attribute in address and address[attribute] is not None:
-                    self.road = address[attribute]
-                    break
+                for attribute in ['road', 'footway', 'street', 'street_name', 'residential', 'path', 'pedestrian', 'road_reference', 'road_reference_intl',
+                                  'square', 'place']:
+                    if attribute in address and address[attribute] is not None:
+                        self.road = address[attribute]
+                        break
 
-            for attribute in ['neighbourhood', 'suburb', 'city_district', 'district', 'quarter', 'borough', 'city_block', 'residential', 'commercial',
-                                'industrial', 'houses', 'subdistrict', 'subdivision', 'ward']:
-                if attribute in address and address[attribute] is not None:
-                    self.neighbourhood = address[attribute]
-                    break
+                for attribute in ['neighbourhood', 'suburb', 'city_district', 'district', 'quarter', 'borough', 'city_block', 'residential', 'commercial',
+                                  'industrial', 'houses', 'subdistrict', 'subdivision', 'ward']:
+                    if attribute in address and address[attribute] is not None:
+                        self.neighbourhood = address[attribute]
+                        break
 
-            for attribute in ['city', 'town', 'township']:
-                if attribute in address and address[attribute] is not None:
-                    self.city = address[attribute]
-                    break
+                for attribute in ['city', 'town', 'township']:
+                    if attribute in address and address[attribute] is not None:
+                        self.city = address[attribute]
+                        break
 
-            for attribute in ['postcode', 'partial_postcode']:
-                if attribute in address and address[attribute] is not None:
-                    self.postcode = address[attribute]
-                    break
+                for attribute in ['postcode', 'partial_postcode']:
+                    if attribute in address and address[attribute] is not None:
+                        self.postcode = address[attribute]
+                        break
 
-            for attribute in ['county', 'county_code', 'department']:
-                if attribute in address and address[attribute] is not None:
-                    self.county = address[attribute]
-                    break
+                for attribute in ['county', 'county_code', 'department']:
+                    if attribute in address and address[attribute] is not None:
+                        self.county = address[attribute]
+                        break
 
-            for attribute in ['country', 'country_name']:
-                if attribute in address and address[attribute] is not None:
-                    self.country = address[attribute]
-                    break
+                for attribute in ['country', 'country_name']:
+                    if attribute in address and address[attribute] is not None:
+                        self.country = address[attribute]
+                        break
 
-            for attribute in ['state', 'province', 'state_code']:
-                if attribute in address and address[attribute] is not None:
-                    self.state = address[attribute]
-                    break
+                for attribute in ['state', 'province', 'state_code']:
+                    if attribute in address and address[attribute] is not None:
+                        self.state = address[attribute]
+                        break
 
             if 'state_district' in jsonDict and jsonDict['state_district'] is not None:
                 self.state_district = jsonDict['state_district']
