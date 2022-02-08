@@ -4,6 +4,7 @@ apiVersion: 1
 datasources:
   - name: VWsFriend
     orgId: 1
+    uid: P2EF847825A020B66
     type: postgres
     access: proxy
     database: $DB_NAME
