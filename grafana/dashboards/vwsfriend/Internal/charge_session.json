@@ -20,9 +20,8 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1637661311317,
+  "iteration": 1644312073077,
   "links": [
     {
       "asDropdown": false,
@@ -66,7 +65,10 @@
   "liveNow": true,
   "panels": [
     {
-      "datasource": "VWsFriend",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -254,13 +256,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Battery Level",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -310,7 +309,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -345,7 +344,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -492,13 +490,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Charging",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -650,7 +645,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -685,7 +680,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -730,6 +724,13 @@
         "y": 14
       },
       "id": 14,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Edit Charger",
+          "url": "${vwsfriend_url}/database/charger/edit?id=${charger_id}"
+        }
+      ],
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -748,7 +749,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -784,7 +785,6 @@
     },
     {
       "autoZoom": true,
-      "datasource": null,
       "defaultLayer": "OpenStreetMap",
       "gridPos": {
         "h": 13,
@@ -861,7 +861,6 @@
       "type": "pr0ps-trackmap-panel"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -911,7 +910,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -947,7 +946,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 32,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "internal"
@@ -955,15 +954,7 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
-        "description": null,
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "id",
         "options": [
           {
@@ -977,15 +968,7 @@
         "type": "textbox"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
-        "description": null,
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "VIN",
         "options": [
           {
@@ -999,14 +982,9 @@
         "type": "textbox"
       },
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "vwsfriend_url",
         "options": [],
@@ -1016,14 +994,31 @@
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
+      },
+      {
+        "definition": "SELECT charger_id FROM charging_sessions WHERE charging_sessions.id = $id",
+        "description": "ID of the sessions charger",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "charger_id",
+        "options": [],
+        "query": "SELECT charger_id FROM charging_sessions WHERE charging_sessions.id = $id",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
+  "time": {},
   "timepicker": {
     "hidden": true
   },
   "timezone": "",
   "title": "Charge Session",
   "uid": "5rkOB0G7z",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
