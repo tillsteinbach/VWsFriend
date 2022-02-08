@@ -4,6 +4,7 @@ apiVersion: 1
 datasources:
   - name: VWsFriend Live
     orgId: 1
+    uid: P36D08C1A0297C737
     type: marcusolsson-json-datasource
     access: proxy
     url: http://$VWSFRIEND_HOSTNAME:$VWSFRIEND_PORT/status/json
