@@ -20,10 +20,9 @@
   },
   "description": "",
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 17,
-  "iteration": 1631277112050,
+  "iteration": 1644318588413,
   "links": [
     {
       "asDropdown": false,
@@ -79,7 +78,6 @@
   "liveNow": true,
   "panels": [
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -263,7 +261,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 30,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -271,11 +269,8 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Car",
@@ -302,5 +297,6 @@
   "timezone": "",
   "title": "Mileage",
   "uid": "a8cyhdS7z",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }

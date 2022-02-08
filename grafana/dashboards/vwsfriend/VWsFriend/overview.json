@@ -45,9 +45,8 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1637659941933,
+  "iteration": 1644318119733,
   "links": [
     {
       "asDropdown": true,
@@ -67,7 +66,9 @@
   "liveNow": true,
   "panels": [
     {
-      "datasource": "",
+      "datasource": {
+        "uid": ""
+      },
       "description": "",
       "gridPos": {
         "h": 8,
@@ -80,12 +81,15 @@
         "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
         "mode": "html"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "title": "$VIN",
       "type": "text"
     },
     {
-      "datasource": "VWsFriend",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -132,7 +136,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -185,7 +189,10 @@
       "type": "gauge"
     },
     {
-      "datasource": "VWsFriend",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -367,13 +374,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Battery Level",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -435,7 +439,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "alias": "Car is online",
@@ -468,13 +472,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Car Online State",
       "type": "stat"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -517,7 +518,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "alias": "Last connection",
@@ -555,13 +556,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Last Data from Car",
       "type": "stat"
     },
     {
-      "datasource": "VWsFriend",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -611,7 +613,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -664,7 +666,6 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -706,7 +707,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -747,7 +748,10 @@
       "type": "gauge"
     },
     {
-      "datasource": "VWsFriend",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1107,13 +1111,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Levels & Range",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1159,7 +1160,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -1200,7 +1201,6 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1242,7 +1242,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -1283,7 +1283,6 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1519,13 +1518,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Consumption & Range extrapolated to 100% SoC",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1767,13 +1763,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Efficiency",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1921,13 +1914,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Charging",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -2140,14 +2130,12 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "States",
       "type": "state-timeline"
     }
   ],
   "refresh": false,
-  "schemaVersion": 32,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -2155,11 +2143,12 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "datasource": "VWsFriend",
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Car",
@@ -2177,14 +2166,9 @@
         "useTags": false
       },
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "vwsfriend_url",
         "options": [],
@@ -2205,5 +2189,6 @@
   "timezone": "",
   "title": "Car Overview",
   "uid": "b0WnuNMnk",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }

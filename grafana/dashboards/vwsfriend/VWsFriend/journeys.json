@@ -20,9 +20,9 @@
   },
   "description": "",
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1634049981391,
+  "iteration": 1644318492874,
   "links": [
     {
       "asDropdown": false,
@@ -63,16 +63,15 @@
       "url": ""
     }
   ],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "fixed"
           },
           "custom": {
-            "align": null,
             "displayMode": "auto",
             "filterable": false
           },
@@ -158,9 +157,16 @@
       },
       "id": 2,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
-      "pluginVersion": "8.1.3",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -197,7 +203,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 30,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -205,11 +211,8 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Car",
@@ -227,14 +230,9 @@
         "useTags": false
       },
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "vwsfriend_url",
         "options": [],
@@ -257,5 +255,6 @@
   "timezone": "",
   "title": "Journeys",
   "uid": "HgGpCrD7k",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
