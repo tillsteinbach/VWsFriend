@@ -21,9 +21,9 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1631103640181,
+  "iteration": 1644267493056,
   "links": [
     {
       "asDropdown": false,
@@ -76,9 +76,9 @@
       "url": ""
     }
   ],
+  "liveNow": false,
   "panels": [
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -117,7 +117,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -152,7 +152,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -197,7 +196,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -232,7 +231,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -277,7 +275,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -312,7 +310,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -357,7 +354,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -392,7 +389,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -452,9 +448,16 @@
       },
       "id": 9,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -489,7 +492,6 @@
       "type": "table"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -549,9 +551,16 @@
       },
       "id": 7,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -586,7 +595,6 @@
       "type": "table"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -646,9 +654,16 @@
       },
       "id": 8,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -683,7 +698,6 @@
       "type": "table"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -726,22 +740,29 @@
       },
       "gridPos": {
         "h": 13,
-        "w": 24,
+        "w": 20,
         "x": 0,
         "y": 15
       },
       "id": 11,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
-      "pluginVersion": "8.1.0",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  max(\"endDate\") AS \"Date\",\n  \"display_name\" AS \"Location\"\nFROM trips\nRIGHT JOIN locations ON trips.destination_location_id = locations.osm_id\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"display_name\", \"destination_location_id\"\nORDER BY \"Date\" DESC\nLIMIT 20",
+          "rawSql": "SELECT\n  max(\"endDate\") AS \"Date\",\n  COALESCE(\"display_name\", CONCAT_WS(', ', COALESCE(name, nullif(CONCAT_WS(' ', road, house_number), '')), city)) AS \"Location\"\nFROM trips\nRIGHT JOIN locations ON trips.destination_location_id = locations.osm_id\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"display_name\", \"destination_location_id\", name, road, house_number, city\nORDER BY \"Date\" DESC\nLIMIT 20",
           "refId": "A",
           "select": [
             [
@@ -767,10 +788,134 @@
       ],
       "title": "Last visited",
       "type": "table"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Edit"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 40
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Edit the Geofence",
+                    "url": "${vwsfriend_url}/database/geofence/edit?id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "id"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 4,
+        "x": 20,
+        "y": 15
+      },
+      "id": 13,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add new geofence",
+          "url": "${vwsfriend_url}/database/geofence/edit"
+        }
+      ],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  geofences.name as \"Geofence\",\n  '⚙' AS \"Edit\",\n  id\nFROM geofences\nORDER BY geofences.id ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"maximumChargePower_kW\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Geofences",
+      "type": "table"
     }
   ],
   "refresh": "",
-  "schemaVersion": 30,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -778,11 +923,9 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "datasource": "VWsFriend",
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Car",
@@ -798,6 +941,20 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "vwsfriend_url",
+        "options": [],
+        "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
@@ -809,5 +966,6 @@
   "timezone": "",
   "title": "Locations",
   "uid": "I3w91jGnz",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
