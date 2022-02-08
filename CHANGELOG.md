@@ -2,14 +2,20 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+***Warning the next update requires you to update your docker-compse.yml file! You can already do this today to be ready for automated updates!***
 ### Added
 - Passwort protection for UI
+- Geofences allow to specify areas that are always resolved to a specific location and/or charger
+- Chargers that are not known can be added
 - /json endpoint to receive data in json format
 - Added status fail_charge_plug_not_connected
 
 ### Changed
+- VWsFriend will now more reliably find a gas station when the car is being refueled.
 - Refactors the OAuth procedure
+- More agressively ask for changing the default password
 - Updated API to 0.36.0
+- Updated several dependencies
 
 ## [0.14.2] - 2022-02-04
 ### Fixed
