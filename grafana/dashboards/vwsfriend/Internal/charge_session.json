@@ -954,6 +954,11 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
         "hide": 2,
         "name": "id",
         "options": [
@@ -968,6 +973,11 @@
         "type": "textbox"
       },
       {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
         "hide": 2,
         "name": "VIN",
         "options": [
