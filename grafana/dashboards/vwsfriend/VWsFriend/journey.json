@@ -21,9 +21,8 @@
   "description": "",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1637660971496,
+  "iteration": 1644321217597,
   "links": [
     {
       "asDropdown": false,
@@ -80,7 +79,6 @@
   "panels": [
     {
       "autoZoom": true,
-      "datasource": null,
       "defaultLayer": "OpenStreetMap",
       "gridPos": {
         "h": 15,
@@ -157,7 +155,6 @@
       "type": "pr0ps-trackmap-panel"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -256,7 +253,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -291,7 +288,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -425,7 +421,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -462,7 +458,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -544,7 +539,6 @@
       "type": "piechart"
     },
     {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -645,7 +639,8 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(\nSELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\"::TEXT AS \"State\"\nFROM charges\nWHERE\n  (\"chargingState\" = 'CHARGING' OR \"chargingState\" = 'OFF' OR \"chargingState\" = 'READY_FOR_CHARGING' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_CONSERVATION' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING') AND\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"startDate\" AS time,\n  'DRIVING' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"endDate\" AS time,\n  'OFF' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  vehicle_vin = '$VIN'\n)\nORDER BY 1  ","refId": "A",
+          "rawSql": "(\nSELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\"::TEXT AS \"State\"\nFROM charges\nWHERE\n  (\"chargingState\" = 'CHARGING' OR \"chargingState\" = 'OFF' OR \"chargingState\" = 'READY_FOR_CHARGING' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_CONSERVATION' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING') AND\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"startDate\" AS time,\n  'DRIVING' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"endDate\" AS time,\n  'OFF' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  vehicle_vin = '$VIN'\n)\nORDER BY 1  ",
+          "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
@@ -668,13 +663,14 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "States",
       "type": "state-timeline"
     },
     {
-      "datasource": "VWsFriend",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -853,20 +849,16 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Battery Level",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "fixed"
           },
           "custom": {
-            "align": null,
             "displayMode": "color-text",
             "filterable": true
           },
@@ -984,17 +976,28 @@
       },
       "id": 6,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  start_locations.display_name AS \"Start Location\",\n  destination_location.display_name AS \"Destination Location\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 ASC",
+          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination Location\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 ASC",
           "refId": "A",
           "select": [
             [
@@ -1022,14 +1025,12 @@
       "type": "table"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "fixed"
           },
           "custom": {
-            "align": null,
             "displayMode": "color-text",
             "filterable": false
           },
@@ -1319,17 +1320,28 @@
       },
       "id": 2,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE (started, COALESCE (locked, connected)) AS \"Date\",\n  locations.display_name AS \"Location\",\n  COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)) AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\",\n  CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM COALESCE (started, COALESCE (locked, connected))) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM COALESCE (ended, COALESCE (unlocked, disconnected))) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nORDER BY 1 ASC",
+          "rawSql": "SELECT\n  COALESCE (started, COALESCE (locked, connected)) AS \"Date\",\n  COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n  COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)) AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\",\n  CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM COALESCE (started, COALESCE (locked, connected))) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM COALESCE (ended, COALESCE (unlocked, disconnected))) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nORDER BY 1 ASC",
           "refId": "A",
           "select": [
             [
@@ -1357,14 +1369,12 @@
       "type": "table"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "fixed"
           },
           "custom": {
-            "align": null,
             "displayMode": "color-text",
             "filterable": false
           },
@@ -1589,16 +1599,27 @@
       },
       "id": 17,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date AS \"Date\",\n  locations.display_name AS \"Location\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\",\n  CASE WHEN \"realRefueled_l\" IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM date)) * 1000) AS start_date_ts\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(date) AND\n  refuel_sessions.vehicle_vin = '$VIN'\nORDER BY date",
+          "rawSql": "SELECT\n  date AS \"Date\",\n  COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\",\n  CASE WHEN \"realRefueled_l\" IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM date)) * 1000) AS start_date_ts\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(date) AND\n  refuel_sessions.vehicle_vin = '$VIN'\nORDER BY date",
           "refId": "A",
           "select": [
             [
@@ -1628,7 +1649,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 32,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -1636,11 +1657,8 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Car",
@@ -1658,14 +1676,9 @@
         "useTags": false
       },
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "vwsfriend_url",
         "options": [],
@@ -1677,14 +1690,10 @@
         "type": "query"
       },
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT\n    (FIRST_VALUE(\"startDate\") OVER sd)  - INTERVAL '10' SECOND AS \"Start\"\n  FROM trips\n  WHERE\n    ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n    trips.vehicle_vin = '$VIN'\n  WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n  LIMIT 1",
         "description": "timestamp of the trimmed time of the journey",
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "tripstart",
         "options": [],
@@ -1696,14 +1705,10 @@
         "type": "query"
       },
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT\n    LAST_VALUE(\"endDate\") OVER sd  + INTERVAL '10' SECOND AS \"End\"\n  FROM trips\n  WHERE\n    ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n    trips.vehicle_vin = '$VIN'\n  WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n  LIMIT 1",
         "description": "timestamp of the trimmed time of the journey",
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "tripend",
         "options": [],
@@ -1720,10 +1725,7 @@
           "text": "",
           "value": ""
         },
-        "description": null,
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "title",
         "options": [
           {
@@ -1748,5 +1750,6 @@
   "timezone": "",
   "title": "Journey",
   "uid": "ofOrYjHnz",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
