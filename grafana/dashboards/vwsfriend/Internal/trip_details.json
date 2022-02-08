@@ -20,9 +20,8 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
   "graphTooltip": 1,
-  "iteration": 1637661523960,
+  "iteration": 1644320873975,
   "links": [
     {
       "asDropdown": false,
@@ -66,7 +65,10 @@
   "liveNow": true,
   "panels": [
     {
-      "datasource": "VWsFriend",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -246,13 +248,10 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Battery Level",
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -350,7 +349,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -386,7 +385,6 @@
     },
     {
       "autoZoom": true,
-      "datasource": null,
       "defaultLayer": "OpenStreetMap",
       "gridPos": {
         "h": 14,
@@ -463,7 +461,6 @@
       "type": "pr0ps-trackmap-panel"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -513,7 +510,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -548,7 +545,6 @@
       "type": "stat"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -598,7 +594,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
+      "pluginVersion": "8.3.4",
       "targets": [
         {
           "format": "table",
@@ -634,7 +630,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 32,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "internal"
@@ -647,14 +643,11 @@
           "text": "",
           "value": ""
         },
-        "description": null,
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "id",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "",
             "value": ""
           }
@@ -669,14 +662,11 @@
           "text": "",
           "value": ""
         },
-        "description": null,
-        "error": null,
         "hide": 2,
-        "label": null,
         "name": "VIN",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "",
             "value": ""
           }
@@ -686,14 +676,9 @@
         "type": "textbox"
       },
       {
-        "allValue": null,
-        "datasource": null,
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "vwsfriend_url",
         "options": [],
@@ -712,5 +697,6 @@
   "timezone": "",
   "title": "Trip Details",
   "uid": "6JFDUrG7z",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
