@@ -38,6 +38,7 @@ def locationFromLatLon(session, latitude, longitude):
         return session.merge(location)
     return None
 
+
 def amenityFromLatLon(session, latitude, longitude, radius, amenity, withFallback=False):
     northWest = inverse_haversine((latitude, longitude), radius, Direction.NORTHWEST, unit=Unit.METERS)
     southEast = inverse_haversine((latitude, longitude), radius, Direction.SOUTHEAST, unit=Unit.METERS)
