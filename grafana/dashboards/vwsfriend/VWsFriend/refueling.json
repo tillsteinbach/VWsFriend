@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644314235641,
+  "iteration": 1644414156181,
   "links": [
     {
       "asDropdown": false,
@@ -96,6 +96,7 @@
             "mode": "fixed"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "color-text",
             "filterable": false
           },
@@ -333,19 +334,22 @@
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 24,
+        "h": 26,
+        "w": 17,
         "x": 0,
         "y": 0
       },
       "id": 2,
       "options": {
         "footer": {
-          "fields": "",
+          "fields": [
+            "Amount",
+            "Cost"
+          ],
           "reducer": [
             "sum"
           ],
-          "show": false
+          "show": true
         },
         "showHeader": true
       },
@@ -386,6 +390,229 @@
       ],
       "title": "Refueling",
       "transformations": [],
+      "type": "table"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sessions"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Amount"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              },
+              {
+                "id": "unit",
+                "value": "litre"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 5,
+        "x": 17,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  locations.display_name AS \"Station\",\n  COUNT(refuel_sessions.id) AS \"Sessions\",\n  SUM(COALESCE(\"realRefueled_l\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END) / 100::NUMERIC)) AS \"Amount\"\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(date) AND\n  locations.display_name IS NOT NULL AND\n  refuel_sessions.vehicle_vin = '$VIN'\nGROUP BY locations.osm_id\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"maximumChargePower_kW\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top 10 Stations",
+      "type": "table"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sessions"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Amount"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              },
+              {
+                "id": "unit",
+                "value": "litre"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 5,
+        "x": 17,
+        "y": 13
+      },
+      "id": 5,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  locations.amenity AS \"Operator\",\n  COUNT(refuel_sessions.id) AS \"Sessions\",\n  SUM(COALESCE(\"realRefueled_l\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END) / 100::NUMERIC)) AS \"Amount\"\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(date) AND\n  locations.display_name IS NOT NULL AND\n  refuel_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Operator\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"maximumChargePower_kW\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top 10 Operators",
       "type": "table"
     }
   ],

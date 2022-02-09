@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644321248624,
+  "iteration": 1644414269964,
   "links": [
     {
       "asDropdown": false,
@@ -96,6 +96,7 @@
             "mode": "fixed"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "color-text",
             "filterable": false
           },
@@ -405,11 +406,14 @@
       "id": 2,
       "options": {
         "footer": {
-          "fields": "",
+          "fields": [
+            "Amount",
+            "Cost"
+          ],
           "reducer": [
             "sum"
           ],
-          "show": false
+          "show": true
         },
         "showHeader": true,
         "sortBy": []
