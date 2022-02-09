@@ -26,7 +26,7 @@ from vwsfriend.model.journey import Journey
 from vwsfriend.model.geofence import Geofence
 from vwsfriend.model.location import Location
 
-from vwsfriend.util.location_util import locationFromLatLon, addCharger
+from vwsfriend.util.location_util import amenityFromLatLon, addCharger, locationFromLatLonWithGeofence
 
 bp = Blueprint('database', __name__, url_prefix='/database')
 
@@ -259,11 +259,12 @@ def tripEdit():  # noqa: C901
             trip.start_position_latitude = form.start_position_latitude.data
             trip.start_position_longitude = form.start_position_longitude.data
             if trip.start_position_latitude is not None and trip.start_position_longitude is not None:
-                trip.start_location = locationFromLatLon(current_app.db.session, trip.start_position_latitude, trip.start_position_longitude)
+                trip.start_location = locationFromLatLonWithGeofence(current_app.db.session, trip.start_position_latitude, trip.start_position_longitude)
             trip.destination_position_latitude = form.destination_position_latitude.data
             trip.destination_position_longitude = form.destination_position_longitude.data
             if trip.destination_position_latitude is not None and trip.destination_position_longitude is not None:
-                trip.destination_location = locationFromLatLon(current_app.db.session, trip.destination_position_latitude, trip.destination_position_longitude)
+                trip.destination_location = locationFromLatLonWithGeofence(current_app.db.session, trip.destination_position_latitude,
+                                                                           trip.destination_position_longitude)
             trip.start_mileage_km = form.start_mileage_km.data
             trip.end_mileage_km = form.end_mileage_km.data
         current_app.db.session.commit()
@@ -279,13 +280,13 @@ def tripEdit():  # noqa: C901
         start_position_latitude = form.start_position_latitude.data
         start_position_longitude = form.start_position_longitude.data
         if start_position_latitude is not None and start_position_longitude is not None:
-            start_location = locationFromLatLon(current_app.db.session, start_position_latitude, start_position_longitude)
+            start_location = locationFromLatLonWithGeofence(current_app.db.session, start_position_latitude, start_position_longitude)
         else:
             start_location = None
         destination_position_latitude = form.destination_position_latitude.data
         destination_position_longitude = form.destination_position_longitude.data
         if destination_position_latitude is not None and destination_position_longitude is not None:
-            destination_location = locationFromLatLon(current_app.db.session, destination_position_latitude, destination_position_longitude)
+            destination_location = locationFromLatLonWithGeofence(current_app.db.session, destination_position_latitude, destination_position_longitude)
         else:
             destination_location = None
 
@@ -436,7 +437,8 @@ def chargingSessionEdit():  # noqa: C901
             chargingSession.position_latitude = form.position_latitude.data
             chargingSession.position_longitude = form.position_longitude.data
             if chargingSession.position_latitude is not None and chargingSession.position_longitude is not None:
-                chargingSession.location = locationFromLatLon(current_app.db.session, chargingSession.position_latitude, chargingSession.position_longitude)
+                chargingSession.location = locationFromLatLonWithGeofence(current_app.db.session, chargingSession.position_latitude,
+                                                                          chargingSession.position_longitude)
 
             chargingSession.realCharged_kWh = form.realCharged_kWh.data
             chargingSession.realCost_ct = form.realCost_ct.data
@@ -478,7 +480,8 @@ def chargingSessionEdit():  # noqa: C901
         chargingSession.position_latitude = form.position_latitude.data
         chargingSession.position_longitude = form.position_longitude.data
         if chargingSession.position_latitude is not None and chargingSession.position_longitude is not None:
-            chargingSession.location = locationFromLatLon(current_app.db.session, chargingSession.position_latitude, chargingSession.position_longitude)
+            chargingSession.location = locationFromLatLonWithGeofence(current_app.db.session, chargingSession.position_latitude,
+                                                                      chargingSession.position_longitude)
         else:
             chargingSession.location = None
         if form.charger_id.data is None or form.charger_id.data == 'None':
@@ -589,7 +592,8 @@ def refuelSessionEdit():  # noqa: C901
             refuelSession.position_latitude = form.position_latitude.data
             refuelSession.position_longitude = form.position_longitude.data
             if refuelSession.position_latitude is not None and refuelSession.position_longitude is not None:
-                refuelSession.location = locationFromLatLon(current_app.db.session, refuelSession.position_latitude, refuelSession.position_longitude)
+                refuelSession.location = amenityFromLatLon(current_app.db.session, refuelSession.position_latitude, refuelSession.position_longitude, 150,
+                                                           'fuel')
             refuelSession.realRefueled_l = form.realRefueled_l.data
             refuelSession.realCost_ct = form.realCost_ct.data
 
@@ -604,7 +608,7 @@ def refuelSessionEdit():  # noqa: C901
         latitude = form.position_latitude.data
         longitude = form.position_longitude.data
         if latitude is not None and longitude is not None:
-            location = locationFromLatLon(current_app.db.session, latitude, longitude)
+            location = amenityFromLatLon(current_app.db.session, latitude, longitude, 150, 'fuel')
         else:
             location = None
         refuelSession = RefuelSession(vehicle=vehicle, date=date, startSOC_pct=form.startSOC_pct.data, endSOC_pct=form.endSOC_pct.data,
