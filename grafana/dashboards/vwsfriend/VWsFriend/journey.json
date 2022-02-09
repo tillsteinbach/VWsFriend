@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644321217597,
+  "iteration": 1644418532844,
   "links": [
     {
       "asDropdown": false,
@@ -859,6 +859,7 @@
             "mode": "fixed"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "color-text",
             "filterable": true
           },
@@ -977,11 +978,13 @@
       "id": 6,
       "options": {
         "footer": {
-          "fields": "",
+          "fields": [
+            "Length"
+          ],
           "reducer": [
             "sum"
           ],
-          "show": false
+          "show": true
         },
         "showHeader": true,
         "sortBy": []
@@ -1031,6 +1034,7 @@
             "mode": "fixed"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "color-text",
             "filterable": false
           },
@@ -1321,11 +1325,14 @@
       "id": 2,
       "options": {
         "footer": {
-          "fields": "",
+          "fields": [
+            "Amount",
+            "Cost"
+          ],
           "reducer": [
             "sum"
           ],
-          "show": false
+          "show": true
         },
         "showHeader": true,
         "sortBy": []
@@ -1375,6 +1382,7 @@
             "mode": "fixed"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "color-text",
             "filterable": false
           },
@@ -1600,11 +1608,14 @@
       "id": 17,
       "options": {
         "footer": {
-          "fields": "",
+          "fields": [
+            "Amount",
+            "Cost"
+          ],
           "reducer": [
             "sum"
           ],
-          "show": false
+          "show": true
         },
         "showHeader": true
       },

@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644318687181,
+  "iteration": 1644418907683,
   "links": [
     {
       "asDropdown": true,
@@ -275,11 +275,21 @@
       "id": 2,
       "options": {
         "footer": {
-          "fields": "",
+          "fields": [
+            "Time driven",
+            "Distance",
+            "# Charges",
+            "Time charging",
+            "Energy Charged",
+            "Cost",
+            "Fuel Added",
+            "F. Cost",
+            "# Refuels"
+          ],
           "reducer": [
             "sum"
           ],
-          "show": false
+          "show": true
         },
         "showHeader": true,
         "sortBy": []
