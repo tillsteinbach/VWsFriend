@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - More agressively ask for changing the default password
 - Updated API to 0.36.0
 - Updated several dependencies
+- Updated Grafana to 8.3.6
 
 ## [0.14.2] - 2022-02-04
 ### Fixed
