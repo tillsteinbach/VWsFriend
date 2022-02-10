@@ -69,7 +69,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "format": "table",
@@ -315,6 +315,7 @@
       "type": "timeseries"
     }
   ],
+  "refresh": "5m",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [
