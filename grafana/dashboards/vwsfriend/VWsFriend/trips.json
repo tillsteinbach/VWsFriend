@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644419175591,
+  "iteration": 1644477474319,
   "links": [
     {
       "asDropdown": false,
@@ -216,7 +216,8 @@
       "options": {
         "footer": {
           "fields": [
-            "Length"
+            "Length",
+            "Duration"
           ],
           "reducer": [
             "sum"
@@ -226,7 +227,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -237,7 +238,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination Location\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 DESC",
+          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination Location\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 DESC",
           "refId": "A",
           "select": [
             [
@@ -328,7 +329,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -458,7 +459,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
