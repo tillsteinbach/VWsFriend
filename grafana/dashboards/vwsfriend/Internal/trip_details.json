@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644320873975,
+  "iteration": 1644477624622,
   "links": [
     {
       "asDropdown": false,
@@ -349,14 +349,18 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "CREATE extension IF NOT EXISTS cube;\nCREATE extension IF NOT EXISTS earthdistance;\n\nSELECT\n  \"startDate\" AS \"Start Date\",\n  \"endDate\" AS \"End Date\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  (point(start_position_longitude, start_position_latitude)<@>point(destination_position_longitude, destination_position_latitude)) * 1.609344 as \"Distance\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\"\nFROM trips\nWHERE\n  id = $id",
+          "rawSql": "CREATE extension IF NOT EXISTS cube;\nCREATE extension IF NOT EXISTS earthdistance;\n\nSELECT\n  \"startDate\" AS \"Start Date\",\n  \"endDate\" AS \"End Date\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (point(start_position_longitude, start_position_latitude)<@>point(destination_position_longitude, destination_position_latitude)) * 1.609344 as \"Distance\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\"\nFROM trips\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -510,7 +514,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "format": "table",
@@ -594,7 +598,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "format": "table",
@@ -629,7 +633,7 @@
       "type": "stat"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [
