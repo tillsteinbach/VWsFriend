@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 - No unreleased changes so far
 
 ## [0.15.0] - 2022-02-11
-***Warning the next update requires you to update your docker-compse.yml file! You can already do this today to be ready for automated updates!***
+***Warning this update requires you to update your docker-compse.yml and env file!***
 ### Fixed
 - Fixes login issue due to changes in the login form
 
