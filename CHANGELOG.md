@@ -2,7 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No unreleased changes so far
+
+## [0.15.0] - 2022-02-11
 ***Warning the next update requires you to update your docker-compse.yml file! You can already do this today to be ready for automated updates!***
+### Fixed
+- Fixes login issue due to changes in the login form
+
 ### Added
 - Passwort protection for UI
 - Geofences allow to specify areas that are always resolved to a specific location and/or charger
@@ -14,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - VWsFriend will now more reliably find a gas station when the car is being refueled.
 - Refactors the OAuth procedure
 - More agressively ask for changing the default password
-- Updated API to 0.36.0
+- Updated API to 0.36.3
 - Updated several dependencies
 - Updated Grafana to 8.3.6
 
@@ -295,7 +301,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.14.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.15.0
 [0.14.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.2
 [0.14.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.1
 [0.14.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.0
