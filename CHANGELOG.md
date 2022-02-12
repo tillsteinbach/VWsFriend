@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.15.1] - 2022-02-12
+### Fixed
+- Fixes bug in charging state API fixing procedure
+
+### Changed
+- Updated API to 0.36.4
+
 ## [0.15.0] - 2022-02-11
 ***Warning this update requires you to update your docker-compse.yml and env file!***
 ### Fixed
@@ -301,7 +308,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.15.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.15.1...HEAD
+[0.15.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.15.1
 [0.15.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.15.0
 [0.14.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.2
 [0.14.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.1
