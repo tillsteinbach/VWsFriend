@@ -152,24 +152,31 @@ class TripAgent():
                 self.lastParkingPositionLongitude = parkingPosition.longitude.value
             if self.trip is not None:
                 if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
-                    self.trip.endDate = parkingPosition.carCapturedTimestamp.value
-                if Privacy.NO_LOCATIONS not in self.privacy:
-                    if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
-                            and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
-                        self.trip.destination_position_latitude = parkingPosition.latitude.value
-                        self.trip.destination_position_longitude = parkingPosition.longitude.value
-                        self.trip.destination_location = locationFromLatLonWithGeofence(self.session, parkingPosition.latitude.value,
-                                                                                        parkingPosition.longitude.value)
+                    if parkingPosition.carCapturedTimestamp.value < self.trip.startDate:
+                        self.trip.endDate = parkingPosition.carCapturedTimestamp.value
+                        if Privacy.NO_LOCATIONS not in self.privacy:
+                            if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
+                                    and parkingPosition.longitude.enabled and parkingPosition.longitude.value is not None:
+                                self.trip.destination_position_latitude = parkingPosition.latitude.value
+                                self.trip.destination_position_longitude = parkingPosition.longitude.value
+                                self.trip.destination_location = locationFromLatLonWithGeofence(self.session, parkingPosition.latitude.value,
+                                                                                                parkingPosition.longitude.value)
 
-                if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
-                        and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
-                    odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
-                    if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
-                        self.trip.end_mileage_km = odometerMeasurement.odometer.value
+                        if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+                                and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
+                            odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
+                            if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
+                                self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
-                self.trip = None
+                        self.trip = None
 
-                LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
+                        LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
+                    else:
+                        with self.session.begin_nested():
+                            self.session.delete(self.trip)
+                        self.session.commit()
+                        self.trip = None
+                        LOG.info(f'Previously started trip for {self.vehicle.vin} was invalid. Deleting it now.')
             else:
                 if flags is not None:
                     LOG.info(f'Vehicle {self.vehicle.vin} provides a parking position, but no trip was started (this is ok during startup)')
