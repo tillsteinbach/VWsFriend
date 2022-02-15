@@ -3,7 +3,7 @@ FROM grafana/grafana:8.3.6
 ENV GF_SECURITY_ADMIN_USER=admin
 ENV GF_SECURITY_ADMIN_PASSWORD=admin
 ENV GF_USERS_ALLOW_SIGN_UP=false
-ENV GF_INSTALL_PLUGINS="marcusolsson-json-datasource,pierosavi-imageit-panel,pr0ps-trackmap-panel,natel-plotly-panel,https://github.com/panodata/panodata-map-panel/releases/download/0.16.0/panodata-map-panel-0.16.0.zip;panodata-map-panel"
+ENV GF_INSTALL_PLUGINS="marcusolsson-json-datasource,pr0ps-trackmap-panel,natel-plotly-panel,gapit-htmlgraphics-panel,https://github.com/panodata/panodata-map-panel/releases/download/0.16.0/panodata-map-panel-0.16.0.zip;panodata-map-panel"
 ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=panodata-map-panel
 ENV GF_SERVER_ENABLE_GZIP=true
 ENV DB_USER=admin
