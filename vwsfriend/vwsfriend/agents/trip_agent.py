@@ -152,7 +152,7 @@ class TripAgent():
                 self.lastParkingPositionLongitude = parkingPosition.longitude.value
             if self.trip is not None:
                 if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
-                    if parkingPosition.carCapturedTimestamp.value < self.trip.startDate:
+                    if parkingPosition.carCapturedTimestamp.value > self.trip.startDate:
                         self.trip.endDate = parkingPosition.carCapturedTimestamp.value
                         if Privacy.NO_LOCATIONS not in self.privacy:
                             if parkingPosition.latitude.enabled and parkingPosition.latitude.value is not None \
