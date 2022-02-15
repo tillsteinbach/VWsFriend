@@ -788,57 +788,84 @@
       "type": "stat"
     },
     {
-      "autoZoom": true,
-      "defaultLayer": "OpenStreetMap",
+      "autoPanLabels": true,
+      "autoWidthLabels": true,
+      "categories": "Parking Position",
+      "circleMaxSize": "1",
+      "circleMinSize": "1",
+      "circleOptions": {
+        "strokeEnabled": true,
+        "strokeWeight": "15"
+      },
+      "circleSizeAbsoluteEnabled": true,
+      "circleSizeAbsoluteFactor": "1",
+      "clickthroughOptions": {},
+      "clickthroughUrl": "",
+      "colorMode": "categories",
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "#73BF69"
+      ],
+      "customAttribution": false,
+      "decimals": 2,
+      "doubleClickZoom": true,
+      "dragging": true,
+      "enableOverlay": false,
+      "enableReloadOverlay": false,
+      "esGeoPoint": "",
+      "esLocationName": "",
+      "esMetric": "Count",
+      "formatOmitEmptyValue": false,
       "gridPos": {
         "h": 13,
         "w": 6,
         "x": 0,
         "y": 19
       },
+      "hideEmpty": false,
+      "hideTimepickerNavigation": false,
+      "hideZero": false,
       "id": 13,
-      "lineColor": "red",
+      "ignoreEmptyGeohashValues": false,
+      "ignoreEscapeKey": false,
+      "ignoreInvalidGeohashValues": false,
+      "initialZoom": 1,
+      "locationData": "table",
+      "mapCenter": "(0°, 0°)",
+      "mapCenterLatitude": 0,
+      "mapCenterLongitude": 0,
+      "mapFitData": true,
       "maxDataPoints": 500,
-      "pointColor": "royalblue",
-      "scrollWheelZoom": false,
-      "showLayerChanger": true,
+      "maximumZoom": "",
+      "mouseWheelZoom": false,
+      "overlayOpacity": 0.5,
+      "overlayRangeLatitude": "0,10",
+      "overlayRangeLongitude": "0,20",
+      "overlayUrl": "",
+      "showAttribution": true,
+      "showLegend": true,
+      "showZoomControl": true,
+      "stickyLabels": false,
+      "tableQueryOptions": {
+        "geohashField": "geohash",
+        "labelField": "label",
+        "latitudeField": "latitude",
+        "longitudeField": "longitude",
+        "metricField": "metric",
+        "queryType": "coordinates"
+      },
       "targets": [
         {
-          "format": "time_series",
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(connected),\n  unnest(ARRAY[position_latitude, chargers.latitude]) AS latitude\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nWHERE\n  charging_sessions.id = $id",
+          "rawSql": "(SELECT\n  position_latitude AS latitude,\n  position_longitude AS longitude,\n  \"realCharged_kWh\" AS metric,\n  'Parking Position' AS label\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nWHERE\n  charging_sessions.id = $id)\nUNION\n(SELECT\n  chargers.latitude AS latitude,\n  chargers.longitude AS longitude,\n  \"realCharged_kWh\" AS metric,\n  chargers.name AS label\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nWHERE\n  charging_sessions.id = $id)",
           "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "charging_sessions",
-          "timeColumn": "connected",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(connected),\n  unnest(ARRAY[position_longitude, chargers.longitude]) AS longitude\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nWHERE\n  charging_sessions.id = $id",
-          "refId": "B",
           "select": [
             [
               {
@@ -861,8 +888,12 @@
           ]
         }
       ],
+      "thresholds": "0,10",
       "title": "Charging Location",
-      "type": "pr0ps-trackmap-panel"
+      "type": "panodata-map-panel",
+      "unitPlural": "kWh",
+      "unitSingular": "kWh",
+      "valueName": "current"
     },
     {
       "fieldConfig": {
