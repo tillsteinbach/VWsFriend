@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Added
+- Use AC/DC charging information from car
 
 ## [0.15.1] - 2022-02-12
 ### Fixed
