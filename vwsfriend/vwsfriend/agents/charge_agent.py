@@ -95,7 +95,7 @@ class ChargeAgent():
                         self.session.add(self.charge)
                     self.session.commit()
                 except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
@@ -117,6 +117,13 @@ class ChargeAgent():
                 batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
                 if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
                     self.chargingSession.startSOC_pct = batteryStatus.currentSOC_pct.value
+            # also write start charge type if available and not already set
+            if self.chargingSession is not None and self.chargingSession.acdc is None \
+                    and chargeStatus.chargeType.enabled:
+                if chargeStatus.chargeType == ChargingStatus.ChargeType.AC:
+                    self.chargingSession.acdc = ACDC.AC
+                elif chargeStatus.chargeType == ChargingStatus.ChargeType.DC:
+                    self.chargingSession.acdc = ACDC.DC
 
             # also write position if available
             self.updatePosition()
@@ -127,6 +134,7 @@ class ChargeAgent():
             if self.chargingSession is not None and self.chargingSession.isChargingState():
                 self.chargingSession.ended = chargeStatus.carCapturedTimestamp.value
 
+                # also write start charge type if not already set before
                 if self.chargingSession.maximumChargePower_kW is not None:
                     if self.chargingSession.maximumChargePower_kW > 11:
                         self.chargingSession.acdc = ACDC.DC
@@ -156,7 +164,7 @@ class ChargeAgent():
                         self.session.add(self.chargingSession)
                     self.session.commit()
                 except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
             if self.chargingSession.connected is None:
                 self.chargingSession.connected = plugStatus.carCapturedTimestamp.value
             # also write position if available
