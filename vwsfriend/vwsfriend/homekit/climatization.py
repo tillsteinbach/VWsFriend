@@ -182,7 +182,7 @@ class Climatization(GenericAccessory):
                 LOG.error('Error setting target temperature: %s', setterError)
                 self.setStatusFault(1, timeout=120)
             if self.charTargetHeatingCoolingState.value in [1, 2, 3]:
-                LOG.error('Restart climatisation with new temperature: %f', value)
+                LOG.info('Restart climatisation with new temperature: %f', value)
                 self.climatizationControl.value = value
         else:
             LOG.error('Climatization target temperature cannot be controled')
