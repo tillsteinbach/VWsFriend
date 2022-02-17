@@ -59,6 +59,7 @@ class Climatization(GenericAccessory):
         elif climatizationSettings is not None and climatizationSettings.targetTemperature_K.enabled:
             climatizationSettings.targetTemperature_K.addObserver(self.onTargetTemperatureChange,
                                                                   AddressableLeaf.ObserverEvent.VALUE_CHANGED)
+
         self.charTargetTemperature = self.service.configure_char('TargetTemperature', value=self.getTemperature(),
                                                                  properties={'maxValue': 29.5, 'minStep': 0.5, 'minValue': 16},
                                                                  setter_callback=self.__onTargetTemperatureChanged)
@@ -88,6 +89,9 @@ class Climatization(GenericAccessory):
             return self.climatizationSettings.targetTemperature_C.value
         elif self.climatizationSettings.targetTemperature_K is not None and self.climatizationSettings.targetTemperature_K.enabled:
             return (self.climatizationSettings.targetTemperature_K.value - 273.15)
+        temperature = self.bridge.getConfigItem(self.id, self.vin, 'TargetTemperature')
+        if temperature is not None:
+            return float(temperature)
         return 20.5
 
     def setTemperature(self, temperature):
@@ -95,6 +99,8 @@ class Climatization(GenericAccessory):
             self.climatizationSettings.targetTemperature_C.value = temperature
         elif self.climatizationSettings.targetTemperature_K is not None and self.climatizationSettings.targetTemperature_K.enabled:
             self.climatizationSettings.targetTemperature_K.value = (temperature + 273.15)
+        self.bridge.setConfigItem(self.id, self.vin, 'TargetTemperature', temperature)
+        self.bridge.persistConfig()
 
     def setCurrentHeatingCoolingState(self, climatisationState):
         if self.charCurrentHeatingCoolingState is not None:
@@ -151,7 +157,7 @@ class Climatization(GenericAccessory):
             try:
                 if value == 1 or value == 2 or value == 3:
                     LOG.info('Switch climatization on')
-                    self.climatizationControl.value = ControlOperation.START
+                    self.climatizationControl.value = self.getTemperature()
                 elif value == 0:
                     LOG.info('Switch climatization off')
                     self.climatizationControl.value = ControlOperation.STOP
@@ -175,6 +181,9 @@ class Climatization(GenericAccessory):
             except SetterError as setterError:
                 LOG.error('Error setting target temperature: %s', setterError)
                 self.setStatusFault(1, timeout=120)
+            if self.charTargetHeatingCoolingState.value in [1, 2, 3]:
+                LOG.error('Restart climatisation with new temperature: %f', value)
+                self.climatizationControl.value = value
         else:
             LOG.error('Climatization target temperature cannot be controled')
 
