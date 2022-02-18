@@ -21,25 +21,32 @@ bp = Blueprint('settings', __name__, url_prefix='/settings')
 
 class VehicleSettingsForm(FlaskForm):
     primary_capacity = IntegerField('Primary Capacity', validators=[DataRequired(), NumberRange(min=1, max=500)])
+    primary_capacity_total = IntegerField('Primary Capacity Total', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
     primary_wltp_range = IntegerField('Primary WLTP range in km', validators=[DataRequired(), NumberRange(min=1, max=1000)])
     secondary_capacity = IntegerField('Secondary Capacity', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
+    secondary_capacity_total = IntegerField('Secondary Capacity Total', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
     secondary_wltp_range = IntegerField('Secondary WLTP Range', validators=[Optional(), NumberRange(min=1, max=1000)], filters=[lambda x: x or None])
     save = SubmitField('Save')
 
 
 class ElectricVehicleSettingsForm(VehicleSettingsForm):
     primary_capacity = IntegerField('Usable Battery Capacity (net) in kWh', validators=[DataRequired(), NumberRange(min=1, max=500)])
+    primary_capacity_total = IntegerField('Total Battery Capacity (gross) in kWh', validators=[DataRequired(), NumberRange(min=1, max=500)])
     primary_wltp_range = IntegerField('WLTP range in km', validators=[DataRequired(), NumberRange(min=1, max=1000)])
     secondary_capacity = HiddenField('Secondary Capacity', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
+    secondary_capacity_total = HiddenField('Secondary Capacity Total', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
     secondary_wltp_range = HiddenField('Secondary WLTP Range', validators=[Optional(), NumberRange(min=1, max=1000)], filters=[lambda x: x or None])
     save = SubmitField('Save')
 
 
 class HybridVehicleSettingsForm(VehicleSettingsForm):
     primary_capacity = IntegerField('Gasoline tank size in liters', validators=[DataRequired(), NumberRange(min=1, max=500)])
+    primary_capacity_total = IntegerField('Primary Capacity Total', validators=[DataRequired(), NumberRange(min=1, max=500)])
     primary_wltp_range = IntegerField('WLTP range in km gasoline only', validators=[DataRequired(), NumberRange(min=1, max=1000)])
-    secondary_capacity = IntegerField('Usable Battery Capacity (net) in kWh', validators=[Optional(), NumberRange(min=1, max=500)],
+    secondary_capacity = IntegerField('Usable Battery Capacity (net) in kWh', validators=[DataRequired(), NumberRange(min=1, max=500)],
                                       filters=[lambda x: x or None])
+    secondary_capacity_total = IntegerField('Total Battery Capacity (gross) in kWh', validators=[Optional(), NumberRange(min=1, max=500)],
+                                            filters=[lambda x: x or None])
     secondary_wltp_range = IntegerField('WLTP range in km electic only', validators=[Optional(), NumberRange(min=1, max=1000)], filters=[lambda x: x or None])
     save = SubmitField('Save')
 
@@ -103,13 +110,16 @@ def vehicleDBParameters(vin):
 
     if request.method == "GET":
         form.primary_capacity.data = dbVehicle.settings.primary_capacity
+        form.primary_capacity_total = dbVehicle.settings.primary_capacity_total
         form.primary_wltp_range.data = dbVehicle.settings.primary_wltp_range
         form.secondary_capacity.data = dbVehicle.settings.secondary_capacity
         form.secondary_wltp_range.data = dbVehicle.settings.secondary_wltp_range
     elif form.validate_on_submit():
         dbVehicle.settings.primary_capacity = form.primary_capacity.data
+        dbVehicle.settings.primary_capacity_total = form.primary_capacity_total.data
         dbVehicle.settings.primary_wltp_range = form.primary_wltp_range.data
         dbVehicle.settings.secondary_capacity = form.secondary_capacity.data
+        dbVehicle.settings.secondary_capacity_total = form.secondary_capacity_total.data
         dbVehicle.settings.secondary_wltp_range = form.secondary_wltp_range.data
         current_app.db.session.commit()
 

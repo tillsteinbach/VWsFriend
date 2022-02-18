@@ -11,8 +11,10 @@ class VehicleSettings(Base):
     vehicle = relationship("Vehicle", back_populates="settings")
 
     primary_capacity = Column(Integer)
+    primary_capacity_total = Column(Integer)
     primary_wltp_range = Column(Integer)
     secondary_capacity = Column(Integer)
+    secondary_capacity_total = Column(Integer)
     secondary_wltp_range = Column(Integer)
 
     def __init__(self, vehicle):
