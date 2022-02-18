@@ -23,7 +23,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644318350464,
+  "iteration": 1645168679551,
   "links": [
     {
       "asDropdown": false,
@@ -102,7 +102,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 4,
         "x": 0,
         "y": 0
@@ -123,7 +123,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "format": "table",
@@ -178,7 +178,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 4,
         "x": 4,
         "y": 0
@@ -199,7 +199,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "format": "table",
@@ -234,242 +234,6 @@
       "type": "stat"
     },
     {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "noValue": "No real charging values",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 8,
-        "y": 0
-      },
-      "id": 10,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.3.4",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n   (SUM(\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) - SUM(\"realCharged_kWh\"::NUMERIC)) / SUM(\"realCharged_kWh\"::NUMERIC) * 100 AS \"Delta %\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  \"realCharged_kWh\" IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "refuel_sessions",
-          "timeColumn": "date",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Difference estimated/real",
-      "type": "stat"
-    },
-    {
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "noValue": "No cost added",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "currencyEUR"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 12,
-        "y": 0
-      },
-      "id": 9,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.3.4",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n   SUM(\"realCost_ct\"::NUMERIC/100::NUMERIC) AS \"Cost\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "refuel_sessions",
-          "timeColumn": "date",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Total Cost",
-      "type": "stat"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": [],
-          "unit": "kwatth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 16,
-        "w": 6,
-        "x": 0,
-        "y": 3
-      },
-      "id": 4,
-      "options": {
-        "displayLabels": [
-          "name",
-          "value"
-        ],
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^Amount$/",
-          "values": true
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "pluginVersion": "8.1.0",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n   COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY acdc",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "refuel_sessions",
-          "timeColumn": "date",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "AC/DC",
-      "type": "piechart"
-    },
-    {
       "autoPanLabels": true,
       "autoWidthLabels": true,
       "categories": "a,b",
@@ -501,9 +265,9 @@
       "formatOmitEmptyValue": false,
       "gridPos": {
         "h": 16,
-        "w": 10,
-        "x": 6,
-        "y": 3
+        "w": 13,
+        "x": 8,
+        "y": 0
       },
       "hideEmpty": false,
       "hideTimepickerNavigation": false,
@@ -575,12 +339,469 @@
       "valueName": "total"
     },
     {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "No real charging values",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.6",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n   (SUM(\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) - SUM(\"realCharged_kWh\"::NUMERIC)) / SUM(\"realCharged_kWh\"::NUMERIC) * 100 AS \"Delta %\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  \"realCharged_kWh\" IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Difference estimated/real",
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "No cost added",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 4
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.6",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n   SUM(\"realCost_ct\"::NUMERIC/100::NUMERIC) AS \"Cost\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Total Cost",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "displayLabels": [
+          "name",
+          "value"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Amount$/",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.1.0",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n   COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY acdc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "AC/DC",
+      "type": "piechart"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 4,
+        "y": 8
+      },
+      "id": 14,
+      "options": {
+        "displayLabels": [
+          "name",
+          "value"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Amount$/",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n   COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY acdc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "AC/DC",
+      "type": "piechart"
+    },
+    {
       "description": "",
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 11,
         "x": 0,
-        "y": 19
+        "y": 16
+      },
+      "id": 13,
+      "pconfig": {
+        "fixScale": "",
+        "layout": {
+          "dragmode": "zoom",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "range": [
+              0,
+              null
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "Power [kW]",
+            "type": "linear",
+            "zeroline": true
+          },
+          "yaxis": {
+            "range": [
+              0,
+              null
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "",
+            "type": "linear",
+            "zeroline": true
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "Number",
+              "text": "metric",
+              "x": "middle",
+              "y": "amount"
+            },
+            "name": "Distribution",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 15,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              },
+              "textposition": ""
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": true
+            }
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n width_bucket(\"chargePower_kW\",0,200,20) AS power,\n ((width_bucket(\"chargePower_kW\",0,200,20)-1)*(200/20))::TEXT || '-' || ((width_bucket(\"chargePower_kW\",0,200,20)-0.5)*(200/20))::TEXT AS metric,\n (width_bucket(\"chargePower_kW\",0,200,20)-0.5)*(200/20) AS middle,\n SUM(\"chargePower_kW\")/12 AS Amount\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY power, metric, middle\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Power distribution",
+      "transformations": [],
+      "type": "natel-plotly-panel",
+      "version": 1
+    },
+    {
+      "description": "",
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 11,
+        "y": 16
       },
       "id": 6,
       "pconfig": {
@@ -710,9 +931,9 @@
     {
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 11,
         "x": 0,
-        "y": 27
+        "y": 24
       },
       "id": 8,
       "pconfig": {
