@@ -41,11 +41,11 @@ class ElectricVehicleSettingsForm(VehicleSettingsForm):
 
 class HybridVehicleSettingsForm(VehicleSettingsForm):
     primary_capacity = IntegerField('Gasoline tank size in liters', validators=[DataRequired(), NumberRange(min=1, max=500)])
-    primary_capacity_total = IntegerField('Primary Capacity Total', validators=[DataRequired(), NumberRange(min=1, max=500)])
+    primary_capacity_total = IntegerField('Primary Capacity Total', validators=[Optional(), NumberRange(min=1, max=500)])
     primary_wltp_range = IntegerField('WLTP range in km gasoline only', validators=[DataRequired(), NumberRange(min=1, max=1000)])
     secondary_capacity = IntegerField('Usable Battery Capacity (net) in kWh', validators=[DataRequired(), NumberRange(min=1, max=500)],
                                       filters=[lambda x: x or None])
-    secondary_capacity_total = IntegerField('Total Battery Capacity (gross) in kWh', validators=[Optional(), NumberRange(min=1, max=500)],
+    secondary_capacity_total = IntegerField('Total Battery Capacity (gross) in kWh', validators=[DataRequired(), NumberRange(min=1, max=500)],
                                             filters=[lambda x: x or None])
     secondary_wltp_range = IntegerField('WLTP range in km electic only', validators=[Optional(), NumberRange(min=1, max=1000)], filters=[lambda x: x or None])
     save = SubmitField('Save')
