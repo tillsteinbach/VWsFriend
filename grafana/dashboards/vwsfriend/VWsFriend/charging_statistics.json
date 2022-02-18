@@ -23,7 +23,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645168679551,
+  "iteration": 1645172614562,
   "links": [
     {
       "asDropdown": false,
@@ -79,6 +79,7 @@
   "liveNow": false,
   "panels": [
     {
+      "description": "Total number of charging sessions recorded.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -158,6 +159,7 @@
       "type": "stat"
     },
     {
+      "description": "Total energy charged.\nEnergy is taken from exact value that was added to the charging sessions or estimated based on SoC if no exact data is available.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -257,6 +259,7 @@
       ],
       "customAttribution": false,
       "decimals": 2,
+      "description": "Charging locations: Size and color corresponds to energy charged at that station.\nLocations are only recorded when provided from the car.\nEnergy is taken from exact value that was added to the charging sessions or estimated based on SoC if no exact data is available.",
       "doubleClickZoom": true,
       "dragging": true,
       "enableOverlay": false,
@@ -339,6 +342,7 @@
       "valueName": "total"
     },
     {
+      "description": "Difference between estimated energy charged from the car and real energy charged.\nValue is calculated if charging sessions have real energy charged added.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -416,7 +420,7 @@
       "type": "stat"
     },
     {
-      "description": "",
+      "description": "Sum of all charging costs.\nCharging costs can be added in each charging session.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -495,6 +499,7 @@
       "type": "stat"
     },
     {
+      "description": "Energy added by AC/DC charging sessions.\nAC/DC can be automatically detected if provided from the car. If not it is guessed based on charge power. If the charge power is not available AC/DC can be manually set in the charging sessions.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -522,7 +527,8 @@
       "options": {
         "displayLabels": [
           "name",
-          "value"
+          "value",
+          "percent"
         ],
         "legend": {
           "displayMode": "list",
@@ -575,6 +581,7 @@
       "type": "piechart"
     },
     {
+      "description": "Amount of  Energy loaded above and below 0.8C.\n1C corresponds to the power necessary to load the car in 1hour to its full capacity.\nGross battery capacity must be set in the vehicles settings.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -588,7 +595,7 @@
             }
           },
           "mappings": [],
-          "unit": "kwatth"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -602,11 +609,14 @@
       "options": {
         "displayLabels": [
           "name",
-          "value"
+          "percent"
         ],
         "legend": {
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "values": [
+            "percent"
+          ]
         },
         "pieType": "donut",
         "reduceOptions": {
@@ -631,7 +641,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n   COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY acdc",
+          "rawSql": "(SELECT\n '<0.8C' AS \"Type\",\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS \"Amount\"\nFROM charges\nLEFT JOIN vehicles ON charges.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charges.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargePower_kW\" <= (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity_total\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity_total\"::NUMERIC\n    END\n    * 0.8) AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN')\nUNION\nSELECT\n '>0.8C' AS label,\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS \"Amount\"\nFROM charges\nLEFT JOIN vehicles ON charges.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charges.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargePower_kW\" > (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity_total\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity_total\"::NUMERIC\n    END\n    * 0.8) AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'",
           "refId": "A",
           "select": [
             [
@@ -655,11 +665,11 @@
           ]
         }
       ],
-      "title": "AC/DC",
+      "title": "Charging Load",
       "type": "piechart"
     },
     {
-      "description": "",
+      "description": "Distribution of the power used for charging.",
       "gridPos": {
         "h": 8,
         "w": 11,
@@ -697,7 +707,7 @@
             ],
             "rangemode": "between",
             "showgrid": true,
-            "title": "",
+            "title": "%",
             "type": "linear",
             "zeroline": true
           },
@@ -766,7 +776,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n width_bucket(\"chargePower_kW\",0,200,20) AS power,\n ((width_bucket(\"chargePower_kW\",0,200,20)-1)*(200/20))::TEXT || '-' || ((width_bucket(\"chargePower_kW\",0,200,20)-0.5)*(200/20))::TEXT AS metric,\n (width_bucket(\"chargePower_kW\",0,200,20)-0.5)*(200/20) AS middle,\n SUM(\"chargePower_kW\")/12 AS Amount\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY power, metric, middle\nORDER BY 1",
+          "rawSql": "SELECT\n width_bucket(\"chargePower_kW\",-5,205,21) AS power,\n (((width_bucket(\"chargePower_kW\",-5,205,21)-1.5)*(210/21)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-5,205,21)-0.5)*(210/21)))::TEXT || 'kW' AS metric,\n ((width_bucket(\"chargePower_kW\",-5,205,21)::decimal-1)*(210/21)) AS middle,\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS Amount\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY power, metric, middle\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -796,7 +806,7 @@
       "version": 1
     },
     {
-      "description": "",
+      "description": "Distribution of the charging time over the day.\nFor meaningful values wait until a significant number of charging sessions were recorded.",
       "gridPos": {
         "h": 8,
         "w": 10,
@@ -929,6 +939,7 @@
       "version": 1
     },
     {
+      "description": "Charging speeds at different SoC.\nFor meaningful values wait until a significant number of charging sessions were recorded.",
       "gridPos": {
         "h": 8,
         "w": 11,
