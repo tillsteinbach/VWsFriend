@@ -18,11 +18,11 @@
       }
     ]
   },
-  "description": "",
+  "description": "Overview over all charging sessions",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644443520828,
+  "iteration": 1645191002340,
   "links": [
     {
       "asDropdown": false,
@@ -90,6 +90,7 @@
   "liveNow": false,
   "panels": [
     {
+      "description": "List of all charging sessions recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ Button at the end of each column. If a charging session is missing use the \"Add Charging\" button at the top ",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -458,6 +459,7 @@
       "type": "table"
     },
     {
+      "description": "List of the most often used charging stations. If this list is empty your car probably does not provide a location. You can still set charging stations by using the ⚙ button in the list of charging sessions.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -566,6 +568,7 @@
       "type": "table"
     },
     {
+      "description": "List of the most often used charging operators. If this list is empty your car probably does not provide a location. You can still set charging stations by using the ⚙ button in the list of charging sessions.",
       "fieldConfig": {
         "defaults": {
           "color": {
