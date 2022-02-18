@@ -110,9 +110,10 @@ def vehicleDBParameters(vin):
 
     if request.method == "GET":
         form.primary_capacity.data = dbVehicle.settings.primary_capacity
-        form.primary_capacity_total = dbVehicle.settings.primary_capacity_total
+        form.primary_capacity_total.data = dbVehicle.settings.primary_capacity_total
         form.primary_wltp_range.data = dbVehicle.settings.primary_wltp_range
         form.secondary_capacity.data = dbVehicle.settings.secondary_capacity
+        form.secondary_capacity_total.data = dbVehicle.settings.secondary_capacity_total
         form.secondary_wltp_range.data = dbVehicle.settings.secondary_wltp_range
     elif form.validate_on_submit():
         dbVehicle.settings.primary_capacity = form.primary_capacity.data
