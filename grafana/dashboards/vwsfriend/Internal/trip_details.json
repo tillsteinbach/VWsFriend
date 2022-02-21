@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644477624622,
+  "iteration": 1645451269051,
   "links": [
     {
       "asDropdown": false,
@@ -69,6 +69,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
+      "description": "State of charge and electric range during trip. Some cars only provide this data on ignition on/off and not during driving.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -156,7 +157,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.5",
@@ -252,6 +254,7 @@
       "type": "timeseries"
     },
     {
+      "description": "Details of the tip. On some cars not all data is provided and thus sections may remain empty.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -349,7 +352,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -360,7 +363,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "CREATE extension IF NOT EXISTS cube;\nCREATE extension IF NOT EXISTS earthdistance;\n\nSELECT\n  \"startDate\" AS \"Start Date\",\n  \"endDate\" AS \"End Date\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (point(start_position_longitude, start_position_latitude)<@>point(destination_position_longitude, destination_position_latitude)) * 1.609344 as \"Distance\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\"\nFROM trips\nWHERE\n  id = $id",
+          "rawSql": "CREATE extension IF NOT EXISTS cube;\nCREATE extension IF NOT EXISTS earthdistance;\n\nDO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  \"startDate\" AS \"Start Date\",\n  \"endDate\" AS \"End Date\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (point(start_position_longitude, start_position_latitude)<@>point(destination_position_longitude, destination_position_latitude)) * 1.609344 as \"Distance\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\"\nFROM trips\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -390,6 +393,7 @@
     {
       "autoZoom": true,
       "defaultLayer": "OpenStreetMap",
+      "description": "Trip on map. The car only provides data on ignition on/off and not during driving thus no detailed route can be shown. If the map remains empty your car does not provide location information. You can still add it with edit trip",
       "gridPos": {
         "h": 14,
         "w": 12,
@@ -398,17 +402,28 @@
       },
       "id": 13,
       "lineColor": "red",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Edit trip",
+          "url": "${vwsfriend_url}/database/trips/edit?id=${id}"
+        }
+      ],
       "maxDataPoints": 500,
       "pointColor": "royalblue",
       "scrollWheelZoom": false,
       "showLayerChanger": true,
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(\"startDate\"),\n  trips.start_position_latitude AS latitude\nFROM trips\nWHERE\n  trips.id = $id\nUNION\nSELECT\n  $__time(\"endDate\"),\n  trips.destination_position_latitude AS latitude\nFROM trips\nWHERE\n  trips.id = $id",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  $__time(\"startDate\"),\n  trips.start_position_latitude AS latitude\nFROM trips\nWHERE\n  trips.id = $id\nUNION\nSELECT\n  $__time(\"endDate\"),\n  trips.destination_position_latitude AS latitude\nFROM trips\nWHERE\n  trips.id = $id",
           "refId": "A",
           "select": [
             [
@@ -432,6 +447,10 @@
           ]
         },
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "time_series",
           "group": [],
           "hide": false,
@@ -465,6 +484,7 @@
       "type": "pr0ps-trackmap-panel"
     },
     {
+      "description": "Start of the trip. If no data is shown your car does not provide location information. You can still add it with edit trip",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -496,6 +516,13 @@
         "y": 20
       },
       "id": 11,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Edit trip",
+          "url": "${vwsfriend_url}/database/trips/edit?id=${id}"
+        }
+      ],
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -514,14 +541,18 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  locations.name AS \"Name\",\n  locations.amenity AS \"Amenity\",\n  (locations.road || COALESCE(' '||locations.house_number, '')) AS \"Street\",\n  locations.neighbourhood AS \"Neighbourhood\",\n  locations.postcode AS \"Postcode\",\n  locations.city AS \"City\",\n  locations.state AS \"State\",\n  locations.country AS \"Country\"\nFROM trips\nLEFT JOIN locations on trips.start_location_id = locations.osm_id\nWHERE\n  id = $id",
+          "rawSql": "\nDO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  locations.name AS \"Name\",\n  locations.amenity AS \"Amenity\",\n  (locations.road || COALESCE(' '||locations.house_number, '')) AS \"Street\",\n  locations.neighbourhood AS \"Neighbourhood\",\n  locations.postcode AS \"Postcode\",\n  locations.city AS \"City\",\n  locations.state AS \"State\",\n  locations.country AS \"Country\"\nFROM trips\nLEFT JOIN locations on trips.start_location_id = locations.osm_id\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -549,6 +580,7 @@
       "type": "stat"
     },
     {
+      "description": "End of the trip. If no data is shown your car does not provide location information. You can still add it with edit trip",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -580,6 +612,13 @@
         "y": 20
       },
       "id": 14,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Edit trip",
+          "url": "${vwsfriend_url}/database/trips/edit?id=${id}"
+        }
+      ],
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -598,14 +637,18 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  locations.name AS \"Name\",\n  locations.amenity AS \"Amenity\",\n  (locations.road || COALESCE(' '||locations.house_number, '')) AS \"Street\",\n  locations.neighbourhood AS \"Neighbourhood\",\n  locations.postcode AS \"Postcode\",\n  locations.city AS \"City\",\n  locations.state AS \"State\",\n  locations.country AS \"Country\"\nFROM trips\nLEFT JOIN locations on trips.destination_location_id = locations.osm_id\nWHERE\n  id = $id",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  locations.name AS \"Name\",\n  locations.amenity AS \"Amenity\",\n  (locations.road || COALESCE(' '||locations.house_number, '')) AS \"Street\",\n  locations.neighbourhood AS \"Neighbourhood\",\n  locations.postcode AS \"Postcode\",\n  locations.city AS \"City\",\n  locations.state AS \"State\",\n  locations.country AS \"Country\"\nFROM trips\nLEFT JOIN locations on trips.destination_location_id = locations.osm_id\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -634,7 +677,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "internal"
@@ -644,38 +687,38 @@
       {
         "current": {
           "selected": false,
-          "text": "",
-          "value": ""
+          "text": "none",
+          "value": "none"
         },
         "hide": 2,
         "name": "id",
         "options": [
           {
-            "selected": false,
-            "text": "",
-            "value": ""
+            "selected": true,
+            "text": "none",
+            "value": "none"
           }
         ],
-        "query": "",
+        "query": "none",
         "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
           "selected": false,
-          "text": "",
-          "value": ""
+          "text": "none",
+          "value": "none"
         },
         "hide": 2,
         "name": "VIN",
         "options": [
           {
-            "selected": false,
-            "text": "",
-            "value": ""
+            "selected": true,
+            "text": "none",
+            "value": "none"
           }
         ],
-        "query": "",
+        "query": "none",
         "skipUrlSync": false,
         "type": "textbox"
       },
