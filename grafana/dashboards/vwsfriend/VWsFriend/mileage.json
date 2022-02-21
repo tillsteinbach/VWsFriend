@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644318588413,
+  "iteration": 1645434197370,
   "links": [
     {
       "asDropdown": false,
@@ -78,7 +78,7 @@
   "liveNow": true,
   "panels": [
     {
-      "description": "",
+      "description": "Milage over time. The dashed line shows the projected milage based on the data from the past. If you do not see any data your car does not provide the odometer data. You can still use this graph if you manually add odometer data to the trips.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -193,7 +193,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -261,7 +262,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"
