@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644414156181,
+  "iteration": 1645427426894,
   "links": [
     {
       "asDropdown": false,
@@ -90,6 +90,7 @@
   "liveNow": false,
   "panels": [
     {
+      "description": "List of all refueling sessions recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. If a refueling session is missing use the \"Add Refueling\" button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -340,6 +341,13 @@
         "y": 0
       },
       "id": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add Refueling",
+          "url": "${vwsfriend_url}/database/refuel-session/edit?vin=${VIN}"
+        }
+      ],
       "options": {
         "footer": {
           "fields": [
@@ -353,7 +361,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -393,6 +401,7 @@
       "type": "table"
     },
     {
+      "description": "List of the most often used stations. If this list is empty your car probably does not provide a location. You can still set stations by using the ⚙ button in the list of sessions.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -465,7 +474,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -504,7 +513,7 @@
       "type": "table"
     },
     {
-      "description": "",
+      "description": "List of the most often used operators. If this list is empty your car probably does not provide a location. You can still set stations by using the ⚙ button in the list of sessions.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -577,7 +586,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -617,7 +626,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"

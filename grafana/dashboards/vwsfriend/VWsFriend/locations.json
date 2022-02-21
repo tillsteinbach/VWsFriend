@@ -23,7 +23,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644310841258,
+  "iteration": 1645429905455,
   "links": [
     {
       "asDropdown": false,
@@ -79,6 +79,7 @@
   "liveNow": false,
   "panels": [
     {
+      "description": "Total different trip locations recorded for the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -117,7 +118,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -152,6 +153,7 @@
       "type": "stat"
     },
     {
+      "description": "Total different cities visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -196,7 +198,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -231,6 +233,7 @@
       "type": "stat"
     },
     {
+      "description": "Total different states visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -275,7 +278,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -310,6 +313,7 @@
       "type": "stat"
     },
     {
+      "description": "Total different countries visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -354,7 +358,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -389,6 +393,7 @@
       "type": "stat"
     },
     {
+      "description": "Most often visited neighbourhoods visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -457,7 +462,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -492,6 +497,7 @@
       "type": "table"
     },
     {
+      "description": "Most often visited cities visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -560,7 +566,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -595,6 +601,7 @@
       "type": "table"
     },
     {
+      "description": "Most often visited states visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -663,7 +670,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -698,7 +705,7 @@
       "type": "table"
     },
     {
-      "description": "",
+      "description": "20 last visited locations with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -755,7 +762,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -794,6 +801,7 @@
       "type": "table"
     },
     {
+      "description": "You can add geofences to ensure that a certain area is always resolved to a specific address or charger.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -879,7 +887,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -919,7 +927,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"

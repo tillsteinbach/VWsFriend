@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645191002340,
+  "iteration": 1645427415286,
   "links": [
     {
       "asDropdown": false,
@@ -90,7 +90,7 @@
   "liveNow": false,
   "panels": [
     {
-      "description": "List of all charging sessions recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ Button at the end of each column. If a charging session is missing use the \"Add Charging\" button at the top ",
+      "description": "List of all charging sessions recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. If a charging session is missing use the \"Add Charging\" button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -405,6 +405,13 @@
         "y": 0
       },
       "id": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add Charging",
+          "url": "${vwsfriend_url}/database/charging-session/edit?vin=${VIN}"
+        }
+      ],
       "options": {
         "footer": {
           "fields": [
