@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644418907683,
+  "iteration": 1645438089749,
   "links": [
     {
       "asDropdown": true,
@@ -42,6 +42,7 @@
   "liveNow": false,
   "panels": [
     {
+      "description": "Statistics for the car. You can change the granularity of the statistics using the period selection in the top. Not all data can be provided for every car type. Missing information can be manually added in the respective sections, e.g. trips or charging.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -294,7 +295,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -421,7 +422,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"

@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644318492874,
+  "iteration": 1645434039053,
   "links": [
     {
       "asDropdown": false,
@@ -66,12 +66,14 @@
   "liveNow": false,
   "panels": [
     {
+      "description": "List of all saved journeys. You can add a new journey to the database with Add journey",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "fixed"
           },
           "custom": {
+            "align": "auto",
             "displayMode": "auto",
             "filterable": false
           },
@@ -156,6 +158,13 @@
         "y": 0
       },
       "id": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add journey",
+          "url": "${vwsfriend_url}/database/journey/edit?vin=${VIN}"
+        }
+      ],
       "options": {
         "footer": {
           "fields": "",
@@ -166,7 +175,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -203,7 +212,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"

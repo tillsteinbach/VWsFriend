@@ -25,6 +25,7 @@
   "liveNow": true,
   "panels": [
     {
+      "description": "Total number of HTTP errors during the selected time.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -69,7 +70,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -104,6 +105,7 @@
       "type": "stat"
     },
     {
+      "description": "Response time of the server when fetching data",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -174,7 +176,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -211,6 +214,7 @@
       "type": "timeseries"
     },
     {
+      "description": "Number of errors over time.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -278,7 +282,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -316,7 +321,7 @@
     }
   ],
   "refresh": "5m",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "internal"

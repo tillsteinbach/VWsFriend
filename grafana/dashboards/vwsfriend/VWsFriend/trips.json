@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644477474319,
+  "iteration": 1645438258743,
   "links": [
     {
       "asDropdown": false,
@@ -90,6 +90,7 @@
   "liveNow": false,
   "panels": [
     {
+      "description": "List of all trips recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. If a trip is missing use the \"Add trip\" button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -213,6 +214,13 @@
         "y": 0
       },
       "id": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add trip",
+          "url": "${vwsfriend_url}/database/trips/edit?vin=${VIN}"
+        }
+      ],
       "options": {
         "footer": {
           "fields": [
@@ -227,7 +235,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -266,7 +274,7 @@
       "type": "table"
     },
     {
-      "description": "",
+      "description": "Top 10 list of trips between two locations. If this panel is empty location data is missing for your car. You can add manually location data by using the ⚙ button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -329,7 +337,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -340,7 +348,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  start_locations.display_name AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(*) AS \"# Drives\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_locations.display_name IS NOT NULL AND destination_location.display_name IS NOT NULL AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY start_locations.display_name, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country\nORDER BY \"# Drives\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(*) AS \"# Drives\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY start_locations.display_name, start_locations.name, start_locations.amenity, start_locations.road, start_locations.house_number, start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country\nORDER BY \"# Drives\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -368,6 +376,7 @@
       "type": "table"
     },
     {
+      "description": "Top 10 list of longest trips. If this panel is empty location data is missing for your car. You can add manually location data by using the ⚙ button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -459,7 +468,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -499,7 +508,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"

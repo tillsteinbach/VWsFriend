@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644320778910,
+  "iteration": 1645438988786,
   "links": [
     {
       "asDropdown": false,
@@ -85,6 +85,7 @@
       ],
       "customAttribution": false,
       "decimals": 1,
+      "description": "Location of the car when refueling (green) and the detected gas station (red). If no location is shown you can add the location data using the edit button.",
       "doubleClickZoom": true,
       "dragging": true,
       "enableOverlay": false,
@@ -105,6 +106,13 @@
       "ignoreEscapeKey": false,
       "ignoreInvalidGeohashValues": false,
       "initialZoom": 1,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Edit refueling session",
+          "url": "${vwsfriend_url}/database/refuel-session/edit?id=${id}"
+        }
+      ],
       "locationData": "table",
       "mapCenter": "(0°, 0°)",
       "mapCenterLatitude": 0,
@@ -171,6 +179,7 @@
       "valueName": "total"
     },
     {
+      "description": "Time of the refueling session.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -220,7 +229,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -255,6 +264,7 @@
       "type": "stat"
     },
     {
+      "description": "Details of the refueling session. The amount is estimated based on the fill level before and after refueling. If you want to work with the real amount and cost in the statistics you can add this data using the edit button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -352,6 +362,13 @@
         "y": 3
       },
       "id": 3,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Edit session",
+          "url": "${vwsfriend_url}/database/refuel-session/edit?id=${id}"
+        }
+      ],
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -370,7 +387,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -454,7 +471,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -490,7 +507,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "internal"
@@ -507,7 +524,7 @@
         "name": "id",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "",
             "value": ""
           }
@@ -526,7 +543,7 @@
         "name": "VIN",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "",
             "value": ""
           }
@@ -550,6 +567,10 @@
         "type": "query"
       }
     ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
   },
   "timepicker": {
     "hidden": true
