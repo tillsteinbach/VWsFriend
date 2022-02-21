@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645438988786,
+  "iteration": 1645447307153,
   "links": [
     {
       "asDropdown": false,
@@ -147,7 +147,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "(SELECT\n  position_latitude AS latitude,\n  position_longitude AS longitude,\n  \"realRefueled_l\" AS metric,\n  'Car Position' AS label\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nWHERE\n  refuel_sessions.id = $id)\nUNION\n(SELECT\n  latitude AS latitude,\n  longitude AS longitude,\n  \"realRefueled_l\" AS metric,\n  display_name AS label\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nWHERE\n  refuel_sessions.id = $id)",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Refueling dashboard';\nEND IF;\nEND $$;\n(SELECT\n  position_latitude AS latitude,\n  position_longitude AS longitude,\n  \"realRefueled_l\" AS metric,\n  'Car Position' AS label\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nWHERE\n  refuel_sessions.id = $id)\nUNION\n(SELECT\n  latitude AS latitude,\n  longitude AS longitude,\n  \"realRefueled_l\" AS metric,\n  display_name AS label\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nWHERE\n  refuel_sessions.id = $id)",
           "refId": "A",
           "select": [
             [
@@ -232,11 +232,15 @@
       "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  date AS \"Date\"\nFROM refuel_sessions\nWHERE\n  id = $id",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Refueling dashboard';\nEND IF;\nEND $$;\nSELECT\n  date AS \"Date\"\nFROM refuel_sessions\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -390,11 +394,15 @@
       "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realRefueled_l\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\"\nFROM refuel_sessions\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  id = $id",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Refueling dashboard';\nEND IF;\nEND $$;\nSELECT\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n   (\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realRefueled_l\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\"\nFROM refuel_sessions\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -474,11 +482,15 @@
       "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  locations.name,\n  locations.amenity,\n  locations.road,\n  locations.house_number,\n  locations.neighbourhood,\n  locations.postcode,\n  locations.city,\n  locations.state,\n  locations.country\nFROM refuel_sessions\nLEFT JOIN locations on refuel_sessions.location_id = locations.osm_id\nWHERE\n  id = $id",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Refueling dashboard';\nEND IF;\nEND $$;\nSELECT\n  locations.name,\n  locations.amenity,\n  locations.road,\n  locations.house_number,\n  locations.neighbourhood,\n  locations.postcode,\n  locations.city,\n  locations.state,\n  locations.country\nFROM refuel_sessions\nLEFT JOIN locations on refuel_sessions.location_id = locations.osm_id\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -517,38 +529,38 @@
       {
         "current": {
           "selected": false,
-          "text": "",
-          "value": ""
+          "text": "none",
+          "value": "none"
         },
         "hide": 2,
         "name": "id",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "",
             "value": ""
           }
         ],
-        "query": "",
+        "query": "none",
         "skipUrlSync": false,
         "type": "textbox"
       },
       {
         "current": {
           "selected": false,
-          "text": "",
-          "value": ""
+          "text": "none",
+          "value": "none"
         },
         "hide": 2,
         "name": "VIN",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "",
             "value": ""
           }
         ],
-        "query": "",
+        "query": "none",
         "skipUrlSync": false,
         "type": "textbox"
       },
@@ -567,10 +579,6 @@
         "type": "query"
       }
     ]
-  },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
   },
   "timepicker": {
     "hidden": true
