@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1644444480947,
+  "iteration": 1645430277836,
   "links": [
     {
       "asDropdown": false,
@@ -32,7 +32,7 @@
       "tags": [],
       "targetBlank": false,
       "title": "Trim",
-      "tooltip": "",
+      "tooltip": "Change the journey time from starting ${__from:date} and ending ${__to:date} to starting ${tripstart:date} and ending ${tripend:date}",
       "type": "link",
       "url": "/d/${__dashboard.uid}/?from=$tripstart&to=$tripend"
     },
@@ -44,7 +44,7 @@
       "tags": [],
       "targetBlank": true,
       "title": "Add journey",
-      "tooltip": "Add selection as a new journey",
+      "tooltip": "Add selection as a new journey to the database",
       "type": "link",
       "url": "${vwsfriend_url}/database/journey/edit?vin=${VIN}&tripstart=${tripstart}&tripend=${tripend}"
     },
@@ -56,7 +56,7 @@
       "tags": [],
       "targetBlank": false,
       "title": "Today so far",
-      "tooltip": "",
+      "tooltip": "Use the current day as time range for journey.",
       "type": "link",
       "url": "/d/${__dashboard.uid}/?from=now/d&to=now"
     },
@@ -80,6 +80,7 @@
     {
       "autoZoom": true,
       "defaultLayer": "OpenStreetMap",
+      "description": "Complete journey with all stops.",
       "gridPos": {
         "h": 15,
         "w": 12,
@@ -155,7 +156,7 @@
       "type": "pr0ps-trackmap-panel"
     },
     {
-      "description": "",
+      "description": "Journey starting location and ending location",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -253,7 +254,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -288,6 +289,7 @@
       "type": "stat"
     },
     {
+      "description": "Details of the journey. If possible the consumption is calculated.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -421,7 +423,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -458,6 +460,7 @@
       "type": "stat"
     },
     {
+      "description": "Distribution of time driven and charging for the whole journey.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -501,7 +504,8 @@
           "values": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.0",
@@ -539,7 +543,7 @@
       "type": "piechart"
     },
     {
-      "description": "",
+      "description": "Phases of driving or charging of this journey. Use the trim button to trim the journey starting from the first driving phase until the last driving phase of the selected time range from ${__from:date} to ${__to:date}. After trim the journey starts at ${tripstart:date} and ends at at ${tripend:date}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -547,7 +551,8 @@
           },
           "custom": {
             "fillOpacity": 100,
-            "lineWidth": 0
+            "lineWidth": 0,
+            "spanNulls": false
           },
           "mappings": [
             {
@@ -611,6 +616,12 @@
       },
       "id": 12,
       "interval": "5m",
+      "links": [
+        {
+          "title": "Trim",
+          "url": "/d/${__dashboard.uid}/?from=$tripstart&to=$tripend"
+        }
+      ],
       "options": {
         "alignValue": "center",
         "legend": {
@@ -621,7 +632,8 @@
         "rowHeight": 0.9,
         "showValue": "auto",
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "7.5.2",
@@ -671,6 +683,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
+      "description": "Battery state of charge and electric range over the whole journey.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -757,7 +770,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.5",
@@ -853,6 +867,7 @@
       "type": "timeseries"
     },
     {
+      "description": "All trips for the whole journey. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. You can also add missing trips.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -976,6 +991,13 @@
         "y": 23
       },
       "id": 6,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add trip",
+          "url": "${vwsfriend_url}/database/trips/edit?vin=${VIN}"
+        }
+      ],
       "options": {
         "footer": {
           "fields": [
@@ -990,7 +1012,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -1029,6 +1051,7 @@
       "type": "table"
     },
     {
+      "description": "All charging sessions for the whole journey. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. You can also add missing sessions.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1324,6 +1347,13 @@
         "y": 31
       },
       "id": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add charging",
+          "url": "${vwsfriend_url}/database/charging-session/edit?vin=${VIN}"
+        }
+      ],
       "options": {
         "footer": {
           "fields": [
@@ -1339,7 +1369,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -1378,6 +1408,7 @@
       "type": "table"
     },
     {
+      "description": "All refueling sessions for the whole journey. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. You can also add missing sessions.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1608,6 +1639,13 @@
         "y": 38
       },
       "id": 17,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Add refueling",
+          "url": "${vwsfriend_url}/database/refuel-session/edit?vin=${VIN}"
+        }
+      ],
       "options": {
         "footer": {
           "fields": [
@@ -1621,7 +1659,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "datasource": {
@@ -1662,7 +1700,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"

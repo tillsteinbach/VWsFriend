@@ -46,8 +46,20 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644318119733,
+  "iteration": 1645427914743,
   "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Car settings",
+      "tooltip": "",
+      "type": "link",
+      "url": "${vwsfriend_url}/settings/vehicle/database/${VIN}"
+    },
     {
       "asDropdown": true,
       "icon": "dashboard",
@@ -69,7 +81,7 @@
       "datasource": {
         "uid": ""
       },
-      "description": "",
+      "description": "Current status of the car ${VIN:text} with VIN ${VIN:raw}. To receive reasonable results you have to make settings for your car.",
       "gridPos": {
         "h": 8,
         "w": 3,
@@ -77,11 +89,18 @@
         "y": 0
       },
       "id": 5,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Car Settings",
+          "url": "${vwsfriend_url}/settings/vehicle/database/${VIN}"
+        }
+      ],
       "options": {
         "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
         "mode": "html"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "title": "$VIN",
       "type": "text"
     },
@@ -90,7 +109,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "description": "",
+      "description": "Current state of charge in percent",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -136,7 +155,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -193,6 +212,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
+      "description": "Battery level and projected range plotted over time.\nSome cars only update these values during startup and shutdown.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -282,7 +302,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.5",
@@ -378,7 +399,7 @@
       "type": "timeseries"
     },
     {
-      "description": "",
+      "description": "Indicates if the car is currently awake (online) or sleeping.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -439,7 +460,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "alias": "Car is online",
@@ -476,7 +497,7 @@
       "type": "stat"
     },
     {
-      "description": "",
+      "description": "Time when the last successful connection to the servers were made and time when the last information from the car was received.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -518,7 +539,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "alias": "Last connection",
@@ -564,7 +585,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "description": "",
+      "description": "Current range calculated from current consumption",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -613,7 +634,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -666,7 +687,7 @@
       "type": "gauge"
     },
     {
-      "description": "",
+      "description": "Time remaining until climatization is turned off automatically.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -707,7 +728,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -752,6 +773,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
+      "description": "Battery level and projected range plotted over time for primary and secondary engine. This is useful especially for hybrids.\nSome cars only update these values during startup and shutdown.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -841,7 +863,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.5",
@@ -1115,6 +1138,7 @@
       "type": "timeseries"
     },
     {
+      "description": "If the car is charging, current charging power. This value is not available on all cars.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1160,7 +1184,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -1197,11 +1221,11 @@
           ]
         }
       ],
-      "title": "Charging Speed (now)",
+      "title": "Charging Power (now)",
       "type": "gauge"
     },
     {
-      "description": "",
+      "description": "Time remaining until desired state of charge is reached.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1242,7 +1266,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "format": "table",
@@ -1283,6 +1307,7 @@
       "type": "gauge"
     },
     {
+      "description": "Current consumption and Range if the car would be at 100% SoC. Consumption is calculated as capacity divided by current range. The green area shows the WLTP range.\nSome cars only update these values during startup and shutdown. Value is only useful for electric cars or hybrids running on electricity only.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1406,7 +1431,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.5",
@@ -1522,7 +1548,7 @@
       "type": "timeseries"
     },
     {
-      "description": "",
+      "description": "Current efficiency. 100% means that with the current consumption the WLTP range is reached.\nSome cars only update these values during startup and shutdown. Value is only useful for electric cars or hybrids running on electricity only.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1652,7 +1678,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.5",
@@ -1767,7 +1794,7 @@
       "type": "timeseries"
     },
     {
-      "description": "",
+      "description": "Charging power and charging rate in kilometers over time.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1856,7 +1883,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.5",
@@ -1918,7 +1946,7 @@
       "type": "timeseries"
     },
     {
-      "description": "",
+      "description": "Highlights the times when the car is online, heating and charging.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1926,7 +1954,8 @@
           },
           "custom": {
             "fillOpacity": 70,
-            "lineWidth": 0
+            "lineWidth": 0,
+            "spanNulls": false
           },
           "mappings": [
             {
@@ -2024,7 +2053,8 @@
         "rowHeight": 0.9,
         "showValue": "auto",
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "7.5.2",
@@ -2135,7 +2165,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"
