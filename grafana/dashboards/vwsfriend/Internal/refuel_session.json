@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645447307153,
+  "iteration": 1645449413879,
   "links": [
     {
       "asDropdown": false,
@@ -430,6 +430,7 @@
       "type": "stat"
     },
     {
+      "description": "Location of the refueling. If no location is provided your car probably does not provide a location. You can set it manually by changing the session with the edit button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -514,7 +515,7 @@
           ]
         }
       ],
-      "title": "Location",
+      "title": "Station Location",
       "type": "stat"
     }
   ],
@@ -536,7 +537,7 @@
         "name": "id",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "",
             "value": ""
           }
@@ -555,7 +556,7 @@
         "name": "VIN",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "",
             "value": ""
           }

@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645446393169,
+  "iteration": 1645448571066,
   "links": [
     {
       "asDropdown": false,
@@ -69,6 +69,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
+      "description": "Battery state of charge and range during the charging session.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -261,6 +262,7 @@
       "type": "timeseries"
     },
     {
+      "description": "Times of the charging session. Start/End, Plugging/Unplugging, Locking/Unlocking",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -349,7 +351,7 @@
       "type": "stat"
     },
     {
-      "description": "",
+      "description": "Used power and charging rate during the charging session.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -500,6 +502,7 @@
       "type": "timeseries"
     },
     {
+      "description": "Details of the charging session. The amount is estimated based on the state of charge before and after charging. If you want to work with the real amount and cost in the statistics you can add this data using the edit button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -633,6 +636,13 @@
         "y": 8
       },
       "id": 3,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Edit session",
+          "url": "${vwsfriend_url}/database/refuel-session/edit?id=${id}"
+        }
+      ],
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -690,6 +700,7 @@
       "type": "stat"
     },
     {
+      "description": "Charger of this charging session. If no data is provided your car might not provide location data. You can still set the location using the edit button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -737,8 +748,8 @@
       "links": [
         {
           "targetBlank": true,
-          "title": "Edit Charger",
-          "url": "${vwsfriend_url}/database/charger/edit?id=${charger_id}"
+          "title": "Edit Session",
+          "url": "${vwsfriend_url}/database/charging-session/edit?id=${id}"
         }
       ],
       "options": {
@@ -818,6 +829,7 @@
       ],
       "customAttribution": false,
       "decimals": 2,
+      "description": "Location of the car when charging (green) and the used charger (red). If no location is shown you can add the location data using the edit button.",
       "doubleClickZoom": true,
       "dragging": true,
       "enableOverlay": false,
@@ -906,6 +918,7 @@
       "valueName": "current"
     },
     {
+      "description": "Charging location of the session. If no data is provided your car might not provide location data. You can still set the location using the edit button.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1055,6 +1068,12 @@
         "type": "query"
       },
       {
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
         "definition": "SELECT charger_id FROM charging_sessions WHERE charging_sessions.id = $id",
         "description": "ID of the sessions charger",
         "hide": 2,
