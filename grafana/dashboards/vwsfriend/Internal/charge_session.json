@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645445155004,
+  "iteration": 1645446393169,
   "links": [
     {
       "asDropdown": false,
@@ -321,7 +321,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nELSE\n  SELECT\n    connected AS \"Connected\",\n    locked AS \"Locked\",\n    started AS \"Started\",\n    ended AS \"Ended\",\n    unlocked AS \"Unlocked\",\n    disconnected AS \"Disconnected\"\n  FROM charging_sessions\n  WHERE\n    id = $id;\nEND IF;\nEND $$;",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  connected AS \"Connected\",\n  locked AS \"Locked\",\n  started AS \"Started\",\n  ended AS \"Ended\",\n  unlocked AS \"Unlocked\",\n  disconnected AS \"Disconnected\"\nFROM charging_sessions\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -662,7 +662,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nELSE\n  SELECT\n    EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n    \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n    \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n    \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n    ((\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n    \"acdc\" AS \"AC/DC\",\n    \"startSOC_pct\" AS \"% Start\",\n    \"endSOC_pct\" AS \"% End\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC) AS \"Amount (estimated)\",\n    \"realCharged_kWh\" AS \"Amount (real)\",\n    \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n    \"mileage_km\" AS \"Odometer\"\n  FROM charging_sessions\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  WHERE\n  id = $id;\nEND IF;\nEND $$;",
+          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realCharged_kWh\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\nid = $id",
           "refId": "A",
           "select": [
             [
@@ -770,7 +770,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nELSE\n  SELECT\n    chargers.name AS \"Name\",\n    chargers.address AS \"Address\",\n    chargers.max_power AS \"Max Power\",\n    chargers.num_spots AS \"Spots\",\n    operators.name AS \"Operator\"\n  FROM charging_sessions\n  LEFT JOIN chargers ON charger_id = chargers.id\n  LEFT JOIN operators ON operator_id = operators.id\n  WHERE\n    charging_sessions.id = $id;\nEND IF;\nEND $$;",
+          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  chargers.name AS \"Name\",\n  chargers.address AS \"Address\",\n  chargers.max_power AS \"Max Power\",\n  chargers.num_spots AS \"Spots\",\n  operators.name AS \"Operator\"\nFROM charging_sessions\nLEFT JOIN chargers ON charger_id = chargers.id\nLEFT JOIN operators ON operator_id = operators.id\nWHERE\n  charging_sessions.id = $id",
           "refId": "A",
           "select": [
             [
@@ -966,7 +966,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nELSE\n  SELECT\n    locations.name AS \"Name\",\n    locations.amenity AS \"Amenity\",\n    (locations.road || COALESCE(' '||locations.house_number, '')) AS \"Street\",\n    locations.neighbourhood AS \"Neighbourhood\",\n    locations.postcode AS \"Postcode\",\n    locations.city AS \"City\",\n    locations.state AS \"State\",\n    locations.country AS \"Country\"\n  FROM charging_sessions\n  LEFT JOIN locations on charging_sessions.location_id = locations.osm_id\n  WHERE\n    id = $id;\nEND IF;\nEND $$;",
+          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  locations.name AS \"Name\",\n  locations.amenity AS \"Amenity\",\n  (locations.road || COALESCE(' '||locations.house_number, '')) AS \"Street\",\n  locations.neighbourhood AS \"Neighbourhood\",\n  locations.postcode AS \"Postcode\",\n  locations.city AS \"City\",\n  locations.state AS \"State\",\n  locations.country AS \"Country\"\nFROM charging_sessions\nLEFT JOIN locations on charging_sessions.location_id = locations.osm_id\nWHERE\n  id = $id",
           "refId": "A",
           "select": [
             [
@@ -994,7 +994,7 @@
       "type": "stat"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 35,
   "style": "dark",
   "tags": [
