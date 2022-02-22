@@ -274,7 +274,7 @@ def tripEdit():  # noqa: C901
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
 
-    tags = current_app.db.session.query(Tag).filter((Tag.use_trips is True)).all()
+    tags = current_app.db.session.query(Tag).filter((Tag.use_trips == True)).all()  # noqa: E712
     choices = []
     for tag in tags:
         label = tag.name
@@ -414,7 +414,7 @@ def chargingSessionEdit():  # noqa: C901
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
 
-    tags = current_app.db.session.query(Tag).filter((Tag.use_charges is True)).all()
+    tags = current_app.db.session.query(Tag).filter((Tag.use_charges == True)).all()  # noqa: E712
     choices = []
     for tag in tags:
         label = tag.name
@@ -651,7 +651,7 @@ def refuelSessionEdit():  # noqa: C901
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
 
-    tags = current_app.db.session.query(Tag).filter((Tag.use_refueling is True)).all()
+    tags = current_app.db.session.query(Tag).filter((Tag.use_refueling == True)).all()  # noqa: E712
     choices = []
     for tag in tags:
         label = tag.name
@@ -773,7 +773,7 @@ def journeyEdit():  # noqa: C901
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
 
-    tags = current_app.db.session.query(Tag).filter((Tag.use_journey is True)).all()
+    tags = current_app.db.session.query(Tag).filter((Tag.use_journey == True)).all()  # noqa: E712
     choices = []
     for tag in tags:
         label = tag.name
