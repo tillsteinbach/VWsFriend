@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Overview{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h2>Geofence</h2>
+<ul>
+  <li><a href="{{ url_for('database.geofenceEdit') }}">Add Geofence</a></li>
+  <li>List Geofences</li>
+</ul>
+
+<h2>Trip</h2>
+<ul>
+  <li><a href="{{ url_for('database.tripEdit') }}">Add Trip</a></li>
+  <li>List Trips</li>
+</ul>
+
+<h2>Charging</h2>
+<ul>
+  <li><a href="{{ url_for('database.geofenceEdit') }}">Add Charging session</a></li>
+  <li>List Charging sessions</li>
+</ul>
+<ul>
+  <li><a href="{{ url_for('database.chargerEdit') }}">Add Charging station</a></li>
+  <li>List Charging stations</li>
+</ul>
+<ul>
+  <li><a href="{{ url_for('database.operatorEdit') }}">Add Operator</a></li>
+  <li>List Operators </li>
+</ul>
+
+<h2>Refueling</h2>
+<ul>
+  <li><a href="{{ url_for('database.refuelSessionEdit') }}">Add Refueling session</a></li>
+  <li>List Refueling sessions </li>
+</ul>
+
+<h2>Journeys</h2>
+<ul>
+  <li><a href="{{ url_for('database.journeyEdit') }}">Add Journey</a></li>
+  <li>List Journeys </li>
+</ul>
+
+<h2>Tags</h2>
+<ul>
+  <li><a href="{{ url_for('database.tagEdit') }}">Add Tag</a></li>
+  <li>List Tags </li>
+</ul>
+
+<h2>Settings</h2>
+<ul>
+  <li><a href="{{ url_for('database.settingsEdit') }}">Connection Settings</a></li>
+</ul>
+
+{% endblock %}

@@ -122,6 +122,19 @@
         {% endif %}
       </fieldset>
 
+      <fieldset class="form-field">
+        {{ form.tags.label }}
+        {{ form.tags }}
+        {% if form.tags.errors %}
+          <ul class="errors">
+            {% for error in form.tags.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        Click to select, ctrl-click to unselect.
+      </fieldset>
+
       <div id="positions" style="height:400px"></div>
       <script>
         const lat = {{ form.position_latitude.data or '0' }}

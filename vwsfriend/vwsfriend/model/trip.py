@@ -1,8 +1,14 @@
-from sqlalchemy import Column, Integer, BigInteger, Float, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, BigInteger, Float, String, ForeignKey, Table
+from sqlalchemy.orm import relationship, backref
 
 from vwsfriend.model.base import Base
 from vwsfriend.model.datetime_decorator import DatetimeDecorator
+
+
+trip_tag_association_table = Table('trip_tag', Base.metadata,
+                                   Column('trips_id', ForeignKey('trips.id')),
+                                   Column('tag_name', ForeignKey('tag.name'))
+                                   )
 
 
 class Trip(Base):
@@ -23,6 +29,7 @@ class Trip(Base):
     destination_location = relationship("Location", foreign_keys=[destination_location_id])
     start_mileage_km = Column(Integer)
     end_mileage_km = Column(Integer)
+    tags = relationship("Tag", secondary=trip_tag_association_table, backref=backref("trips"))
 
     def __init__(self, vehicle, startDate, start_position_latitude, start_position_longitude, start_location, start_mileage_km):
         self.vehicle = vehicle

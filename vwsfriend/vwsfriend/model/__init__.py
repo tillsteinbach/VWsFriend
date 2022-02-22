@@ -15,3 +15,4 @@ from .charger import Charger, Operator
 from .settings import Settings
 from .weconnect_error import WeConnectError
 from .weconnect_responsetime import WeConnectResponsetime
+from .tag import Tag
