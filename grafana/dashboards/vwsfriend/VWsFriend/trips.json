@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645438258743,
+  "iteration": 1645542241269,
   "links": [
     {
       "asDropdown": false,
@@ -246,7 +246,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination Location\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nORDER BY 1 DESC",
+          "rawSql": "SELECT\n  \"startDate\" AS \"Start Date\",\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination Location\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN' ${tag_sql:raw}\nORDER BY 1 DESC",
           "refId": "A",
           "select": [
             [
@@ -348,7 +348,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(*) AS \"# Drives\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY start_locations.display_name, start_locations.name, start_locations.amenity, start_locations.road, start_locations.house_number, start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country\nORDER BY \"# Drives\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(*) AS \"# Drives\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN' ${tag_sql:raw}\nGROUP BY start_locations.display_name, start_locations.name, start_locations.amenity, start_locations.road, start_locations.house_number, start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country\nORDER BY \"# Drives\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -479,7 +479,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"endDate\" AS \"Date\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  id,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  (\"endDate\"-\"startDate\") IS NOT NULL AND\n  trips.vehicle_vin = '$VIN'\nORDER BY \"Duration\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  \"endDate\" AS \"Date\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  (\"endDate\"-\"startDate\") AS \"Duration\",\n  id,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  (\"endDate\"-\"startDate\") IS NOT NULL AND\n  trips.vehicle_vin = '$VIN' ${tag_sql:raw}\nORDER BY \"Duration\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -542,6 +542,45 @@
         "name": "vwsfriend_url",
         "options": [],
         "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [],
+          "value": []
+        },
+        "definition": "SELECT name || ': ' || description || '$' || name FROM tag WHERE use_trips = true",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Filter by tag",
+        "multi": true,
+        "name": "tag",
+        "options": [],
+        "query": "SELECT name || ': ' || description || '$' || name FROM tag WHERE use_trips = true",
+        "refresh": 1,
+        "regex": "/(?<text>.+)\\$(?<value>.+)/",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 THEN $$ AND trip_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "tag_sql",
+        "options": [],
+        "query": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 THEN $$ AND trip_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
