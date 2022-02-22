@@ -1,8 +1,14 @@
-from sqlalchemy import Column, Integer, BigInteger, Float, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, BigInteger, Float, String, ForeignKey, Table
+from sqlalchemy.orm import relationship, backref
 
 from vwsfriend.model.base import Base
 from vwsfriend.model.datetime_decorator import DatetimeDecorator
+
+
+refuel_tag_association_table = Table('refuel_tag', Base.metadata,
+                                     Column('refuel_sessions_id', ForeignKey('refuel_sessions.id')),
+                                     Column('tag_name', ForeignKey('tag.name'))
+                                     )
 
 
 class RefuelSession(Base):
@@ -21,6 +27,7 @@ class RefuelSession(Base):
     location = relationship("Location")
     realRefueled_l = Column(Float)
     realCost_ct = Column(Integer)
+    tags = relationship("Tag", secondary=refuel_tag_association_table, backref=backref("refuel_sessions"))
 
     def __init__(self, vehicle, date, startSOC_pct, endSOC_pct, mileage_km, position_latitude, position_longitude, location):
         self.vehicle = vehicle

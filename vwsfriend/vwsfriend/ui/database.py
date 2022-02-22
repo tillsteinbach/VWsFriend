@@ -3,6 +3,7 @@ from io import BytesIO
 import subprocess  # nosec
 from datetime import datetime, timezone
 import uuid
+import re
 
 from sqlalchemy import and_, func
 
@@ -10,7 +11,8 @@ from flask import Blueprint, render_template, current_app, abort, request, flash
 from flask_login import login_required
 from flask_wtf import FlaskForm
 from vwsfriend.model.charger import Charger, Operator
-from wtforms import SubmitField, HiddenField, StringField, SelectField, FileField, DateTimeField, IntegerField, DecimalField, FormField
+from wtforms import SubmitField, HiddenField, StringField, SelectField, SelectMultipleField, FileField, DateTimeLocalField, IntegerField, DecimalField, \
+    FormField, BooleanField, ValidationError
 from wtforms.validators import DataRequired, NumberRange, Optional
 
 from haversine import haversine, Unit
@@ -25,6 +27,7 @@ from vwsfriend.model.settings import Settings, UnitOfLength, UnitOfTemperature
 from vwsfriend.model.journey import Journey
 from vwsfriend.model.geofence import Geofence
 from vwsfriend.model.location import Location
+from vwsfriend.model.tag import Tag
 
 from vwsfriend.util.location_util import amenityFromLatLon, addCharger, locationFromLatLonWithGeofence
 
@@ -80,14 +83,15 @@ class GeofenceEditForm(FlaskForm):
 class TripEditForm(FlaskForm):
     id = HiddenField('id', validators=[Optional()])
     vehicle_vin = HiddenField('id', validators=[DataRequired()])
-    startDate = DateTimeField('Start Date and Time (UTC)', validators=[DataRequired()])
-    endDate = DateTimeField('End Date and Time (UTC)', validators=[DataRequired()])
+    startDate = DateTimeLocalField('Start Date and Time (UTC)', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
+    endDate = DateTimeLocalField('End Date and Time (UTC)', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
     start_position_latitude = DecimalField('Start Position Latitude', places=10, validators=[Optional(), NumberRange(min=-90, max=90)])
     start_position_longitude = DecimalField('Start Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
     start_mileage_km = IntegerField('Start Mileage in km', validators=[Optional(), NumberRange(min=0)])
     destination_position_latitude = DecimalField('Destination Position Latitude', places=10, validators=[Optional(), NumberRange(min=-90, max=90)])
     destination_position_longitude = DecimalField('Destination Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
     end_mileage_km = IntegerField('End Mileage in km', validators=[Optional(), NumberRange(min=0)])
+    tags = SelectMultipleField('Tags', validators=[Optional()])
     save = SubmitField('Save changes')
     add = SubmitField('Add Trip')
     delete = SubmitField('Delete Trip')
@@ -96,12 +100,12 @@ class TripEditForm(FlaskForm):
 class ChargingSessionEditForm(FlaskForm):
     id = HiddenField('id', validators=[Optional()])
     vehicle_vin = HiddenField('id', validators=[DataRequired()])
-    connected = DateTimeField('Plug Connection Date and Time (UTC)', validators=[Optional()])
-    locked = DateTimeField('Plug Locked Date and Time (UTC)', validators=[Optional()])
-    started = DateTimeField('Charging Start Date and Time (UTC)', validators=[DataRequired()])
-    ended = DateTimeField('Charging End Date and Time (UTC)', validators=[Optional()])
-    unlocked = DateTimeField('Plug Unlocked Date and Time (UTC)', validators=[Optional()])
-    disconnected = DateTimeField('Plug Disconnect Date and Time (UTC)', validators=[Optional()])
+    connected = DateTimeLocalField('Plug Connection Date and Time (UTC)', validators=[Optional()], format='%Y-%m-%dT%H:%M')
+    locked = DateTimeLocalField('Plug Locked Date and Time (UTC)', validators=[Optional()], format='%Y-%m-%dT%H:%M')
+    started = DateTimeLocalField('Charging Start Date and Time (UTC)', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
+    ended = DateTimeLocalField('Charging End Date and Time (UTC)', validators=[Optional()], format='%Y-%m-%dT%H:%M')
+    unlocked = DateTimeLocalField('Plug Unlocked Date and Time (UTC)', validators=[Optional()], format='%Y-%m-%dT%H:%M')
+    disconnected = DateTimeLocalField('Plug Disconnect Date and Time (UTC)', validators=[Optional()], format='%Y-%m-%dT%H:%M')
     # maxChargeCurrentACSetting
     targetSOCSetting_pct = IntegerField('Target SoC Setting', validators=[Optional(), NumberRange(min=0, max=100)])
     maximumChargePower_kW = DecimalField('Maximum Power during session', places=4, validators=[Optional(), NumberRange(min=0)])
@@ -114,6 +118,7 @@ class ChargingSessionEditForm(FlaskForm):
     charger_id = SelectField("Charger", validators=[Optional()])
     realCharged_kWh = DecimalField('Real kWh charged', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
     realCost_ct = IntegerField('Real cost in cents', validators=[Optional(), NumberRange(min=0)])
+    tags = SelectMultipleField('Tags', validators=[Optional()])
 
     save = SubmitField('Save changes')
     add = SubmitField('Add Session')
@@ -123,7 +128,7 @@ class ChargingSessionEditForm(FlaskForm):
 class RefuelSessionEditForm(FlaskForm):
     id = HiddenField('id', validators=[Optional()])
     vehicle_vin = HiddenField('id', validators=[DataRequired()])
-    date = DateTimeField('Date and Time (UTC)', validators=[Optional()])
+    date = DateTimeLocalField('Date and Time (UTC)', validators=[Optional()], format='%Y-%m-%dT%H:%M')
     startSOC_pct = IntegerField('SoC at start', validators=[Optional(), NumberRange(min=0, max=100)])
     endSOC_pct = IntegerField('SoC at end', validators=[Optional(), NumberRange(min=0, max=100)])
     mileage_km = IntegerField('Mileage in km when charging', validators=[Optional(), NumberRange(min=0)])
@@ -131,6 +136,7 @@ class RefuelSessionEditForm(FlaskForm):
     position_longitude = DecimalField('Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
     realRefueled_l = DecimalField('Real l refueled', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
     realCost_ct = IntegerField('Real cost in cents', validators=[Optional(), NumberRange(min=0)])
+    tags = SelectMultipleField('Tags', validators=[Optional()])
 
     save = SubmitField('Save changes')
     add = SubmitField('Add Session')
@@ -140,10 +146,11 @@ class RefuelSessionEditForm(FlaskForm):
 class JourneyEditForm(FlaskForm):
     id = HiddenField('id', validators=[Optional()])
     vehicle_vin = HiddenField('id', validators=[DataRequired()])
-    start = DateTimeField('Start date and Time (UTC)', validators=[DataRequired()])
-    end = DateTimeField('End date and Time (UTC)', validators=[DataRequired()])
+    start = DateTimeLocalField('Start date and Time (UTC)', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
+    end = DateTimeLocalField('End date and Time (UTC)', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
     title = StringField('Title', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
+    tags = SelectMultipleField('Tags', validators=[Optional()])
 
     save = SubmitField('Save changes')
     add = SubmitField('Add journey')
@@ -175,11 +182,35 @@ class OperatorEditForm(FlaskForm):
     delete = SubmitField('Delete operator')
 
 
+class TagEditForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    use_trips = BooleanField('Use for Trips', validators=[Optional()])
+    use_charges = BooleanField('Use for Charging Sessions', validators=[Optional()])
+    use_refueling = BooleanField('Use for Refueling Sessions', validators=[Optional()])
+    use_journey = BooleanField('Use for Journeys', validators=[Optional()])
+
+    save = SubmitField('Save tag')
+    add = SubmitField('Add tag')
+    delete = SubmitField('Delete tag')
+
+    def validate_name(form, field):
+        if len(field.data) > 10:
+            raise ValidationError('Name must be not longer than 10 characters')
+        if not re.match(r'^[A-Za-z0-9_-]+$', field.data):
+            raise ValidationError('Name must only contain characters, numbers, - and _')
+
+
 class BackupRestoreForm(FlaskForm):
     file = FileField('Restore file', validators=[Optional()])
 
     restore = SubmitField('restore')
     backup = SubmitField('backup')
+
+
+@bp.route('/overview', methods=['GET'])
+def overview():
+    return render_template('database/overview.html', current_app=current_app)
 
 
 @bp.route('/settings/edit', methods=['GET', 'POST'])
@@ -235,11 +266,22 @@ def tripEdit():  # noqa: C901
         if trip is None:
             abort(404, f"Trip with id {id} doesn't exist.")
     elif vin is None:
-        flash(message='You need to provide a vin to add a trip', category='error')
+        vehicles = current_app.db.session.query(Vehicle).all()
+        flash(message='You need to select a vehicle to add a trip', category='info')
+        return render_template('database/select_vehicle.html', current_app=current_app, vehicles=vehicles)
     else:
         vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
+
+    tags = current_app.db.session.query(Tag).filter((Tag.use_trips is True)).all()
+    choices = []
+    for tag in tags:
+        label = tag.name
+        if tag.description is not None:
+            label += f' ({tag.description})'
+        choices.append((tag.name, label))
+    form.tags.choices = choices
 
     if trip is not None and form.delete.data:
         flash(f'Successfully deleted trip {id}', category='info')
@@ -267,6 +309,10 @@ def tripEdit():  # noqa: C901
                                                                            trip.destination_position_longitude)
             trip.start_mileage_km = form.start_mileage_km.data
             trip.end_mileage_km = form.end_mileage_km.data
+
+            tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+            trip.tags = tags
+
         current_app.db.session.commit()
         flash(message=f'Successfully updated trip {id}', category='info')
 
@@ -299,6 +345,10 @@ def tripEdit():  # noqa: C901
         trip.destination_position_longitude = destination_position_longitude
         trip.destination_location = destination_location
         trip.end_mileage_km = end_mileage_km
+
+        tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+        trip.tags = tags
+
         with current_app.db.session.begin_nested():
             current_app.db.session.add(trip)
         current_app.db.session.commit()
@@ -316,6 +366,10 @@ def tripEdit():  # noqa: C901
         form.destination_position_longitude.data = trip.destination_position_longitude
         form.start_mileage_km.data = trip.start_mileage_km
         form.end_mileage_km.data = trip.end_mileage_km
+        selected = []
+        for tag in trip.tags:
+            selected.append(tag.name)
+        form.tags.data = selected
     else:
         form.vehicle_vin.data = vehicle.vin
         form.startDate.data = datetime.utcnow()
@@ -352,11 +406,22 @@ def chargingSessionEdit():  # noqa: C901
             abort(404, f"Charging session with id {id} doesn't exist.")
 
     elif vin is None:
-        abort(500, "You need to provide a vin to add a charging session")
+        vehicles = current_app.db.session.query(Vehicle).all()
+        flash(message='You need to select a vehicle to add a trip', category='info')
+        return render_template('database/select_vehicle.html', current_app=current_app, vehicles=vehicles)
     else:
         vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
+
+    tags = current_app.db.session.query(Tag).filter((Tag.use_charges is True)).all()
+    choices = []
+    for tag in tags:
+        label = tag.name
+        if tag.description is not None:
+            label += f' ({tag.description})'
+        choices.append((tag.name, label))
+    form.tags.choices = choices
 
     try:
         if form.position_latitude.data is not None:
@@ -459,6 +524,8 @@ def chargingSessionEdit():  # noqa: C901
                     if not chargerAdded:
                         flash(message='Charger not valid anymore', category='error')
 
+            tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+            chargingSession.tags = tags
         current_app.db.session.commit()
         flash(message=f'Successfully updated charging session {id}', category='error')
 
@@ -503,6 +570,9 @@ def chargingSessionEdit():  # noqa: C901
         chargingSession.realCharged_kWh = form.realCharged_kWh.data
         chargingSession.realCost_ct = form.realCost_ct.data
 
+        tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+        chargingSession.tags = tags
+
         with current_app.db.session.begin_nested():
             current_app.db.session.add(chargingSession)
         current_app.db.session.commit()
@@ -530,6 +600,11 @@ def chargingSessionEdit():  # noqa: C901
         form.charger_id.data = chargingSession.charger_id
         form.realCharged_kWh.data = chargingSession.realCharged_kWh
         form.realCost_ct.data = chargingSession.realCost_ct
+
+        selected = []
+        for tag in chargingSession.tags:
+            selected.append(tag.name)
+        form.tags.data = selected
     else:
         form.vehicle_vin.data = vehicle.vin
         form.started.data = datetime.utcnow()
@@ -568,11 +643,22 @@ def refuelSessionEdit():  # noqa: C901
             abort(404, f"Refuel session with id {id} doesn't exist.")
 
     elif vin is None:
-        flash(message='You need to provide a vin to add a refuel session', category='error')
+        vehicles = current_app.db.session.query(Vehicle).all()
+        flash(message='You need to select a vehicle to add a trip', category='info')
+        return render_template('database/select_vehicle.html', current_app=current_app, vehicles=vehicles)
     else:
         vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
+
+    tags = current_app.db.session.query(Tag).filter((Tag.use_refueling is True)).all()
+    choices = []
+    for tag in tags:
+        label = tag.name
+        if tag.description is not None:
+            label += f' ({tag.description})'
+        choices.append((tag.name, label))
+    form.tags.choices = choices
 
     if refuelSession is not None and form.delete.data:
         flash(message=f'Successfully deleted refuel session {id}', category='info')
@@ -597,6 +683,9 @@ def refuelSessionEdit():  # noqa: C901
             refuelSession.realRefueled_l = form.realRefueled_l.data
             refuelSession.realCost_ct = form.realCost_ct.data
 
+            tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+            refuelSession.tags = tags
+
         current_app.db.session.commit()
         flash(message=f'Successfully updated refuel session {id}', category='info')
 
@@ -616,6 +705,9 @@ def refuelSessionEdit():  # noqa: C901
         refuelSession.realRefueled_l = form.realRefueled_l.data
         refuelSession.realCost_ct = form.realCost_ct.data
 
+        tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+        refuelSession.tags = tags
+
         with current_app.db.session.begin_nested():
             current_app.db.session.add(refuelSession)
         current_app.db.session.commit()
@@ -633,6 +725,11 @@ def refuelSessionEdit():  # noqa: C901
         form.position_longitude.data = refuelSession.position_longitude
         form.realRefueled_l.data = refuelSession.realRefueled_l
         form.realCost_ct.data = refuelSession.realCost_ct
+
+        selected = []
+        for tag in refuelSession.tags:
+            selected.append(tag.name)
+        form.tags.data = selected
     else:
         form.vehicle_vin.data = vehicle.vin
         form.date.data = datetime.utcnow()
@@ -668,11 +765,22 @@ def journeyEdit():  # noqa: C901
             abort(404, f"Journey with id {id} doesn't exist.")
 
     elif vin is None:
-        flash(message='You need to provide a vin to add a journey', category='error')
+        vehicles = current_app.db.session.query(Vehicle).all()
+        flash(message='You need to select a vehicle to add a trip', category='info')
+        return render_template('database/select_vehicle.html', current_app=current_app, vehicles=vehicles)
     else:
         vehicle = current_app.db.session.query(Vehicle).filter(Vehicle.vin == vin).first()
         if vehicle is None:
             flash(message=f'Vehicle with VIN {vin} does not exist', category='error')
+
+    tags = current_app.db.session.query(Tag).filter((Tag.use_journey is True)).all()
+    choices = []
+    for tag in tags:
+        label = tag.name
+        if tag.description is not None:
+            label += f' ({tag.description})'
+        choices.append((tag.name, label))
+    form.tags.choices = choices
 
     if journey is not None and form.delete.data:
         flash(message=f'Successfully deleted journey {id}', category='info')
@@ -688,6 +796,9 @@ def journeyEdit():  # noqa: C901
             journey.title = form.title.data
             journey.description = form.description.data
 
+            tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+            journey.tags = tags
+
         current_app.db.session.commit()
         flash(message=f'Successfully updated journey {id}', category='info')
 
@@ -702,6 +813,9 @@ def journeyEdit():  # noqa: C901
         journey = Journey(vehicle=vehicle, start=start, end=end, title=form.title.data)
         journey.description = form.description.data
 
+        tags = current_app.db.session.query(Tag).filter(Tag.name.in_(form.tags.data)).all()
+        journey.tags = tags
+
         with current_app.db.session.begin_nested():
             current_app.db.session.add(journey)
         current_app.db.session.commit()
@@ -715,6 +829,11 @@ def journeyEdit():  # noqa: C901
         form.end.data = journey.end
         form.title.data = journey.title
         form.description.data = journey.description
+
+        selected = []
+        for tag in journey.tags:
+            selected.append(tag.name)
+        form.tags.data = selected
     else:
         form.vehicle_vin.data = vehicle.vin
         if request.args is not None:
@@ -780,6 +899,66 @@ def operatorEdit():  # noqa: C901
         form.phone.data = operator.phone
 
     return render_template('database/operator_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/tag/edit', methods=['GET', 'POST'])  # noqa: C901
+@login_required
+def tagEdit():  # noqa: C901
+    name = None
+
+    form = TagEditForm()
+
+    if request.args is not None:
+        name = request.args.get('name')
+    tag = None
+
+    if name is not None:
+        tag = current_app.db.session.query(Tag).filter(Tag.name == name).first()
+
+        if tag is None:
+            abort(404, f"Tag {name} doesn't exist.")
+
+    if tag is not None and form.delete.data:
+        flash(message=f'Successfully deleted tag {name}', category='info')
+        with current_app.db.session.begin_nested():
+            current_app.db.session.delete(tag)
+        current_app.db.session.commit()
+        return render_template('database/tag_edit.html', current_app=current_app, form=None)
+
+    if tag is not None and form.save.data and form.validate_on_submit():
+        with current_app.db.session.begin_nested():
+            tag.name = form.name.data
+            tag.description = form.description.data
+            tag.use_trips = form.use_trips.data
+            tag.use_charges = form.use_charges.data
+            tag.use_refueling = form.use_refueling.data
+            tag.use_journey = form.use_journey.data
+
+        current_app.db.session.commit()
+        flash(message=f'Successfully updated tag {name}', category='info')
+
+    elif tag is None and form.add.data and form.validate_on_submit():
+        tag = Tag(name=form.name.data, description=form.description.data)
+        tag.use_trips = form.use_trips.data
+        tag.use_charges = form.use_charges.data
+        tag.use_refueling = form.use_refueling.data
+        tag.use_journey = form.use_journey.data
+
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(tag)
+        current_app.db.session.commit()
+        current_app.db.session.refresh(tag)
+        flash(message=f'Successfully added a new tag {tag.name}', category='info')
+
+    if tag is not None:
+        form.name.data = tag.name
+        form.description.data = tag.description
+        form.use_trips.data = tag.use_trips
+        form.use_charges.data = tag.use_charges
+        form.use_refueling.data = tag.use_refueling
+        form.use_journey.data = tag.use_journey
+
+    return render_template('database/tag_edit.html', current_app=current_app, form=form)
 
 
 @bp.route('/charger/edit', methods=['GET', 'POST'])  # noqa: C901

@@ -1,7 +1,7 @@
 import enum
 
-from sqlalchemy import Column, Integer, BigInteger, Float, String, Enum, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, BigInteger, Float, String, Enum, ForeignKey, Table
+from sqlalchemy.orm import relationship, backref
 
 from vwsfriend.model.base import Base
 from vwsfriend.model.datetime_decorator import DatetimeDecorator
@@ -24,6 +24,12 @@ class ACDC(enum.Enum,):
     @classmethod
     def coerce(cls, item):
         return item if isinstance(item, ACDC) else ACDC[item]
+
+
+charging_tag_association_table = Table('charging_tag', Base.metadata,
+                                       Column('charging_sessions_id', ForeignKey('charging_sessions.id')),
+                                       Column('tag_name', ForeignKey('tag.name'))
+                                       )
 
 
 class ChargingSession(Base):
@@ -53,6 +59,7 @@ class ChargingSession(Base):
     charger = relationship("Charger")
     realCharged_kWh = Column(Float)
     realCost_ct = Column(Integer)
+    tags = relationship("Tag", secondary=charging_tag_association_table, backref=backref("charging_sessions"))
 
     def __init__(self, vehicle):
         self.vehicle = vehicle

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}{% if form and form.name.data %}Edit settings for {% else %}Add a new {% endif %}tag{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if form %}
+<div class="form-wrapper">
+  <form method="POST">
+      {{ form.csrf_token }}
+
+      <fieldset class="form-field">
+        {{ form.name.label }}
+        {{ form.name }}
+        {% if form.name.errors %}
+          <ul class="errors">
+            {% for error in form.name.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.description.label }}
+        {{ form.description }}
+        {% if form.description.errors %}
+          <ul class="errors">
+            {% for error in form.description.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.use_trips.label }}
+        {{ form.use_trips }}
+        {% if form.use_trips.errors %}
+          <ul class="errors">
+            {% for error in form.use_trips.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.use_charges.label }}
+        {{ form.use_charges }}
+        {% if form.use_charges.errors %}
+          <ul class="errors">
+            {% for error in form.use_charges.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.use_refueling.label }}
+        {{ form.use_refueling }}
+        {% if form.use_refueling.errors %}
+          <ul class="errors">
+            {% for error in form.use_refueling.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.use_journey.label }}
+        {{ form.use_journey }}
+        {% if form.use_journey.errors %}
+          <ul class="errors">
+            {% for error in form.use_journey.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      {% if form.name.data %}
+      {{ form.save }}
+      {% else %}
+      {{ form.add }}
+      {% endif %}
+      {{ form.delete }}
+
+  </form>
+</div>
+{% endif %}
+{% endblock %}

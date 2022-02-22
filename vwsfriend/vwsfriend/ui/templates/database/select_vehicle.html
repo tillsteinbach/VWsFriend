@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Select vehicle to proceed{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<ul>
+{% for vehicle in vehicles %}
+  <li><a href="{{ url_for(request.endpoint, vin=vehicle.vin) }}">{{vehicle.nickname}} ({{vehicle.model}})</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
