@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645557979388,
+  "iteration": 1645603006734,
   "links": [
     {
       "asDropdown": false,
@@ -552,7 +552,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"Charger\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n    chargers.name AS \"Charger\",\n    charging_sessions.id AS \"Session\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END) / 100::NUMERIC) AS \"Amount\"\n  FROM charging_sessions\n  LEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    chargers.name IS NOT NULL AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Charger\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  \"Charger\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n    charging_sessions.id,\n    chargers.name AS \"Charger\",\n    charging_sessions.id AS \"Session\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END) / 100::NUMERIC) AS \"Amount\"\n  FROM charging_sessions\n  LEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    chargers.name IS NOT NULL AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Charger\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -665,7 +665,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"Operator\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n    operators.name AS \"Operator\",\n    charging_sessions.id AS \"Session\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END) / 100::NUMERIC) AS \"Amount\"\n  FROM charging_sessions\n  LEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\n  LEFT JOIN operators ON chargers.operator_id = operators.id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    chargers.name IS NOT NULL AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Operator\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  \"Operator\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n    charging_sessions.id,\n    operators.name AS \"Operator\",\n    charging_sessions.id AS \"Session\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END) / 100::NUMERIC) AS \"Amount\"\n  FROM charging_sessions\n  LEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\n  LEFT JOIN operators ON chargers.operator_id = operators.id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    chargers.name IS NOT NULL AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Operator\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -737,7 +737,7 @@
       {
         "allValue": "all_values",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "All"
           ],
