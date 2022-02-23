@@ -244,6 +244,13 @@ def settingsEdit():
     return render_template('database/settings_edit.html', current_app=current_app, form=form)
 
 
+@bp.route('/trips/list', methods=['GET'])  # noqa: C901
+@login_required
+def tripList():
+    trips = current_app.db.session.query(Trip).all()
+    return render_template('database/trip_list.html', current_app=current_app, trips=trips or [])
+
+
 @bp.route('/trips/edit', methods=['GET', 'POST'])  # noqa: C901
 @login_required
 def tripEdit():  # noqa: C901
@@ -381,6 +388,13 @@ def tripEdit():  # noqa: C901
             form.end_mileage_km.data = lasttrip.end_mileage_km
 
     return render_template('database/trip_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/charging-session/list', methods=['GET'])  # noqa: C901
+@login_required
+def chargingSessionList():
+    sessions = current_app.db.session.query(ChargingSession).all()
+    return render_template('database/charging_session_list.html', current_app=current_app, sessions=sessions or [])
 
 
 @bp.route('/charging-session/edit', methods=['GET', 'POST'])  # noqa: C901
@@ -620,6 +634,13 @@ def chargingSessionEdit():  # noqa: C901
     return render_template('database/charging_session_edit.html', current_app=current_app, form=form)
 
 
+@bp.route('/refuel-session/list', methods=['GET'])  # noqa: C901
+@login_required
+def refuelSessionList():
+    sessions = current_app.db.session.query(RefuelSession).all()
+    return render_template('database/refuel_session_list.html', current_app=current_app, sessions=sessions or [])
+
+
 @bp.route('/refuel-session/edit', methods=['GET', 'POST'])  # noqa: C901
 @login_required
 def refuelSessionEdit():  # noqa: C901
@@ -742,6 +763,13 @@ def refuelSessionEdit():  # noqa: C901
     return render_template('database/refuel_session_edit.html', current_app=current_app, form=form)
 
 
+@bp.route('/journey/list', methods=['GET'])  # noqa: C901
+@login_required
+def journeyList():
+    journeys = current_app.db.session.query(Journey).all()
+    return render_template('database/journey_list.html', current_app=current_app, journeys=journeys or [])
+
+
 @bp.route('/journey/edit', methods=['GET', 'POST'])  # noqa: C901
 @login_required
 def journeyEdit():  # noqa: C901
@@ -847,6 +875,13 @@ def journeyEdit():  # noqa: C901
     return render_template('database/journey_edit.html', current_app=current_app, form=form)
 
 
+@bp.route('/operator/list', methods=['GET'])  # noqa: C901
+@login_required
+def operatorList():
+    operators = current_app.db.session.query(Operator).filter(Operator.custom).all()
+    return render_template('database/operator_list.html', current_app=current_app, operators=operators or [])
+
+
 @bp.route('/operator/edit', methods=['GET', 'POST'])  # noqa: C901
 @login_required
 def operatorEdit():  # noqa: C901
@@ -899,6 +934,13 @@ def operatorEdit():  # noqa: C901
         form.phone.data = operator.phone
 
     return render_template('database/operator_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/tag/list', methods=['GET'])  # noqa: C901
+@login_required
+def tagList():
+    tags = current_app.db.session.query(Tag).all()
+    return render_template('database/tag_list.html', current_app=current_app, tags=tags or [])
 
 
 @bp.route('/tag/edit', methods=['GET', 'POST'])  # noqa: C901
@@ -961,6 +1003,13 @@ def tagEdit():  # noqa: C901
     return render_template('database/tag_edit.html', current_app=current_app, form=form)
 
 
+@bp.route('/charger/list', methods=['GET'])  # noqa: C901
+@login_required
+def chargerList():
+    chargers = current_app.db.session.query(Charger).filter(Charger.custom).all()
+    return render_template('database/charger_list.html', current_app=current_app, chargers=chargers or [])
+
+
 @bp.route('/charger/edit', methods=['GET', 'POST'])  # noqa: C901
 @login_required
 def chargerEdit():  # noqa: C901
@@ -982,7 +1031,7 @@ def chargerEdit():  # noqa: C901
         elif charger.custom is False:
             flash(message=f"Charger with id {id} is not a custom created charger and cannot be changed.")
 
-    operators = current_app.db.session.query(Operator).filter(Charger.custom).all()
+    operators = current_app.db.session.query(Operator).all()
     choices = [(None, 'unknown')]
     for operator in operators:
         label = f'{operator.name}'
@@ -1051,6 +1100,13 @@ def chargerEdit():  # noqa: C901
         form.operator_id.data = charger.operator_id
 
     return render_template('database/charger_edit.html', current_app=current_app, form=form)
+
+
+@bp.route('/geofence/list', methods=['GET'])  # noqa: C901
+@login_required
+def geofenceList():
+    geofences = current_app.db.session.query(Geofence).all()
+    return render_template('database/geofence_list.html', current_app=current_app, geofences=geofences or [])
 
 
 @bp.route('/geofence/edit', methods=['GET', 'POST'])  # noqa: C901

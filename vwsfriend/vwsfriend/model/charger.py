@@ -34,3 +34,6 @@ class Operator(Base):
         self.name = name
         self.phone = phone
         self.custom = custom
+
+    def displayString(self):
+        return self.name

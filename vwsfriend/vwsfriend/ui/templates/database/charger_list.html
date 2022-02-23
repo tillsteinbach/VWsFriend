@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}All custom created charging stations in database{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<table style="width: 100%;">
+  <tr>
+    <th>Name</th>
+    <th>Address</th>
+    <th>Operator</th>
+</tr>
+  {% for charger in chargers %}
+  <tr>
+      <td><a href="{{ url_for('database.chargerEdit', id=charger.id) }}">{{ charger.name }}</a></td>
+      <td><a href="{{ url_for('database.chargerEdit', id=charger.id) }}">{{ charger.address }}</a></td>
+      <td><a href="{{ url_for('database.chargerEdit', id=charger.id) }}">{% if charger.operator %}{{ charger.operator.displayString() }}{% endif %}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

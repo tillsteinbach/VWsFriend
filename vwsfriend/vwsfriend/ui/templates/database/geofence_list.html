@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}All geofences in database{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<table style="width: 100%;">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Charger</th>
+</tr>
+  {% for geofence in geofences %}
+  <tr>
+      <td><a href="{{ url_for('database.geofenceEdit', id=geofence.id) }}">{{ geofence.id }}</a></td>
+      <td><a href="{{ url_for('database.geofenceEdit', id=geofence.id) }}">{{ geofence.name }}</a></td>
+      <td><a href="{{ url_for('database.geofenceEdit', id=geofence.id) }}">{% if geofence.charger %}{{ geofence.charger.name}}{% endif %}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

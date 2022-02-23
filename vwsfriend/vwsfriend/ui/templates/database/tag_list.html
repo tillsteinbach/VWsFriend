@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}All tags in database{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<table style="width: 100%;">
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+</tr>
+  {% for tag in tags %}
+  <tr>
+      <td><a href="{{ url_for('database.tagEdit', name=tag.name) }}">{{ tag.name }}</a></td>
+      <td><a href="{{ url_for('database.tagEdit', name=tag.name) }}">{{ tag.description }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
