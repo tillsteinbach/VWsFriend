@@ -3,7 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 ### Added
+- New feature to tag entries and filter based on those tags
+- Possibility to manipulate database through UI
 - Use AC/DC charging information from car
+
+### Changed
+- Various improvements in grafana dashboards
+- Updated API to 0.37.0
+- Updated Grafana to 8.4.1
 
 ## [0.15.1] - 2022-02-12
 ### Fixed
