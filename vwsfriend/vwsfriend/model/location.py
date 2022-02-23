@@ -135,3 +135,30 @@ class Location(Base):
         if self.state_district is not None:
             returnString += f'\nState District: {self.state_district}'
         return returnString
+
+    def displayString(self):  # noqa: C901
+        if self.display_name is not None:
+            returnString = self.display_name
+        else:
+            returnString = ''
+            if self.name is not None:
+                returnString += f'{self.name}, '
+            if self.amenity is not None:
+                returnString += f'{self.amenity}, '
+            if self.road is not None:
+                returnString += f'{self.road}, '
+            if self.house_number is not None:
+                returnString += f'{self.house_number}, '
+            if self.neighbourhood is not None:
+                returnString += f'{self.neighbourhood}, '
+            if self.city is not None:
+                returnString += f'{self.city}, '
+            if self.postcode is not None:
+                returnString += f'{self.postcode}, '
+            if self.county is not None:
+                returnString += f'{self.county}, '
+            if self.country is not None:
+                returnString += f'{self.country}, '
+            if self.state is not None:
+                returnString += f'{self.state}, '
+        return returnString

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}All custom created operators in database{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<table style="width: 100%;">
+  <tr>
+    <th>Name</th>
+    <th>Phone</th>
+</tr>
+  {% for operator in operators %}
+  <tr>
+      <td><a href="{{ url_for('database.operatorEdit', id=operator.id) }}">{{ operator.name }}</a></td>
+      <td><a href="{{ url_for('database.operatorEdit', id=operator.id) }}">{{ operator.phone }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

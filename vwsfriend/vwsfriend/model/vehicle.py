@@ -51,3 +51,6 @@ class Vehicle(Base):
     def __onCarTypeChange(self, element, flags):
         if self.carType != element.value:
             self.carType = element.value
+
+    def displayString(self):  # noqa: C901
+        return f'{self.nickname} ({self.model})'

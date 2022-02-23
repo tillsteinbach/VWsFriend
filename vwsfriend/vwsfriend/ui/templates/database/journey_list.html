@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}All journeys in database{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<table style="width: 100%;">
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Vehicle</th>
+</tr>
+  {% for journey in journeys %}
+  <tr>
+      <td><a href="{{ url_for('database.journeyEdit', id=journey.id) }}">{{ journey.title }}</a></td>
+      <td><a href="{{ url_for('database.journeyEdit', id=journey.id) }}">{{ journey.description }}</a></td>
+      <td><a href="{{ url_for('database.journeyEdit', id=journey.id) }}">{{ journey.vehicle.displayString() }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}All trips in database{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<table style="width: 100%;">
+  <tr>
+    <th>ID</th>
+    <th>Start Date</th>
+    <th>Start Location</th>
+    <th>End Location</th>
+    <th>Vehicle</th>
+</tr>
+  {% for trip in trips %}
+  <tr>
+      <td><a href="{{ url_for('database.tripEdit', id=trip.id) }}">{{ trip.id }}</a></td>
+      <td><a href="{{ url_for('database.tripEdit', id=trip.id) }}">{{ trip.startDate }}</a></td>
+      <td><a href="{{ url_for('database.tripEdit', id=trip.id) }}">{% if trip.start_location %}{{ trip.start_location.displayString()}}{% endif %}</a></td>
+      <td><a href="{{ url_for('database.tripEdit', id=trip.id) }}">{% if trip.destination_location %}{{ trip.destination_location.displayString()}}{% endif %}</a></td>
+      <td><a href="{{ url_for('database.tripEdit', id=trip.id) }}">{{ trip.vehicle.displayString() }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

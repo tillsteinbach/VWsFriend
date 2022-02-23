@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}All charging sessions in database{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<table style="width: 100%;">
+  <tr>
+    <th>ID</th>
+    <th>Date</th>
+    <th>Start %</th>
+    <th>End %</th>
+    <th>Station</th>
+    <th>Vehicle</th>
+</tr>
+  {% for session in sessions %}
+  <tr>
+      <td><a href="{{ url_for('database.refuelSessionEdit', id=session.id) }}">{{ session.id }}</a></td>
+      <td><a href="{{ url_for('database.refuelSessionEdit', id=session.id) }}">{{ session.date }}</a></td>
+      <td><a href="{{ url_for('database.refuelSessionEdit', id=session.id) }}">{{ session.startSOC_pct }}</a></td>
+      <td><a href="{{ url_for('database.refuelSessionEdit', id=session.id) }}">{{ session.endSOC_pct }}</a></td>
+      <td><a href="{{ url_for('database.refuelSessionEdit', id=session.id) }}">{% if session.location %}{{ session.location.displayString() }}{% endif %}</a></td>
+      <td><a href="{{ url_for('database.refuelSessionEdit', id=session.id) }}">{{ session.vehicle.displayString() }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
