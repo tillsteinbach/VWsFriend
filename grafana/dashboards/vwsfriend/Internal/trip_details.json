@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645451269051,
+  "iteration": 1645622098123,
   "links": [
     {
       "asDropdown": false,
@@ -363,7 +363,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "CREATE extension IF NOT EXISTS cube;\nCREATE extension IF NOT EXISTS earthdistance;\n\nDO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  \"startDate\" AS \"Start Date\",\n  \"endDate\" AS \"End Date\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (point(start_position_longitude, start_position_latitude)<@>point(destination_position_longitude, destination_position_latitude)) * 1.609344 as \"Distance\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\"\nFROM trips\nWHERE\n  id = $id",
+          "rawSql": "CREATE extension IF NOT EXISTS cube;\nCREATE extension IF NOT EXISTS earthdistance;\n\nDO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  \"startDate\" AS \"Start Date\",\n  \"endDate\" AS \"End Date\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (point(start_position_longitude, start_position_latitude)<@>point(destination_position_longitude, destination_position_latitude)) * 1.609344 as \"Distance\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  string_agg(trip_tag.tag_name, ', ') AS \"Tags\"\nFROM trips\nLEFT JOIN trip_tag on trips.id = trip_tag.trips_id\nWHERE\n  id = $id\nGROUP BY \"startDate\", \"endDate\", start_position_longitude, start_position_latitude, destination_position_longitude, destination_position_latitude, \"end_mileage_km\", \"start_mileage_km\"",
           "refId": "A",
           "select": [
             [
