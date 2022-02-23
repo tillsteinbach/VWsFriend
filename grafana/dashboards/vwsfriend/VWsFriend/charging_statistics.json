@@ -23,7 +23,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645172614562,
+  "iteration": 1645603010581,
   "links": [
     {
       "asDropdown": false,
@@ -124,14 +124,18 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COUNT(*) AS \"Number of Charges\"\nFROM charging_sessions\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "rawSql": "SELECT\n  COUNT(DISTINCT charging_sessions.id) AS \"Number of Charges\"\nFROM charging_sessions\nLEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}",
           "refId": "A",
           "select": [
             [
@@ -201,14 +205,18 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "rawSql": "SELECT\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n       charging_sessions.id,\n       COALESCE(\"realCharged_kWh\",\n      (\"endSOC_pct\" - \"startSOC_pct\") * (\n        CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n             ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n        END\n        / 100::NUMERIC)) AS \"Amount\"\n    FROM charging_sessions\n    LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n    LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n    LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n    WHERE\n      ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n      charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result",
           "refId": "A",
           "select": [
             [
@@ -306,11 +314,15 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE(chargers.latitude, ROUND(charging_sessions.\"position_latitude\"::NUMERIC,3)) AS \"final_latitude\",\n  COALESCE(chargers.longitude, ROUND(charging_sessions.\"position_longitude\"::NUMERIC,3)) AS \"final_longitude\",\n  COALESCE(chargers.name, 'unkown') AS \"Charger\",\n  SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN chargers ON charging_sessions.\"charger_id\" = chargers.id\nWHERE\n  COALESCE(chargers.latitude, charging_sessions.\"position_latitude\") IS NOT NULL AND\n  COALESCE(chargers.longitude, charging_sessions.\"position_longitude\") IS NOT NULL AND\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY \"final_latitude\", \"final_longitude\", chargers.name",
+          "rawSql": "SELECT\n  \"final_latitude\",\n  \"final_longitude\",\n  \"Charger\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n  charging_sessions.id,\n  COALESCE(chargers.latitude, ROUND(charging_sessions.\"position_latitude\"::NUMERIC,3)) AS \"final_latitude\",\n  COALESCE(chargers.longitude, ROUND(charging_sessions.\"position_longitude\"::NUMERIC,3)) AS \"final_longitude\",\n  COALESCE(chargers.name, 'unkown') AS \"Charger\",\n  COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN chargers ON charging_sessions.\"charger_id\" = chargers.id\nLEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\n  COALESCE(chargers.latitude, charging_sessions.\"position_latitude\") IS NOT NULL AND\n  COALESCE(chargers.longitude, charging_sessions.\"position_longitude\") IS NOT NULL AND\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY \"final_latitude\", \"final_longitude\", \"Charger\"",
           "refId": "A",
           "select": [
             [
@@ -385,14 +397,19 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
+          "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n   (SUM(\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) - SUM(\"realCharged_kWh\"::NUMERIC)) / SUM(\"realCharged_kWh\"::NUMERIC) * 100 AS \"Delta %\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  \"realCharged_kWh\" IS NOT NULL AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "rawSql": "SELECT\n  (SUM(\"Estimated\") - SUM(\"realCharged_kWh\")) / SUM(\"realCharged_kWh\") * 100 AS \"Delta %\"\nFROM\n  (SELECT DISTINCT\n       charging_sessions.id AS id,\n       ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))::NUMERIC AS \"Estimated\",\n    \"realCharged_kWh\"::NUMERIC\n    FROM charging_sessions\n    LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n    LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n    LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n    WHERE\n      ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n      \"realCharged_kWh\" IS NOT NULL AND \"endSOC_pct\" IS NOT NULL AND \"startSOC_pct\" IS NOT NULL AND\n      charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result",
           "refId": "A",
           "select": [
             [
@@ -464,14 +481,18 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n   SUM(\"realCost_ct\"::NUMERIC/100::NUMERIC) AS \"Cost\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'",
+          "rawSql": "SELECT\n  SUM(\"realCost_ct\"::NUMERIC/100::NUMERIC) AS \"Cost\"\nFROM\n  (SELECT DISTINCT\n       charging_sessions.id,\n       \"realCost_ct\"\n    FROM charging_sessions\n    LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n    LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n    LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n    WHERE\n      ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n      charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result",
           "refId": "A",
           "select": [
             [
@@ -543,17 +564,23 @@
           "values": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.0",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
+          "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n   COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n   SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY acdc",
+          "rawSql": "SELECT\n  \"Type\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n     charging_sessions.id, \n     COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n     COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount\"\n  FROM charging_sessions\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY \"Type\"",
           "refId": "A",
           "select": [
             [
@@ -627,7 +654,8 @@
           "values": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.0",
@@ -1158,7 +1186,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 34,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -1187,6 +1215,50 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": "all_values",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "definition": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM charging_tag LEFT JOIN tag ON charging_tag.tag_name = tag.name WHERE use_charges = true",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Show",
+        "multi": true,
+        "name": "tag",
+        "options": [],
+        "query": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM charging_tag LEFT JOIN tag ON charging_tag.tag_name = tag.name WHERE use_charges = true",
+        "refresh": 2,
+        "regex": "/(?<text>.+)\\$(?<value>.+)/",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND charging_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "tag_sql",
+        "options": [],
+        "query": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND charging_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
