@@ -22,7 +22,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645434039053,
+  "iteration": 1645606937132,
   "links": [
     {
       "asDropdown": false,
@@ -178,11 +178,15 @@
       "pluginVersion": "8.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"start\" AS \"Start\",\n  \"end\" AS \"End\",\n  \"title\" AS \"Title\",\n  \"description\" AS \"Description\",\n  '⚙' AS \"Edit\",\n  id,\n  (extract(epoch FROM \"start\") * 1000) AS start_date_ts,\n  (extract(epoch FROM \"end\") * 1000) AS end_date_ts\nFROM journey\nWHERE\n  ($__timeFilter(\"start\") OR $__timeFilter(\"end\") OR $__timeFilter(\"title\")) AND\n  journey.vehicle_vin = '$VIN'\nORDER BY \"start\"",
+          "rawSql": "SELECT DISTINCT\n  \"start\" AS \"Start\",\n  \"end\" AS \"End\",\n  \"title\" AS \"Title\",\n  \"description\" AS \"Description\",\n  '⚙' AS \"Edit\",\n  id,\n  (extract(epoch FROM \"start\") * 1000) AS start_date_ts,\n  (extract(epoch FROM \"end\") * 1000) AS end_date_ts\nFROM journey\nLEFT JOIN journey_tag ON journey.id = journey_tag.journey_id\nWHERE\n  ($__timeFilter(\"start\") OR $__timeFilter(\"end\") OR $__timeFilter(\"title\")) AND\n  journey.vehicle_vin = '$VIN' ${tag_sql:raw}\nORDER BY \"start\"",
           "refId": "A",
           "select": [
             [
@@ -246,6 +250,50 @@
         "name": "vwsfriend_url",
         "options": [],
         "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": "all_values",
+        "current": {
+          "selected": false,
+          "text": [
+            ""
+          ],
+          "value": [
+            ""
+          ]
+        },
+        "definition": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM journey_tag LEFT JOIN tag ON journey_tag.tag_name = tag.name WHERE use_journey = true",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Show",
+        "multi": true,
+        "name": "tag",
+        "options": [],
+        "query": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM journey_tag LEFT JOIN tag ON journey_tag.tag_name = tag.name WHERE use_journey = true",
+        "refresh": 1,
+        "regex": "/(?<text>.+)\\$(?<value>.+)/",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND journey_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "tag_sql",
+        "options": [],
+        "query": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND journey_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
