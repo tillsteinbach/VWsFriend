@@ -319,7 +319,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.15.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.0
 [0.15.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.15.1
 [0.15.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.15.0
 [0.14.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.14.2
