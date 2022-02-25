@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No unreleased changes so far
+
+## [0.16.0] - 2022-02-25
 ### Added
 - New feature to tag entries and filter based on those tags
 - Possibility to manipulate database through UI
