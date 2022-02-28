@@ -46,7 +46,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645704941940,
+  "iteration": 1646034811227,
   "links": [
     {
       "asDropdown": false,
@@ -2201,6 +2201,10 @@
       "targets": [
         {
           "alias": "Car state",
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "groupBy": [],
@@ -2211,7 +2215,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(SELECT\n  \"onlineTime\" AS \"time\",\n  'online' AS \"Online\"\nFROM onlinestates\nWHERE\n  \"onlineTime\" != \"offlineTime\" AND\n  $__timeFilter(\"onlineTime\") AND\n  vehicle_vin = '$VIN')\nUNION ALL\n(SELECT\n  \"offlineTime\" AS \"time\",\n  'offline' AS \"state\"\nFROM onlinestates\nWHERE\n  \"onlineTime\" != \"offlineTime\" AND\n  $__timeFilter(\"offlineTime\") AND\n  vehicle_vin = '$VIN')\nORDER BY \"time\"",
+          "rawSql": "(SELECT\n  \"onlineTime\" AS \"time\",\n  'online' AS \"Online\"\nFROM onlinestates\nWHERE\n  (\"onlineTime\" != \"offlineTime\" OR \"offlineTime\" IS NULL) AND\n  $__timeFilter(\"onlineTime\") AND\n  vehicle_vin = '$VIN')\nUNION ALL\n(SELECT\n  \"offlineTime\" AS \"time\",\n  'offline' AS \"state\"\nFROM onlinestates\nWHERE\n  (\"onlineTime\" != \"offlineTime\" OR \"onlineTime\" IS NULL) AND\n  $__timeFilter(\"offlineTime\") AND\n  vehicle_vin = '$VIN')\nORDER BY \"time\"",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2236,6 +2240,10 @@
         },
         {
           "alias": "Car state",
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "groupBy": [],
@@ -2271,6 +2279,10 @@
           ]
         },
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "hide": false,
