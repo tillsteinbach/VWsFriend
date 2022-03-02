@@ -26,7 +26,7 @@ jobs:
            sudo mount -t tmpfs -o size=10G none /var/lib/docker
            sudo systemctl restart docker
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
