@@ -208,6 +208,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     if not args.noTokenStorage:
         tokenfile = args.tokenfile
 
+    weConnect = None
     try:
         weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400)
@@ -285,4 +286,5 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         LOG.critical('There was a problem when communicating with WeConnect.'
                      ' If this problem persists please open a bug report: %s', e)
     finally:
-        weConnect.disconnect()
+        if weConnect is not None:
+            weConnect.disconnect()
