@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Changed
+- Updated API to 0.37.2
 
 ## [0.16.0] - 2022-02-25
 ### Added
