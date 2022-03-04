@@ -2,8 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
+- No unreleased changes so far
+
+## [0.16.1] - 2022-03-04
+### Fixed
+- Catch error when server is not responding correctly during login
+- Correct calculation of start/end/duration in states panel on overview dashboard
+- Correctly handle all charging states in homekit
+- Use grafana dashboard timezone in "recent events log"
+
 ### Changed
 - Updated API to 0.37.2
+- Updated Grafana to 8.4.3
 
 ## [0.16.0] - 2022-02-25
 ### Added
@@ -320,7 +330,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.1...HEAD
+[0.16.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.1
 [0.16.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.0
 [0.15.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.15.1
 [0.15.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.15.0
