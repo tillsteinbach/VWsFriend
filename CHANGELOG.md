@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.16.3] - 2022-03-06
+### Fixed
+- Fixed vehicle settings form for hybrid vehicles
+
 ## [0.16.2] - 2022-03-06
 ### Fixed
 - Fixed times in logging that were still wrong for some users.
@@ -334,7 +338,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.2...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.3...HEAD
+[0.16.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.3
 [0.16.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.2
 [0.16.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.1
 [0.16.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.0
