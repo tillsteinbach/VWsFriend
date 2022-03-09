@@ -2,6 +2,8 @@ from io import BytesIO
 from flask import Blueprint, Response, render_template, current_app, abort, send_file, request, redirect, url_for
 from flask_login import login_required
 
+from vwsfriend.ui.cache import cache
+
 bp = Blueprint('status', __name__, url_prefix='/status')
 
 
@@ -100,6 +102,7 @@ def vehicleStatusOrImgBadge(vin, badge=False):
 
 
 @bp.route('/json', methods=['GET'])
+@cache.cached(timeout=5)
 @login_required
 def json():
     json = current_app.weConnect.toJSON()

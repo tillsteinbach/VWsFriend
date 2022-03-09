@@ -27,6 +27,8 @@ import vwsfriend.ui.status as status
 import vwsfriend.ui.settings as settings
 import vwsfriend.ui.database as database
 
+from vwsfriend.ui.cache import cache
+
 from vwsfriend.__version import __version__ as __vwsfriend_version__
 from weconnect.__version import __version__ as __weconnect_version__
 
@@ -53,6 +55,8 @@ class VWsFriendUI:
             SECRET_KEY=uuid.uuid4().hex,
         )
         csrf.init_app(self.app)
+
+        cache.init_app(self.app)
 
         loginManager = flask_login.LoginManager()
         loginManager.init_app(self.app)
