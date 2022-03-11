@@ -106,4 +106,8 @@ def vehicleStatusOrImgBadge(vin, badge=False):
 @login_required
 def json():
     json = current_app.weConnect.toJSON()
-    return Response(json, mimetype="text/json")
+    response = Response(json, mimetype="text/json")
+    response.cache_control.max_age = 5
+    response.cache_control.private = True
+    response.cache_control.public = False
+    return response
