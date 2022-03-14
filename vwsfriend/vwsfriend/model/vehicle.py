@@ -13,7 +13,7 @@ class Vehicle(Base):
     vin = Column(String(17), primary_key=True)
     model = Column(String(256))
     nickname = Column(String(256))
-    carType = Column(Enum(RangeStatus.CarType, length=63))
+    carType = Column(Enum(RangeStatus.CarType))
     online = Column(Boolean)
     lastUpdate = Column(DatetimeDecorator)
     lastChange = Column(DatetimeDecorator)
