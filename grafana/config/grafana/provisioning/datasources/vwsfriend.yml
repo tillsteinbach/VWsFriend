@@ -1,6 +1,10 @@
 # config file version
 apiVersion: 1
 
+deleteDatasources:
+  - name: VWsFriend
+    orgId: 1
+
 datasources:
   - name: VWsFriend
     orgId: 1
