@@ -17,7 +17,7 @@ class Climatization(Base):
     carCapturedTimestamp = Column(DatetimeDecorator(timezone=True), nullable=False)
     vehicle = relationship("Vehicle")
     remainingClimatisationTime_min = Column(Integer)
-    climatisationState = Column(Enum(ClimatizationStatus.ClimatizationState, length=63))
+    climatisationState = Column(Enum(ClimatizationStatus.ClimatizationState))
 
     def __init__(self, vehicle, carCapturedTimestamp, remainingClimatisationTime_min, climatisationState):
         self.vehicle = vehicle

@@ -18,8 +18,8 @@ class UnitOfTemperature(enum.Enum):
 class Settings(Base):
     __tablename__ = 'settings'
     id = Column(Integer, primary_key=True)
-    unit_of_length = Column(Enum(UnitOfLength, length=63))
-    unit_of_temperature = Column(Enum(UnitOfTemperature, length=63))
+    unit_of_length = Column(Enum(UnitOfLength))
+    unit_of_temperature = Column(Enum(UnitOfTemperature))
     grafana_url = Column(String)
     vwsfriend_url = Column(String)
     locale = Column(String)

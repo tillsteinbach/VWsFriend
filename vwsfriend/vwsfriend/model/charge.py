@@ -17,8 +17,8 @@ class Charge(Base):
     carCapturedTimestamp = Column(DatetimeDecorator(timezone=True), nullable=False)
     vehicle = relationship("Vehicle")
     remainingChargingTimeToComplete_min = Column(Integer)
-    chargingState = Column(Enum(ChargingStatus.ChargingState, length=63))
-    chargeMode = Column(Enum(ChargingStatus.ChargeMode, length=63))
+    chargingState = Column(Enum(ChargingStatus.ChargingState))
+    chargeMode = Column(Enum(ChargingStatus.ChargeMode))
     chargePower_kW = Column(Float)
     chargeRate_kmph = Column(Float)
 
