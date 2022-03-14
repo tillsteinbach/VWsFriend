@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.16.5] - 2022-03-14
+### Fixed
+- Fixed live datasource credentials
+- Removed warning for enums when starting up
+
+### Changed
+- Improved trip detection (not creating trips when plugged to charger)
+
+### Added
+- Added caching to json status
+
 ## [0.16.4] - 2022-03-06
 ### Fixed
 - Remove warning if primary total capacity is empty (necessary for hybrid vehicles!)
@@ -342,7 +353,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.4...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.5...HEAD
+[0.16.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.5
 [0.16.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.4
 [0.16.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.3
 [0.16.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.2
