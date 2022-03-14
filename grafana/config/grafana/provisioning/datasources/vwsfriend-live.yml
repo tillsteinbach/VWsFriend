@@ -9,8 +9,7 @@ datasources:
     access: proxy
     url: http://$VWSFRIEND_HOSTNAME:$VWSFRIEND_PORT/status/json
     user: $VWSFRIEND_USERNAME
-    secureJsonData:
-      password: $VWSFRIEND_PASSWORD
+    password: $VWSFRIEND_PASSWORD
     jsonData:
       timeout: "1"
     basicAuth: true
