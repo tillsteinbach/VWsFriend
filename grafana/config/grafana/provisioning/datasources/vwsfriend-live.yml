@@ -13,7 +13,9 @@ datasources:
     access: proxy
     url: http://$VWSFRIEND_HOSTNAME:$VWSFRIEND_PORT/status/json
     user: $VWSFRIEND_USERNAME
+    basicAuthUser: $VWSFRIEND_USERNAME
     password: $VWSFRIEND_PASSWORD
+    basicAuthPassword: $VWSFRIEND_PASSWORD
     jsonData:
       timeout: "1"
     basicAuth: true
