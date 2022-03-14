@@ -14,5 +14,4 @@ datasources:
       timeout: "1"
     basicAuth: true
     isDefault: false
-    editable: false
-    
+    editable: true
