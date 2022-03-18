@@ -267,6 +267,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             LOG.info('Demo completed')
         else:
             starttime = time.time()
+            permanentErrors = 0
             while True:
                 try:
                     LOG.info('Updating data from WeConnect')
@@ -275,10 +276,17 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                     if args.withHomekit and not weConnectBridgeInitialized:
                         weConnectBridgeInitialized = True
                         bridge.update()
+                    sleeptime = args.interval - ((time.time() - starttime) % args.interval)
+                    permanentErrors = 0
                 except weconnect.RetrievalError:
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
+                except APICompatibilityError as e:
+                    sleeptime = min((args.interval * pow(2, permanentErrors)), 86400)
+                    LOG.critical('There was a problem when communicating with WeConnect. If this problem persists please open a bug report: %s,'
+                                 ' will retry after %ds', e, sleeptime)
+                    permanentErrors += 1
                 #  Execute exactly every interval but if it misses its deadline only after the next interval
-                time.sleep(args.interval - ((time.time() - starttime) % args.interval))
+                time.sleep(sleeptime)
 
     except AuthentificationError as e:
         LOG.critical('There was a problem when authenticating with WeConnect: %s', e)
