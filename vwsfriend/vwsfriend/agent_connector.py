@@ -5,7 +5,7 @@ import logging
 
 from sqlalchemy import create_engine, text, inspect
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
 from weconnect.elements import vehicle
 from weconnect.addressable import AddressableLeaf
@@ -100,7 +100,8 @@ class AgentConnector():
                 if foundVehicle is None:
                     LOG.info('Found no matching vehicle for vin %s in database, will create a new one', element.vin.value)
                     foundVehicle = Vehicle(element.vin.value)
-                    self.session.add(foundVehicle)
+                    with self.session.begin_nested():
+                        self.session.add(foundVehicle)
                     self.session.commit()
                 foundVehicle.connect(element)
 
@@ -122,4 +123,8 @@ class AgentConnector():
             for agent in vehicleAgents:
                 agent.commit()
         if self.withDB:
-            self.session.commit()
+            try:
+                self.session.commit()
+            except SQLAlchemyError as err:
+                LOG.error('There was a problem when commiting changes to the database: %s', err)
+                self.session.rollback()
