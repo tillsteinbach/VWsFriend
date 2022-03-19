@@ -185,7 +185,8 @@ class ChargeAgent():
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                self.session.add(self.chargingSession)
+                with self.session.begin_nested():
+                    self.session.add(self.chargingSession)
             if self.chargingSession.locked is None:
                 self.chargingSession.locked = plugStatus.carCapturedTimestamp.value
             # also write position if available
