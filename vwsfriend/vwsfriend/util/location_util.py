@@ -80,6 +80,29 @@ def chargerFromLatLonWithGeofence(weConnect, session, latitude, longitude, searc
 def chargerFromLatLon(weConnect, session, latitude, longitude, searchRadius):
     try:
         chargers = sorted(weConnect.getChargingStations(latitude, longitude, searchRadius=searchRadius).values(), key=lambda station: station.distance.value)
+
+        customChargers = session.query(Charger).filter(Charger.custom).all()
+        customChargersDistance = []
+        position = (latitude, longitude)
+        for charger in customChargers:
+            if charger.latitude is not None and charger.longitude is not None:
+                positionCharger = (charger.latitude, charger.longitude)
+                distanceToPosition = haversine(position, positionCharger, unit=Unit.METERS)
+                if distanceToPosition > searchRadius:
+                    continue
+                customChargersDistance.append((charger, distanceToPosition))
+            else:
+                continue
+        if len(customChargersDistance) > 0:
+            customChargersDistance = sorted(customChargersDistance, key=lambda chargerDistancePair: chargerDistancePair[1])
+            customCharger, chargersDistance = customChargersDistance[0]
+            if len(chargers) > 0:
+                if chargers[0].distance.value < chargersDistance:
+                    return addCharger(session, chargers[0])
+                else:
+                    return customCharger
+            else:
+                return customCharger
         if len(chargers) > 0:
             return addCharger(session, chargers[0])
     except RetrievalError:
