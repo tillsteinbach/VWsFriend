@@ -1,4 +1,4 @@
-pytest-runner
-flake8
-pylint
-bandit
+pytest-runner~=6.0.0
+flake8~=4.0.1
+pylint~=2.13.4
+bandit~=1.7.4
