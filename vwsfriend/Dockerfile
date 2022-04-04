@@ -24,6 +24,7 @@ FROM ubuntu:21.10 AS runner-image
 
 ENV VWSFRIEND_USERNAME=
 ENV VWSFRIEND_PASSWORD=
+ENV VWSFRIEND_PORT=4000
 ENV WECONNECT_USER=
 ENV WECONNECT_PASSWORD=
 ENV WECONNECT_INTERVAL=300
@@ -44,4 +45,4 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 4000
 
-CMD vwsfriend --username=${VWSFRIEND_USERNAME} --password=${VWSFRIEND_PASSWORD} --weconnect-username=${WECONNECT_USER} --weconnect-password=${WECONNECT_PASSWORD} --interval=${WECONNECT_INTERVAL} --database-url=${DATABASE_URL} --config-dir=/config ${ADDITIONAL_PARAMETERS}
+CMD vwsfriend --username=${VWSFRIEND_USERNAME} --password=${VWSFRIEND_PASSWORD} --weconnect-username=${WECONNECT_USER} --weconnect-password=${WECONNECT_PASSWORD} --interval=${WECONNECT_INTERVAL} --port=${VWSFRIEND_PORT} --database-url=${DATABASE_URL} --config-dir=/config ${ADDITIONAL_PARAMETERS}

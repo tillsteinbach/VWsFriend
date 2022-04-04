@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
-## [0.16.6] - 2022-04-02
+## [0.16.6] - 2022-04-04
 
 ### Fixed
 - Make login error messages more clear
@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Climatisation state invalid
+- Make UI host and port configurable
 
 ### Changed
 - Improved error messages on login errors
