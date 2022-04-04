@@ -33,7 +33,7 @@
       "title": "Edit Trip",
       "tooltip": "Edit the trip in the database",
       "type": "link",
-      "url": "${vwsfriend_url}/database/trips/edit?id=${id}"
+      "url": "${vwsfriend_url:raw}/database/trips/edit?id=${id}"
     },
     {
       "asDropdown": false,
@@ -406,7 +406,7 @@
         {
           "targetBlank": true,
           "title": "Edit trip",
-          "url": "${vwsfriend_url}/database/trips/edit?id=${id}"
+          "url": "${vwsfriend_url:raw}/database/trips/edit?id=${id}"
         }
       ],
       "maxDataPoints": 500,
@@ -520,7 +520,7 @@
         {
           "targetBlank": true,
           "title": "Edit trip",
-          "url": "${vwsfriend_url}/database/trips/edit?id=${id}"
+          "url": "${vwsfriend_url:raw}/database/trips/edit?id=${id}"
         }
       ],
       "options": {
@@ -616,7 +616,7 @@
         {
           "targetBlank": true,
           "title": "Edit trip",
-          "url": "${vwsfriend_url}/database/trips/edit?id=${id}"
+          "url": "${vwsfriend_url:raw}/database/trips/edit?id=${id}"
         }
       ],
       "options": {

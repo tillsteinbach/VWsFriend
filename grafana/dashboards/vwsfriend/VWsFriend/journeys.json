@@ -34,7 +34,7 @@
       "title": "Add journey",
       "tooltip": "Add a new journey",
       "type": "link",
-      "url": "${vwsfriend_url}/database/journey/edit?vin=${VIN}"
+      "url": "${vwsfriend_url:raw}/database/journey/edit?vin=${VIN}"
     },
     {
       "asDropdown": false,
@@ -131,7 +131,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit the journey",
-                    "url": "${vwsfriend_url}/database/journey/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/journey/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -162,7 +162,7 @@
         {
           "targetBlank": true,
           "title": "Add journey",
-          "url": "${vwsfriend_url}/database/journey/edit?vin=${VIN}"
+          "url": "${vwsfriend_url:raw}/database/journey/edit?vin=${VIN}"
         }
       ],
       "options": {

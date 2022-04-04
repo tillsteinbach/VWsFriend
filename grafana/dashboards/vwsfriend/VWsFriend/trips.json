@@ -34,7 +34,7 @@
       "title": "Add Trip",
       "tooltip": "Add a missing trip to the database",
       "type": "link",
-      "url": "${vwsfriend_url}/database/trips/edit?vin=${VIN}"
+      "url": "${vwsfriend_url:raw}/database/trips/edit?vin=${VIN}"
     },
     {
       "asDropdown": false,
@@ -199,7 +199,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this Trip",
-                    "url": "${vwsfriend_url}/database/trips/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/trips/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -218,7 +218,7 @@
         {
           "targetBlank": true,
           "title": "Add trip",
-          "url": "${vwsfriend_url}/database/trips/edit?vin=${VIN}"
+          "url": "${vwsfriend_url:raw}/database/trips/edit?vin=${VIN}"
         }
       ],
       "options": {

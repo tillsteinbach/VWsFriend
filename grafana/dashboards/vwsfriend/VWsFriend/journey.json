@@ -46,7 +46,7 @@
       "title": "Add journey",
       "tooltip": "Add selection as a new journey to the database",
       "type": "link",
-      "url": "${vwsfriend_url}/database/journey/edit?vin=${VIN}&tripstart=${tripstart}&tripend=${tripend}"
+      "url": "${vwsfriend_url:raw}/database/journey/edit?vin=${VIN}&tripstart=${tripstart}&tripend=${tripend}"
     },
     {
       "asDropdown": false,
@@ -976,7 +976,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this Trip",
-                    "url": "${vwsfriend_url}/database/trips/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/trips/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -995,7 +995,7 @@
         {
           "targetBlank": true,
           "title": "Add trip",
-          "url": "${vwsfriend_url}/database/trips/edit?vin=${VIN}"
+          "url": "${vwsfriend_url:raw}/database/trips/edit?vin=${VIN}"
         }
       ],
       "options": {
@@ -1332,7 +1332,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this charging session",
-                    "url": "${vwsfriend_url}/database/charging-session/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/charging-session/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -1351,7 +1351,7 @@
         {
           "targetBlank": true,
           "title": "Add charging",
-          "url": "${vwsfriend_url}/database/charging-session/edit?vin=${VIN}"
+          "url": "${vwsfriend_url:raw}/database/charging-session/edit?vin=${VIN}"
         }
       ],
       "options": {
@@ -1547,7 +1547,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this refuel session",
-                    "url": "${vwsfriend_url}/database/refuel-session/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -1624,7 +1624,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this refuel session",
-                    "url": "${vwsfriend_url}/database/refuel-session/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -1643,7 +1643,7 @@
         {
           "targetBlank": true,
           "title": "Add refueling",
-          "url": "${vwsfriend_url}/database/refuel-session/edit?vin=${VIN}"
+          "url": "${vwsfriend_url:raws}/database/refuel-session/edit?vin=${VIN}"
         }
       ],
       "options": {

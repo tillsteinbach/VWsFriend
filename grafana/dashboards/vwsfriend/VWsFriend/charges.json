@@ -34,7 +34,7 @@
       "title": "Add Charging",
       "tooltip": "Add a missing charging session to the database",
       "type": "link",
-      "url": "${vwsfriend_url}/database/charging-session/edit?vin=${VIN}"
+      "url": "${vwsfriend_url:raw}/database/charging-session/edit?vin=${VIN}"
     },
     {
       "asDropdown": false,
@@ -374,7 +374,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this charging session",
-                    "url": "${vwsfriend_url}/database/charging-session/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/charging-session/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -409,7 +409,7 @@
         {
           "targetBlank": true,
           "title": "Add Charging",
-          "url": "${vwsfriend_url}/database/charging-session/edit?vin=${VIN}"
+          "url": "${vwsfriend_url:raw}/database/charging-session/edit?vin=${VIN}"
         }
       ],
       "options": {
