@@ -3,7 +3,7 @@ services:
   vwsfriend:
     image: tillsteinbach/vwsfriend:${VWSFRIEND_VERSION-latest}
     ports:
-     - 4000:4000
+     - ${VWSFRIEND_PORT-4000}:${VWSFRIEND_PORT-4000}
     networks:
       backend:
         aliases:
