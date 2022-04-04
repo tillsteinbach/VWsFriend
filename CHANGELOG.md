@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Improved error messages on login errors
 - Updated API to 0.38.1
+- Updated Grafana to 8.4.5
 
 ## [0.16.5] - 2022-03-14
 ### Fixed
