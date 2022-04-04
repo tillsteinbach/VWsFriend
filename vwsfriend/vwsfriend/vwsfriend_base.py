@@ -68,7 +68,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__})')
     parser.add_argument('-u', '--username', help='Username of VWsFriend UI', required=False)
     parser.add_argument('-p', '--password', help='Password of VWsFriend UI', required=False)
-    parser.add_argument('--host', help='Host of VWsFriend UI', type=str, required=False, default='0.0.0.0')
+    parser.add_argument('--host', help='Host of VWsFriend UI', type=str, required=False, default='0.0.0.0')  # nosec
     parser.add_argument('--port', help='Port of VWsFriend UI', type=int, choices=range(1, 65535), metavar="[1-65535]", required=False, default=4000)
     weConnectGroup = parser.add_argument_group('WeConnect')
     weConnectGroup.add_argument('--weconnect-username', dest='weConnectUsername', help='Username of Volkswagen id', required=False)
