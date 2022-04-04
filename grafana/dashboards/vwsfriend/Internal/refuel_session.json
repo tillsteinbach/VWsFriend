@@ -33,7 +33,7 @@
       "title": "Edit Session",
       "tooltip": "Edit the session in the database",
       "type": "link",
-      "url": "${vwsfriend_url}/database/refuel-session/edit?id=${id}"
+      "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${id}"
     },
     {
       "asDropdown": false,
@@ -110,7 +110,7 @@
         {
           "targetBlank": true,
           "title": "Edit refueling session",
-          "url": "${vwsfriend_url}/database/refuel-session/edit?id=${id}"
+          "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${id}"
         }
       ],
       "locationData": "table",
@@ -370,7 +370,7 @@
         {
           "targetBlank": true,
           "title": "Edit session",
-          "url": "${vwsfriend_url}/database/refuel-session/edit?id=${id}"
+          "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${id}"
         }
       ],
       "options": {

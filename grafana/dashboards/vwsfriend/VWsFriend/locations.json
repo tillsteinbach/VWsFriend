@@ -843,7 +843,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit the Geofence",
-                    "url": "${vwsfriend_url}/database/geofence/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/geofence/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -874,7 +874,7 @@
         {
           "targetBlank": true,
           "title": "Add new geofence",
-          "url": "${vwsfriend_url}/database/geofence/edit"
+          "url": "${vwsfriend_url:raw}/database/geofence/edit"
         }
       ],
       "options": {

@@ -34,7 +34,7 @@
       "title": "Add Refueling",
       "tooltip": "Add a missing refuel session to the database",
       "type": "link",
-      "url": "${vwsfriend_url}/database/refuel-session/edit?vin=${VIN}"
+      "url": "${vwsfriend_url:raw}/database/refuel-session/edit?vin=${VIN}"
     },
     {
       "asDropdown": false,
@@ -229,7 +229,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this refuel session",
-                    "url": "${vwsfriend_url}/database/refuel-session/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -306,7 +306,7 @@
                   {
                     "targetBlank": true,
                     "title": "Edit this refuel session",
-                    "url": "${vwsfriend_url}/database/refuel-session/edit?id=${__data.fields.id}"
+                    "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${__data.fields.id}"
                   }
                 ]
               }
@@ -345,7 +345,7 @@
         {
           "targetBlank": true,
           "title": "Add Refueling",
-          "url": "${vwsfriend_url}/database/refuel-session/edit?vin=${VIN}"
+          "url": "${vwsfriend_url:raw}/database/refuel-session/edit?vin=${VIN}"
         }
       ],
       "options": {

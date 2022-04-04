@@ -58,7 +58,7 @@
       "title": "Car settings",
       "tooltip": "",
       "type": "link",
-      "url": "${vwsfriend_url}/settings/vehicle/database/${VIN}"
+      "url": "${vwsfriend_url:raw}/settings/vehicle/database/${VIN}"
     },
     {
       "asDropdown": true,
@@ -93,11 +93,11 @@
         {
           "targetBlank": true,
           "title": "Car Settings",
-          "url": "${vwsfriend_url}/settings/vehicle/database/${VIN}"
+          "url": "${vwsfriend_url:raw}/settings/vehicle/database/${VIN}"
         }
       ],
       "options": {
-        "content": "<a href=\"${vwsfriend_url}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
+        "content": "<a href=\"${vwsfriend_url:raw}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url:raw}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
         "mode": "html"
       },
       "pluginVersion": "8.4.3",
