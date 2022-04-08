@@ -22,7 +22,7 @@
 <div>
   <div style="display: flex; margin-top: 5px;">
     <div style="flex: 0 0 250px;">
-      <img src="{{ url_for('status.vehicleStatusOrImgBadge', vin=vehicle.vin.value) }}" onerror="this.style.display='none'" class="status" />
+      <img src="{{ url_for('status.vehicleStatusOrImgBadge', vin=vehicle.vin.value) }}" onerror="this.style.display='none'" class="status" style="margin-right: 5px"/>
     </div>
 
     {% if vehicle.statusExists('parking', 'parkingPosition') and vehicle.domains['parking']['parkingPosition'].enabled and not vehicle.domains['parking']['parkingPosition'].hasError() %}
@@ -71,6 +71,16 @@
       <li><a href="#tabs-capabilities">Capabilities</a></li>
     </ul>
     <div id="tabs-status">
+      {% if vehicle.statusExists('vehicleHealthWarnings', 'warningLights') and vehicle.domains['vehicleHealthWarnings']['warningLights'].enabled and vehicle.domains['vehicleHealthWarnings']['warningLights'].warningLights|length > 0 %}
+        <p>
+        <h2>Warnings (From {{vehicle.domains['vehicleHealthWarnings']['warningLights'].carCapturedTimestamp.value.isoformat()}})</h2>
+        {% for warningLight in vehicle.domains['vehicleHealthWarnings']['warningLights'].warningLights.values() %}
+        <ul>
+        <li>{{warningLight.text.value}}</li>
+        </ul>
+        {% endfor %}
+        </p>
+      {% endif %}
       {% if vehicle.statusExists('fuelStatus', 'rangeStatus') and vehicle.domains['fuelStatus']['rangeStatus'].enabled and not vehicle.domains['fuelStatus']['rangeStatus'].hasError() %}
       <p>
       <h2>Range Status (From {{vehicle.domains['fuelStatus']['rangeStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
@@ -261,6 +271,17 @@
       </ul>
       </p>
       {% endif %}
+
+      {% if vehicle.statusExists('measurements', 'odometerStatus') and vehicle.domains['measurements']['odometerStatus'].enabled and not vehicle.domains['measurements']['odometerStatus'].hasError() %}
+      <p>
+      <h2>Odometer status (From {{vehicle.domains['measurements']['odometerStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
+      <ul>
+        {% if vehicle.domains['measurements']['odometerStatus'].odometer.enabled %}
+        <li> Odometer: {{vehicle.domains['measurements']['odometerStatus'].odometer.value}}km</li>
+        {% endif %}
+      </ul>
+      </p>
+      {% endif %}
       
       {% if vehicle.statusExists('readiness', 'readinessStatus') and vehicle.domains['readiness']['readinessStatus'].enabled and not vehicle.domains['readiness']['readinessStatus'].hasError() %}
       <p>
@@ -295,6 +316,29 @@
             {% endif %}
           </ul>
         </li>
+        {% endif %}
+      </ul>
+      </p>
+      {% endif %}
+
+      {% if vehicle.statusExists('vehicleHealthInspection', 'maintenanceStatus') and vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].enabled and not vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].hasError() %}
+      <p>
+      <h2>Maintenance Status (From {{vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
+      <ul>
+        {% if vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].mileage_km.enabled %}
+          <li>Current mileage: {{vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].mileage_km.value}} km</li>
+        {% endif %}
+        {% if vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].inspectionDue_days.enabled %}
+          <li>Inspection due in: {{vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].inspectionDue_days.value}} days</li>
+        {% endif %}
+        {% if vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].inspectionDue_km.enabled %}
+          <li>Inspection due in: {{vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].inspectionDue_km.value}} km</li>
+        {% endif %}
+        {% if vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].oilServiceDue_days.enabled %}
+          <li>Oil service in: {{vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].oilServiceDue_days.value}} days</li>
+        {% endif %}
+        {% if vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].oilServiceDue_km.enabled %}
+          <li>Oil service in: {{vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].oilServiceDue_km.value}} km</li>
         {% endif %}
       </ul>
       </p>
@@ -337,6 +381,19 @@
             </td>
           </tr>
         </table>
+      </ul>
+      </p>
+      {% endif %}
+
+      {% if vehicle.statusExists('vehicleLights', 'lightsStatus') and vehicle.domains['vehicleLights']['lightsStatus'].enabled and not vehicle.domains['vehicleLights']['lightsStatus'].hasError() %}
+      <p>
+      <h2>Lights Status (From {{vehicle.domains['vehicleLights']['lightsStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
+      <ul>
+            {% if vehicle.domains['vehicleLights']['lightsStatus'].lights.enabled %}
+              {% for lightName, light in vehicle.domains['vehicleLights']['lightsStatus'].lights.items() %}
+                <li> {{light}}</li>
+              {% endfor %}
+            {% endif %}
       </ul>
       </p>
       {% endif %}

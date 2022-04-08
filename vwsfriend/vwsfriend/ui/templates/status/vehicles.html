@@ -16,6 +16,12 @@
             
             {% if vehicle.statusExists('charging', 'batteryStatus') and vehicle.domains['charging']['batteryStatus'].currentSOC_pct.enabled %} {{vehicle.domains['charging']['batteryStatus'].currentSOC_pct}}% electric SoC,{% endif %}
             {% if vehicle.statusExists('parking', 'parkingPosition') and vehicle.domains['parking']['parkingPosition'].enabled and not vehicle.domains['parking']['parkingPosition'].hasError() %} parked, {% endif %}
+            {% if vehicle.statusExists('vehicleHealthWarnings', 'warningLights') and vehicle.domains['vehicleHealthWarnings']['warningLights'].enabled and vehicle.domains['vehicleHealthWarnings']['warningLights'].warningLights|length > 0 %}
+              <br/>
+              {% for warningLight in vehicle.domains['vehicleHealthWarnings']['warningLights'].warningLights.values() %}
+              Warning: {{warningLight.text.value}}<br/>
+              {% endfor %}
+            {% endif %}
 
           </p>
         </div>
