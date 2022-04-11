@@ -30,7 +30,7 @@ def upgrade():
                     sa.Column('customerRelevance', sa.Boolean(), nullable=True),
                     sa.ForeignKeyConstraint(['vehicle_vin'], ['vehicles.vin'], ),
                     sa.PrimaryKeyConstraint('id'),
-                    sa.UniqueConstraint('vehicle_vin', 'start')
+                    sa.UniqueConstraint('vehicle_vin', 'messageId', 'start')
                     )
 
 
