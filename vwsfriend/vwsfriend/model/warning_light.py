@@ -10,7 +10,7 @@ from vwsfriend.model.datetime_decorator import DatetimeDecorator
 class WarningLight(Base):
     __tablename__ = 'warning_lights'
     __table_args__ = (
-        UniqueConstraint('vehicle_vin', 'start'),
+        UniqueConstraint('vehicle_vin', 'messageId', 'start'),
     )
     id = Column(Integer, primary_key=True)
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
