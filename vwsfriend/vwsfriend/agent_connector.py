@@ -19,6 +19,7 @@ from vwsfriend.agents.climatization_agent import ClimatizationAgent
 from vwsfriend.agents.refuel_agent import RefuelAgent
 from vwsfriend.agents.trip_agent import TripAgent
 from vwsfriend.agents.weconnect_error_agent import WeconnectErrorAgent
+from vwsfriend.agents.warning_light_agent import WarningLightAgent
 from vwsfriend.agents.abrp.abrp_agent import ABRPAgent
 from vwsfriend.model.base import Base
 from vwsfriend.model import Vehicle
@@ -112,6 +113,7 @@ class AgentConnector():
                 self.agents[element.vin.value].append(ClimatizationAgent(self.session, foundVehicle))
                 self.agents[element.vin.value].append(RefuelAgent(self.session, foundVehicle, privacy=self.privacy))
                 self.agents[element.vin.value].append(TripAgent(self.session, foundVehicle, updateInterval=self.interval, privacy=self.privacy))
+                self.agents[element.vin.value].append(WarningLightAgent(self.session, foundVehicle))
                 if foundVehicle.carType == RangeStatus.CarType.UNKNOWN:
                     LOG.warning('Vehicle %s has an unkown carType, thus some features won\'t be available until the correct carType could be detected',
                                 foundVehicle.vin)
