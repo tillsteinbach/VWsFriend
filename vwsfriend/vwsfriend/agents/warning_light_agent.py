@@ -38,6 +38,8 @@ class WarningLightAgent():
                         warningLightEntry.serviceLead = warningLight.serviceLead.value
                     if warningLight.customerRelevance.enabled:
                         warningLightEntry.customerRelevance = warningLight.customerRelevance.value
+                    if warningLight.priority.enabled:
+                        warningLightEntry.priority = warningLight.priority.value
 
                     try:
                         with self.session.begin_nested():

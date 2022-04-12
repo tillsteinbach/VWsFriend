@@ -17,3 +17,4 @@ from .weconnect_error import WeConnectError
 from .weconnect_responsetime import WeConnectResponsetime
 from .tag import Tag
 from .warning_light import WarningLight
+from .maintenance import Maintenance

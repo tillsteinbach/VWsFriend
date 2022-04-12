@@ -1,0 +1,145 @@
+import logging
+from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
+
+from vwsfriend.model.maintenance import Maintenance, MaintenanceType
+
+from weconnect.addressable import AddressableLeaf
+
+LOG = logging.getLogger("VWsFriend")
+
+
+class MaintenanceAgent():
+    def __init__(self, session, vehicle):
+        self.session = session
+        self.vehicle = vehicle
+        self.inspectionEntry = session.query(Maintenance).filter(and_(Maintenance.vehicle == vehicle,
+                                                                      Maintenance.date.is_(None),
+                                                                      Maintenance.type.is_(MaintenanceType.INSPECTION))).first()
+        self.oilServiceEntry = session.query(Maintenance).filter(and_(Maintenance.vehicle == vehicle,
+                                                                      Maintenance.date.is_(None),
+                                                                      Maintenance.type.is_(MaintenanceType.OIL_SERVICE))).first()
+
+        # register for updates:
+        if self.vehicle.weConnectVehicle is not None:
+            if self.vehicle.weConnectVehicle.statusExists('vehicleHealthInspection', 'maintenanceStatus') \
+                    and self.vehicle.weConnectVehicle.domains['vehicleHealthInspection']['maintenanceStatus'].enabled:
+                self.vehicle.weConnectVehicle.domains['vehicleHealthInspection']['maintenanceStatus'].carCapturedTimestamp.addObserver(
+                    self.__onCarCapturedTimestampChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
+                self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['vehicleHealthInspection']['maintenanceStatus'].carCapturedTimestamp,
+                                                    None)
+
+    def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
+        if element is not None and element.value is not None:
+            maintenanceStatus = self.vehicle.weConnectVehicle.domains['vehicleHealthInspection']['maintenanceStatus']
+
+            if maintenanceStatus.inspectionDue_days.enabled and maintenanceStatus.inspectionDue_days.value is not None:
+                if self.inspectionEntry is None:
+                    self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, maintenanceStatus.inspectionDue_days.value, None)
+                    try:
+                        with self.session.begin_nested():
+                            self.session.add(self.inspectionEntry)
+                        self.session.commit()
+                    except IntegrityError as err:
+                        LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                elif self.inspectionEntry.due_in_days is None:
+                    self.inspectionEntry.due_in_days = maintenanceStatus.inspectionDue_days.value
+                else:
+                    if maintenanceStatus.inspectionDue_days.value > self.inspectionEntry.due_in_days:
+                        self.inspectionEntry.date = element.value
+                        if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
+                            self.inspectionEntry.mileage = maintenanceStatus.mileage_km.value
+                        self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, maintenanceStatus.inspectionDue_days.value,
+                                                           None)
+                        try:
+                            with self.session.begin_nested():
+                                self.session.add(self.inspectionEntry)
+                            self.session.commit()
+                        except IntegrityError as err:
+                            LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    else:
+                        self.inspectionEntry.due_in_days = maintenanceStatus.inspectionDue_days.value
+
+            if maintenanceStatus.inspectionDue_km.enabled and maintenanceStatus.inspectionDue_km.value is not None:
+                if self.inspectionEntry is None:
+                    self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, None, maintenanceStatus.inspectionDue_km.value)
+                    try:
+                        with self.session.begin_nested():
+                            self.session.add(self.inspectionEntry)
+                        self.session.commit()
+                    except IntegrityError as err:
+                        LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                elif self.inspectionEntry.due_in_km is None:
+                    self.inspectionEntry.due_in_km = maintenanceStatus.inspectionDue_km.value
+                else:
+                    if maintenanceStatus.inspectionDue_km.value > self.inspectionEntry.due_in_km:
+                        self.inspectionEntry.date = element.value
+                        if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
+                            self.inspectionEntry.mileage = maintenanceStatus.mileage_km.value
+                        self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, None,
+                                                           maintenanceStatus.inspectionDue_km.value)
+                        try:
+                            with self.session.begin_nested():
+                                self.session.add(self.inspectionEntry)
+                            self.session.commit()
+                        except IntegrityError as err:
+                            LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    else:
+                        self.inspectionEntry.due_in_km = maintenanceStatus.inspectionDue_km.value
+
+            if maintenanceStatus.oilServiceDue_days.enabled and maintenanceStatus.oilServiceDue_days.value is not None:
+                if self.oilServiceEntry is None:
+                    self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, maintenanceStatus.oilServiceDue_days.value, None)
+                    try:
+                        with self.session.begin_nested():
+                            self.session.add(self.oilServiceEntry)
+                        self.session.commit()
+                    except IntegrityError as err:
+                        LOG.warning('Could not add oil service entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                elif self.oilServiceEntry.due_in_days is None:
+                    self.oilServiceEntry.due_in_days = maintenanceStatus.oilServiceDue_days.value
+                else:
+                    if maintenanceStatus.oilServiceDue_days.value > self.oilServiceEntry.due_in_days:
+                        self.oilServiceEntry.date = element.value
+                        if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
+                            self.oilServiceEntry.mileage = maintenanceStatus.mileage_km.value
+                        self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, maintenanceStatus.oilServiceDue_days.value,
+                                                           None)
+                        try:
+                            with self.session.begin_nested():
+                                self.session.add(self.oilServiceEntry)
+                            self.session.commit()
+                        except IntegrityError as err:
+                            LOG.warning('Could not add oil service entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    else:
+                        self.oilServiceEntry.due_in_days = maintenanceStatus.oilServiceDue_days.value
+
+            if maintenanceStatus.oilServiceDue_km.enabled and maintenanceStatus.oilServiceDue_km.value is not None:
+                if self.oilServiceEntry is None:
+                    self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, None, maintenanceStatus.oilServiceDue_km.value)
+                    try:
+                        with self.session.begin_nested():
+                            self.session.add(self.oilServiceEntry)
+                        self.session.commit()
+                    except IntegrityError as err:
+                        LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                elif self.oilServiceEntry.due_in_km is None:
+                    self.oilServiceEntry.due_in_km = maintenanceStatus.oilServiceDue_km.value
+                else:
+                    if maintenanceStatus.oilServiceDue_km.value > self.oilServiceEntry.due_in_km:
+                        self.oilServiceEntry.date = element.value
+                        if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
+                            self.oilServiceEntry.mileage = maintenanceStatus.mileage_km.value
+                        self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, None,
+                                                           maintenanceStatus.oilServiceDue_km.value)
+                        try:
+                            with self.session.begin_nested():
+                                self.session.add(self.oilServiceEntry)
+                            self.session.commit()
+                        except IntegrityError as err:
+                            LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    else:
+                        self.oilServiceEntry.due_in_km = maintenanceStatus.oilServiceDue_km.value
+
+    def commit(self):
+        pass
