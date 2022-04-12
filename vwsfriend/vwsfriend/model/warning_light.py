@@ -22,6 +22,7 @@ class WarningLight(Base):
     text = Column(String)
     category = Column(Enum(WarningLightsStatus.WarningLight.Category))
     messageId = Column(String)
+    priority = Column(Integer)
     serviceLead = Column(Boolean)
     customerRelevance = Column(Boolean)
 

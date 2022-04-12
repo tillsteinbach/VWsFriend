@@ -1,0 +1,48 @@
+{
+    "https://vehicle-images-service.apps.emea.vwapps.io/v2/vehicle-images/AAABBBCCCDDD12345?resolution=2x":[
+        {
+           "data":[]
+        },
+        "2021-10-19 06:24:15.072272"
+     ],
+     
+     
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=all": [
+        {
+            "vehicleHealthInspection": {
+                "maintenanceStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(00)",
+                        "inspectionDue_days": 9,
+                        "inspectionDue_km": 18,
+                        "mileage_km": 60,
+                        "oilServiceDue_days": 29,
+                        "oilServiceDue_km": 38
+                    }
+                }
+            }
+        },
+        "now(+0)"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+        {
+            "data": [
+                {
+                    "vin": "AAABBBCCCDDD12345",
+                    "role": "PRIMARY_USER",
+                    "enrollmentStatus": "COMPLETED",
+                    "model": "Demo Test Vehicle",
+                    "nickname": "Test Vehicle",
+                    "capabilities": [{
+                        "id": "parkingPosition",
+                        "expirationDate": "2051-05-12T11:53:00Z",
+                        "userDisablingAllowed": false
+                    }],
+                    "images": {},
+                    "coUsers": []
+                }
+            ]
+        },
+        "now(+0)"
+    ]
+}
