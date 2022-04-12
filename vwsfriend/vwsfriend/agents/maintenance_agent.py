@@ -15,10 +15,10 @@ class MaintenanceAgent():
         self.vehicle = vehicle
         self.inspectionEntry = session.query(Maintenance).filter(and_(Maintenance.vehicle == vehicle,
                                                                       Maintenance.date.is_(None),
-                                                                      Maintenance.type.is_(MaintenanceType.INSPECTION))).first()
+                                                                      Maintenance.type == MaintenanceType.INSPECTION)).first()
         self.oilServiceEntry = session.query(Maintenance).filter(and_(Maintenance.vehicle == vehicle,
                                                                       Maintenance.date.is_(None),
-                                                                      Maintenance.type.is_(MaintenanceType.OIL_SERVICE))).first()
+                                                                      Maintenance.type == MaintenanceType.OIL_SERVICE)).first()
 
         # register for updates:
         if self.vehicle.weConnectVehicle is not None:
