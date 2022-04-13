@@ -31,6 +31,7 @@ class WarningLightAgent():
                 if warningLight.messageId.value not in [light.messageId for light in self.enabledLights]:
                     warningLightEntry = WarningLight(self.vehicle, warningLight.messageId.value, element.value, warningLight.text.value,
                                                      warningLight.category.value)
+                    LOG.info(f'Warning light {warningLight.messageId.value} in vehicle {self.vehicle.vin} turned on')
 
                     if warningLightsStatus.mileage_km.enabled:
                         warningLightEntry.start_mileage = warningLightsStatus.mileage_km.value
@@ -53,6 +54,7 @@ class WarningLightAgent():
 
                     if warningLightsStatus.mileage_km.enabled:
                         enabledLight.end_mileage = warningLightsStatus.mileage_km.value
+                    LOG.info(f'Warning light {enabledLight.messageId} in vehicle {self.vehicle.vin} turned off')
 
             self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
                                                                               WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
