@@ -49,6 +49,7 @@ class MaintenanceAgent():
                         self.inspectionEntry.date = element.value
                         if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
                             self.inspectionEntry.mileage = maintenanceStatus.mileage_km.value
+                        LOG.info(f'Inspection of vehicle {self.vehicle.vin} done')
                         self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, maintenanceStatus.inspectionDue_days.value,
                                                            None)
                         try:
@@ -76,6 +77,7 @@ class MaintenanceAgent():
                         self.inspectionEntry.date = element.value
                         if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
                             self.inspectionEntry.mileage = maintenanceStatus.mileage_km.value
+                        LOG.info(f'Inspection of vehicle {self.vehicle.vin} done')
                         self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, None,
                                                            maintenanceStatus.inspectionDue_km.value)
                         try:
@@ -103,6 +105,7 @@ class MaintenanceAgent():
                         self.oilServiceEntry.date = element.value
                         if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
                             self.oilServiceEntry.mileage = maintenanceStatus.mileage_km.value
+                        LOG.info(f'Oil service for vehicle {self.vehicle.vin} done')
                         self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, maintenanceStatus.oilServiceDue_days.value,
                                                            None)
                         try:
@@ -130,6 +133,7 @@ class MaintenanceAgent():
                         self.oilServiceEntry.date = element.value
                         if maintenanceStatus.mileage_km.enabled and maintenanceStatus.mileage_km.value is not None:
                             self.oilServiceEntry.mileage = maintenanceStatus.mileage_km.value
+                        LOG.info(f'Oil service for vehicle {self.vehicle.vin} done')
                         self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, None,
                                                            maintenanceStatus.oilServiceDue_km.value)
                         try:
