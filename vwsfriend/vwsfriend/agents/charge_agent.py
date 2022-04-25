@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.charge import Charge
 from vwsfriend.model.charging_session import ChargingSession, ACDC
@@ -62,7 +63,7 @@ class ChargeAgent():
                                                                                                           AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                           onUpdateComplete=True)
 
-    def __onChargingStatusCarCapturedTimestampChange(self, element, flags):
+    def __onChargingStatusCarCapturedTimestampChange(self, element, flags):  # noqa: C901
         if element is not None and element.value is not None:
             chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
             current_remainingChargingTimeToComplete_min = None
@@ -80,6 +81,13 @@ class ChargeAgent():
                 current_chargePower_kW = chargeStatus.chargePower_kW.value
             if chargeStatus.chargeRate_kmph.enabled:
                 current_chargeRate_kmph = chargeStatus.chargeRate_kmph.value
+
+            if self.charge is not None:
+                try:
+                    self.session.refresh(self.charge)
+                except ObjectDeletedError:
+                    self.charge = self.session.query(Charge).filter(and_(Charge.vehicle == self.vehicle, Charge.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Charge.carCapturedTimestamp.desc()).first()
 
             if self.charge is None or (self.charge.carCapturedTimestamp != chargeStatus.carCapturedTimestamp.value and (
                     self.charge.remainingChargingTimeToComplete_min != current_remainingChargingTimeToComplete_min
@@ -99,6 +107,19 @@ class ChargeAgent():
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
+
+        if self.chargingSession is not None:
+            try:
+                self.session.refresh(self.chargingSession)
+            except ObjectDeletedError:
+                self.previousChargingSession = None
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
+
         if element.value == ChargingStatus.ChargingState.CHARGING:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
@@ -153,8 +174,21 @@ class ChargeAgent():
                 # also write milage if available
                 self.updateMileage()
 
-    def __onPlugConnectionStateChange(self, element, flags):
+    def __onPlugConnectionStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
+
+        if self.chargingSession is not None:
+            try:
+                self.session.refresh(self.chargingSession)
+            except ObjectDeletedError:
+                self.previousChargingSession = None
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
+
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
@@ -181,6 +215,19 @@ class ChargeAgent():
 
     def __onPlugLockStateChange(self, element, flags):
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
+
+        if self.chargingSession is not None:
+            try:
+                self.session.refresh(self.chargingSession)
+            except ObjectDeletedError:
+                self.previousChargingSession = None
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
+
         if element.value == PlugStatus.PlugLockState.LOCKED:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 self.previousChargingSession = self.chargingSession
@@ -202,6 +249,18 @@ class ChargeAgent():
             self.updateMileage()
 
     def __onChargePowerChange(self, element, flags):
+        if self.chargingSession is not None:
+            try:
+                self.session.refresh(self.chargingSession)
+            except ObjectDeletedError:
+                self.previousChargingSession = None
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
+
         if self.chargingSession is not None and self.chargingSession.isChargingState()\
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
             self.chargingSession.maximumChargePower_kW = element.value

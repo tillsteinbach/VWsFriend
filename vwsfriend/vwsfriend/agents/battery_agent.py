@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.battery import Battery
 
@@ -30,6 +31,14 @@ class BatteryAgent():
             batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
             current_currentSOC_pct = batteryStatus.currentSOC_pct.value
             current_cruisingRangeElectric_km = batteryStatus.cruisingRangeElectric_km.value
+
+            if self.battery is not None:
+                try:
+                    self.session.refresh(self.battery)
+                except ObjectDeletedError:
+                    self.battery = self.session.query(Battery).filter(and_(Battery.vehicle == self.vehicle,
+                                                                           Battery.carCapturedTimestamp.isnot(None)))\
+                        .order_by(Battery.carCapturedTimestamp.desc()).first()
 
             if self.battery is None or (self.battery.carCapturedTimestamp != batteryStatus.carCapturedTimestamp.value and (
                     self.battery.currentSOC_pct != current_currentSOC_pct

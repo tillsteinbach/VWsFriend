@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.warning_light import WarningLight
 
@@ -25,6 +26,14 @@ class WarningLightAgent():
                 self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['vehicleHealthWarnings']['warningLights'].carCapturedTimestamp, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
+        if self.enabledLights is not None:
+            try:
+                for enabledLight in self.enabledLights:
+                    self.session.refresh(enabledLight)
+            except ObjectDeletedError:
+                self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
+                                                                                  WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
+
         if element is not None and element.value is not None:
             warningLightsStatus = self.vehicle.weConnectVehicle.domains['vehicleHealthWarnings']['warningLights']
             for warningLight in warningLightsStatus.warningLights.values():

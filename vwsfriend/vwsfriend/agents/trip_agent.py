@@ -4,6 +4,7 @@ from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.trip import Trip
 from vwsfriend.util.location_util import locationFromLatLonWithGeofence
@@ -106,7 +107,13 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.domains.removeObserver(self.__onStatusesChange)
                 self.__onCarCapturedTimestampEnabled(element, flags)
 
-    def __onCarCapturedTimestampDisabled(self, element: AddressableAttribute, flags):
+    def __onCarCapturedTimestampDisabled(self, element: AddressableAttribute, flags):  # noqa: C901
+        if self.trip is not None:
+            try:
+                self.session.refresh(self.trip)
+            except ObjectDeletedError:
+                self.trip = None
+
         if self.mode == TripAgent.Mode.PARKING_POSITION:
             if element.parent.error.enabled:
                 LOG.debug(f'Vehicle {self.vehicle.vin} removed a parkingPosition but there was an error set')
@@ -150,6 +157,12 @@ class TripAgent():
                 self.lastParkingPositionLongitude = parkingPosition.longitude.value
 
     def __onCarCapturedTimestampEnabled(self, element, flags):  # noqa: C901
+        if self.trip is not None:
+            try:
+                self.session.refresh(self.trip)
+            except ObjectDeletedError:
+                self.trip = None
+
         if self.mode == TripAgent.Mode.PARKING_POSITION:
             parkingPosition = self.vehicle.weConnectVehicle.domains['parking']['parkingPosition']
             if parkingPosition.carCapturedTimestamp.enabled and parkingPosition.carCapturedTimestamp.value is not None:
@@ -190,6 +203,12 @@ class TripAgent():
                     LOG.info(f'Vehicle {self.vehicle.vin} provides a parking position, but no trip was started (this is ok during startup)')
 
     def __onIsActiveChanged(self, element, flags):  # noqa: C901
+        if self.trip is not None:
+            try:
+                self.session.refresh(self.trip)
+            except ObjectDeletedError:
+                self.trip = None
+
         if self.mode == TripAgent.Mode.READINESS_STATUS:
             if self.vehicle.weConnectVehicle.statusExists('charging', 'plugStatus'):
                 plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
@@ -229,6 +248,12 @@ class TripAgent():
                         LOG.info(f'Vehicle {self.vehicle.vin} reports to be inactive, but no trip was started (this is ok during startup)')
 
     def __onPlugConnectionStateChanged(self, element, flags):  # noqa: C901
+        if self.trip is not None:
+            try:
+                self.session.refresh(self.trip)
+            except ObjectDeletedError:
+                self.trip = None
+
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
             if self.trip is not None:
