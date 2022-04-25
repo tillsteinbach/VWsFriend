@@ -2,6 +2,7 @@ from datetime import datetime, timezone, timedelta
 import logging
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.range import Range
 
@@ -41,6 +42,14 @@ class RangeAgent():
             if rangeStatus.secondaryEngine.enabled:
                 current_secondary_currentSOC_pct = rangeStatus.secondaryEngine.currentSOC_pct.value
                 current_secondary_remainingRange_km = rangeStatus.secondaryEngine.remainingRange_km.value
+
+            if self.range is not None:
+                try:
+                    self.session.refresh(self.range)
+                except ObjectDeletedError:
+                    self.range = self.session.query(Range).filter(and_(Range.vehicle == self.vehicle,
+                                                                       Range.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Range.carCapturedTimestamp.desc()).first()
 
             if self.range is None or (rangeStatus.carCapturedTimestamp.value is not None
                                       and self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value
