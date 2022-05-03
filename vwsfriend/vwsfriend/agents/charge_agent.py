@@ -238,6 +238,7 @@ class ChargeAgent():
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
                 with self.session.begin_nested():
                     self.session.add(self.chargingSession)
+                self.session.commit()
             if self.chargingSession.locked is None:
                 self.chargingSession.locked = plugStatus.carCapturedTimestamp.value
             # also write position if available
