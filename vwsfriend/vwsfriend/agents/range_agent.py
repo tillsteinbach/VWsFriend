@@ -47,6 +47,7 @@ class RangeAgent():
                 try:
                     self.session.refresh(self.range)
                 except ObjectDeletedError:
+                    LOG.warning('Last range entry was deleted')
                     self.range = self.session.query(Range).filter(and_(Range.vehicle == self.vehicle,
                                                                        Range.carCapturedTimestamp.isnot(None))) \
                         .order_by(Range.carCapturedTimestamp.desc()).first()

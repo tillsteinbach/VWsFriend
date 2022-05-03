@@ -35,6 +35,7 @@ class MaintenanceAgent():
             try:
                 self.session.refresh(self.inspectionEntry)
             except ObjectDeletedError:
+                LOG.warning('Last inspection entry was deleted')
                 self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
                                                                                    Maintenance.date.is_(None),
                                                                                    Maintenance.type == MaintenanceType.INSPECTION)).first()
@@ -42,6 +43,7 @@ class MaintenanceAgent():
             try:
                 self.session.refresh(self.oilServiceEntry)
             except ObjectDeletedError:
+                LOG.warning('Last oil service entry was deleted')
                 self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
                                                                                    Maintenance.date.is_(None),
                                                                                    Maintenance.type == MaintenanceType.OIL_SERVICE)).first()

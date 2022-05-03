@@ -31,6 +31,7 @@ class WarningLightAgent():
                 for enabledLight in self.enabledLights:
                     self.session.refresh(enabledLight)
             except ObjectDeletedError:
+                LOG.warning('Last warning light entry was deleted')
                 self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
                                                                                   WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
 

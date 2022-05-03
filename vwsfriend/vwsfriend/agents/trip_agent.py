@@ -112,6 +112,7 @@ class TripAgent():
             try:
                 self.session.refresh(self.trip)
             except ObjectDeletedError:
+                LOG.warning('Last trip entry was deleted')
                 self.trip = None
 
         if self.mode == TripAgent.Mode.PARKING_POSITION:
@@ -161,6 +162,7 @@ class TripAgent():
             try:
                 self.session.refresh(self.trip)
             except ObjectDeletedError:
+                LOG.warning('Last trip entry was deleted')
                 self.trip = None
 
         if self.mode == TripAgent.Mode.PARKING_POSITION:
@@ -207,6 +209,7 @@ class TripAgent():
             try:
                 self.session.refresh(self.trip)
             except ObjectDeletedError:
+                LOG.warning('Last trip entry was deleted')
                 self.trip = None
 
         if self.mode == TripAgent.Mode.READINESS_STATUS:
@@ -252,6 +255,7 @@ class TripAgent():
             try:
                 self.session.refresh(self.trip)
             except ObjectDeletedError:
+                LOG.warning('Last trip entry was deleted')
                 self.trip = None
 
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
