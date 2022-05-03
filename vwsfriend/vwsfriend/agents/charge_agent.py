@@ -85,6 +85,7 @@ class ChargeAgent():
             if self.charge is not None:
                 try:
                     self.session.refresh(self.charge)
+                    LOG.warning('Last charge entry was deleted')
                 except ObjectDeletedError:
                     self.charge = self.session.query(Charge).filter(and_(Charge.vehicle == self.vehicle, Charge.carCapturedTimestamp.isnot(None))) \
                         .order_by(Charge.carCapturedTimestamp.desc()).first()
@@ -112,6 +113,7 @@ class ChargeAgent():
             try:
                 self.session.refresh(self.chargingSession)
             except ObjectDeletedError:
+                LOG.warning('Open charging session was deleted')
                 self.previousChargingSession = None
                 chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
                     .order_by(ChargingSession.started.desc()).first()
@@ -181,6 +183,7 @@ class ChargeAgent():
             try:
                 self.session.refresh(self.chargingSession)
             except ObjectDeletedError:
+                LOG.warning('Open charging session was deleted')
                 self.previousChargingSession = None
                 chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
                     .order_by(ChargingSession.started.desc()).first()
@@ -220,6 +223,7 @@ class ChargeAgent():
             try:
                 self.session.refresh(self.chargingSession)
             except ObjectDeletedError:
+                LOG.warning('Open charging session was deleted')
                 self.previousChargingSession = None
                 chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
                     .order_by(ChargingSession.started.desc()).first()
@@ -253,6 +257,7 @@ class ChargeAgent():
             try:
                 self.session.refresh(self.chargingSession)
             except ObjectDeletedError:
+                LOG.warning('Open charging session was deleted')
                 self.previousChargingSession = None
                 chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
                     .order_by(ChargingSession.started.desc()).first()

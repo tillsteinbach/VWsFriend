@@ -55,6 +55,7 @@ class StateAgent():
             try:
                 self.session.refresh(self.online)
             except ObjectDeletedError:
+                LOG.warning('Last online entry was deleted')
                 self.online = self.session.query(Online).filter(and_(Online.vehicle == self.vehicle,
                                                                      Online.onlineTime.isnot(None))).order_by(Online.onlineTime.desc()).first()
         if self.onlineState == StateAgent.OnlineState.ONLINE:

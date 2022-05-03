@@ -42,6 +42,7 @@ class ClimatizationAgent():
                 try:
                     self.session.refresh(self.climate)
                 except ObjectDeletedError:
+                    LOG.warning('Last climatisation entry was deleted')
                     self.climate = self.session.query(Climatization).filter(and_(Climatization.vehicle == self.vehicle,
                                                                                  Climatization.carCapturedTimestamp.isnot(None))) \
                         .order_by(Climatization.carCapturedTimestamp.desc()).first()

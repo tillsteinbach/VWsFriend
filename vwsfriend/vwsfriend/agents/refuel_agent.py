@@ -61,6 +61,7 @@ class RefuelAgent():
             try:
                 self.session.refresh(self.previousRefuelSession)
             except ObjectDeletedError:
+                LOG.warning('Last refuel session was deleted')
                 self.previousRefuelSession = None
 
         if element is not None and element.value is not None:
