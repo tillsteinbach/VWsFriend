@@ -141,9 +141,9 @@ class ChargeAgent():
             # also write start charge type if available and not already set
             if self.chargingSession is not None and self.chargingSession.acdc is None \
                     and chargeStatus.chargeType.enabled:
-                if chargeStatus.chargeType == ChargingStatus.ChargeType.AC:
+                if chargeStatus.chargeType.value == ChargingStatus.ChargeType.AC:
                     self.chargingSession.acdc = ACDC.AC
-                elif chargeStatus.chargeType == ChargingStatus.ChargeType.DC:
+                elif chargeStatus.chargeType.value == ChargingStatus.ChargeType.DC:
                     self.chargingSession.acdc = ACDC.DC
 
             # also write position if available
