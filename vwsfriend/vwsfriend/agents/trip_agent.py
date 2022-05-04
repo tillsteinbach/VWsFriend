@@ -42,6 +42,7 @@ class TripAgent():
                 if Privacy.NO_LOCATIONS not in self.privacy:
                     self.lastParkingPositionLatitude = self.trip.destination_position_latitude
                     self.lastParkingPositionLongitude = self.trip.destination_position_longitude
+                self.session.commit()
             else:
                 LOG.info(f'Vehicle {self.vehicle.vin} has still an open trip during startup, closing it now')
             self.trip = None
@@ -191,6 +192,7 @@ class TripAgent():
                             if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                                 self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
+                        self.session.commit()
                         self.trip = None
 
                         LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
@@ -243,6 +245,7 @@ class TripAgent():
                         if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                             self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
+                    self.session.commit()
                     self.trip = None
 
                     LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
@@ -271,6 +274,7 @@ class TripAgent():
                     if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                         self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
+                self.session.commit()
                 self.trip = None
 
                 LOG.info(f'Vehicle {self.vehicle.vin} ended a trip (car was connected to charger)')
