@@ -193,7 +193,7 @@
 
       {% if vehicle.statusExists('climatisation', 'climatisationSettings') and vehicle.domains['climatisation']['climatisationSettings'].enabled and not vehicle.domains['climatisation']['climatisationSettings'].hasError() %}
       <p>
-      <h2>Climatization Status (From
+      <h2>Climatization Settings (From
         {{vehicle.domains['climatisation']['climatisationSettings'].carCapturedTimestamp.value.isoformat()}})</h2>
       <ul>
         {% if vehicle.domains['climatisation']['climatisationSettings'].targetTemperature_C.enabled %}

@@ -4,6 +4,7 @@ import logging
 
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.online import Online
 
@@ -49,7 +50,14 @@ class StateAgent():
                     and (element.value + timedelta(seconds=self.onlineTimeout)) > datetime.utcnow().replace(tzinfo=timezone.utc):
                 self.earliestCarCapturedTimestampInInterval = element.value
 
-    def checkOnlineOffline(self):
+    def checkOnlineOffline(self):  # noqa: C901
+        if self.online is not None:
+            try:
+                self.session.refresh(self.online)
+            except ObjectDeletedError:
+                LOG.warning('Last online entry was deleted')
+                self.online = self.session.query(Online).filter(and_(Online.vehicle == self.vehicle,
+                                                                     Online.onlineTime.isnot(None))).order_by(Online.onlineTime.desc()).first()
         if self.onlineState == StateAgent.OnlineState.ONLINE:
             if self.online is not None and self.lastCarCapturedTimestamp is not None \
                     and (self.lastCarCapturedTimestamp + timedelta(seconds=self.offlineTimeout)) < datetime.utcnow().replace(tzinfo=timezone.utc):

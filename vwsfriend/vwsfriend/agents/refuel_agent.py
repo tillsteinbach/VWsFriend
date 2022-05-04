@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import logging
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.refuel_session import RefuelSession
 from vwsfriend.util.location_util import amenityFromLatLon
@@ -56,6 +57,13 @@ class RefuelAgent():
                 self.__onParkingPositionCarCapturedTimestampChanged(element, flags)
 
     def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
+        if self.previousRefuelSession is not None:
+            try:
+                self.session.refresh(self.previousRefuelSession)
+            except ObjectDeletedError:
+                LOG.warning('Last refuel session was deleted')
+                self.previousRefuelSession = None
+
         if element is not None and element.value is not None:
             rangeStatus = self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus']
             if self.vehicle.carType in [RangeStatus.CarType.HYBRID] and rangeStatus.primaryEngine.currentSOC_pct.enabled \

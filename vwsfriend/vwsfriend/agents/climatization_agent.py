@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.climatization import Climatization
 
@@ -36,6 +37,15 @@ class ClimatizationAgent():
                 current_remainingClimatisationTime_min = climateStatus.remainingClimatisationTime_min.value
             if climateStatus.climatisationState.enabled:
                 current_climatisationState = climateStatus.climatisationState.value
+
+            if self.climate is not None:
+                try:
+                    self.session.refresh(self.climate)
+                except ObjectDeletedError:
+                    LOG.warning('Last climatisation entry was deleted')
+                    self.climate = self.session.query(Climatization).filter(and_(Climatization.vehicle == self.vehicle,
+                                                                                 Climatization.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Climatization.carCapturedTimestamp.desc()).first()
 
             if self.climate is None or (self.climate.carCapturedTimestamp != climateStatus.carCapturedTimestamp.value and (
                     self.climate.remainingClimatisationTime_min != current_remainingClimatisationTime_min
