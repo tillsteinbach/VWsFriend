@@ -153,6 +153,8 @@ class ChargeAgent():
 
             # also write milage if available
             self.updateMileage()
+
+            self.session.commit()
         elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING]:
             if self.chargingSession is not None and self.chargingSession.isChargingState():
                 self.chargingSession.ended = chargeStatus.carCapturedTimestamp.value
@@ -175,6 +177,8 @@ class ChargeAgent():
 
                 # also write milage if available
                 self.updateMileage()
+
+                self.session.commit()
 
     def __onPlugConnectionStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
@@ -208,6 +212,8 @@ class ChargeAgent():
             self.updatePosition()
             # also write milage if available
             self.updateMileage()
+
+            self.session.commit()
         elif element.value == PlugStatus.PlugConnectionState.DISCONNECTED:
             if self.chargingSession is not None and self.chargingSession.isConnectedState():
                 self.chargingSession.disconnected = plugStatus.carCapturedTimestamp.value
@@ -245,6 +251,8 @@ class ChargeAgent():
             self.updatePosition()
             # also write milage if available
             self.updateMileage()
+
+            self.session.commit()
         elif element.value == PlugStatus.PlugLockState.UNLOCKED:
             if self.chargingSession is not None and self.chargingSession.isLockedState():
                 self.chargingSession.unlocked = plugStatus.carCapturedTimestamp.value
@@ -252,6 +260,8 @@ class ChargeAgent():
             self.updatePosition()
             # also write milage if available
             self.updateMileage()
+
+            self.session.commit()
 
     def __onChargePowerChange(self, element, flags):
         if self.chargingSession is not None:
@@ -270,6 +280,8 @@ class ChargeAgent():
         if self.chargingSession is not None and self.chargingSession.isChargingState()\
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
             self.chargingSession.maximumChargePower_kW = element.value
+
+            self.session.commit()
 
     def updatePosition(self):
         if Privacy.NO_LOCATIONS not in self.privacy:
