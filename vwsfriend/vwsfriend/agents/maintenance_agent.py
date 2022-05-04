@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.maintenance import Maintenance, MaintenanceType
 
@@ -30,6 +31,23 @@ class MaintenanceAgent():
                                                     None)
 
     def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
+        if self.inspectionEntry is not None:
+            try:
+                self.session.refresh(self.inspectionEntry)
+            except ObjectDeletedError:
+                LOG.warning('Last inspection entry was deleted')
+                self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
+                                                                                   Maintenance.date.is_(None),
+                                                                                   Maintenance.type == MaintenanceType.INSPECTION)).first()
+        if self.oilServiceEntry is not None:
+            try:
+                self.session.refresh(self.oilServiceEntry)
+            except ObjectDeletedError:
+                LOG.warning('Last oil service entry was deleted')
+                self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
+                                                                                   Maintenance.date.is_(None),
+                                                                                   Maintenance.type == MaintenanceType.OIL_SERVICE)).first()
+
         if element is not None and element.value is not None:
             maintenanceStatus = self.vehicle.weConnectVehicle.domains['vehicleHealthInspection']['maintenanceStatus']
 
