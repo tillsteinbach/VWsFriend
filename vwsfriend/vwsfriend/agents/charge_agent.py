@@ -222,6 +222,8 @@ class ChargeAgent():
             # also write milage if available
             self.updateMileage()
 
+            self.session.commit()
+
     def __onPlugLockStateChange(self, element, flags):
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
 
