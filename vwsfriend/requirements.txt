@@ -1,11 +1,11 @@
 weconnect[Images]~=0.40.0.dev1
 HAP-python[QRCode]~=4.4.0
 pypng~=0.0.21
-sqlalchemy~=1.4.35
+sqlalchemy~=1.4.36
 psycopg2-binary~=2.9.3
 requests~=2.27.1
-flask~=2.1.1
-flask-login~=0.6.0
+flask~=2.1.2
+flask-login~=0.6.1
 flask-caching~=1.10.1
 WTForms~=3.0.1
 flask_wtf~=1.0.1
