@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1652261366348,
+  "iteration": 1652275613737,
   "links": [
     {
       "asDropdown": false,
@@ -369,6 +369,35 @@
                 "value": 110
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_location_id/"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "# Drives"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "",
+                    "url": "d/vNxU6Xl7k?var-VIN=${VIN}&var-start_location=${__data.fields.start_location_id}&var-destination_location=${__data.fields.destination_location_id}"
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -401,7 +430,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(DISTINCT id) AS \"# Drives\",\n  percentile_cont(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM \"endDate\"-\"startDate\")) AS \"Med. Duration\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN' ${tag_sql:raw} AND\n  trips.\"start_location_id\" IS NOT NULL AND\n  trips.\"destination_location_id\" IS NOT NULL\nGROUP BY start_locations.display_name, start_locations.name, start_locations.amenity, start_locations.road, start_locations.house_number, start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country\nORDER BY \"# Drives\" DESC, \"Start\" ASC\nLIMIT 10",
+          "rawSql": "SELECT\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(DISTINCT id) AS \"# Drives\",\n  percentile_cont(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM \"endDate\"-\"startDate\")) AS \"Med. Duration\",\n  \"start_location_id\",\n  \"destination_location_id\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN' ${tag_sql:raw} AND\n  trips.\"start_location_id\" IS NOT NULL AND\n  trips.\"destination_location_id\" IS NOT NULL\nGROUP BY start_locations.display_name, start_locations.name, start_locations.amenity, start_locations.road, start_locations.house_number, start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country, \"start_location_id\", \"destination_location_id\"\nORDER BY \"# Drives\" DESC, \"Start\" ASC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -574,11 +603,6 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "Passat (Passat Variant GTE - HYBRID)",
-          "value": "WVWZZZ3CZME112096"
-        },
         "datasource": {
           "type": "postgres",
           "uid": "P2EF847825A020B66"
@@ -602,11 +626,6 @@
         "useTags": false
       },
       {
-        "current": {
-          "selected": false,
-          "text": "http://10.11.5.123:4000",
-          "value": "http://10.11.5.123:4000"
-        },
         "datasource": {
           "type": "postgres",
           "uid": "P2EF847825A020B66"
@@ -627,7 +646,7 @@
       {
         "allValue": "all_values",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
             "All"
           ],
