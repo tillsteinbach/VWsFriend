@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645560689589,
+  "iteration": 1652259298531,
   "links": [
     {
       "asDropdown": false,
@@ -90,6 +93,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of all trips recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. If a trip is missing use the \"Add trip\" button.",
       "fieldConfig": {
         "defaults": {
@@ -99,7 +106,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-text",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -235,7 +243,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.1",
       "targets": [
         {
           "datasource": {
@@ -274,6 +282,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Top 10 list of trips between two locations. If this panel is empty location data is missing for your car. You can add manually location data by using the ⚙ button.",
       "fieldConfig": {
         "defaults": {
@@ -283,7 +295,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "auto",
-            "filterable": true
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -309,11 +322,27 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 60
+                "value": 70
               },
               {
                 "id": "custom.minWidth",
                 "value": 60
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Med. Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dthms"
+              },
+              {
+                "id": "custom.width",
+                "value": 110
               }
             ]
           }
@@ -337,7 +366,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.1",
       "targets": [
         {
           "datasource": {
@@ -348,7 +377,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(DISTINCT id) AS \"# Drives\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN' ${tag_sql:raw}\nGROUP BY start_locations.display_name, start_locations.name, start_locations.amenity, start_locations.road, start_locations.house_number, start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country\nORDER BY \"# Drives\" DESC, \"Start\" ASC\nLIMIT 10",
+          "rawSql": "SELECT\n  COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start\",\n  COALESCE(destination_location.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_location.name, destination_location.amenity), nullif(CONCAT_WS(' ', destination_location.road, destination_location.house_number), '')), destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country)) AS \"Destination\",\n  count(DISTINCT id) AS \"# Drives\",\n  percentile_cont(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM \"endDate\"-\"startDate\")) AS \"Med. Duration\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  trips.vehicle_vin = '$VIN' ${tag_sql:raw}\nGROUP BY start_locations.display_name, start_locations.name, start_locations.amenity, start_locations.road, start_locations.house_number, start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country, destination_location.display_name, destination_location.name, destination_location.amenity, destination_location.road, destination_location.house_number, destination_location.neighbourhood, destination_location.city, destination_location.postcode, destination_location.country\nORDER BY \"# Drives\" DESC, \"Start\" ASC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -376,6 +405,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Top 10 list of longest trips. If this panel is empty location data is missing for your car. You can add manually location data by using the ⚙ button.",
       "fieldConfig": {
         "defaults": {
@@ -385,7 +418,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "auto",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -468,7 +502,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.1",
       "targets": [
         {
           "datasource": {
@@ -508,7 +542,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -516,6 +550,10 @@
   "templating": {
     "list": [
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,
@@ -535,6 +573,10 @@
         "useTags": false
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,
@@ -559,6 +601,10 @@
             "$__all"
           ]
         },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM trip_tag LEFT JOIN tag ON trip_tag.tag_name = tag.name WHERE use_trips = true",
         "hide": 0,
         "includeAll": true,
@@ -579,6 +625,10 @@
           "text": "",
           "value": ""
         },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND trip_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
         "hide": 2,
         "includeAll": false,
@@ -596,7 +646,7 @@
   },
   "time": {
     "from": "1970-01-01T00:00:00.000Z",
-    "to": "now"
+    "to": now
   },
   "timepicker": {
     "hidden": false
