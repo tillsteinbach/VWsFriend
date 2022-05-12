@@ -1,0 +1,1007 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 18,
+    "iteration": 1652355458493,
+    "links": [
+      {
+        "asDropdown": true,
+        "icon": "external link",
+        "includeVars": true,
+        "keepTime": false,
+        "tags": [
+          "vwsfriend"
+        ],
+        "targetBlank": false,
+        "title": "Dashboards",
+        "tooltip": "",
+        "type": "dashboards",
+        "url": ""
+      }
+    ],
+    "liveNow": true,
+    "panels": [
+      {
+        "datasource": {
+          "type": "marcusolsson-json-datasource",
+          "uid": "P36D08C1A0297C737"
+        },
+        "description": "Image of the car ${VIN:text} with VIN ${VIN:raw}",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 3,
+          "x": 0,
+          "y": 0
+        },
+        "id": 7,
+        "options": {
+          "SVGBaseFix": false,
+          "add100Percentage": false,
+          "calcsMutation": "none",
+          "centerAlignContent": true,
+          "codeData": "{\n  \"text\": \"Random text\"\n}",
+          "css": "",
+          "dynamicData": false,
+          "dynamicFieldDisplayValues": false,
+          "dynamicHtmlGraphics": true,
+          "dynamicProps": false,
+          "html": "<a id='carlink' target=”_blank”>\n<img src=\"\" id='carimage' style='max-height: 100%; max-width: 100%'/>\n</a>",
+          "onInit": "",
+          "onInitOnResize": false,
+          "onRender": "const vin = getTemplateSrv().replace(`$VIN`);\nconst vwsfriend_url = getTemplateSrv().replace(`$vwsfriend_url`);\nconst carimage = htmlNode.querySelector('#carimage');\nconst carlink = htmlNode.querySelector('#carlink');\ncarimage.src = vwsfriend_url+'/status/vehicles/'+vin+'-car.png';\ncarlink.href = vwsfriend_url+'/status/vehicle/'+vin+'/';",
+          "overflow": "visible",
+          "panelupdateOnMount": true,
+          "reduceOptions": {
+            "calcs": []
+          },
+          "renderOnMount": true,
+          "rootCSS": ""
+        },
+        "pluginVersion": "8.3.6",
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "datasource": {
+              "type": "marcusolsson-json-datasource",
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          }
+        ],
+        "title": "$VIN",
+        "type": "gapit-htmlgraphics-panel"
+      },
+      {
+        "datasource": {
+          "type": "marcusolsson-json-datasource",
+          "uid": "P36D08C1A0297C737"
+        },
+        "description": "Last time data was received from the car",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "fixed"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 8,
+          "x": 3,
+          "y": 0
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "none",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "first"
+            ],
+            "fields": "/^Time$/",
+            "values": false
+          },
+          "text": {},
+          "textMode": "value"
+        },
+        "pluginVersion": "8.5.1",
+        "targets": [
+          {
+            "cacheDurationSeconds": 30,
+            "datasource": {
+              "type": "marcusolsson-json-datasource",
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": "$.vehicles.$VIN.domains..carCapturedTimestamp",
+                "language": "jsonpath",
+                "name": "Time"
+              }
+            ],
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          }
+        ],
+        "title": "Last Data From Car",
+        "transformations": [
+          {
+            "id": "sortBy",
+            "options": {
+              "fields": {},
+              "sort": [
+                {
+                  "desc": true,
+                  "field": "Time"
+                }
+              ]
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "autoPanLabels": true,
+        "autoWidthLabels": true,
+        "categories": "a,b",
+        "circleMaxSize": "1",
+        "circleMinSize": "1",
+        "circleOptions": {
+          "strokeEnabled": true,
+          "strokeWeight": "10"
+        },
+        "circleSizeAbsoluteEnabled": false,
+        "circleSizeAbsoluteFactor": 1,
+        "clickthroughOptions": {},
+        "clickthroughUrl": "",
+        "colorMode": "threshold",
+        "colors": [
+          "#73BF69",
+          "rgba(237, 129, 40, 0.89)"
+        ],
+        "customAttribution": false,
+        "datasource": {
+          "type": "marcusolsson-json-datasource",
+          "uid": "P36D08C1A0297C737"
+        },
+        "decimals": 0,
+        "description": "Current parking position if available. Not all cars provide a parking position.",
+        "doubleClickZoom": true,
+        "dragging": true,
+        "enableOverlay": false,
+        "enableReloadOverlay": true,
+        "esMetric": "Count",
+        "formatOmitEmptyValue": true,
+        "gridPos": {
+          "h": 17,
+          "w": 7,
+          "x": 11,
+          "y": 0
+        },
+        "hideEmpty": false,
+        "hideTimepickerNavigation": false,
+        "hideZero": false,
+        "id": 2,
+        "ignoreEmptyGeohashValues": false,
+        "ignoreEscapeKey": false,
+        "ignoreInvalidGeohashValues": false,
+        "initialZoom": 1,
+        "locationData": "table",
+        "mapCenter": "(0°, 0°)",
+        "mapCenterLatitude": 0,
+        "mapCenterLongitude": 0,
+        "mapFitData": true,
+        "maxDataPoints": 1,
+        "mouseWheelZoom": false,
+        "overlayOpacity": 0.5,
+        "overlayRangeLatitude": "0,10",
+        "overlayRangeLongitude": "0,20",
+        "overlayUrl": "",
+        "showAttribution": true,
+        "showLegend": false,
+        "showZoomControl": true,
+        "stickyLabels": false,
+        "tableQueryOptions": {
+          "geohashField": "geohash",
+          "labelField": "",
+          "latitudeField": "latitude",
+          "longitudeField": "longitude",
+          "metricField": "",
+          "queryType": "coordinates"
+        },
+        "targets": [
+          {
+            "cacheDurationSeconds": 30,
+            "datasource": {
+              "type": "marcusolsson-json-datasource",
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": "$.vehicles.$VIN.domains.parking.parkingPosition.latitude",
+                "name": "latitude",
+                "type": "number"
+              },
+              {
+                "jsonPath": "$.vehicles.$VIN.domains.parking.parkingPosition.longitude",
+                "language": "jsonpath",
+                "name": "longitude",
+                "type": "number"
+              },
+              {
+                "jsonPath": "$.vehicles.$VIN.domains.parking.parkingPosition.carCapturedTimestamp",
+                "language": "jsonpath",
+                "name": "time",
+                "type": "time"
+              }
+            ],
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          }
+        ],
+        "thresholds": "",
+        "title": "Parking Position",
+        "transparent": true,
+        "type": "panodata-map-panel",
+        "unitPlural": "",
+        "unitSingular": "",
+        "valueName": "current"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "description": "Shows information for the usage of VWsFriend",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 17,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        },
+        "id": 15,
+        "options": {
+          "SVGBaseFix": false,
+          "add100Percentage": true,
+          "calcsMutation": "none",
+          "centerAlignContent": false,
+          "codeData": "{\n  \"text\": \"Random text\"\n}",
+          "css": "",
+          "dynamicData": false,
+          "dynamicFieldDisplayValues": false,
+          "dynamicHtmlGraphics": true,
+          "dynamicProps": false,
+          "html": "<div>\n  <div id=\"warningsDiv\" style=\"display: none;\">\n    <h2>Warnings:</h2>\n    <ul id=\"warningsList\">\n    <ul>\n  </div>\n\n  <div id=\"newsDiv\" style=\"display: none;\">\n    <h2>News:</h2>\n  </div>\n\n  <div id=\"logDiv\" style=\"display: none;\">\n    <h2>Recent Events:</h2>\n    <ul id=\"logsList\" style=\"list-style-type:none\">\n    <ul>\n  </div>\n</div>",
+          "onInit": "",
+          "onInitOnResize": false,
+          "onRender": "const warningsDiv = htmlNode.getElementById('warningsDiv');\nconst warningsList = htmlNode.getElementById('warningsList');\nwarningsDiv.style.display = 'none'\nwhile (warningsList.firstChild) {\n    warningsList.firstChild.remove()\n}\nconst logsDiv = htmlNode.getElementById('logDiv');\nconst logsList = htmlNode.getElementById('logsList');\nlogsDiv.style.display = 'none'\nwhile (logsList.firstChild) {\n    logsList.firstChild.remove()\n}\n\nfunction addWarning(html) {\n  warningsDiv.style.display = ''\n  warning = document.createElement(\"li\")\n  warning.style.color = 'yellow'\n  var template = document.createElement('template');\n  html = html.trim();\n  template.innerHTML = html;\n  warning.append(template.content);\n  warningsList.appendChild(warning)\n}\n\nfunction addLog(html) {\n  logsDiv.style.display = ''\n  log = document.createElement(\"li\")\n  var template = document.createElement('template');\n  html = html.trim();\n  template.innerHTML = html;\n  log.append(template.content);\n  logsList.appendChild(log)\n}\n\nfunction getMetric(seriesName, metricName) {\n  const filteredSeries = data.series.filter((series) => series.refId == seriesName);\n  if(filteredSeries.length > 0 && filteredSeries[0].fields != null\n        && filteredSeries[0].fields.length > 0){\n    const filteredFields = filteredSeries[0].fields.filter((fields) => fields.name == metricName)\n    if(filteredFields.length > 0){\n      return filteredFields[0].values.get(0)\n    }\n  }\n  return null\n}\n\nconst vwsfriend_url = getTemplateSrv().replace(`$vwsfriend_url`);\nconst vin = getTemplateSrv().replace(`$VIN`);\nif(vwsfriend_url == null || vwsfriend_url== ''){\n  addWarning(\"You have to set the URL for the VWsFriend user interface correctly: Go to the user interface on port 4000 and select \\\"Database\\\" > \\”Connection Settings\\\"\")\n}\n\nconst carType = getMetric('vehicle_settings', 'carType')\nconst nickname = getMetric('vehicle_settings', 'nickname')\nconst primaryCapacity = getMetric('vehicle_settings', 'primary_capacity')\nconst primaryCapacityTotal = getMetric('vehicle_settings', 'primary_capacity_total')\nconst secondaryCapacity = getMetric('vehicle_settings', 'secondary_capacity')\nconst secondaryCapacityTotal = getMetric('vehicle_settings', 'secondary_capacity_total')\n\nif(carType == null){\n  addWarning(\"The engine type of \"+nickname+\" could not be detected yet. This should happen soon when receiving data.\")\n}\nelse{\n  switch (carType) {\n    case 'HYBRID':\n      if(primaryCapacity == null){\n        addWarning(\"Some panels need the tank size of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      if(secondaryCapacity == null || secondaryCapacityTotal == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n    case 'ELECTRIC':\n      if(primaryCapacity == null || primaryCapacityTotal == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n    default:\n      if(primaryCapacity == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n  }\n}\nconst hasError = getMetric('error', 'has_error')\nif(hasError){\n  addWarning(\"There were more then two errors in the last 30 minutes when fetching data from the servers.<br/>It seems that there are technical issues.\")\n}\n\n//Log\nconst filteredSeries = data.series.filter((series) => series.refId == 'log');\n  if(filteredSeries.length > 0 && filteredSeries[0].fields != null\n        && filteredSeries[0].fields.length > 0){\n    const filteredFields = filteredSeries[0].fields.filter((fields) => (fields.name == 'logtime' || fields.name == 'log'))\n    timeZone = htmlGraphics.props.timeZone;\n    if(filteredFields.length == 2){\n      time = filteredFields[0];\n      logstring = filteredFields[1];\n      var options = { dateStyle: 'short' };\n      if(timeZone!='browser'){\n        options.timeZone = timeZone;\n      }\n      var timeOptions = { timeStyle: 'short' };\n      if(timeZone!='browser'){\n        timeOptions.timeZone = timeZone;\n      }\n      var beforedate = new Intl.DateTimeFormat('default', options).format(new Date());\n      for(let i = 0; i < time.values.length; i++) {\n        var date = new Intl.DateTimeFormat('default', options).format(new Date(time.values.get(i)));\n        if(beforedate != date){\n          addLog('<b>'+date+'</b>');\n        }\n        beforedate = date;\n        var timestr = new Intl.DateTimeFormat('default', timeOptions).format(new Date(time.values.get(i)));\n        addLog(timestr+\": \"+logstring.values.get(i));\n      }\n    }\n  }",
+          "overflow": "scroll",
+          "panelupdateOnMount": true,
+          "reduceOptions": {
+            "calcs": []
+          },
+          "renderOnMount": true,
+          "rootCSS": ""
+        },
+        "pluginVersion": "8.3.6",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P2EF847825A020B66"
+            },
+            "format": "table",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  *\nFROM vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '${VIN}'\nORDER BY 1",
+            "refId": "vehicle_settings",
+            "select": [
+              [
+                {
+                  "params": [
+                    "\"maximumChargePower_kW\""
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "settings",
+            "timeColumn": "connected",
+            "timeColumnType": "timestamp",
+            "where": []
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P2EF847825A020B66"
+            },
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  logtime,\n  log FROM\n(\n  (SELECT\n    started AS logtime,\n    'charging started' AS log\n  FROM charging_sessions\n  WHERE started IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY started DESC\n  LIMIT 3)\n  UNION\n  (SELECT\n    connected AS logtime,\n    'charger connected' AS log\n  FROM charging_sessions\n  WHERE connected IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY connected DESC\n  LIMIT 3)\n  UNION\n  (SELECT\n    locked AS logtime,\n    'connector locked' AS log\n  FROM charging_sessions\n  WHERE locked IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY locked DESC\n  LIMIT 3)\n  UNION\n    (SELECT\n    ended AS logtime,\n    'charging ended' AS log\n  FROM charging_sessions\n  WHERE ended IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY ended DESC\n  LIMIT 3)\n  UNION\n  (SELECT\n    disconnected AS logtime,\n    'charger disconnected' AS log\n  FROM charging_sessions\n  WHERE disconnected IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY disconnected DESC\n  LIMIT 3)\n  UNION\n  (SELECT\n    unlocked AS logtime,\n    'connector unlocked' AS log\n  FROM charging_sessions\n  WHERE unlocked IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY unlocked DESC\n  LIMIT 3)\n  UNION\n  (SELECT\n    date AS logtime,\n    'car was refueled' AS log\n  FROM refuel_sessions\n  WHERE date IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY date DESC\n  LIMIT 3)\n   UNION\n  (SELECT\n    \"startDate\" AS logtime,\n    'trip started' AS log\n  FROM trips\n  WHERE \"startDate\" IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY \"startDate\" DESC\n  LIMIT 10)\n  UNION\n  (SELECT\n    \"endDate\" AS logtime,\n    'trip ended' AS log\n  FROM trips\n  WHERE \"endDate\" IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY \"endDate\" DESC\n  LIMIT 10)\n  UNION\n  (SELECT\n  \"carCapturedTimestamp\" AS logtime,\n  CASE WHEN \"climatisationState\"= 'OFF' THEN 'climatisation stopped'\n       WHEN \"climatisationState\"= 'HEATING' THEN 'climatisation heating'\n       WHEN \"climatisationState\"= 'COOLING' THEN 'climatisation cooling'\n       WHEN \"climatisationState\"= 'VENTILATION' THEN 'climatisation ventilating'\n       ELSE 'unkown'\n  END AS log\nFROM\n  (SELECT\n        \"carCapturedTimestamp\",\n        \"climatisationState\",\n        LAG(\"climatisationState\") OVER (ORDER BY \"carCapturedTimestamp\") AS \"beforeClimatisationState\",\n        'climatisation started' AS log\n      FROM climatization\n      WHERE \"carCapturedTimestamp\" IS NOT NULL AND \"climatisationState\" IS NOT NULL AND vehicle_vin = '${VIN}'\n        AND \"climatisationState\" IN ('OFF', 'HEATING', 'COOLING', 'VENTILATION')\n      ORDER BY \"carCapturedTimestamp\" DESC\n    ) AS climatization\n  WHERE \"climatisationState\" != \"beforeClimatisationState\"\n  ORDER BY \"carCapturedTimestamp\" DESC\n  LIMIT 10)\n  UNION\n  (SELECT\n    start AS logtime,\n    'New warning: '||text AS log\n  FROM warning_lights\n  WHERE start IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY start DESC\n  LIMIT 3)\n  UNION\n  (SELECT\n    \"end\" AS logtime,\n    'Warning gone: '||text AS log\n  FROM warning_lights\n  WHERE \"end\" IS NOT NULL AND vehicle_vin = '${VIN}'\n  ORDER BY \"end\" DESC\n  LIMIT 3)\n) AS logs\nORDER BY 1 DESC\nLIMIT 20",
+            "refId": "log",
+            "select": [
+              [
+                {
+                  "params": [
+                    "\"maximumChargePower_kW\""
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "settings",
+            "timeColumn": "connected",
+            "timeColumnType": "timestamp",
+            "where": []
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P2EF847825A020B66"
+            },
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  COUNT(*)>2 AS has_error\nFROM weconnect_errors\nWHERE datetime > (NOW() - INTERVAL '30 MINUTES')",
+            "refId": "error",
+            "select": [
+              [
+                {
+                  "params": [
+                    "\"maximumChargePower_kW\""
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "settings",
+            "timeColumn": "connected",
+            "timeColumnType": "timestamp",
+            "where": []
+          }
+        ],
+        "title": "Information",
+        "type": "gapit-htmlgraphics-panel"
+      },
+      {
+        "datasource": {
+          "type": "marcusolsson-json-datasource",
+          "uid": "P36D08C1A0297C737"
+        },
+        "description": "Status of the car ${VIN:text} with VIN ${VIN:raw}",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 8,
+          "x": 3,
+          "y": 3
+        },
+        "id": 14,
+        "options": {
+          "SVGBaseFix": false,
+          "add100Percentage": true,
+          "calcsMutation": "standard",
+          "centerAlignContent": true,
+          "codeData": "{\n  \"text\": \"Random text\"\n}",
+          "css": "/* Container holding the image and the text */\n#carcontainer {\n  position: relative;\n  text-align: center;\n  color: white;\n}\n\n.carstatusimage {}\n\n.carimage {}\n\n.carstatuslabel {\n  fill: white;\n  font-size: 1.5em;\n}\n\n.chargercablecharging {\n  stroke-dasharray: 10;\n  animation: dashdraw 4s linear infinite;\n  stroke: green;\n}\n.chargercablechargingSlow {\n  stroke-dasharray: 10;\n  animation: dashdraw 10s linear infinite;\n  stroke: green;\n}\n.chargercablechargingFast {\n  stroke-dasharray: 10;\n  animation: dashdraw 1s linear infinite;\n  stroke: orange;\n}\n@keyframes dashdraw {to {stroke-dashoffset: 200;}}\n\n.chargercableconnected {\n  stroke: gray;\n}\n.chargercableerror {\n  stroke: red;\n}\n.chargercabledisconnected {\n  stroke: none;\n}\n.drivepath {\n  stroke-dasharray: 100 200;\n  stroke-dashoffset: 350;\n  animation: dashdrawdrivepath 1s linear infinite;\n  animation-direction: forward;\n  stroke: rgb(215, 215, 215);\n}\n.drivepath2 {\n  stroke: rgb(215, 215, 215);\n}\n.notdriving {\n  stroke: none;\n}\n@keyframes dashdrawdrivepath {to {stroke-dashoffset: 50;}}",
+          "dynamicData": false,
+          "dynamicFieldDisplayValues": false,
+          "dynamicHtmlGraphics": true,
+          "dynamicProps": false,
+          "html": "<div id=\"carcontainer\">\n  \n    <svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   height=\"100%\" width=\"100%\"\n   viewBox=\"0 0 938 704\" class=\"carstatusimage\">\n  <defs>\n    <filter x=\"0\" y=\"0\" width=\"1\" height=\"1\" id=\"solid\">\n      <feFlood flood-color=\"black\" result=\"bg\" />\n      <feMerge>\n        <feMergeNode in=\"bg\"/>\n        <feMergeNode in=\"SourceGraphic\"/>\n      </feMerge>\n    </filter>\n  </defs>\n    <path id=\"chargercable\" class=\"chargercablecharging\" stroke-linejoin=\"round\" fill=\"none\" stroke-width=\"15\" d=\"m500 430 l1450 0\"/>\n    <path id=\"chargercharging\" class=\"chargercableconnected\" stroke-linejoin=\"round\" fill=\"none\" stroke-width=\"12\" d=\"m500 430 l1450 0\"/>\n    <path id=\"drivepath1\" class=\"drivepath\" stroke-linejoin=\"round\" fill=\"none\" stroke-width=\"15\" d=\"m335 -10 l-40 720\"/>\n    <path id=\"drivepath2\" class=\"drivepath2\" stroke-linejoin=\"round\" fill=\"none\" stroke-width=\"15\" d=\"m595 -10 l40 720\"/>\n    \n    <a id='carlink' target=”_blank”>\n      <image id=\"carimage\" x=\"0\" y=\"0\" width=\"938\" height=\"704\" preserveAspectRatio=\"xMidYMid\" class=\"carimage\"/>\n    </a>\n    <g style=\"transform: translate(730px, 465px)\">\n      <text dx=\"-5\" id=\"chargingTextLabel\" class=\"carstatuslabel\" text-anchor=\"end\"/>\n      <text id=\"chargingStatusLabel\" class=\"carstatuslabel\"/>\n      <text dy=\"1.3em\" id=\"chargingRemainingLabel\" class=\"carstatuslabel\"/>\n      <text dy=\"2.6em\" id=\"chargingPowerLabel\" class=\"carstatuslabel\"/>\n      <text dy=\"3.9em\" id=\"chargingCurrentLabel\" class=\"carstatuslabel\"/>\n    </g>\n    <g style=\"transform: translate(469px, 330px)\">\n      <text text-anchor=\"middle\" id=\"climatisationTextLabel\" class=\"carstatuslabel\" filter=\"url(#solid)\"/>\n      <text dy=\"1.3em\" text-anchor=\"middle\" id=\"climatisationStatusLabel\" class=\"carstatuslabel\" filter=\"url(#solid)\"/>\n      <text dy=\"2.6em\" text-anchor=\"middle\" id=\"climatisationRemainingLabel\" class=\"carstatuslabel\" filter=\"url(#solid)\"/>\n    </g>\n  </svg>\n  \n</div>",
+          "onInit": "",
+          "onInitOnResize": false,
+          "onRender": "// Used in onRender as it updates every time new data is available\nconst vin = getTemplateSrv().replace(`$VIN`);\nconst vwsfriend_url = getTemplateSrv().replace(`$vwsfriend_url`);\nconst carimage = htmlNode.getElementById('carimage');\nconst carlink = htmlNode.getElementById('carlink');\nconst imageurl = vwsfriend_url+'/status/vehicles/'+vin+'-status.png'\ncarimage.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', imageurl);\ncarlink.href = vwsfriend_url+'/status/vehicle/'+vin+'/';\n\nconst filteredSeries = data.series.filter((series) => series.name == 'A');\nconst json = null;\nif(filteredSeries.length > 0 && filteredSeries[0].fields != null\n      && filteredSeries[0].fields.length > 0){\n  const json = filteredSeries[0].fields[0].values.get(0);\n  const vehicle = JSON.parse(json);\n\n  //Charging\n  const chargerCable = htmlNode.getElementById('chargercable');\n  const chargerCharging = htmlNode.getElementById('chargercharging');\n  chargerCable.classList = [\"chargercabledisconnected\"]\n  chargerCharging.classList = [\"chargercabledisconnected\"]\n\n  const chargingTextLabel = htmlNode.getElementById('chargingTextLabel');\n  chargingTextLabel.textContent = '';\n  if(vehicle.domains != null && vehicle.domains.charging != null\n      && vehicle.domains.charging.chargingStatus != null){\n    const chargingTextLabel = htmlNode.getElementById('chargingTextLabel');\n    const plugStatus = vehicle.domains.charging.plugStatus;\n    if(plugStatus.plugConnectionState != null){\n      if(plugStatus.plugConnectionState == \"connected\"){\n        chargerCable.classList = [\"chargercableconnected\"];\n        chargingTextLabel.textContent = 'Charging:';\n      }\n    }\n    else{\n      chargingTextLabel.textContent = 'Charging:';\n    }\n    const chargingStatus = vehicle.domains.charging.chargingStatus;\n    if(chargingStatus.chargingState != null){\n      const chargingstatusLabel = htmlNode.getElementById('chargingStatusLabel');\n      if(plugStatus.plugConnectionState != null){\n        if(plugStatus.plugConnectionState == \"connected\"){\n          chargerCable.classList = [\"chargercableconnected\"];\n          chargingstatusLabel.textContent = chargingStatus.chargingState;\n        }\n        else{\n          chargingstatusLabel.textContent = \"\"\n        }\n      }\n      else{\n        chargingstatusLabel.textContent = chargingStatus.chargingState;\n      }\n      \n      if([\"off\", \"readyForCharging\"].includes(chargingStatus.chargingState)){\n        chargerCharging.classList = [\"chargercabledisconnected\"];\n      }\n      else if([\"conservation\", \"charging\", \"chargePurposeReachedAndConservation\"].includes(chargingStatus.chargingState)){\n        if(chargingStatus.chargePower_kW < 10){\n          chargerCharging.classList = [\"chargercablechargingSlow\"];\n        }\n        else if(chargingStatus.chargePower_kW > 11){\n          chargerCharging.classList = [\"chargercablechargingFast\"];\n        }\n        else{\n          chargerCharging.classList = [\"chargercablecharging\"];\n        }\n        \n      }\n      else if([\"chargePurposeReachedAndNotConservationCharging\"].includes(chargingStatus.chargingState)){\n        chargerCharging.classList = [\"chargercabledisconnected\"]\n      }\n      else if([\"error\"].includes(chargingStatus.chargingState)){\n        chargerCharging.classList = [\"chargercableerror\"]\n      }\n      else{\n        chargerCharging.classList = [\"chargercabledisconnected\"]\n      }\n      const chargingRemainingLabel = htmlNode.getElementById('chargingRemainingLabel');\n      chargingRemainingLabel.textContent = ''\n      const chargingPowerLabel = htmlNode.getElementById('chargingPowerLabel');\n      chargingPowerLabel.textContent = ''\n\n      if([\"conservation\", \"charging\", \"chargePurposeReachedAndConservation\"].includes(chargingStatus.chargingState)){\n        if(chargingStatus.remainingChargingTimeToComplete_min != null){\n          chargingRemainingLabel.textContent = chargingStatus.remainingChargingTimeToComplete_min+'m remaining';\n        }\n        if(chargingStatus.chargePower_kW != null){\n          chargingPowerLabel.textContent = chargingStatus.chargePower_kW+'kW Charge Power';\n        }\n      }\n    }\n  }\n\n  //Climatisation\n  const climatisationTextLabel = htmlNode.getElementById('climatisationTextLabel');\n  climatisationTextLabel.textContent = '';\n  const climatisationStatusLabel = htmlNode.getElementById('climatisationStatusLabel');\n  climatisationStatusLabel.textContent = '';\n  const climatisationRemainingLabel = htmlNode.getElementById('climatisationRemainingLabel');\n  climatisationRemainingLabel.textContent = '';\n  if(vehicle.domains != null && vehicle.domains.charging != null\n      && vehicle.domains.climatisation.climatisationStatus != null){\n    const climatisationStatus = vehicle.domains.climatisation.climatisationStatus;\n    if(climatisationStatus.climatisationState != null && climatisationStatus.climatisationState != 'off'){\n      climatisationTextLabel.textContent = 'Climatisation';\n      const climatisationStatusLabel = htmlNode.getElementById('climatisationStatusLabel');\n      climatisationStatusLabel.textContent = climatisationStatus.climatisationState;\n      if(climatisationStatus.remainingClimatisationTime_min != null){\n          climatisationRemainingLabel.textContent = climatisationStatus.remainingClimatisationTime_min+'m remaining';\n        }\n    }\n    else{\n      climatisationTextLabel.textContent = '';\n    }\n    const climatisationLabel = htmlNode.getElementById('climatisationLabel');\n    if(climatisationLabel != null){\n      while (climatisationLabel.firstChild) {\n          climatisationLabel.firstChild.remove()\n      }\n      climatisationString.split(\"\\n\").forEach(element => {\n        tspan = document.createElementNS(\"http://www.w3.org/2000/svg\", \"tspan\")\n        tspan.setAttribute('x', 0);\n        tspan.setAttribute('dy', \"1.2em\");\n        tspan.textContent=element\n        climatisationLabel.appendChild(tspan)\n      });\n      \n      climatisationLabel.text = returnString;\n    }\n  }\n\n  //Driving\n  const drivePath1 = htmlNode.getElementById('drivepath1');\n  drivePath1.classList = [\"notdriving\"]\n  const drivePath2 = htmlNode.getElementById('drivepath2');\n  drivePath2.classList = [\"notdriving\"]\n  if(vehicle.capabilities.parkingPosition != null && (vehicle.capabilities.parkingPosition.status == null || vehicle.capabilities.parkingPosition.status.length == 0)){\n    if(vehicle.domains != null && (vehicle.domains.parking == null\n        || vehicle.domains.parking.parkingPosition == null)){\n        drivePath1.classList = [\"drivepath\"]\n        drivePath2.classList = [\"drivepath2\"]\n    }\n  }\n  else if(vehicle.domains != null && vehicle.domains.readiness != null\n      && vehicle.domains.readiness.readinessStatus != null){\n    const readinessStatus = vehicle.domains.readiness.readinessStatus\n    if(readinessStatus.connectionState != null && readinessStatus.connectionState.isActive === true){\n      if(vehicle.domains.charging != null && vehicle.domains.charging.plugStatus != null){\n        if(vehicle.domains.charging.plugStatus.plugConnectionState != 'connected'){\n          drivePath1.classList = [\"drivepath\"]\n          drivePath2.classList = [\"drivepath2\"]\n        }\n      }\n    }\n  }\n}",
+          "overflow": "visible",
+          "panelupdateOnMount": true,
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull",
+              "last",
+              "first",
+              "firstNotNull",
+              "min",
+              "max",
+              "mean",
+              "sum",
+              "count",
+              "range",
+              "delta",
+              "step",
+              "diff",
+              "logmin",
+              "allIsZero",
+              "allIsNull",
+              "diffperc"
+            ]
+          },
+          "renderOnMount": true,
+          "rootCSS": ""
+        },
+        "pluginVersion": "8.3.6",
+        "targets": [
+          {
+            "cacheDurationSeconds": 30,
+            "datasource": {
+              "type": "marcusolsson-json-datasource",
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": "$.vehicles.$VIN",
+                "language": "jsonpath",
+                "name": "vehicle",
+                "type": "string"
+              }
+            ],
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          }
+        ],
+        "title": "Live Status",
+        "type": "gapit-htmlgraphics-panel"
+      },
+      {
+        "datasource": {
+          "type": "marcusolsson-json-datasource",
+          "uid": "P36D08C1A0297C737"
+        },
+        "description": "Current state of odometer",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "fixed"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "max": 100000,
+            "min": 0,
+            "noValue": "no data from car",
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "km"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 3,
+          "x": 0,
+          "y": 4
+        },
+        "id": 16,
+        "options": {
+          "colorMode": "none",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.5.1",
+        "targets": [
+          {
+            "cacheDurationSeconds": 30,
+            "datasource": {
+              "type": "marcusolsson-json-datasource",
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": "vehicles.$VIN.domains.measurements.odometerStatus.odometer",
+                "type": "number"
+              }
+            ],
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          }
+        ],
+        "title": "Odometer",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "marcusolsson-json-datasource",
+          "uid": "P36D08C1A0297C737"
+        },
+        "description": "Current state of charge",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "noValue": "no data from car",
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 3,
+          "x": 0,
+          "y": 7
+        },
+        "id": 9,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true,
+          "text": {}
+        },
+        "pluginVersion": "8.5.1",
+        "targets": [
+          {
+            "cacheDurationSeconds": 30,
+            "datasource": {
+              "type": "marcusolsson-json-datasource",
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": "vehicles.$VIN.domains.charging.batteryStatus.currentSOC_pct"
+              }
+            ],
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          }
+        ],
+        "title": "Battery",
+        "type": "gauge"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "Current range",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "min": 0,
+            "noValue": "no data from car",
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 5
+                },
+                {
+                  "color": "green",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "lengthkm"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 3,
+          "x": 0,
+          "y": 14
+        },
+        "id": 11,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "first"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true,
+          "text": {}
+        },
+        "pluginVersion": "8.5.1",
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "datasource": {
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": "$.vehicles.$VIN.domains.charging.batteryStatus.cruisingRangeElectric_km",
+                "name": "Electric Range"
+              }
+            ],
+            "hide": false,
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          },
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P2EF847825A020B66"
+            },
+            "format": "table",
+            "group": [],
+            "groupBy": [],
+            "hide": false,
+            "measurement": "",
+            "metricColumn": "none",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "",
+            "queryType": "randomWalk",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"Electric Range\"\nFROM vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'\n",
+            "refId": "WLTP",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "\"totalRange_km\""
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "ranges",
+            "tags": [],
+            "timeColumn": "\"carCapturedTimestamp\"",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              },
+              {
+                "datatype": "varchar",
+                "name": "",
+                "params": [
+                  "vehicle_vin",
+                  "=",
+                  "'$VIN'"
+                ],
+                "type": "expression"
+              }
+            ]
+          }
+        ],
+        "title": "Projected Electric Range",
+        "transformations": [
+          {
+            "id": "configFromData",
+            "options": {
+              "applyTo": {
+                "id": "byName",
+                "options": "A Electric Range"
+              },
+              "configRefId": "WLTP",
+              "mappings": [
+                {
+                  "fieldName": "Electric Range",
+                  "handlerKey": "max"
+                }
+              ]
+            }
+          }
+        ],
+        "type": "gauge"
+      },
+      {
+        "datasource": {
+          "type": "marcusolsson-json-datasource",
+          "uid": "P36D08C1A0297C737"
+        },
+        "description": "Remaining time until climatization is turned off",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "m"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 3,
+          "x": 0,
+          "y": 21
+        },
+        "id": 13,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.5.1",
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "datasource": {
+              "type": "marcusolsson-json-datasource",
+              "uid": "P36D08C1A0297C737"
+            },
+            "fields": [
+              {
+                "jsonPath": "$.vehicles.$VIN.domains.climatisation.climatisationStatus.remainingClimatisationTime_min",
+                "type": "number"
+              }
+            ],
+            "method": "GET",
+            "queryParams": "",
+            "refId": "A",
+            "urlPath": ""
+          }
+        ],
+        "title": "Remaining Climatization Time",
+        "type": "stat"
+      }
+    ],
+    "refresh": "1m",
+    "schemaVersion": 36,
+    "style": "dark",
+    "tags": [
+      "vwsfriend"
+    ],
+    "templating": {
+      "list": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+          "description": "Select Car if you have multiple cars in your account",
+          "hide": 0,
+          "includeAll": false,
+          "label": "Car",
+          "multi": false,
+          "name": "VIN",
+          "options": [],
+          "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+          "refresh": 1,
+          "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
+          "hide": 2,
+          "includeAll": false,
+          "multi": false,
+          "name": "vwsfriend_url",
+          "options": [],
+          "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "1970-01-01T00:00:00.000Z",
+      "to": "now"
+    },
+    "timepicker": {
+      "hidden": false,
+      "refresh_intervals": [
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ]
+    },
+    "timezone": "",
+    "title": "Live (experimental)",
+    "uid": "klW_R7ank",
+    "version": 1,
+    "weekStart": ""
+  }
