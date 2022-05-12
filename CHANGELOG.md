@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 - No unreleased changes so far
 
 ## [0.17.0] - 2022-05-12
+### Added
+- New live dashboard (still experimental!)
+- Maintenance and Warning light occurances are now recorded and displayed in dashboard if supported by the car
+- New aggregated trip dashboard showing statistics for reoccuring trips
+
+### Fixed
+- Improvements in dashboards
+- More robust against concurrent database manipulation in the UI
+
 ### Changed
 - Updated API to 0.40.0
 - Updated Grafana to 8.5.2
@@ -373,7 +382,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.16.6...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.17.0
 [0.16.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.6
 [0.16.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.5
 [0.16.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.4
