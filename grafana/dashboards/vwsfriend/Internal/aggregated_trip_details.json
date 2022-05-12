@@ -1,0 +1,1012 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": 20,
+  "iteration": 1652338532552,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Trips",
+      "tooltip": "",
+      "type": "link",
+      "url": "/d/2wMSY9Mnk"
+    },
+    {
+      "asDropdown": true,
+      "icon": "dashboard",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": [
+        "vwsfriend"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dtdurations"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 20,
+      "options": {
+        "bucketOffset": 0,
+        "combine": false,
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")) AS \"Duration\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1 DESC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "\"maximumChargePower_kW\""
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Duration distribution",
+      "type": "histogram"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Details of the trips. On some cars not all data is provided and thus sections may remain empty.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(255, 255, 255)",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.* duration/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Distance"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*length/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "titleSize": 25,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "CREATE extension IF NOT EXISTS cube;\nCREATE extension IF NOT EXISTS earthdistance;\n\nDO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  COUNT(*) AS \"Number of trips\",\n  MAX(\"Distance\") AS \"Distance\",\n  MIN(\"Length\") AS \"Minimum length\",\n  percentile_cont(0.5) WITHIN GROUP (ORDER BY \"Length\") AS \"Median length\",\n  MAX(\"Length\") AS \"Maximum length\",\n  SUM(\"Length\") AS \"Total length\",\n  MIN(\"Duration\") AS \"Minimum duration\",\n  percentile_cont(0.5) WITHIN GROUP (ORDER BY \"Duration\") AS \"Median duration\",\n  stddev_samp(\"Duration\") AS \"Std. dev. duration\",\n  MAX(\"Duration\") AS \"Maximum duration\",\n  SUM(\"Duration\") AS \"Total duration\"\nFROM\n(SELECT\n  id AS \"id\",\n  EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (point(start_locations.longitude, start_locations.latitude)<@>point(destination_location.longitude, destination_location.latitude)) * 1.609344 AS \"Distance\",\n  \"end_mileage_km\"-\"start_mileage_km\" AS \"Length\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  vehicle_vin = '$VIN') AS tripdata",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Details",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Distribution of the trip occurrences over the day.\nFor meaningful values wait until a significant number of trips were recorded.",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 22,
+      "pconfig": {
+        "fixScale": "",
+        "layout": {
+          "dragmode": "lasso",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "range": [
+              0,
+              24
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "Hour",
+            "type": "linear",
+            "zeroline": true
+          },
+          "yaxis": {
+            "range": [
+              0,
+              null
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "%",
+            "type": "linear",
+            "zeroline": true
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "Number",
+              "text": "Text",
+              "x": "Hour",
+              "y": "Number"
+            },
+            "name": "Distribution",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 15,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              },
+              "textposition": ""
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": true
+            }
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE INTERVAL '${__to:date:Z}')) AS \"Hour\",\n (SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100) AS \"Number\",\n ROUND((SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100))::TEXT || '% of total time on this route' AS \"Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Hourly distribution",
+      "transformations": [],
+      "type": "natel-plotly-panel",
+      "version": 1
+    },
+    {
+      "autoZoom": true,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "defaultLayer": "OpenStreetMap",
+      "description": "",
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "id": 13,
+      "lineColor": "red",
+      "links": [],
+      "maxDataPoints": 500,
+      "pointColor": "royalblue",
+      "scrollWheelZoom": false,
+      "showLayerChanger": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Trip",
+      "type": "pr0ps-trackmap-panel"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "List of all trips between start and destination recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "color-text",
+            "filterable": false,
+            "inspect": false
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdhms"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(id|[a-zA-Z0-9]*_date_ts)/"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(Start|End) Date/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Trip Details",
+                    "url": "d/6JFDUrG7z?from=${__data.fields.start_date_ts}&to=${__data.fields.end_date_ts}&var-VIN=${VIN}&var-id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(Length|Odometer)/"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "unit",
+                "value": "km"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Edit"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Edit this Trip",
+                    "url": "${vwsfriend_url:raw}/database/trips/edit?id=${__data.fields.id}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Start Location"
+            },
+            "properties": [
+              {
+                "id": "custom.filterable",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Destination Location"
+            },
+            "properties": [
+              {
+                "id": "custom.filterable",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 6,
+        "x": 12,
+        "y": 13
+      },
+      "id": 18,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": [
+            "Length",
+            "Duration"
+          ],
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Start Date"
+          }
+        ]
+      },
+      "pluginVersion": "8.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  \"startDate\" AS \"Start Date\",\n  EXTRACT('epoch' FROM(\"endDate\"-\"startDate\")) AS \"Duration\",\n  (\"end_mileage_km\"-\"start_mileage_km\") AS \"Length\",\n  \"end_mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  COALESCE((round(extract(epoch FROM \"startDate\") - 300) * 1000)::TEXT,'now-1d') AS start_date_ts,\n  COALESCE((round(extract(epoch FROM \"endDate\") + 300) * 1000)::TEXT,'now') AS end_date_ts\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  vehicle_vin = '$VIN'\nGROUP BY 1,2,3,4,5,6,7,8\nORDER BY 1 DESC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Trips on this route",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Start of the trip. If no data is shown your car does not provide location information.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(255, 253, 253)",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 6,
+        "x": 0,
+        "y": 27
+      },
+      "id": 11,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "titleSize": 25,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "\nDO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No start location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  name AS \"Name\",\n  amenity AS \"Amenity\",\n  (road || COALESCE(' '||house_number, '')) AS \"Street\",\n  neighbourhood AS \"Neighbourhood\",\n  postcode AS \"Postcode\",\n  city AS \"City\",\n  state AS \"State\",\n  country AS \"Country\"\nFROM locations\nWHERE\n  osm_id = $start_location",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Start Location",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "End of the trip. If no data is shown your car does not provide location information.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(255, 253, 253)",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 6,
+        "x": 6,
+        "y": 27
+      },
+      "id": 14,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "titleSize": 25,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "\nDO $$ \nBEGIN\nIF ${destination_location:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  name AS \"Name\",\n  amenity AS \"Amenity\",\n  (road || COALESCE(' '||house_number, '')) AS \"Street\",\n  neighbourhood AS \"Neighbourhood\",\n  postcode AS \"Postcode\",\n  city AS \"City\",\n  state AS \"State\",\n  country AS \"Country\"\nFROM locations\nWHERE\n  osm_id = $destination_location",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Destination Location",
+      "type": "stat"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "description": "Select Car if you have multiple cars in your account",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Car",
+        "multi": false,
+        "name": "VIN",
+        "options": [],
+        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "none",
+          "value": "none"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "definition": "SELECT\n   \"start_location_id\" || ':' || COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nWHERE \"start_location_id\" IS NOT NULL\nORDER BY COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country))",
+        "description": "Start Location",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Start",
+        "multi": false,
+        "name": "start_location",
+        "options": [],
+        "query": "SELECT\n   \"start_location_id\" || ':' || COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nWHERE \"start_location_id\" IS NOT NULL\nORDER BY COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country))",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "vwsfriend_url",
+        "options": [],
+        "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "none",
+          "value": "none"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "definition": "SELECT\n   \"destination_location_id\" || ':' || COALESCE(destination_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_locations.name, destination_locations.amenity), nullif(CONCAT_WS(' ', destination_locations.road, destination_locations.house_number), '')), destination_locations.neighbourhood, destination_locations.city, destination_locations.postcode, destination_locations.country)) AS \"Destination Location\"\nFROM trips\nLEFT JOIN locations destination_locations ON trips.\"destination_location_id\" = destination_locations.osm_id\nWHERE \"destination_location_id\" IS NOT NULL\nORDER BY COALESCE(destination_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_locations.name, destination_locations.amenity), nullif(CONCAT_WS(' ', destination_locations.road, destination_locations.house_number), '')), destination_locations.neighbourhood, destination_locations.city, destination_locations.postcode, destination_locations.country))",
+        "description": "Destination Location",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Destination",
+        "multi": false,
+        "name": "destination_location",
+        "options": [],
+        "query": "SELECT\n   \"destination_location_id\" || ':' || COALESCE(destination_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_locations.name, destination_locations.amenity), nullif(CONCAT_WS(' ', destination_locations.road, destination_locations.house_number), '')), destination_locations.neighbourhood, destination_locations.city, destination_locations.postcode, destination_locations.country)) AS \"Destination Location\"\nFROM trips\nLEFT JOIN locations destination_locations ON trips.\"destination_location_id\" = destination_locations.osm_id\nWHERE \"destination_location_id\" IS NOT NULL\nORDER BY COALESCE(destination_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_locations.name, destination_locations.amenity), nullif(CONCAT_WS(' ', destination_locations.road, destination_locations.house_number), '')), destination_locations.neighbourhood, destination_locations.city, destination_locations.postcode, destination_locations.country))",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "1970-01-01T00:00:00.000Z",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": false
+  },
+  "timezone": "browser",
+  "title": "Aggregated Trip Details",
+  "uid": "vNxU6Xl7k",
+  "version": 1,
+  "weekStart": ""
+}
