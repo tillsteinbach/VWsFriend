@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.17.0] - 2022-05-12
+### Changed
+- Updated API to 0.40.0
+- Updated Grafana to 8.5.2
+
 ## [0.16.6] - 2022-04-04
 
 ### Fixed
