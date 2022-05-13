@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -23,7 +26,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645603010581,
+  "iteration": 1652426179237,
   "links": [
     {
       "asDropdown": false,
@@ -79,6 +82,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Total number of charging sessions recorded.",
       "fieldConfig": {
         "defaults": {
@@ -124,7 +131,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -163,6 +170,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Total energy charged.\nEnergy is taken from exact value that was added to the charging sessions or estimated based on SoC if no exact data is available.",
       "fieldConfig": {
         "defaults": {
@@ -205,7 +216,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -266,6 +277,10 @@
         "#F2495C"
       ],
       "customAttribution": false,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "decimals": 2,
       "description": "Charging locations: Size and color corresponds to energy charged at that station.\nLocations are only recorded when provided from the car.\nEnergy is taken from exact value that was added to the charging sessions or estimated based on SoC if no exact data is available.",
       "doubleClickZoom": true,
@@ -354,6 +369,10 @@
       "valueName": "total"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Difference between estimated energy charged from the car and real energy charged.\nValue is calculated if charging sessions have real energy charged added.",
       "fieldConfig": {
         "defaults": {
@@ -397,7 +416,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -437,6 +456,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Sum of all charging costs.\nCharging costs can be added in each charging session.",
       "fieldConfig": {
         "defaults": {
@@ -481,7 +504,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -520,6 +543,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Energy added by AC/DC charging sessions.\nAC/DC can be automatically detected if provided from the car. If not it is guessed based on charge power. If the charge power is not available AC/DC can be manually set in the charging sessions.",
       "fieldConfig": {
         "defaults": {
@@ -608,6 +635,10 @@
       "type": "piechart"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Amount of  Energy loaded above and below 0.8C.\n1C corresponds to the power necessary to load the car in 1hour to its full capacity.\nGross battery capacity must be set in the vehicles settings.",
       "fieldConfig": {
         "defaults": {
@@ -697,6 +728,10 @@
       "type": "piechart"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Distribution of the power used for charging.",
       "gridPos": {
         "h": 8,
@@ -834,6 +869,10 @@
       "version": 1
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Distribution of the charging time over the day.\nFor meaningful values wait until a significant number of charging sessions were recorded.",
       "gridPos": {
         "h": 8,
@@ -967,7 +1006,11 @@
       "version": 1
     },
     {
-      "description": "Charging speeds at different SoC.\nFor meaningful values wait until a significant number of charging sessions were recorded.",
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Charging speeds at different SoC.\nFor meaningful values wait until a significant number of charging sessions were recorded. Only DC charging sessions are considered.",
       "gridPos": {
         "h": 8,
         "w": 11,
@@ -1138,12 +1181,16 @@
       "pluginVersion": "8.1.0",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  battery.\"currentSOC_pct\" AS \"soc\",\n  MAX(charges.\"chargePower_kW\") AS \"max\",\n  AVG(charges.\"chargePower_kW\") AS \"avg\",\n  MIN(charges.\"chargePower_kW\") AS \"min\",\n  'max. ' || MAX(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"maxText\",\n  'avg. ' || ROUND(AVG(charges.\"chargePower_kW\")::DECIMAL,2)::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"avgText\",\n  'min. ' || MIN(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"minText\"\nFROM\n  charges\nINNER JOIN battery ON battery.\"carCapturedTimestamp\" = (SELECT battery.\"carCapturedTimestamp\" FROM battery WHERE battery.\"carCapturedTimestamp\" > charges.\"carCapturedTimestamp\" - interval '120 SECONDS' AND battery.\"carCapturedTimestamp\" < charges.\"carCapturedTimestamp\" + interval '120 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (battery.\"carCapturedTimestamp\" - charges.\"carCapturedTimestamp\"))) ASC LIMIT 1)\nWHERE\n    charges.\"chargePower_kW\" > 0 AND\n    $__timeFilter(charges.\"carCapturedTimestamp\") AND\n    charges.vehicle_vin = '$VIN'\nGROUP BY soc\nORDER by soc ASC",
+          "rawSql": "SELECT\n  battery.\"currentSOC_pct\" AS \"soc\",\n  MAX(charges.\"chargePower_kW\") AS \"max\",\n  AVG(charges.\"chargePower_kW\") AS \"avg\",\n  MIN(charges.\"chargePower_kW\") AS \"min\",\n  'max. ' || MAX(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"maxText\",\n  'avg. ' || ROUND(AVG(charges.\"chargePower_kW\")::DECIMAL,2)::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"avgText\",\n  'min. ' || MIN(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"minText\"\nFROM\n  charges\nINNER JOIN charging_sessions ON charges.\"carCapturedTimestamp\" > charging_sessions.started AND charges.\"carCapturedTimestamp\" < charging_sessions.ended\nINNER JOIN battery ON battery.\"carCapturedTimestamp\" = (SELECT battery.\"carCapturedTimestamp\" FROM battery WHERE battery.\"carCapturedTimestamp\" > charges.\"carCapturedTimestamp\" - interval '120 SECONDS' AND battery.\"carCapturedTimestamp\" < charges.\"carCapturedTimestamp\" + interval '120 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (battery.\"carCapturedTimestamp\" - charges.\"carCapturedTimestamp\"))) ASC LIMIT 1)\nWHERE\n    charging_sessions.acdc = 'DC' AND\n    charges.\"chargePower_kW\" > 0 AND\n    $__timeFilter(charges.\"carCapturedTimestamp\") AND\n    charges.vehicle_vin = '$VIN'\nGROUP BY soc\nORDER by soc ASC",
           "refId": "A",
           "select": [
             [
@@ -1167,7 +1214,7 @@
           ]
         }
       ],
-      "title": "Charging Speed by SoC",
+      "title": "DC Charging Speed by SoC",
       "transformations": [
         {
           "id": "organize",
@@ -1186,7 +1233,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -1219,13 +1266,17 @@
       {
         "allValue": "all_values",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "All"
           ],
           "value": [
             "$__all"
           ]
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
         },
         "definition": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM charging_tag LEFT JOIN tag ON charging_tag.tag_name = tag.name WHERE use_charges = true",
         "hide": 0,
@@ -1246,6 +1297,10 @@
           "selected": false,
           "text": "",
           "value": ""
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
         },
         "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND charging_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
         "hide": 2,
