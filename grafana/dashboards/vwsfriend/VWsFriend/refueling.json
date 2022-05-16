@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645615731005,
+  "iteration": 1652684610182,
   "links": [
     {
       "asDropdown": false,
@@ -90,6 +93,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of all refueling sessions recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. If a refueling session is missing use the \"Add Refueling\" button.",
       "fieldConfig": {
         "defaults": {
@@ -99,7 +106,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -361,7 +369,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -401,6 +409,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of the most often used stations. If this list is empty your car probably does not provide a location. You can still set stations by using the ⚙ button in the list of sessions.",
       "fieldConfig": {
         "defaults": {
@@ -409,7 +421,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -474,7 +487,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -485,7 +498,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"Station\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n    locations.display_name AS \"Station\",\n    refuel_sessions.id AS \"Session\",\n    COALESCE(\"realRefueled_l\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END) / 100::NUMERIC) AS \"Amount\"\n  FROM refuel_sessions\n  LEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN refuel_tag ON refuel_sessions.id = refuel_tag.refuel_sessions_id\n  WHERE\n    $__timeFilter(date) AND\n    locations.display_name IS NOT NULL AND\n    refuel_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Station\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  \"Station\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n    locations.display_name AS \"Station\",\n    refuel_sessions.id AS \"Session\",\n    COALESCE(\"realRefueled_l\", (\"endSOC_pct\" - \"startSOC_pct\") * vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\"\n  FROM refuel_sessions\n  LEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN refuel_tag ON refuel_sessions.id = refuel_tag.refuel_sessions_id\n  WHERE\n    $__timeFilter(date) AND\n    locations.display_name IS NOT NULL AND\n    refuel_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Station\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -513,6 +526,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of the most often used operators. If this list is empty your car probably does not provide a location. You can still set stations by using the ⚙ button in the list of sessions.",
       "fieldConfig": {
         "defaults": {
@@ -521,7 +538,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -586,7 +604,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -597,7 +615,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"Operator\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT\n    locations.amenity AS \"Operator\",\n    refuel_sessions.id AS \"Session\",\n    COALESCE(\"realRefueled_l\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END) / 100::NUMERIC) AS \"Amount\"\n  FROM refuel_sessions\n  LEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN refuel_tag ON refuel_sessions.id = refuel_tag.refuel_sessions_id\n  WHERE\n    $__timeFilter(date) AND\n    locations.display_name IS NOT NULL AND\n    refuel_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Operator\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  \"Operator\",\n  COUNT(\"Session\") AS \"Sessions\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT\n    locations.amenity AS \"Operator\",\n    refuel_sessions.id AS \"Session\",\n    COALESCE(\"realRefueled_l\", (\"endSOC_pct\" - \"startSOC_pct\") * vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC) AS \"Amount\"\n  FROM refuel_sessions\n  LEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN refuel_tag ON refuel_sessions.id = refuel_tag.refuel_sessions_id\n  WHERE\n    $__timeFilter(date) AND\n    locations.display_name IS NOT NULL AND\n    refuel_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY result.\"Operator\"\nORDER BY \"Sessions\" DESC, \"Amount\" DESC\nLIMIT 10",
           "refId": "A",
           "select": [
             [
@@ -626,7 +644,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -634,6 +652,10 @@
   "templating": {
     "list": [
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles WHERE vehicles.\"carType\" != 'ELECTRIC'",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,
@@ -653,6 +675,10 @@
         "useTags": false
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,
@@ -677,6 +703,10 @@
             "$__all"
           ]
         },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM refuel_tag LEFT JOIN tag ON refuel_tag.tag_name = tag.name WHERE use_refueling = true",
         "hide": 0,
         "includeAll": true,
@@ -696,6 +726,10 @@
           "selected": false,
           "text": "",
           "value": ""
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
         },
         "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND refuel_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
         "hide": 2,
