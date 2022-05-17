@@ -39,8 +39,8 @@ jobs:
       - name: Autobump version
         working-directory: grafana
         run: |
-          PLACEHOLDER="        \"content\": \"VWsFriend version: [develop](https://github.com/tillsteinbach/VWsFriend/)\","
-          REPLACEMENT="        \"content\": \"VWsFriend version: [${{ env.version }}](https://github.com/tillsteinbach/VWsFriend/releases/tag/v${{ env.version }})\","
+          PLACEHOLDER="        \"content\": \"VWsFriend version: \[develop\](https://github.com/tillsteinbach/VWsFriend/)\","
+          REPLACEMENT="        \"content\": \"VWsFriend version: \[${{ env.version }}\](https://github.com/tillsteinbach/VWsFriend/releases/tag/v${{ env.version }})\","
           VERSION_FILE="dashboards/vwsfriend/VWsFriend/overview.json"
           # ensure the placeholder is there. If grep doesn't find the placeholder
           # it exits with exit code 1 and github actions aborts the build. 
