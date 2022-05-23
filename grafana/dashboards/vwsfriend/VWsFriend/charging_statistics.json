@@ -26,7 +26,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1652426179237,
+  "iteration": 1653299633341,
   "links": [
     {
       "asDropdown": false,
@@ -607,7 +607,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"Type\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n     charging_sessions.id, \n     COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n     COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount\"\n  FROM charging_sessions\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY \"Type\"",
+          "rawSql": "SELECT\n  \"Type\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n     charging_sessions.id, \n     COALESCE(acdc::TEXT, 'unknown') AS \"Type\",\n     COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount\"\n  FROM charging_sessions\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw} AND\n    (\"realCharged_kWh\" IS NOT NULL OR \"endSOC_pct\" != \"startSOC_pct\")) AS result\nGROUP BY \"Type\"",
           "refId": "A",
           "select": [
             [
