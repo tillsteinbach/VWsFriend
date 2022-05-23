@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645622821456,
+  "iteration": 1653303223484,
   "links": [
     {
       "asDropdown": false,
@@ -90,6 +93,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of all charging sessions recorded. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. If a charging session is missing use the \"Add Charging\" button.",
       "fieldConfig": {
         "defaults": {
@@ -99,7 +106,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -427,7 +435,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -438,7 +446,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"start_date\" AS \"Date\",\n  \"Location\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  \"Avg. Power\",\n  \"AC/DC\",\n  \"% Start\",\n  \"% End\",\n  \"Amount\",\n  \"✓\",\n  \"Cost\",\n  \"Odometer\",\n  (\"Amount\"\n    - (\"endSOC_pct\" - lag(\"endSOC_pct\") over (order by start_date)) * (\"vehicle_capacity\" / 100::NUMERIC)) / NULLIF(((\"Odometer\" - lag(\"Odometer\") over (order by start_date)) / 100::NUMERIC), 0) AS \"Consumption\",\n  \"Edit\",\n  \"id\",\n  (round(extract(epoch FROM start_date) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM end_date) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM\n  (SELECT DISTINCT\n    COALESCE (started, COALESCE (locked, connected)) AS start_date,\n    COALESCE (ended, COALESCE (unlocked, disconnected)) AS end_date,\n    COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n    EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n    \"maximumChargePower_kW\",\n    ((\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n    acdc AS \"AC/DC\",\n    \"startSOC_pct\" AS \"% Start\",\n    \"endSOC_pct\" AS \"% End\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount\",\n    CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n         ELSE NULL\n    END AS \"✓\",\n    \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n    \"mileage_km\" AS \"Odometer\",\n    '⚙' AS \"Edit\",\n    id,\n    \"endSOC_pct\",\n    (CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END) AS \"vehicle_capacity\"\n  FROM charging_sessions\n  LEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}\n ) AS result\nORDER BY 1 DESC",
+          "rawSql": "SELECT\n  \"start_date\" AS \"Date\",\n  \"Location\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  \"Avg. Power\",\n  \"AC/DC\",\n  \"% Start\",\n  \"% End\",\n  \"Amount\",\n  \"✓\",\n  \"Cost\",\n  \"Odometer\",\n  (\"Amount\"\n    - (\"endSOC_pct\" - lag(\"endSOC_pct\") over (order by start_date)) * (\"vehicle_capacity\" / 100::NUMERIC)) / NULLIF(((\"Odometer\" - lag(\"Odometer\") over (order by start_date)) / 100::NUMERIC), 0) AS \"Consumption\",\n  \"Edit\",\n  \"id\",\n  (round(extract(epoch FROM start_date) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM end_date) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM\n  (SELECT DISTINCT\n    COALESCE (started, COALESCE (locked, connected)) AS start_date,\n    COALESCE (ended, COALESCE (unlocked, disconnected)) AS end_date,\n    COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n    EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n    \"maximumChargePower_kW\",\n    (COALESCE(\"realCharged_kWh\",(\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC))) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n    acdc AS \"AC/DC\",\n    \"startSOC_pct\" AS \"% Start\",\n    \"endSOC_pct\" AS \"% End\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount\",\n    CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n         ELSE NULL\n    END AS \"✓\",\n    \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n    \"mileage_km\" AS \"Odometer\",\n    '⚙' AS \"Edit\",\n    id,\n    \"endSOC_pct\",\n    (CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END) AS \"vehicle_capacity\"\n  FROM charging_sessions\n  LEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}\n ) AS result\nORDER BY 1 DESC",
           "refId": "A",
           "select": [
             [
@@ -466,6 +474,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of the most often used charging stations. If this list is empty your car probably does not provide a location. You can still set charging stations by using the ⚙ button in the list of charging sessions.",
       "fieldConfig": {
         "defaults": {
@@ -475,7 +487,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "auto",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -541,7 +554,7 @@
         "frameIndex": 1,
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -580,6 +593,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of the most often used charging operators. If this list is empty your car probably does not provide a location. You can still set charging stations by using the ⚙ button in the list of charging sessions.",
       "fieldConfig": {
         "defaults": {
@@ -589,7 +606,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "auto",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -654,7 +672,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -694,7 +712,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -702,6 +720,10 @@
   "templating": {
     "list": [
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,
@@ -721,6 +743,10 @@
         "useTags": false
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,
@@ -745,6 +771,10 @@
             "$__all"
           ]
         },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM charging_tag LEFT JOIN tag ON charging_tag.tag_name = tag.name WHERE use_charges = true",
         "hide": 0,
         "includeAll": true,
@@ -764,6 +794,10 @@
           "selected": false,
           "text": "",
           "value": ""
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
         },
         "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND charging_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
         "hide": 2,
