@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -21,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645622569920,
+  "iteration": 1653303526527,
   "links": [
     {
       "asDropdown": false,
@@ -262,6 +265,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Times of the charging session. Start/End, Plugging/Unplugging, Locking/Unlocking",
       "fieldConfig": {
         "defaults": {
@@ -312,7 +319,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -351,6 +358,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Used power and charging rate during the charging session.",
       "fieldConfig": {
         "defaults": {
@@ -502,6 +513,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Details of the charging session. The amount is estimated based on the state of charge before and after charging. If you want to work with the real amount and cost in the statistics you can add this data using the edit button.",
       "fieldConfig": {
         "defaults": {
@@ -661,7 +676,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -672,7 +687,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realCharged_kWh\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\",\n  string_agg(charging_tag.tag_name, ', ') AS \"Tags\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN charging_tag on charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\nid = $id\nGROUP BY ended, unlocked, disconnected, started, locked, connected, \"maxChargeCurrentACSetting\", \"targetSOCSetting_pct\", \"maximumChargePower_kW\", \"endSOC_pct\", \"startSOC_pct\", \"carType\", \"primary_capacity\", \"secondary_capacity\", acdc, \"realCharged_kWh\", \"realCost_ct\", \"mileage_km\"",
+          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  (COALESCE(\"realCharged_kWh\", (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realCharged_kWh\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\",\n  string_agg(charging_tag.tag_name, ', ') AS \"Tags\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN charging_tag on charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\nid = $id\nGROUP BY ended, unlocked, disconnected, started, locked, connected, \"maxChargeCurrentACSetting\", \"targetSOCSetting_pct\", \"maximumChargePower_kW\", \"endSOC_pct\", \"startSOC_pct\", \"carType\", \"primary_capacity\", \"secondary_capacity\", acdc, \"realCharged_kWh\", \"realCost_ct\", \"mileage_km\"",
           "refId": "A",
           "select": [
             [
@@ -700,6 +715,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Charger of this charging session. If no data is provided your car might not provide location data. You can still set the location using the edit button.",
       "fieldConfig": {
         "defaults": {
@@ -770,7 +789,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -828,6 +847,10 @@
         "#73BF69"
       ],
       "customAttribution": false,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "decimals": 2,
       "description": "Location of the car when charging (green) and the used charger (red). If no location is shown you can add the location data using the edit button.",
       "doubleClickZoom": true,
@@ -918,6 +941,10 @@
       "valueName": "current"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Charging location of the session. If no data is provided your car might not provide location data. You can still set the location using the edit button.",
       "fieldConfig": {
         "defaults": {
@@ -968,7 +995,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.2",
       "targets": [
         {
           "datasource": {
@@ -1008,7 +1035,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "internal"
@@ -1016,44 +1043,38 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "none",
-          "value": "none"
-        },
         "hide": 2,
         "name": "id",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "none",
             "value": "none"
           }
         ],
-        "query": "none",
+        "query": "",
         "skipUrlSync": false,
         "type": "textbox"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "none",
-          "value": "none"
-        },
         "hide": 2,
         "name": "VIN",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "none",
             "value": "none"
           }
         ],
-        "query": "none",
+        "query": "",
         "skipUrlSync": false,
         "type": "textbox"
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,
@@ -1068,11 +1089,9 @@
         "type": "query"
       },
       {
-        "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
         },
         "definition": "SELECT charger_id FROM charging_sessions WHERE charging_sessions.id = $id",
         "description": "ID of the sessions charger",
