@@ -1043,6 +1043,11 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": false,
+          "text": "none",
+          "value": "none"
+        },
         "hide": 2,
         "name": "id",
         "options": [
@@ -1057,6 +1062,11 @@
         "type": "textbox"
       },
       {
+        "current": {
+          "selected": false,
+          "text": "none",
+          "value": "none"
+        },
         "hide": 2,
         "name": "VIN",
         "options": [
@@ -1066,7 +1076,7 @@
             "value": "none"
           }
         ],
-        "query": "",
+        "query": "none",
         "skipUrlSync": false,
         "type": "textbox"
       },
@@ -1092,6 +1102,12 @@
         "datasource": {
           "type": "postgres",
           "uid": "P2EF847825A020B66"
+        },
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
         },
         "definition": "SELECT charger_id FROM charging_sessions WHERE charging_sessions.id = $id",
         "description": "ID of the sessions charger",
