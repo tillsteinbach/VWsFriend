@@ -18,6 +18,7 @@ class Vehicle(Base):
     lastUpdate = Column(DatetimeDecorator)
     lastChange = Column(DatetimeDecorator)
     settings = relationship("VehicleSettings", back_populates="vehicle", uselist=False)
+    timezone = Column(String(256))
 
     weConnectVehicle = None
 
