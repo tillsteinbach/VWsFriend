@@ -58,7 +58,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1652858581694,
+  "iteration": 1653390224182,
   "links": [
     {
       "asDropdown": false,
@@ -112,7 +112,7 @@
         "content": "<a href=\"${vwsfriend_url:raw}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url:raw}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
         "mode": "html"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "title": "$VIN",
       "type": "text"
     },
@@ -167,7 +167,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "format": "table",
@@ -476,7 +476,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "alias": "Car is online",
@@ -559,7 +559,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "alias": "Last connection",
@@ -654,7 +654,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "format": "table",
@@ -752,7 +752,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "format": "table",
@@ -1210,7 +1210,7 @@
         "html": "<div>\n  <div id=\"warningsDiv\" style=\"display: none;\">\n    <h2>Warnings:</h2>\n    <ul id=\"warningsList\">\n    <ul>\n  </div>\n\n  <div id=\"newsDiv\" style=\"display: none;\">\n    <h2>News:</h2>\n  </div>\n\n  <div id=\"logDiv\" style=\"display: none;\">\n    <h2>Recent Events:</h2>\n    <ul id=\"logsList\" style=\"list-style-type:none\">\n    <ul>\n  </div>\n</div>",
         "onInit": "",
         "onInitOnResize": false,
-        "onRender": "const warningsDiv = htmlNode.getElementById('warningsDiv');\nconst warningsList = htmlNode.getElementById('warningsList');\nwarningsDiv.style.display = 'none'\nwhile (warningsList.firstChild) {\n    warningsList.firstChild.remove()\n}\nconst logsDiv = htmlNode.getElementById('logDiv');\nconst logsList = htmlNode.getElementById('logsList');\nlogsDiv.style.display = 'none'\nwhile (logsList.firstChild) {\n    logsList.firstChild.remove()\n}\n\nfunction addWarning(html) {\n  warningsDiv.style.display = ''\n  warning = document.createElement(\"li\")\n  warning.style.color = 'yellow'\n  var template = document.createElement('template');\n  html = html.trim();\n  template.innerHTML = html;\n  warning.append(template.content);\n  warningsList.appendChild(warning)\n}\n\nfunction addLog(html) {\n  logsDiv.style.display = ''\n  log = document.createElement(\"li\")\n  var template = document.createElement('template');\n  html = html.trim();\n  template.innerHTML = html;\n  log.append(template.content);\n  logsList.appendChild(log)\n}\n\nfunction getMetric(seriesName, metricName) {\n  const filteredSeries = data.series.filter((series) => series.refId == seriesName);\n  if(filteredSeries.length > 0 && filteredSeries[0].fields != null\n        && filteredSeries[0].fields.length > 0){\n    const filteredFields = filteredSeries[0].fields.filter((fields) => fields.name == metricName)\n    if(filteredFields.length > 0){\n      return filteredFields[0].values.get(0)\n    }\n  }\n  return null\n}\n\nconst vwsfriend_url = getTemplateSrv().replace(`$vwsfriend_url`);\nconst vin = getTemplateSrv().replace(`$VIN`);\nif(vwsfriend_url == null || vwsfriend_url== ''){\n  addWarning(\"You have to set the URL for the VWsFriend user interface correctly: Go to the user interface on port 4000 and select \\\"Database\\\" > \\”Connection Settings\\\"\")\n}\n\nconst carType = getMetric('vehicle_settings', 'carType')\nconst nickname = getMetric('vehicle_settings', 'nickname')\nconst primaryCapacity = getMetric('vehicle_settings', 'primary_capacity')\nconst primaryCapacityTotal = getMetric('vehicle_settings', 'primary_capacity_total')\nconst secondaryCapacity = getMetric('vehicle_settings', 'secondary_capacity')\nconst secondaryCapacityTotal = getMetric('vehicle_settings', 'secondary_capacity_total')\n\nif(carType == null){\n  addWarning(\"The engine type of \"+nickname+\" could not be detected yet. This should happen soon when receiving data.\")\n}\nelse{\n  switch (carType) {\n    case 'HYBRID':\n      if(primaryCapacity == null){\n        addWarning(\"Some panels need the tank size of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      if(secondaryCapacity == null || secondaryCapacityTotal == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n    case 'ELECTRIC':\n      if(primaryCapacity == null || primaryCapacityTotal == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n    default:\n      if(primaryCapacity == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n  }\n}\nconst hasError = getMetric('error', 'has_error')\nif(hasError){\n  addWarning(\"There were more then two errors in the last 30 minutes when fetching data from the servers.<br/>It seems that there are technical issues.\")\n}\n\n//Log\nconst filteredSeries = data.series.filter((series) => series.refId == 'log');\n  if(filteredSeries.length > 0 && filteredSeries[0].fields != null\n        && filteredSeries[0].fields.length > 0){\n    const filteredFields = filteredSeries[0].fields.filter((fields) => (fields.name == 'logtime' || fields.name == 'log'))\n    timeZone = htmlGraphics.props.timeZone;\n    if(filteredFields.length == 2){\n      time = filteredFields[0];\n      logstring = filteredFields[1];\n      var options = { dateStyle: 'short' };\n      if(timeZone!='browser'){\n        options.timeZone = timeZone;\n      }\n      var timeOptions = { timeStyle: 'short' };\n      if(timeZone!='browser'){\n        timeOptions.timeZone = timeZone;\n      }\n      var beforedate = new Intl.DateTimeFormat('default', options).format(new Date());\n      for(let i = 0; i < time.values.length; i++) {\n        var date = new Intl.DateTimeFormat('default', options).format(new Date(time.values.get(i)));\n        if(beforedate != date){\n          addLog('<b>'+date+'</b>');\n        }\n        beforedate = date;\n        var timestr = new Intl.DateTimeFormat('default', timeOptions).format(new Date(time.values.get(i)));\n        addLog(timestr+\": \"+logstring.values.get(i));\n      }\n    }\n  }",
+        "onRender": "const warningsDiv = htmlNode.getElementById('warningsDiv');\nconst warningsList = htmlNode.getElementById('warningsList');\nwarningsDiv.style.display = 'none'\nwhile (warningsList.firstChild) {\n    warningsList.firstChild.remove()\n}\nconst logsDiv = htmlNode.getElementById('logDiv');\nconst logsList = htmlNode.getElementById('logsList');\nlogsDiv.style.display = 'none'\nwhile (logsList.firstChild) {\n    logsList.firstChild.remove()\n}\n\nfunction addWarning(html) {\n  warningsDiv.style.display = ''\n  warning = document.createElement(\"li\")\n  warning.style.color = 'yellow'\n  var template = document.createElement('template');\n  html = html.trim();\n  template.innerHTML = html;\n  warning.append(template.content);\n  warningsList.appendChild(warning)\n}\n\nfunction addLog(html) {\n  logsDiv.style.display = ''\n  log = document.createElement(\"li\")\n  var template = document.createElement('template');\n  html = html.trim();\n  template.innerHTML = html;\n  log.append(template.content);\n  logsList.appendChild(log)\n}\n\nfunction getMetric(seriesName, metricName) {\n  const filteredSeries = data.series.filter((series) => series.refId == seriesName);\n  if(filteredSeries.length > 0 && filteredSeries[0].fields != null\n        && filteredSeries[0].fields.length > 0){\n    const filteredFields = filteredSeries[0].fields.filter((fields) => fields.name == metricName)\n    if(filteredFields.length > 0){\n      return filteredFields[0].values.get(0)\n    }\n  }\n  return null\n}\n\nconst vwsfriend_url = getTemplateSrv().replace(`$vwsfriend_url`);\nconst vin = getTemplateSrv().replace(`$VIN`);\nif(vwsfriend_url == null || vwsfriend_url== ''){\n  addWarning(\"You have to set the URL for the VWsFriend user interface correctly: Go to the user interface on port 4000 and select \\\"Database\\\" > \\”Connection Settings\\\"\")\n}\n\nconst carType = getMetric('vehicle_settings', 'carType')\nconst nickname = getMetric('vehicle_settings', 'nickname')\nconst primaryCapacity = getMetric('vehicle_settings', 'primary_capacity')\nconst primaryCapacityTotal = getMetric('vehicle_settings', 'primary_capacity_total')\nconst secondaryCapacity = getMetric('vehicle_settings', 'secondary_capacity')\nconst secondaryCapacityTotal = getMetric('vehicle_settings', 'secondary_capacity_total')\nconst timezone = getMetric('vehicle_settings', 'timezone')\n\nif(carType == null){\n  addWarning(\"The engine type of \"+nickname+\" could not be detected yet. This should happen soon when receiving data.\")\n}\nelse{\n  switch (carType) {\n    case 'HYBRID':\n      if(primaryCapacity == null){\n        addWarning(\"Some panels need the tank size of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      if(secondaryCapacity == null || secondaryCapacityTotal == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n    case 'ELECTRIC':\n      if(primaryCapacity == null || primaryCapacityTotal == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n    default:\n      if(primaryCapacity == null){\n        addWarning(\"Some panels need the battery capacity of \"+nickname+\" to be set. Please set the size here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n      }\n      break;\n  }\n}\nif(timezone == null){\n  addWarning(\"Some panels need the timezone of \"+nickname+\" to be set. Please set the timezone here: <a href=\\\"\"+vwsfriend_url+\"/settings/vehicle/database/\"+vin+\"\\\" target=\\”_blank\\”>Vehicle Parameters</a>\")\n}\nconst hasError = getMetric('error', 'has_error')\nif(hasError){\n  addWarning(\"There were more then two errors in the last 30 minutes when fetching data from the servers.<br/>It seems that there are technical issues.\")\n}\n\n//Log\nconst filteredSeries = data.series.filter((series) => series.refId == 'log');\n  if(filteredSeries.length > 0 && filteredSeries[0].fields != null\n        && filteredSeries[0].fields.length > 0){\n    const filteredFields = filteredSeries[0].fields.filter((fields) => (fields.name == 'logtime' || fields.name == 'log'))\n    timeZone = htmlGraphics.props.timeZone;\n    if(filteredFields.length == 2){\n      time = filteredFields[0];\n      logstring = filteredFields[1];\n      var options = { dateStyle: 'short' };\n      if(timeZone!='browser'){\n        options.timeZone = timeZone;\n      }\n      var timeOptions = { timeStyle: 'short' };\n      if(timeZone!='browser'){\n        timeOptions.timeZone = timeZone;\n      }\n      var beforedate = new Intl.DateTimeFormat('default', options).format(new Date());\n      for(let i = 0; i < time.values.length; i++) {\n        var date = new Intl.DateTimeFormat('default', options).format(new Date(time.values.get(i)));\n        if(beforedate != date){\n          addLog('<b>'+date+'</b>');\n        }\n        beforedate = date;\n        var timestr = new Intl.DateTimeFormat('default', timeOptions).format(new Date(time.values.get(i)));\n        addLog(timestr+\": \"+logstring.values.get(i));\n      }\n    }\n  }",
         "overflow": "scroll",
         "panelupdateOnMount": true,
         "reduceOptions": {
@@ -1356,7 +1356,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "format": "table",
@@ -1442,7 +1442,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "format": "table",
@@ -1779,8 +1779,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2064,8 +2063,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2266,8 +2264,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
