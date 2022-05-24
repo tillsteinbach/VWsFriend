@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1653394527974,
+  "iteration": 1653397084149,
   "links": [
     {
       "asDropdown": false,
@@ -899,7 +899,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT * FROM (\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC')))\n  + (CEIL(EXTRACT(MINUTE FROM \"startDate\" AT TIME ZONE 'UTC')/10)/6) AS \"Hour\",\n  MIN(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Minimum\",\n  MAX(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Maximum\",\n  AVG(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Average\",\n  COUNT(*) AS \"Samples\",\n  CEIL(MAX(extract('epoch' from \"endDate\"-\"startDate\"))/60) || ' minutes maximum duration on this route' AS \"Max. Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1) AS result\nWHERE\n  \"Samples\" > 1\n",
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT * FROM (\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC')))\n  + (CEIL(EXTRACT(MINUTE FROM \"startDate\" AT TIME ZONE 'UTC')/10)/6) AS \"Hour\",\n  MIN(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Minimum\",\n  MAX(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Maximum\",\n  AVG(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Average\",\n  COUNT(*) AS \"Samples\",\n  'Based on ' || COUNT(*) || ' samples' AS \"Max. Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1) AS result\nWHERE\n  \"Samples\" > 1\n",
           "refId": "A",
           "select": [
             [
