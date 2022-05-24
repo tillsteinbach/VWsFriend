@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1653384479997,
+  "iteration": 1653394527974,
   "links": [
     {
       "asDropdown": false,
@@ -56,72 +56,76 @@
   "liveNow": false,
   "panels": [
     {
+      "autoZoom": true,
       "datasource": {
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "fillOpacity": 80,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineWidth": 1
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "dtdurations"
-        },
-        "overrides": []
-      },
+      "defaultLayer": "OpenStreetMap",
+      "description": "",
       "gridPos": {
-        "h": 6,
+        "h": 13,
         "w": 12,
         "x": 0,
         "y": 0
       },
-      "id": 20,
-      "options": {
-        "bucketOffset": 0,
-        "combine": false,
-        "legend": {
-          "calcs": [],
-          "displayMode": "hidden",
-          "placement": "bottom"
-        }
-      },
+      "id": 13,
+      "lineColor": "red",
+      "links": [],
+      "maxDataPoints": 500,
+      "pointColor": "royalblue",
+      "scrollWheelZoom": false,
+      "showLayerChanger": true,
       "targets": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P2EF847825A020B66"
           },
-          "format": "table",
+          "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")) AS \"Duration\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1 DESC\n",
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
           "refId": "A",
           "select": [
             [
               {
                 "params": [
-                  "\"maximumChargePower_kW\""
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
                 ],
                 "type": "column"
               }
@@ -139,8 +143,8 @@
           ]
         }
       ],
-      "title": "Duration distribution",
-      "type": "histogram"
+      "title": "Trip",
+      "type": "pr0ps-trackmap-panel"
     },
     {
       "datasource": {
@@ -233,7 +237,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -276,101 +280,50 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "description": "Distribution of the trip occurrences over the day.\nFor meaningful values wait until a significant number of trips were recorded. Change timezone in vehicle settings.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "dtdurations"
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 12,
         "x": 0,
-        "y": 6
+        "y": 13
       },
-      "id": 22,
-      "pconfig": {
-        "fixScale": "",
-        "layout": {
-          "dragmode": "lasso",
-          "font": {
-            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-          },
-          "hovermode": "closest",
-          "legend": {
-            "orientation": "h"
-          },
-          "showlegend": false,
-          "xaxis": {
-            "range": [
-              0,
-              24
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "Hour",
-            "type": "linear",
-            "zeroline": true
-          },
-          "yaxis": {
-            "range": [
-              0,
-              null
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "%",
-            "type": "linear",
-            "zeroline": true
-          },
-          "zaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "type": "linear",
-            "zeroline": false
-          }
-        },
-        "loadFromCDN": false,
-        "settings": {
-          "displayModeBar": false,
-          "type": "scatter"
-        },
-        "showAnnotations": true,
-        "traces": [
-          {
-            "mapping": {
-              "color": "Number",
-              "text": "Text",
-              "x": "Hour",
-              "y": "Number"
-            },
-            "name": "Distribution",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#005f81",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 6
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
-            }
-          }
-        ]
+      "id": 20,
+      "options": {
+        "bucketOffset": 0,
+        "combine": false,
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        }
       },
       "targets": [
         {
@@ -380,109 +333,15 @@
           },
           "format": "table",
           "group": [],
-          "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC'))) AS \"Hour\",\n (SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100) AS \"Number\",\n ROUND((SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100))::TEXT || '% of total time on this route' AS \"Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1\n",
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")) AS \"Duration\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1 DESC\n",
           "refId": "A",
           "select": [
             [
               {
                 "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "refuel_sessions",
-          "timeColumn": "date",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Hourly distribution in timezone $car_timezone",
-      "transformations": [],
-      "type": "natel-plotly-panel",
-      "version": 1
-    },
-    {
-      "autoZoom": true,
-      "datasource": {
-        "type": "postgres",
-        "uid": "P2EF847825A020B66"
-      },
-      "defaultLayer": "OpenStreetMap",
-      "description": "",
-      "gridPos": {
-        "h": 14,
-        "w": 12,
-        "x": 0,
-        "y": 13
-      },
-      "id": 13,
-      "lineColor": "red",
-      "links": [],
-      "maxDataPoints": 500,
-      "pointColor": "royalblue",
-      "scrollWheelZoom": false,
-      "showLayerChanger": true,
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P2EF847825A020B66"
-          },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "charging_sessions",
-          "timeColumn": "connected",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P2EF847825A020B66"
-          },
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
+                  "\"maximumChargePower_kW\""
                 ],
                 "type": "column"
               }
@@ -500,8 +359,8 @@
           ]
         }
       ],
-      "title": "Trip",
-      "type": "pr0ps-trackmap-panel"
+      "title": "Duration distribution",
+      "type": "histogram"
     },
     {
       "datasource": {
@@ -673,7 +532,7 @@
           }
         ]
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -716,6 +575,364 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
+      "description": "Distribution of the trip occurrences over the day.\nFor meaningful values wait until a significant number of trips were recorded. Change timezone in vehicle settings.",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 22,
+      "pconfig": {
+        "fixScale": "",
+        "layout": {
+          "dragmode": "lasso",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "range": [
+              0,
+              24
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "Hour",
+            "type": "linear",
+            "zeroline": true
+          },
+          "yaxis": {
+            "range": [
+              0,
+              null
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "%",
+            "type": "linear",
+            "zeroline": true
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "Number",
+              "text": "Text",
+              "x": "Hour",
+              "y": "Number"
+            },
+            "name": "Distribution",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 15,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              },
+              "textposition": ""
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": true
+            }
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC'))) AS \"Hour\",\n (SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100) AS \"Number\",\n ROUND((SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100))::TEXT || '% of total time on this route' AS \"Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Hourly distribution in timezone $car_timezone",
+      "transformations": [],
+      "type": "natel-plotly-panel",
+      "version": 1
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Duration of the trip occurrences over the day.\nFor meaningful values wait until a significant number of trips were recorded. Change timezone in vehicle settings.",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 23,
+      "pconfig": {
+        "fixScale": "",
+        "layout": {
+          "dragmode": "lasso",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": true,
+          "xaxis": {
+            "range": [
+              null,
+              null
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "Hour",
+            "type": "linear",
+            "zeroline": true
+          },
+          "yaxis": {
+            "range": [
+              0,
+              null
+            ],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "Duration [m]",
+            "type": "linear",
+            "zeroline": true
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "Number",
+              "text": "Max. Text",
+              "x": "Hour",
+              "y": "Average"
+            },
+            "name": "Average duration",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 3
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 10,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              },
+              "textposition": ""
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": true
+            }
+          },
+          {
+            "mapping": {
+              "color": "Number",
+              "text": "Max. Text",
+              "x": "Hour",
+              "y": "Maximum"
+            },
+            "name": "Maximum duration",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#F2495C",
+                "dash": "dot",
+                "shape": "linear",
+                "width": 3
+              },
+              "marker": {
+                "color": "#F2495C",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 10,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "diamond"
+              },
+              "textposition": ""
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": true
+            }
+          },
+          {
+            "mapping": {
+              "color": "Number",
+              "text": "Max. Text",
+              "x": "Hour",
+              "y": "Minimum"
+            },
+            "name": "Minimum duration",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#73BF69",
+                "dash": "dashdot",
+                "shape": "linear",
+                "width": 3
+              },
+              "marker": {
+                "color": "#73BF69",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 10,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "diamond"
+              },
+              "textposition": ""
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": true
+            }
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT * FROM (\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC')))\n  + (CEIL(EXTRACT(MINUTE FROM \"startDate\" AT TIME ZONE 'UTC')/10)/6) AS \"Hour\",\n  MIN(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Minimum\",\n  MAX(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Maximum\",\n  AVG(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Average\",\n  COUNT(*) AS \"Samples\",\n  CEIL(MAX(extract('epoch' from \"endDate\"-\"startDate\"))/60) || ' minutes maximum duration on this route' AS \"Max. Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1) AS result\nWHERE\n  \"Samples\" > 1\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Duration by time in timezone $car_timezone",
+      "transformations": [],
+      "type": "natel-plotly-panel",
+      "version": 1
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Start of the trip. If no data is shown your car does not provide location information.",
       "fieldConfig": {
         "defaults": {
@@ -745,7 +962,7 @@
         "h": 13,
         "w": 6,
         "x": 0,
-        "y": 27
+        "y": 33
       },
       "id": 11,
       "links": [],
@@ -767,7 +984,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -839,7 +1056,7 @@
         "h": 13,
         "w": 6,
         "x": 6,
-        "y": 27
+        "y": 33
       },
       "id": 14,
       "links": [],
@@ -861,7 +1078,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -927,6 +1144,10 @@
         "type": "query"
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT COALESCE(timezone, 'UTC') FROM vehicle_settings WHERE vehicle_vin='$VIN'",
         "description": "Timezone selected for the car",
         "hide": 2,
