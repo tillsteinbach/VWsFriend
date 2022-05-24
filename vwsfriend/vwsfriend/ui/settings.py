@@ -6,7 +6,7 @@ from pyqrcode import pyqrcode
 from flask import Blueprint, render_template, current_app, abort, redirect, url_for, request, send_file, flash
 from flask_login import login_required
 from flask_wtf import FlaskForm
-from wtforms import FieldList, FormField, StringField, IntegerField, SubmitField, HiddenField
+from wtforms import FieldList, FormField, StringField, IntegerField, SubmitField, HiddenField, SelectField
 from wtforms.validators import DataRequired, NumberRange, Optional, Length, Regexp, ValidationError
 
 from weconnect.elements.range_status import RangeStatus
@@ -26,6 +26,7 @@ class VehicleSettingsForm(FlaskForm):
     secondary_capacity = IntegerField('Secondary Capacity', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
     secondary_capacity_total = IntegerField('Secondary Capacity Total', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
     secondary_wltp_range = IntegerField('Secondary WLTP Range', validators=[Optional(), NumberRange(min=1, max=1000)], filters=[lambda x: x or None])
+    timezone = SelectField("Timezone", validators=[DataRequired()])
     save = SubmitField('Save')
 
 
@@ -108,6 +109,17 @@ def vehicleDBParameters(vin):
     else:
         form = VehicleSettingsForm()
 
+    choices = [(None, 'unknown')]
+    if current_app.db.session.bind.dialect.name == 'postgresql':
+        result = current_app.db.session.execute('SELECT name, FROM pg_timezone_names'
+                                                ' WHERE name !~ \'posix\' AND name !~ \'Etc\' AND name !~ \'SystemV\''
+                                                ' ORDER BY name asc;')
+        for row in result:
+            choices.append((row[0], row[0]))
+    else:
+        choices.append(('UTC', 'UTC'))
+    form.timezone.choices = choices
+
     if request.method == "GET":
         form.primary_capacity.data = dbVehicle.settings.primary_capacity
         form.primary_capacity_total.data = dbVehicle.settings.primary_capacity_total
@@ -115,6 +127,7 @@ def vehicleDBParameters(vin):
         form.secondary_capacity.data = dbVehicle.settings.secondary_capacity
         form.secondary_capacity_total.data = dbVehicle.settings.secondary_capacity_total
         form.secondary_wltp_range.data = dbVehicle.settings.secondary_wltp_range
+        form.timezone.data = dbVehicle.settings.timezone
     elif form.validate_on_submit():
         dbVehicle.settings.primary_capacity = form.primary_capacity.data
         dbVehicle.settings.primary_capacity_total = form.primary_capacity_total.data
@@ -122,6 +135,7 @@ def vehicleDBParameters(vin):
         dbVehicle.settings.secondary_capacity = form.secondary_capacity.data
         dbVehicle.settings.secondary_capacity_total = form.secondary_capacity_total.data
         dbVehicle.settings.secondary_wltp_range = form.secondary_wltp_range.data
+        dbVehicle.settings.timezone = form.timezone.data
         current_app.db.session.commit()
 
         return redirect(url_for("settings.vehicle", vin=vin))
