@@ -69,13 +69,24 @@
         {% endif %}
       </fieldset>
 
-
       <fieldset class="form-field">
         {{ form.secondary_wltp_range.label }}
         {{ form.secondary_wltp_range(size=5) }}
         {% if form.secondary_wltp_range.errors %}
           <ul class="errors">
             {% for error in form.secondary_wltp_range.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.timezone.label }}
+        {{ form.timezone }}
+        {% if form.timezone.errors %}
+          <ul class="errors">
+            {% for error in form.timezone.errors %}
               <li>{{ error }}</li>
             {% endfor %}
           </ul>
