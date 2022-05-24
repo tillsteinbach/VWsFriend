@@ -16,6 +16,7 @@ class VehicleSettings(Base):
     secondary_capacity = Column(Integer)
     secondary_capacity_total = Column(Integer)
     secondary_wltp_range = Column(Integer)
+    timezone = Column(String(256))
 
     def __init__(self, vehicle):
         self.vehicle = vehicle
