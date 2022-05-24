@@ -524,13 +524,7 @@
           ],
           "show": true
         },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": false,
-            "displayName": "Start Date"
-          }
-        ]
+        "showHeader": true
       },
       "pluginVersion": "8.5.3",
       "targets": [
