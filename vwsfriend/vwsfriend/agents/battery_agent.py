@@ -45,13 +45,17 @@ class BatteryAgent():
                     self.battery.currentSOC_pct != current_currentSOC_pct
                     or self.battery.cruisingRangeElectric_km != current_cruisingRangeElectric_km)):
 
+                if self.battery is not None and self.battery.carCapturedTimestamp > element.value:
+                    LOG.warning('carCapturedTimestamp (%s) provided by batteryStatus is older than previously recorded carCapturedTimestamp (%s)',
+                                element.value, self.battery.carCapturedTimestamp)
+
                 self.battery = Battery(self.vehicle, batteryStatus.carCapturedTimestamp.value, current_currentSOC_pct, current_cruisingRangeElectric_km)
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.battery)
                     self.session.commit()
                 except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def commit(self):
         pass
