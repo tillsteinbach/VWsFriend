@@ -18,6 +18,16 @@
           "type": "dashboard"
         },
         "type": "dashboard"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "enable": false,
+        "iconColor": "blue",
+        "name": "Charging",
+        "rawQuery": "SELECT \"time\",\n       \"timeend\",\n       'Charging ('\n              || (\"timeend\"-\"time\")\n              || ')' AS \"text\"\nFROM   (\n                SELECT   *,\n                         \"carCapturedTimestamp\"                                           AS \"time\",\n                         Lag(\"chargingState\") OVER (ORDER BY \"carCapturedTimestamp\") AS \"beforeChargingState\",\n                         (\n                                  SELECT   \"carCapturedTimestamp\" AS \"timeend\"\n                                  FROM     charges          AS charges2\n                                  WHERE    charges2.\"chargingState\" != 'CHARGING'\n                                  AND      charges.vehicle_vin = charges2.vehicle_vin\n                                  AND      charges.\"carCapturedTimestamp\" < charges2.\"carCapturedTimestamp\"\n                                  ORDER BY \"carCapturedTimestamp\" limit 1) \"timeend\"\n                FROM     charges\n                WHERE    vehicle_vin = '${VIN}'\n                ) AS data\nWHERE  \"chargingState\" = 'CHARGING'\nAND (\"timeend\"-\"time\") < INTERVAL '1 day'\nAND    \"beforeChargingState\" != 'CHARGING'\nAND ($__timeFilter(\"time\") OR $__timeFilter(\"timeend\"))"
       }
     ]
   },
