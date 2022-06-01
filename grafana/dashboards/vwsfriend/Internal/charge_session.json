@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1653303526527,
+  "iteration": 1654104108538,
   "links": [
     {
       "asDropdown": false,
@@ -319,7 +319,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -676,7 +676,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -713,6 +713,143 @@
       ],
       "title": "Details",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Shows the charging state the car was in.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "spanNulls": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "CHARGE_PURPOSE_REACHED_CONSERVATION": {
+                  "color": "blue",
+                  "index": 6,
+                  "text": "conservation charging"
+                },
+                "CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING": {
+                  "color": "green",
+                  "index": 5,
+                  "text": "charge purpose reached"
+                },
+                "CHARGING": {
+                  "color": "blue",
+                  "index": 4,
+                  "text": "charging"
+                },
+                "ERROR": {
+                  "color": "red",
+                  "index": 3,
+                  "text": "error"
+                },
+                "INVALID": {
+                  "color": "red",
+                  "index": 7,
+                  "text": "invalid"
+                },
+                "OFF": {
+                  "color": "#3d3d3d",
+                  "index": 0,
+                  "text": "off"
+                },
+                "ON": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "on"
+                },
+                "READY_FOR_CHARGING": {
+                  "color": "green",
+                  "index": 2,
+                  "text": "ready for charging"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 16,
+      "interval": "5m",
+      "options": {
+        "alignValue": "center",
+        "legend": {
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "7.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\" AS \"Charging\"\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "States",
+      "type": "state-timeline"
     },
     {
       "datasource": {
@@ -761,7 +898,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 17
       },
       "id": 14,
       "links": [
@@ -789,7 +926,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -865,7 +1002,7 @@
         "h": 13,
         "w": 6,
         "x": 0,
-        "y": 19
+        "y": 22
       },
       "hideEmpty": false,
       "hideTimepickerNavigation": false,
@@ -974,7 +1111,7 @@
         "h": 13,
         "w": 6,
         "x": 6,
-        "y": 19
+        "y": 22
       },
       "id": 11,
       "options": {
@@ -995,7 +1132,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.3",
       "targets": [
         {
           "datasource": {
@@ -1099,15 +1236,14 @@
         "type": "query"
       },
       {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
         "datasource": {
           "type": "postgres",
           "uid": "P2EF847825A020B66"
-        },
-        "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
         },
         "definition": "SELECT charger_id FROM charging_sessions WHERE charging_sessions.id = $id",
         "description": "ID of the sessions charger",
