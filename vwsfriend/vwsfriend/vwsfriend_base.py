@@ -244,6 +244,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
         if args.demo is not None:
             utcDemoStart = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0)
+            # In demomode do not fix anything.
+            weConnect.fixAPI = False
             for file in sorted(os.listdir(args.demo)):
                 fileNameRegex = r'(?P<number>\d+)_(?P<delay>\d+)s(_(?P<stage>[^\.]+))?.cache.json'
                 match = re.search(fileNameRegex, file)
