@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.18.0] - 2022-06-09
+### Added
+- Maintenance dashboard added
+- VWsFriend version in grafana visible
+- The timezone in which the vehicle is operated can be set
+- Added new panel for the duration by time of day for reoccuring trips
+- In charging details the state (charging, readyForCharging, ...) are displayed
+
+### Fixed
+- Refueling statistics are now correct when the real value was not added
+- Efficiency was not correctly shown for hybrid cars in some situations
+- Interrupts of a charging session (e.g. due to PV excess charging) will not create a new session. Only disconnecting or unlocking the plug does.
+
+### Changed
+- The charging speed by SoC is only shown from DC charging
+- Live view now also shows the target SoC when charging
+- Updated API to 0.41.0
+- Updated Grafana to 8.5.5
+
 ## [0.17.0] - 2022-05-12
 ### Added
 - New live dashboard (still experimental!)
@@ -382,7 +401,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.17.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.18.0...HEAD
+[0.18.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.18.0
 [0.17.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.17.0
 [0.16.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.6
 [0.16.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.5
