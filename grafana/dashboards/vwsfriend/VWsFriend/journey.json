@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645430277836,
+  "iteration": 1654774500319,
   "links": [
     {
       "asDropdown": false,
@@ -79,6 +82,10 @@
   "panels": [
     {
       "autoZoom": true,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "defaultLayer": "OpenStreetMap",
       "description": "Complete journey with all stops.",
       "gridPos": {
@@ -156,6 +163,10 @@
       "type": "pr0ps-trackmap-panel"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Journey starting location and ending location",
       "fieldConfig": {
         "defaults": {
@@ -254,7 +265,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -289,6 +300,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Details of the journey. If possible the consumption is calculated.",
       "fieldConfig": {
         "defaults": {
@@ -423,7 +438,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -460,6 +475,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Distribution of time driven and charging for the whole journey.",
       "fieldConfig": {
         "defaults": {
@@ -543,6 +562,10 @@
       "type": "piechart"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Phases of driving or charging of this journey. Use the trim button to trim the journey starting from the first driving phase until the last driving phase of the selected time range from ${__from:date} to ${__to:date}. After trim the journey starts at ${tripstart:date} and ends at at ${tripend:date}",
       "fieldConfig": {
         "defaults": {
@@ -867,6 +890,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "All trips for the whole journey. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. You can also add missing trips.",
       "fieldConfig": {
         "defaults": {
@@ -876,7 +903,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-text",
-            "filterable": true
+            "filterable": true,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -1012,7 +1040,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -1051,6 +1079,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "All charging sessions for the whole journey. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. You can also add missing sessions.",
       "fieldConfig": {
         "defaults": {
@@ -1060,7 +1092,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -1369,7 +1402,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -1408,6 +1441,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "All refueling sessions for the whole journey. Not all attributes can be filled automatically. If you want to make additions or changes use the ⚙ button at the end of each row. You can also add missing sessions.",
       "fieldConfig": {
         "defaults": {
@@ -1417,7 +1454,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -1659,7 +1697,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -1700,7 +1738,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -1708,6 +1746,10 @@
   "templating": {
     "list": [
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,
@@ -1727,6 +1769,10 @@
         "useTags": false
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,
@@ -1741,6 +1787,10 @@
         "type": "query"
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT\n    (FIRST_VALUE(\"startDate\") OVER sd)  - INTERVAL '10' SECOND AS \"Start\"\n  FROM trips\n  WHERE\n    ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n    trips.vehicle_vin = '$VIN'\n  WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n  LIMIT 1",
         "description": "timestamp of the trimmed time of the journey",
         "hide": 2,
@@ -1756,6 +1806,10 @@
         "type": "query"
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT\n    LAST_VALUE(\"endDate\") OVER sd  + INTERVAL '10' SECOND AS \"End\"\n  FROM trips\n  WHERE\n    ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n    trips.vehicle_vin = '$VIN'\n  WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n  LIMIT 1",
         "description": "timestamp of the trimmed time of the journey",
         "hide": 2,
@@ -1772,7 +1826,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },

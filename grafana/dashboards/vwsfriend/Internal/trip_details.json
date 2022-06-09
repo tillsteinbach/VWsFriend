@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -21,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645622098123,
+  "iteration": 1654775432637,
   "links": [
     {
       "asDropdown": false,
@@ -254,6 +257,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Details of the tip. On some cars not all data is provided and thus sections may remain empty.",
       "fieldConfig": {
         "defaults": {
@@ -352,7 +359,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -392,6 +399,10 @@
     },
     {
       "autoZoom": true,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "defaultLayer": "OpenStreetMap",
       "description": "Trip on map. The car only provides data on ignition on/off and not during driving thus no detailed route can be shown. If the map remains empty your car does not provide location information. You can still add it with edit trip",
       "gridPos": {
@@ -484,6 +495,10 @@
       "type": "pr0ps-trackmap-panel"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Start of the trip. If no data is shown your car does not provide location information. You can still add it with edit trip",
       "fieldConfig": {
         "defaults": {
@@ -541,7 +556,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -580,6 +595,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "End of the trip. If no data is shown your car does not provide location information. You can still add it with edit trip",
       "fieldConfig": {
         "defaults": {
@@ -637,7 +656,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -676,8 +695,8 @@
       "type": "stat"
     }
   ],
-  "refresh": "",
-  "schemaVersion": 35,
+  "refresh": false,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "internal"
@@ -694,7 +713,7 @@
         "name": "id",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "none",
             "value": "none"
           }
@@ -713,7 +732,7 @@
         "name": "VIN",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "none",
             "value": "none"
           }
@@ -723,6 +742,10 @@
         "type": "textbox"
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,

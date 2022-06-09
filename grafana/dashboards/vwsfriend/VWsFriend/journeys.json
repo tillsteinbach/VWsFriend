@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645606937132,
+  "iteration": 1654774736122,
   "links": [
     {
       "asDropdown": false,
@@ -66,6 +69,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "List of all saved journeys. You can add a new journey to the database with Add journey",
       "fieldConfig": {
         "defaults": {
@@ -75,7 +82,8 @@
           "custom": {
             "align": "auto",
             "displayMode": "auto",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -175,7 +183,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -216,7 +224,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -224,6 +232,10 @@
   "templating": {
     "list": [
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,
@@ -243,6 +255,10 @@
         "useTags": false
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,
@@ -261,11 +277,15 @@
         "current": {
           "selected": false,
           "text": [
-            ""
+            "All"
           ],
           "value": [
-            ""
+            "$__all"
           ]
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
         },
         "definition": "SELECT tag.name || ': ' || tag.description || '$' || tag.name FROM journey_tag LEFT JOIN tag ON journey_tag.tag_name = tag.name WHERE use_journey = true",
         "hide": 0,
@@ -286,6 +306,10 @@
           "selected": false,
           "text": "",
           "value": ""
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
         },
         "definition": "SELECT CASE WHEN LENGTH($$${tag:raw}$$)>0 AND $$${tag:singlequote}$$ != 'all_values' THEN $$ AND journey_tag.tag_name IN (${tag:singlequote}) $$ ELSE '' END",
         "hide": 2,

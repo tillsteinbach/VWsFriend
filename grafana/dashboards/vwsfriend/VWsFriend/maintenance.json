@@ -1,0 +1,616 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Overview over maintenance related data",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 19,
+    "iteration": 1654774928260,
+    "links": [
+      {
+        "asDropdown": true,
+        "icon": "external link",
+        "includeVars": true,
+        "keepTime": false,
+        "tags": [
+          "vwsfriend"
+        ],
+        "targetBlank": false,
+        "title": "Dashboards",
+        "tooltip": "",
+        "type": "dashboards",
+        "url": ""
+      }
+    ],
+    "liveNow": false,
+    "panels": [
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "description": "List of all warning light occurrences. Not all cars provide this information",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "filterable": false,
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "/(From|To)/"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dateTimeAsIso"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 150
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "/(From|To)\\sMileage/"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "km"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 110
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Message ID"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 140
+                },
+                {
+                  "id": "custom.filterable",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Category"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 120
+                },
+                {
+                  "id": "custom.filterable",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Duration"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dtdurations"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 80
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Length"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "km"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 80
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Priority"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 80
+                },
+                {
+                  "id": "unit",
+                  "value": "none"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "continuous-RdYlGr"
+                  }
+                },
+                {
+                  "id": "custom.displayMode",
+                  "value": "color-text"
+                },
+                {
+                  "id": "min",
+                  "value": 0
+                },
+                {
+                  "id": "max",
+                  "value": 3
+                },
+                {
+                  "id": "custom.filterable",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 15,
+          "w": 19,
+          "x": 0,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "footer": {
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "8.5.5",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P2EF847825A020B66"
+            },
+            "format": "table",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  \"start\" AS \"From\",\n  \"start_mileage\" AS \"From Mileage\",\n  \"end\" AS \"To\",\n  \"end_mileage\" AS \"To Mileage\",\n  EXTRACT('epoch' FROM (\"end\"-\"start\")) AS \"Duration\",\n  \"end_mileage\"-\"start_mileage\" AS \"Length\",\n  \"messageId\" AS \"Message ID\",\n  \"text\" AS \"Message\",\n  \"category\" AS \"Category\",\n  \"priority\" AS \"Priority\"\nFROM warning_lights\nWHERE\n  ($__timeFilter(\"start\") OR $__timeFilter(\"end\")) AND\n    warning_lights.vehicle_vin = '$VIN'\nORDER BY 1",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "\"maximumChargePower_kW\""
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "charging_sessions",
+            "timeColumn": "connected",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "title": "Warning Lights",
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "description": "Next regular service due in. Not all cars provide this data.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 30
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "/due in days/"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "d"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "/due in Km/"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "km"
+                },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "red",
+                        "value": null
+                      },
+                      {
+                        "color": "green",
+                        "value": 500
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 11,
+          "w": 5,
+          "x": 19,
+          "y": 0
+        },
+        "id": 5,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.5.5",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P2EF847825A020B66"
+            },
+            "format": "table",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  NULL AS \"Oil service due in days\",\n  NULL AS \"Oil service due in Km\",\n  due_in_days AS \"Inspection due in days\",\n  due_in_km AS \"Inspection due in Km\"\nFROM maintenance\nWHERE\n    date is NULL AND\n    type = 'INSPECTION' AND\n    maintenance.vehicle_vin = '$VIN'\nUNION\nSELECT\n  due_in_days AS \"Oil service due in days\",\n  due_in_km AS \"Oil service due in Km\",\n  NULL AS \"Inspection due in days\",\n  NULL AS \"Inspection due in Km\"\nFROM maintenance\nWHERE\n    date is NULL AND\n    type = 'OIL_SERVICE' AND\n    maintenance.vehicle_vin = '$VIN'",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "\"maximumChargePower_kW\""
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "charging_sessions",
+            "timeColumn": "connected",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "title": "Service due",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
+        "description": "List of all detected maintenance occurrences. Not all cars provide this information",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto",
+              "filterable": false,
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "/(Date)/"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "dateTimeAsIso"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 150
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "/Mileage/"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "km"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 110
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Was due in days"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 120
+                },
+                {
+                  "id": "unit",
+                  "value": "d"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Service type"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "INSPECTION": {
+                          "color": "blue",
+                          "index": 0,
+                          "text": "Inspection"
+                        },
+                        "OIL_SERVICE": {
+                          "color": "red",
+                          "index": 1,
+                          "text": "Oil service"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Was due in km"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 110
+                },
+                {
+                  "id": "unit",
+                  "value": "km"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 19,
+          "x": 0,
+          "y": 15
+        },
+        "id": 3,
+        "options": {
+          "footer": {
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "8.5.5",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "P2EF847825A020B66"
+            },
+            "format": "table",
+            "group": [],
+            "metricColumn": "none",
+            "rawQuery": true,
+            "rawSql": "SELECT\n  date AS \"Date\",\n  mileage AS \"Mileage\",\n  type AS \"Service type\",\n  \"due_in_days\" AS \"Was due in days\",\n  \"due_in_km\" AS \"Was due in km\"\nFROM maintenance\nWHERE\n    date IS NOT NULL AND\n    maintenance.vehicle_vin = '$VIN'\nORDER BY 1",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "\"maximumChargePower_kW\""
+                  ],
+                  "type": "column"
+                }
+              ]
+            ],
+            "table": "charging_sessions",
+            "timeColumn": "connected",
+            "timeColumnType": "timestamp",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "title": "Maintenance",
+        "type": "table"
+      }
+    ],
+    "schemaVersion": 36,
+    "style": "dark",
+    "tags": [
+      "vwsfriend"
+    ],
+    "templating": {
+      "list": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+          "description": "Select Car if you have multiple cars in your account",
+          "hide": 0,
+          "includeAll": false,
+          "label": "Car",
+          "multi": false,
+          "name": "VIN",
+          "options": [],
+          "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
+          "refresh": 1,
+          "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "1970-01-01T00:00:00.000Z",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Maintenance",
+    "uid": "JoZ4fTUnk",
+    "version": 1,
+    "weekStart": ""
+  }
