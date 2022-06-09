@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1645438089749,
+  "iteration": 1654775256784,
   "links": [
     {
       "asDropdown": true,
@@ -42,6 +45,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Statistics for the car. You can change the granularity of the statistics using the period selection in the top. Not all data can be provided for every car type. Missing information can be manually added in the respective sections, e.g. trips or charging.",
       "fieldConfig": {
         "defaults": {
@@ -53,6 +60,7 @@
             "align": "auto",
             "displayMode": "color-text",
             "filterable": false,
+            "inspect": false,
             "minWidth": 75
           },
           "mappings": [],
@@ -295,7 +303,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -422,7 +430,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -430,6 +438,10 @@
   "templating": {
     "list": [
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,

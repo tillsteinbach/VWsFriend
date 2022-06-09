@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1652275613737,
+  "iteration": 1654775323442,
   "links": [
     {
       "asDropdown": false,
@@ -267,7 +267,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.5.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -419,7 +419,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.5.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -555,7 +555,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.5.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {

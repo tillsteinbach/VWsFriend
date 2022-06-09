@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -23,7 +26,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645429905455,
+  "iteration": 1654774867650,
   "links": [
     {
       "asDropdown": false,
@@ -79,6 +82,10 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Total different trip locations recorded for the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -118,7 +125,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -153,6 +160,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Total different cities visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -198,7 +209,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -233,6 +244,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Total different states visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -278,7 +293,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -313,6 +328,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Total different countries visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -358,7 +377,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -393,6 +412,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Most often visited neighbourhoods visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -401,7 +424,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -462,7 +486,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -497,6 +521,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Most often visited cities visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -505,7 +533,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -566,7 +595,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -601,6 +630,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Most often visited states visited with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -609,7 +642,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "decimals": 0,
           "mappings": [],
@@ -670,7 +704,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -705,6 +739,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "20 last visited locations with the car. If this shows 0 your car does not provide its location. You can still record trips manually.",
       "fieldConfig": {
         "defaults": {
@@ -713,7 +751,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -762,7 +801,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -801,6 +840,10 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "You can add geofences to ensure that a certain area is always resolved to a specific address or charger.",
       "fieldConfig": {
         "defaults": {
@@ -809,7 +852,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -887,7 +931,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -927,7 +971,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "vwsfriend"
@@ -958,6 +1002,10 @@
         "useTags": false
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,

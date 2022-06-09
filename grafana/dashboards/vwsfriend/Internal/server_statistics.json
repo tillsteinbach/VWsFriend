@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -25,6 +28,10 @@
   "liveNow": true,
   "panels": [
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Total number of HTTP errors during the selected time.",
       "fieldConfig": {
         "defaults": {
@@ -70,7 +77,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "format": "table",
@@ -105,6 +112,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Response time of the server when fetching data",
       "fieldConfig": {
         "defaults": {
@@ -214,6 +225,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Number of errors over time.",
       "fieldConfig": {
         "defaults": {
@@ -321,7 +336,7 @@
     }
   ],
   "refresh": "5m",
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "internal"

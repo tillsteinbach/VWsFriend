@@ -26,7 +26,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1653385758572,
+  "iteration": 1654774208309,
   "links": [
     {
       "asDropdown": false,
@@ -131,7 +131,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -216,7 +216,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -416,7 +416,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -504,7 +504,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -1268,6 +1268,10 @@
         "useTags": false
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT COALESCE(timezone, 'UTC') FROM vehicle_settings WHERE vehicle_vin='$VIN'",
         "description": "Timezone selected for the car (UTC if nothing was selected)",
         "hide": 2,

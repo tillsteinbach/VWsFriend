@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -21,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1645621628256,
+  "iteration": 1654775173757,
   "links": [
     {
       "asDropdown": false,
@@ -84,6 +87,10 @@
         "#73BF69"
       ],
       "customAttribution": false,
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "decimals": 1,
       "description": "Location of the car when refueling (green) and the detected gas station (red). If no location is shown you can add the location data using the edit button.",
       "doubleClickZoom": true,
@@ -179,6 +186,10 @@
       "valueName": "total"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Time of the refueling session.",
       "fieldConfig": {
         "defaults": {
@@ -229,7 +240,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -268,6 +279,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Details of the refueling session. The amount is estimated based on the fill level before and after refueling. If you want to work with the real amount and cost in the statistics you can add this data using the edit button.",
       "fieldConfig": {
         "defaults": {
@@ -391,7 +406,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -430,6 +445,10 @@
       "type": "stat"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Location of the refueling. If no location is provided your car probably does not provide a location. You can set it manually by changing the session with the edit button.",
       "fieldConfig": {
         "defaults": {
@@ -480,7 +499,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.4.1",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -520,7 +539,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 35,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "internal"
@@ -537,7 +556,7 @@
         "name": "id",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "",
             "value": ""
           }
@@ -556,7 +575,7 @@
         "name": "VIN",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "",
             "value": ""
           }
@@ -566,6 +585,10 @@
         "type": "textbox"
       },
       {
+        "datasource": {
+          "type": "postgres",
+          "uid": "P2EF847825A020B66"
+        },
         "definition": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "hide": 2,
         "includeAll": false,
