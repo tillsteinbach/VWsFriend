@@ -34,7 +34,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654104108538,
+  "iteration": 1654774108817,
   "links": [
     {
       "asDropdown": false,
@@ -329,7 +329,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.3",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -686,7 +686,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.3",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -936,7 +936,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.3",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -1104,8 +1104,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1204,7 +1203,7 @@
             "value": "none"
           }
         ],
-        "query": "",
+        "query": "none",
         "skipUrlSync": false,
         "type": "textbox"
       },

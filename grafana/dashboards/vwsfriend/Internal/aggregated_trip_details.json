@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1653397469451,
+  "iteration": 1654769146163,
   "links": [
     {
       "asDropdown": false,
@@ -237,7 +237,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.3",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -526,7 +526,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.5.3",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -939,8 +939,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1033,8 +1032,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1159,7 +1157,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "none",
           "value": "none"
         },
@@ -1177,7 +1175,7 @@
         "options": [],
         "query": "SELECT\n   \"start_location_id\" || ':' || COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country)) AS \"Start Location\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nWHERE \"start_location_id\" IS NOT NULL\nORDER BY COALESCE(start_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', start_locations.name, start_locations.amenity), nullif(CONCAT_WS(' ', start_locations.road, start_locations.house_number), '')), start_locations.neighbourhood, start_locations.city, start_locations.postcode, start_locations.country))",
         "refresh": 1,
-        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "regex": "/(?<value>-?[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
@@ -1202,7 +1200,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "none",
           "value": "none"
         },
@@ -1220,7 +1218,7 @@
         "options": [],
         "query": "SELECT\n   \"destination_location_id\" || ':' || COALESCE(destination_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_locations.name, destination_locations.amenity), nullif(CONCAT_WS(' ', destination_locations.road, destination_locations.house_number), '')), destination_locations.neighbourhood, destination_locations.city, destination_locations.postcode, destination_locations.country)) AS \"Destination Location\"\nFROM trips\nLEFT JOIN locations destination_locations ON trips.\"destination_location_id\" = destination_locations.osm_id\nWHERE \"destination_location_id\" IS NOT NULL\nORDER BY COALESCE(destination_locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', destination_locations.name, destination_locations.amenity), nullif(CONCAT_WS(' ', destination_locations.road, destination_locations.house_number), '')), destination_locations.neighbourhood, destination_locations.city, destination_locations.postcode, destination_locations.country))",
         "refresh": 1,
-        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
+        "regex": "/(?<value>-?[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
