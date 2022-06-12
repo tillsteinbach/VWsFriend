@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.18.1] - 2022-06-12
+### Changed
+- Unlocking does not end a charging session anymore (necessary for PV excess charging)
+- More charging states used in the state machine (Should make recordng of charging sessions more stable).
+- Use step interpolation (not linear) in charging session details for the charging power.
+
 ## [0.18.0] - 2022-06-09
 ### Added
 - Maintenance dashboard added
@@ -401,7 +407,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.18.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.18.1...HEAD
+[0.18.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.18.1
 [0.18.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.18.0
 [0.17.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.17.0
 [0.16.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.16.6
