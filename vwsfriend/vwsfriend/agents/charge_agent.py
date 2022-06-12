@@ -123,7 +123,8 @@ class ChargeAgent():
                 else:
                     self.chargingSession = None
 
-        if element.value == ChargingStatus.ChargingState.CHARGING:
+        if element.value in [ChargingStatus.ChargingState.CHARGING, ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION,
+                             ChargingStatus.ChargingState.CONSERVATION]:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
                 if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
@@ -162,7 +163,9 @@ class ChargeAgent():
             self.updateMileage()
 
             self.session.commit()
-        elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING]:
+        elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING,
+                               ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
+                               ChargingStatus.ChargingState.ERROR]:
             if self.chargingSession is not None and self.chargingSession.isChargingState():
                 self.chargingSession.ended = chargeStatus.carCapturedTimestamp.value
 
