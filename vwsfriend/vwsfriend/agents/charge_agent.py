@@ -126,9 +126,10 @@ class ChargeAgent():
         if element.value == ChargingStatus.ChargingState.CHARGING:
             if self.chargingSession is None or self.chargingSession.isClosed():
                 # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
-                if self.chargingSession is not None and not self.chargingSession.wasUnlocked() and not self.chargingSession.wasDisconnected() \
+                if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
                         and self.chargingSession.ended > (chargeStatus.carCapturedTimestamp.value - timedelta(hours=24)):
                     self.chargingSession.ended = None
+                    self.chargingSession.endSOC_pct = None
                 else:
                     self.previousChargingSession = self.chargingSession
                     self.chargingSession = ChargingSession(vehicle=self.vehicle)
