@@ -78,7 +78,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                 ' Netrc is only used when username and password are not provided  as arguments',
                                 default=None, required=False)
     weConnectGroup.add_argument('-i', '--interval', help='Query interval in seconds',
-                                type=NumberRangeArgument(imin=180), required=False, default=300)
+                                type=NumberRangeArgument(imin=120), required=False, default=180)
     defaultTemp = os.path.join(tempfile.gettempdir(), 'weconnect.token')
     weConnectGroup.add_argument('--tokenfile', help=f'file to store token (default: {defaultTemp})', default=defaultTemp)
     weConnectGroup.add_argument('--no-token-storage', dest='noTokenStorage', help='Do not store token on filesystem (this'
