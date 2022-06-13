@@ -98,6 +98,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
     homekitGroup = parser.add_argument_group('Homekit')
     homekitGroup.add_argument('--with-homekit', dest='withHomekit', help='Provide Apple Homekit functionality', action='store_true')
+    homekitGroup.add_argument('--homekit-address', dest='homekitAddress', type=str, help='IP address used to listen on for Apple Homekit functionality',
+                              default=None)
+    homekitGroup.add_argument('--homekit-port', dest='homekitPort', help='Port used to listen on for Apple Homekit functionality', type=int,
+                              choices=range(1, 65535), metavar="[1-65535]", required=False, default=51234)
 
     loggingGroup = parser.add_argument_group('Logging')
     loggingGroup.add_argument('-v', '--verbose', action="append_const", help='Logging level (verbosity)', const=-1,)
@@ -221,8 +225,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         driver = None
         if args.withHomekit:
             LOG.info('Starting up Homekit')
-            # Start the accessory on port 51826
-            driver = AccessoryDriver(pincode=None, persist_file=f'{args.configDir}/accessory.state')
+            # Start the accessory on port 51234
+            driver = AccessoryDriver(address=args.homekitAddress, port=args.homekitPort, pincode=None, persist_file=f'{args.configDir}/accessory.state')
 
             for characteristicKey, characteristic in CUSTOM_CHARACTERISTICS.items():
                 driver.loader.char_types[characteristicKey] = characteristic
