@@ -256,7 +256,7 @@ def settingsEdit():
 @bp.route('/trips/list', methods=['GET'])  # noqa: C901
 @login_required
 def tripList():
-    trips = current_app.db.session.query(Trip).all()
+    trips = current_app.db.session.query(Trip).order_by(Trip.startDate.desc()).all()
     return render_template('database/trip_list.html', current_app=current_app, trips=trips or [])
 
 
@@ -402,7 +402,8 @@ def tripEdit():  # noqa: C901
 @bp.route('/charging-session/list', methods=['GET'])  # noqa: C901
 @login_required
 def chargingSessionList():
-    sessions = current_app.db.session.query(ChargingSession).all()
+    sessions = current_app.db.session.query(ChargingSession).order_by(ChargingSession.started.desc(), ChargingSession.locked.desc(),
+                                                                      ChargingSession.connected.desc()).all()
     return render_template('database/charging_session_list.html', current_app=current_app, sessions=sessions or [])
 
 
@@ -646,7 +647,7 @@ def chargingSessionEdit():  # noqa: C901
 @bp.route('/refuel-session/list', methods=['GET'])  # noqa: C901
 @login_required
 def refuelSessionList():
-    sessions = current_app.db.session.query(RefuelSession).all()
+    sessions = current_app.db.session.query(RefuelSession).order_by(RefuelSession.date.desc()).all()
     return render_template('database/refuel_session_list.html', current_app=current_app, sessions=sessions or [])
 
 
@@ -775,7 +776,7 @@ def refuelSessionEdit():  # noqa: C901
 @bp.route('/journey/list', methods=['GET'])  # noqa: C901
 @login_required
 def journeyList():
-    journeys = current_app.db.session.query(Journey).all()
+    journeys = current_app.db.session.query(Journey).order_by(Journey.start.desc()).all()
     return render_template('database/journey_list.html', current_app=current_app, journeys=journeys or [])
 
 
@@ -887,7 +888,7 @@ def journeyEdit():  # noqa: C901
 @bp.route('/operator/list', methods=['GET'])  # noqa: C901
 @login_required
 def operatorList():
-    operators = current_app.db.session.query(Operator).filter(Operator.custom).all()
+    operators = current_app.db.session.query(Operator).order_by(Operator.id.asc()).filter(Operator.custom).all()
     return render_template('database/operator_list.html', current_app=current_app, operators=operators or [])
 
 
@@ -948,7 +949,7 @@ def operatorEdit():  # noqa: C901
 @bp.route('/tag/list', methods=['GET'])  # noqa: C901
 @login_required
 def tagList():
-    tags = current_app.db.session.query(Tag).all()
+    tags = current_app.db.session.query(Tag).order_by(Tag.name.asc()).all()
     return render_template('database/tag_list.html', current_app=current_app, tags=tags or [])
 
 
@@ -1015,7 +1016,7 @@ def tagEdit():  # noqa: C901
 @bp.route('/charger/list', methods=['GET'])  # noqa: C901
 @login_required
 def chargerList():
-    chargers = current_app.db.session.query(Charger).filter(Charger.custom).all()
+    chargers = current_app.db.session.query(Charger).order_by(Charger.id.asc()).filter(Charger.custom).all()
     return render_template('database/charger_list.html', current_app=current_app, chargers=chargers or [])
 
 
@@ -1114,7 +1115,7 @@ def chargerEdit():  # noqa: C901
 @bp.route('/geofence/list', methods=['GET'])  # noqa: C901
 @login_required
 def geofenceList():
-    geofences = current_app.db.session.query(Geofence).all()
+    geofences = current_app.db.session.query(Geofence).order_by(Geofence.id.asc()).all()
     return render_template('database/geofence_list.html', current_app=current_app, geofences=geofences or [])
 
 
