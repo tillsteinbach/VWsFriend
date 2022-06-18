@@ -164,6 +164,7 @@ class ChargeAgent():
 
             self.session.commit()
         elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING,
+                               ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING,
                                ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
                                ChargingStatus.ChargingState.ERROR]:
             if self.chargingSession is not None and self.chargingSession.isChargingState():
