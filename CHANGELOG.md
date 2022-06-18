@@ -2,7 +2,9 @@ CHANGELOG.md# Changelog
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
-- No unreleased changes so far
+### Fixed
+- Fix ordering of entrys in database UI
+- Add NOT_READY_FOR_CHARGING to states that end a charging session
 
 ## [0.18.2] - 2022-06-13
 ### Added
