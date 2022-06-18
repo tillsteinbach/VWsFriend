@@ -235,7 +235,7 @@ class ChargeAgent():
 
             self.session.commit()
 
-    def __onPlugLockStateChange(self, element, flags):
+    def __onPlugLockStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
 
         if self.chargingSession is not None:
@@ -253,11 +253,17 @@ class ChargeAgent():
 
         if element.value == PlugStatus.PlugLockState.LOCKED:
             if self.chargingSession is None or self.chargingSession.isClosed():
-                self.previousChargingSession = self.chargingSession
-                self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                with self.session.begin_nested():
-                    self.session.add(self.chargingSession)
-                self.session.commit()
+                # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
+                if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
+                        and self.chargingSession.ended > (plugStatus.carCapturedTimestamp.value - timedelta(hours=24)):
+                    self.chargingSession.ended = None
+                    self.chargingSession.endSOC_pct = None
+                else:
+                    self.previousChargingSession = self.chargingSession
+                    self.chargingSession = ChargingSession(vehicle=self.vehicle)
+                    with self.session.begin_nested():
+                        self.session.add(self.chargingSession)
+                    self.session.commit()
             if self.chargingSession.locked is None:
                 self.chargingSession.locked = plugStatus.carCapturedTimestamp.value
             # also write position if available
