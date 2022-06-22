@@ -26,7 +26,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654774208309,
+  "iteration": 1655879922161,
   "links": [
     {
       "asDropdown": false,
@@ -99,10 +99,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -131,7 +127,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -174,7 +170,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "description": "Total energy charged.\nEnergy is taken from exact value that was added to the charging sessions or estimated based on SoC if no exact data is available.",
+      "description": "Total number of battery cycles. A charge cycle happens when you use all of the battery’s power—but that doesn’t necessarily mean in a single charge.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -187,10 +183,17 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
               }
             ]
-          },
-          "unit": "kwatth"
+          }
         },
         "overrides": []
       },
@@ -200,7 +203,7 @@
         "x": 4,
         "y": 0
       },
-      "id": 3,
+      "id": 17,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -216,7 +219,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -227,7 +230,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n       charging_sessions.id,\n       COALESCE(\"realCharged_kWh\",\n      (\"endSOC_pct\" - \"startSOC_pct\") * (\n        CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n             ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n        END\n        / 100::NUMERIC)) AS \"Amount\"\n    FROM charging_sessions\n    LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n    LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n    LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n    WHERE\n      ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n      charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result",
+          "rawSql": "SELECT\n  SUM(charging_sessions.\"endSOC_pct\" - charging_sessions.\"startSOC_pct\")/100 AS \"Number of Charges\"\nFROM charging_sessions\nLEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\n  ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n  charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}",
           "refId": "A",
           "select": [
             [
@@ -251,7 +254,7 @@
           ]
         }
       ],
-      "title": "Total Amount",
+      "title": "Total Cycles",
       "type": "stat"
     },
     {
@@ -290,7 +293,7 @@
       "esMetric": "Count",
       "formatOmitEmptyValue": false,
       "gridPos": {
-        "h": 16,
+        "h": 20,
         "w": 13,
         "x": 8,
         "y": 0
@@ -373,14 +376,13 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "description": "Difference between estimated energy charged from the car and real energy charged.\nValue is calculated if charging sessions have real energy charged added.",
+      "description": "Total energy charged.\nEnergy is taken from exact value that was added to the charging sessions or estimated based on SoC if no exact data is available.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "No real charging values",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -390,7 +392,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "kwatth"
         },
         "overrides": []
       },
@@ -400,7 +402,7 @@
         "x": 0,
         "y": 4
       },
-      "id": 10,
+      "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -416,7 +418,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -425,10 +427,9 @@
           },
           "format": "table",
           "group": [],
-          "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  (SUM(\"Estimated\") - SUM(\"realCharged_kWh\")) / SUM(\"realCharged_kWh\") * 100 AS \"Delta %\"\nFROM\n  (SELECT DISTINCT\n       charging_sessions.id AS id,\n       ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))::NUMERIC AS \"Estimated\",\n    \"realCharged_kWh\"::NUMERIC\n    FROM charging_sessions\n    LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n    LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n    LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n    WHERE\n      ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n      \"realCharged_kWh\" IS NOT NULL AND \"endSOC_pct\" IS NOT NULL AND \"startSOC_pct\" IS NOT NULL AND\n      charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result",
+          "rawSql": "SELECT\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n       charging_sessions.id,\n       COALESCE(\"realCharged_kWh\",\n      (\"endSOC_pct\" - \"startSOC_pct\") * (\n        CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n             ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n        END\n        / 100::NUMERIC)) AS \"Amount\"\n    FROM charging_sessions\n    LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n    LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n    LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n    WHERE\n      ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n      charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result",
           "refId": "A",
           "select": [
             [
@@ -452,7 +453,7 @@
           ]
         }
       ],
-      "title": "Difference estimated/real",
+      "title": "Total Amount",
       "type": "stat"
     },
     {
@@ -504,7 +505,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -547,6 +548,169 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
+      "description": "Difference between estimated energy charged from the car and real energy charged.\nValue is calculated if charging sessions have real energy charged added.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "No real charging values",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 8
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  (SUM(\"Estimated\") - SUM(\"realCharged_kWh\")) / SUM(\"realCharged_kWh\") * 100 AS \"Delta %\"\nFROM\n  (SELECT DISTINCT\n       charging_sessions.id AS id,\n       ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))::NUMERIC AS \"Estimated\",\n    \"realCharged_kWh\"::NUMERIC\n    FROM charging_sessions\n    LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n    LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n    LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n    WHERE\n      ($__timeFilter(\"started\") OR $__timeFilter(\"ended\")) AND\n      \"realCharged_kWh\" IS NOT NULL AND \"endSOC_pct\" IS NOT NULL AND \"startSOC_pct\" IS NOT NULL AND\n      charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Difference estimated/real",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 8
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
       "description": "Energy added by AC/DC charging sessions.\nAC/DC can be automatically detected if provided from the car. If not it is guessed based on charge power. If the charge power is not available AC/DC can be manually set in the charging sessions.",
       "fieldConfig": {
         "defaults": {
@@ -569,7 +733,7 @@
         "h": 8,
         "w": 4,
         "x": 0,
-        "y": 8
+        "y": 12
       },
       "id": 4,
       "options": {
@@ -661,7 +825,7 @@
         "h": 8,
         "w": 4,
         "x": 4,
-        "y": 8
+        "y": 12
       },
       "id": 14,
       "options": {
@@ -737,7 +901,7 @@
         "h": 8,
         "w": 11,
         "x": 0,
-        "y": 16
+        "y": 20
       },
       "id": 13,
       "pconfig": {
@@ -878,7 +1042,7 @@
         "h": 8,
         "w": 10,
         "x": 11,
-        "y": 16
+        "y": 20
       },
       "id": 6,
       "pconfig": {
@@ -1019,7 +1183,7 @@
         "h": 8,
         "w": 11,
         "x": 0,
-        "y": 24
+        "y": 28
       },
       "id": 8,
       "pconfig": {
