@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 ### Added
 - Added new attributes: brandCode, autoUnlockPlugWhenChargedAC, ledColor
+- Added number of battery cycles to charging statistics
 
 ### Fixed
 - Fix ordering of entrys in database UI
