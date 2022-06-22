@@ -153,6 +153,10 @@
         <li> Auto unlock plug when charged:
           {{vehicle.domains['charging']['chargingSettings'].autoUnlockPlugWhenCharged.value.value}}</li>
         {% endif %}
+        {% if vehicle.domains['charging']['chargingSettings'].autoUnlockPlugWhenChargedAC.enabled %}
+        <li> Auto unlock plug when charged (AC):
+          {{vehicle.domains['charging']['chargingSettings'].autoUnlockPlugWhenChargedAC.value.value}}</li>
+        {% endif %}
         {% if vehicle.domains['charging']['chargingSettings'].targetSOC_pct.enabled %}
         <li> Target SoC: {{vehicle.domains['charging']['chargingSettings'].targetSOC_pct.value}}%</li>
         {% endif %}
@@ -169,6 +173,12 @@
         {% endif %}
         {% if vehicle.domains['charging']['plugStatus'].plugLockState.enabled %}
         <li> Plug Lock State: {{vehicle.domains['charging']['plugStatus'].plugLockState.value.value}}</li>
+        {% endif %}
+        {% if vehicle.domains['charging']['plugStatus'].externalPower.enabled %}
+        <li> External Power: {{vehicle.domains['charging']['plugStatus'].externalPower.value.value}}</li>
+        {% endif %}
+        {% if vehicle.domains['charging']['plugStatus'].ledColor.enabled %}
+        <li> LED Color: {{vehicle.domains['charging']['plugStatus'].ledColor.value.value}}</li>
         {% endif %}
       </ul>
       </p>
