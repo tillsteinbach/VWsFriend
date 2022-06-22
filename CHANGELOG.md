@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 ### Added
-- Added new attributes: brandCode, autoUnlockPlugWhenChargedAC, ledColor
+- Added new attributes: brandCode, autoUnlockPlugWhenChargedAC, ledColor, externalPower
 - Added number of battery cycles to charging statistics
 
 ### Fixed
@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - Fix continuation of charging session with auto unlock
 
 ### Changed
-- Updated API to 0.42.0
+- Updated API to 0.43.0
 - Updated Grafana to 9.0.0
 
 ## [0.18.2] - 2022-06-13
