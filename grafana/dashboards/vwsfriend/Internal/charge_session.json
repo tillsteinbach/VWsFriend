@@ -34,7 +34,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654774108817,
+  "iteration": 1655974858082,
   "links": [
     {
       "asDropdown": false,
@@ -329,7 +329,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -686,7 +686,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -758,6 +758,11 @@
                   "index": 4,
                   "text": "charging"
                 },
+                "CONSERVATION": {
+                  "color": "blue",
+                  "index": 8,
+                  "text": "conservation"
+                },
                 "ERROR": {
                   "color": "red",
                   "index": 3,
@@ -767,6 +772,11 @@
                   "color": "red",
                   "index": 7,
                   "text": "invalid"
+                },
+                "NOT_READY_FOR_CHARGING": {
+                  "color": "#3d3d3d",
+                  "index": 9,
+                  "text": "not ready for charging"
                 },
                 "OFF": {
                   "color": "#3d3d3d",
@@ -936,7 +946,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -1208,11 +1218,6 @@
         "type": "textbox"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "none",
-          "value": "none"
-        },
         "hide": 2,
         "name": "VIN",
         "options": [
@@ -1269,6 +1274,10 @@
         "type": "query"
       }
     ]
+  },
+  "time": {
+    "from": "now",
+    "to": "now"
   },
   "timepicker": {
     "hidden": true
