@@ -58,7 +58,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654773883971,
+  "iteration": 1655974717893,
   "links": [
     {
       "asDropdown": false,
@@ -112,7 +112,7 @@
         "content": "<a href=\"${vwsfriend_url:raw}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url:raw}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
         "mode": "html"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "title": "$VIN",
       "type": "text"
     },
@@ -167,7 +167,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "format": "table",
@@ -476,7 +476,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "alias": "Car is online",
@@ -559,7 +559,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "alias": "Last connection",
@@ -654,7 +654,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "format": "table",
@@ -752,7 +752,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "format": "table",
@@ -1356,7 +1356,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "format": "table",
@@ -1442,7 +1442,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "format": "table",
@@ -1779,7 +1779,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2015,7 +2016,7 @@
         "content": "VWsFriend version: [develop](https://github.com/tillsteinbach/VWsFriend/)",
         "mode": "markdown"
       },
-      "pluginVersion": "8.5.2",
+      "pluginVersion": "9.0.0",
       "title": "Version",
       "type": "text"
     },
@@ -2063,7 +2064,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2208,6 +2210,11 @@
                   "index": 9,
                   "text": "charging"
                 },
+                "CONSERVATION": {
+                  "color": "blue",
+                  "index": 13,
+                  "text": "conservation"
+                },
                 "COOLING": {
                   "color": "blue",
                   "index": 5,
@@ -2227,6 +2234,11 @@
                   "color": "red",
                   "index": 12,
                   "text": "invalid"
+                },
+                "NOT_READY_FOR_CHARGING": {
+                  "color": "#3d3d3d",
+                  "index": 14,
+                  "text": "not ready for charging"
                 },
                 "OFF": {
                   "color": "#3d3d3d",
@@ -2264,7 +2276,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },

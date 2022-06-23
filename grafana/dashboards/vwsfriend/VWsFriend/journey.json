@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1654774500319,
+  "iteration": 1655975092731,
   "links": [
     {
       "asDropdown": false,
@@ -265,7 +265,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "format": "table",
@@ -438,7 +438,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "format": "table",
@@ -663,6 +663,10 @@
       "targets": [
         {
           "alias": "Charging State",
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "groupBy": [],
@@ -674,7 +678,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(\nSELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\"::TEXT AS \"State\"\nFROM charges\nWHERE\n  (\"chargingState\" = 'CHARGING' OR \"chargingState\" = 'OFF' OR \"chargingState\" = 'READY_FOR_CHARGING' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_CONSERVATION' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING') AND\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"startDate\" AS time,\n  'DRIVING' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"endDate\" AS time,\n  'OFF' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  vehicle_vin = '$VIN'\n)\nORDER BY 1  ",
+          "rawSql": "(\nSELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"chargingState\"::TEXT AS \"State\"\nFROM charges\nWHERE\n  (\"chargingState\" = 'CHARGING' OR \"chargingState\" = 'OFF' OR \"chargingState\" = 'READY_FOR_CHARGING' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_CONSERVATION' OR \"chargingState\" = 'CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING' OR \"chargingState\" = 'CONSERVATION') AND\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"startDate\" AS time,\n  'DRIVING' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  vehicle_vin = '$VIN'\nUNION\nSELECT\n  \"endDate\" AS time,\n  'OFF' AS \"State\"\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  vehicle_vin = '$VIN'\n)\nORDER BY 1  ",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1040,7 +1044,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -1402,7 +1406,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -1697,7 +1701,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
