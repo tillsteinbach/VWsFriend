@@ -43,12 +43,17 @@ class Battery(GenericAccessory):
 
     def setChargingState(self, chargingState):
         if self.charChargingState is not None:
-            if chargingState.value == ChargingStatus.ChargingState.OFF \
-                    or chargingState.value == ChargingStatus.ChargingState.READY_FOR_CHARGING:
+            if chargingState.value in (ChargingStatus.ChargingState.OFF,
+                                       ChargingStatus.ChargingState.READY_FOR_CHARGING,
+                                       ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
+                                       ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING):
                 self.charChargingState.set_value(0)
-            elif chargingState.value == ChargingStatus.ChargingState.CHARGING:
+            elif chargingState.value in (ChargingStatus.ChargingState.CHARGING,
+                                         ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION,
+                                         ChargingStatus.ChargingState.CONSERVATION):
                 self.charChargingState.set_value(1)
-            elif chargingState.value == ChargingStatus.ChargingState.ERROR:
+            elif chargingState.value in (ChargingStatus.ChargingState.ERROR,
+                                         ChargingStatus.ChargingState.UNSUPPORTED):
                 self.charChargingState.set_value(2)
             else:
                 self.charChargingState.set_value(2)
