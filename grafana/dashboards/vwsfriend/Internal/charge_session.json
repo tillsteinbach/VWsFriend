@@ -1218,6 +1218,11 @@
         "type": "textbox"
       },
       {
+        "current": {
+          "selected": false,
+          "text": "none",
+          "value": "none"
+        },
         "hide": 2,
         "name": "VIN",
         "options": [
