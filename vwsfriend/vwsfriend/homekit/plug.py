@@ -33,7 +33,9 @@ class Plug(GenericAccessory):
             if plugConnectionState.value == PlugStatus.PlugConnectionState.CONNECTED:
                 self.charContactSensorState.set_value(0)
                 self.charStatusFault.set_value(0)
-            elif plugConnectionState.value == PlugStatus.PlugConnectionState.DISCONNECTED:
+            elif plugConnectionState.value in (PlugStatus.PlugConnectionState.DISCONNECTED,
+                                               PlugStatus.PlugConnectionState.UNSUPPORTED,
+                                               PlugStatus.PlugConnectionState.INVALID):
                 self.charContactSensorState.set_value(1)
                 self.charStatusFault.set_value(0)
             else:

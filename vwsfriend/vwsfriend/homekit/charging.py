@@ -63,12 +63,17 @@ class Charging(GenericAccessory):
 
     def setOnState(self, chargingState):
         if self.charOn is not None:
-            if chargingState.value == ChargingStatus.ChargingState.OFF \
-                    or chargingState.value == ChargingStatus.ChargingState.READY_FOR_CHARGING:
+            if chargingState.value in (ChargingStatus.ChargingState.OFF,
+                                       ChargingStatus.ChargingState.READY_FOR_CHARGING,
+                                       ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
+                                       ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING):
                 self.charOn.set_value(0)
-            elif chargingState.value == ChargingStatus.ChargingState.CHARGING:
+            elif chargingState.value in (ChargingStatus.ChargingState.CHARGING,
+                                         ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION,
+                                         ChargingStatus.ChargingState.CONSERVATION):
                 self.charOn.set_value(1)
-            elif chargingState.value == ChargingStatus.ChargingState.ERROR:
+            elif chargingState.value in (ChargingStatus.ChargingState.ERROR,
+                                         ChargingStatus.ChargingState.UNSUPPORTED):
                 self.charOn.set_value(0)
             else:
                 self.charOn.set_value(0)
@@ -78,7 +83,9 @@ class Charging(GenericAccessory):
         if self.charOutletInUse is not None:
             if plugConnectionState.value == PlugStatus.PlugConnectionState.CONNECTED:
                 self.charOutletInUse.set_value(True)
-            elif plugConnectionState.value == PlugStatus.PlugConnectionState.DISCONNECTED:
+            elif plugConnectionState.value in (PlugStatus.PlugConnectionState.DISCONNECTED,
+                                               PlugStatus.PlugConnectionState.INVALID,
+                                               PlugStatus.PlugConnectionState.UNSUPPORTED):
                 self.charOutletInUse.set_value(False)
             else:
                 self.charOutletInUse.set_value(False)
@@ -146,7 +153,8 @@ class Charging(GenericAccessory):
                                          ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION,
                                          ChargingStatus.ChargingState.CONSERVATION):
                 self.charChargingState.set_value(1)
-            elif chargingState.value == ChargingStatus.ChargingState.ERROR:
+            elif chargingState.value in (ChargingStatus.ChargingState.ERROR,
+                                         ChargingStatus.ChargingState.UNSUPPORTED):
                 self.charChargingState.set_value(2)
             else:
                 self.charChargingState.set_value(2)
