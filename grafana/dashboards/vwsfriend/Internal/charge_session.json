@@ -783,6 +783,11 @@
                   "index": 0,
                   "text": "off"
                 },
+                "UNSUPPORTED": {
+                  "color": "#3d3d3d",
+                  "index": 10,
+                  "text": "unsupported"
+                },
                 "ON": {
                   "color": "green",
                   "index": 1,
