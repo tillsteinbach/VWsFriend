@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.19.1] - 2022-06-23
+### Added
+- Added new values for attribute externalPower: active
+- Added new values for attribute ledColor: green, red
+
+### Changed
+- Updated API to 0.43.1
+
 ## [0.19.0] - 2022-06-22 (Happy birthday Peer!)
 ### Added
 - Added new attributes: brandCode, autoUnlockPlugWhenChargedAC, ledColor, externalPower
