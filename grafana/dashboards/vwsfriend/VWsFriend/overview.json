@@ -2267,6 +2267,11 @@
                 "online": {
                   "color": "green",
                   "index": 0
+                },
+                "UNSUPPORTED": {
+                  "color": "#3d3d3d",
+                  "index": 15,
+                  "text": "unsupported"
                 }
               },
               "type": "value"
