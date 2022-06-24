@@ -26,7 +26,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1655879922161,
+  "iteration": 1656055529247,
   "links": [
     {
       "asDropdown": false,
@@ -1398,6 +1398,139 @@
       ],
       "type": "natel-plotly-panel",
       "version": 1
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Distribution of the time remaining in a specific SoC.\nFor meaningful values wait until a significant number ofvalues were recorded.",
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 11,
+        "y": 28
+      },
+      "id": 20,
+      "pconfig": {
+        "fixScale": "",
+        "layout": {
+          "dragmode": "lasso",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "rangemode": "tozero",
+            "showgrid": true,
+            "title": "SoC %",
+            "type": "linear",
+            "zeroline": true
+          },
+          "yaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "title": "%",
+            "type": "linear",
+            "zeroline": true
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "Number",
+              "text": "Text",
+              "x": "SoC_pct",
+              "y": "Time"
+            },
+            "name": "Distribution",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 15,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              },
+              "textposition": ""
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": true
+            }
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n \"SoC_pct\",\n \"Time\"/ SUM(\"Time\") OVER () * 100 AS \"Time\",\n ROUND((\"Time\"/ SUM(\"Time\") OVER () * 100)::numeric, 2)::TEXT || '% of time' AS \"Text\"\nFROM\n(\nSELECT\n \"SoC_pct\",\n SUM(\"Duration\") AS \"Time\"\nFROM\n(SELECT\nfloor(\"currentSOC_pct\" / 5) * 5 AS \"SoC_pct\",\nEXTRACT(epoch FROM (\"carCapturedTimestamp\" - lag(battery.\"carCapturedTimestamp\") over (order by \"carCapturedTimestamp\"))) AS \"Duration\"\nFROM battery\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\nORDER BY 1) AS data\nGROUP BY \"SoC_pct\") AS data2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Distribution of time remaining in SoC",
+      "transformations": [],
+      "type": "natel-plotly-panel",
+      "version": 1
     }
   ],
   "refresh": false,
@@ -1454,7 +1587,7 @@
       {
         "allValue": "all_values",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "All"
           ],
