@@ -26,7 +26,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1656055529247,
+  "iteration": 1656062473561,
   "links": [
     {
       "asDropdown": false,
@@ -258,78 +258,130 @@
       "type": "stat"
     },
     {
-      "autoPanLabels": true,
-      "autoWidthLabels": true,
-      "categories": "a,b",
-      "circleMaxSize": 30,
-      "circleMinSize": "5",
-      "circleOptions": {
-        "strokeEnabled": true,
-        "strokeWeight": "1"
-      },
-      "circleSizeAbsoluteEnabled": false,
-      "circleSizeAbsoluteFactor": 1,
-      "clickthroughOptions": {},
-      "clickthroughUrl": "",
-      "colorMode": "threshold",
-      "colors": [
-        "#C8F2C2",
-        "#73BF69",
-        "#FADE2A",
-        "#FF9830",
-        "#F2495C"
-      ],
-      "customAttribution": false,
       "datasource": {
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "decimals": 2,
       "description": "Charging locations: Size and color corresponds to energy charged at that station.\nLocations are only recorded when provided from the car.\nEnergy is taken from exact value that was added to the charging sessions or estimated based on SoC if no exact data is available.",
-      "doubleClickZoom": true,
-      "dragging": true,
-      "enableOverlay": false,
-      "enableReloadOverlay": false,
-      "esMetric": "Count",
-      "formatOmitEmptyValue": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "degree"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Amount"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatth"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 20,
         "w": 13,
         "x": 8,
         "y": 0
       },
-      "hideEmpty": false,
-      "hideTimepickerNavigation": false,
-      "hideZero": false,
       "id": 12,
-      "ignoreEmptyGeohashValues": false,
-      "ignoreEscapeKey": false,
-      "ignoreInvalidGeohashValues": false,
-      "initialZoom": 1,
-      "locationData": "table",
-      "mapCenter": "(0°, 0°)",
-      "mapCenterLatitude": 0,
-      "mapCenterLongitude": 0,
-      "mapFitData": true,
       "maxDataPoints": 1,
-      "mouseWheelZoom": true,
-      "overlayOpacity": 0.5,
-      "overlayRangeLatitude": "0,10",
-      "overlayRangeLongitude": "0,20",
-      "overlayUrl": "",
-      "showAttribution": true,
-      "showLegend": false,
-      "showZoomControl": true,
-      "stickyLabels": false,
-      "tableQueryOptions": {
-        "geohashField": "geohash",
-        "labelField": "Charger",
-        "latitudeField": "final_latitude",
-        "linkField": "",
-        "longitudeField": "final_longitude",
-        "metricField": "Amount",
-        "queryType": "coordinates"
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "field": "Amount",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "Amount",
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "text": {
+                  "field": "Amount",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 10,
+                  "offsetY": 10,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "Latitude",
+              "longitude": "Longitude",
+              "lookup": "Charger",
+              "mode": "coords"
+            },
+            "name": "Chargers",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "view": {
+          "id": "fit",
+          "lat": 53.638576,
+          "lon": 10.063363,
+          "shared": false,
+          "zoom": 15
+        }
       },
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -340,7 +392,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"final_latitude\",\n  \"final_longitude\",\n  \"Charger\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n  charging_sessions.id,\n  COALESCE(chargers.latitude, ROUND(charging_sessions.\"position_latitude\"::NUMERIC,3)) AS \"final_latitude\",\n  COALESCE(chargers.longitude, ROUND(charging_sessions.\"position_longitude\"::NUMERIC,3)) AS \"final_longitude\",\n  COALESCE(chargers.name, 'unkown') AS \"Charger\",\n  COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN chargers ON charging_sessions.\"charger_id\" = chargers.id\nLEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\n  COALESCE(chargers.latitude, charging_sessions.\"position_latitude\") IS NOT NULL AND\n  COALESCE(chargers.longitude, charging_sessions.\"position_longitude\") IS NOT NULL AND\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY \"final_latitude\", \"final_longitude\", \"Charger\"",
+          "rawSql": "SELECT\n  \"final_latitude\" AS \"Latitude\",\n  \"final_longitude\" AS \"Longitude\",\n  \"Charger\",\n  SUM(\"Amount\") AS \"Amount\"\nFROM\n  (SELECT DISTINCT\n  charging_sessions.id,\n  COALESCE(chargers.latitude, ROUND(charging_sessions.\"position_latitude\"::NUMERIC,3)) AS \"final_latitude\",\n  COALESCE(chargers.longitude, ROUND(charging_sessions.\"position_longitude\"::NUMERIC,3)) AS \"final_longitude\",\n  COALESCE(chargers.name, 'unkown') AS \"Charger\",\n  COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\"\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN chargers ON charging_sessions.\"charger_id\" = chargers.id\nLEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\n  COALESCE(chargers.latitude, charging_sessions.\"position_latitude\") IS NOT NULL AND\n  COALESCE(chargers.longitude, charging_sessions.\"position_longitude\") IS NOT NULL AND\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}) AS result\nGROUP BY \"final_latitude\", \"final_longitude\", \"Charger\"",
           "refId": "A",
           "select": [
             [
@@ -364,12 +416,8 @@
           ]
         }
       ],
-      "thresholds": "0,25,50,75",
       "title": "Charge map",
-      "type": "panodata-map-panel",
-      "unitPlural": "kWh",
-      "unitSingular": "kWh",
-      "valueName": "total"
+      "type": "geomap"
     },
     {
       "datasource": {
@@ -1587,7 +1635,7 @@
       {
         "allValue": "all_values",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
             "All"
           ],
