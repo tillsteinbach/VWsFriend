@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1656006202191,
+  "iteration": 1656078790470,
   "links": [
     {
       "asDropdown": true,
@@ -212,74 +212,109 @@
       "type": "stat"
     },
     {
-      "autoPanLabels": true,
-      "autoWidthLabels": true,
-      "categories": "a,b",
-      "circleMaxSize": "1",
-      "circleMinSize": "1",
-      "circleOptions": {
-        "strokeEnabled": true,
-        "strokeWeight": "10"
-      },
-      "circleSizeAbsoluteEnabled": false,
-      "circleSizeAbsoluteFactor": 1,
-      "clickthroughOptions": {},
-      "clickthroughUrl": "",
-      "colorMode": "threshold",
-      "colors": [
-        "#73BF69",
-        "rgba(237, 129, 40, 0.89)"
-      ],
-      "customAttribution": false,
       "datasource": {
         "type": "marcusolsson-json-datasource",
         "uid": "P36D08C1A0297C737"
       },
-      "decimals": 0,
       "description": "Current parking position if available. Not all cars provide a parking position.",
-      "doubleClickZoom": true,
-      "dragging": true,
-      "enableOverlay": false,
-      "enableReloadOverlay": true,
-      "esMetric": "Count",
-      "formatOmitEmptyValue": true,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "degree"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 17,
         "w": 7,
         "x": 11,
         "y": 0
       },
-      "hideEmpty": false,
-      "hideTimepickerNavigation": false,
-      "hideZero": false,
       "id": 2,
-      "ignoreEmptyGeohashValues": false,
-      "ignoreEscapeKey": false,
-      "ignoreInvalidGeohashValues": false,
-      "initialZoom": 1,
-      "locationData": "table",
-      "mapCenter": "(0°, 0°)",
-      "mapCenterLatitude": 0,
-      "mapCenterLongitude": 0,
-      "mapFitData": true,
       "maxDataPoints": 1,
-      "mouseWheelZoom": false,
-      "overlayOpacity": 0.5,
-      "overlayRangeLatitude": "0,10",
-      "overlayRangeLongitude": "0,20",
-      "overlayUrl": "",
-      "showAttribution": true,
-      "showLegend": false,
-      "showZoomControl": true,
-      "stickyLabels": false,
-      "tableQueryOptions": {
-        "geohashField": "geohash",
-        "labelField": "",
-        "latitudeField": "latitude",
-        "longitudeField": "longitude",
-        "metricField": "",
-        "queryType": "coordinates"
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showScale": true,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "blue"
+                },
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/parking.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "Latitude",
+              "longitude": "Longitude",
+              "mode": "coords"
+            },
+            "name": "Parking position",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "view": {
+          "id": "fit",
+          "lat": 0,
+          "lon": 0,
+          "zoom": 18
+        }
       },
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "cacheDurationSeconds": 30,
@@ -290,19 +325,19 @@
           "fields": [
             {
               "jsonPath": "$.vehicles.$VIN.domains.parking.parkingPosition.latitude",
-              "name": "latitude",
+              "name": "Latitude",
               "type": "number"
             },
             {
               "jsonPath": "$.vehicles.$VIN.domains.parking.parkingPosition.longitude",
               "language": "jsonpath",
-              "name": "longitude",
+              "name": "Longitude",
               "type": "number"
             },
             {
               "jsonPath": "$.vehicles.$VIN.domains.parking.parkingPosition.carCapturedTimestamp",
               "language": "jsonpath",
-              "name": "time",
+              "name": "Time",
               "type": "time"
             }
           ],
@@ -312,13 +347,9 @@
           "urlPath": ""
         }
       ],
-      "thresholds": "",
       "title": "Parking Position",
       "transparent": true,
-      "type": "panodata-map-panel",
-      "unitPlural": "",
-      "unitSingular": "",
-      "valueName": "current"
+      "type": "geomap"
     },
     {
       "datasource": {
