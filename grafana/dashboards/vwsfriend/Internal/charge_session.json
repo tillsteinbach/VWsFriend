@@ -34,7 +34,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1656064695469,
+  "iteration": 1656066125043,
   "links": [
     {
       "asDropdown": false,
@@ -1066,6 +1066,52 @@
               "showLegend": true,
               "style": {
                 "color": {
+                  "fixed": "green"
+                },
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 7,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "text": {
+                  "field": "",
+                  "fixed": "",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "Latitude Parking",
+              "longitude": "Longitude Parking",
+              "mode": "coords"
+            },
+            "name": "Parking position",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
                   "fixed": "blue"
                 },
                 "opacity": 0.8,
@@ -1106,52 +1152,6 @@
             "name": "Charger",
             "tooltip": true,
             "type": "markers"
-          },
-          {
-            "config": {
-              "showLegend": true,
-              "style": {
-                "color": {
-                  "fixed": "green"
-                },
-                "opacity": 0.8,
-                "rotation": {
-                  "fixed": 0,
-                  "max": 360,
-                  "min": -360,
-                  "mode": "mod"
-                },
-                "size": {
-                  "fixed": 7,
-                  "max": 15,
-                  "min": 2
-                },
-                "symbol": {
-                  "fixed": "img/icons/marker/circle.svg",
-                  "mode": "fixed"
-                },
-                "text": {
-                  "field": "",
-                  "fixed": "",
-                  "mode": "fixed"
-                },
-                "textConfig": {
-                  "fontSize": 12,
-                  "offsetX": 0,
-                  "offsetY": 0,
-                  "textAlign": "center",
-                  "textBaseline": "middle"
-                }
-              }
-            },
-            "location": {
-              "latitude": "Latitude Parking",
-              "longitude": "Longitude Parking",
-              "mode": "coords"
-            },
-            "name": "Parking position",
-            "tooltip": true,
-            "type": "markers"
           }
         ],
         "view": {
@@ -1172,41 +1172,8 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  position_latitude AS \"Latitude Charger\",\n  position_longitude AS \"Longitude Charger\",\n  COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount Charged\"\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  charging_sessions.id = $id",
+          "rawSql": "SELECT\n  chargers.latitude AS \"Latitude Charger\",\n  chargers.longitude AS \"Longitude Charger\",\n  position_latitude AS \"Latitude Parking\",\n  position_longitude AS \"Longitude Parking\",\n  COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount Charged\"\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  charging_sessions.id = $id",
           "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "charging_sessions",
-          "timeColumn": "connected",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P2EF847825A020B66"
-          },
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  position_latitude AS \"Latitude Parking\",\n  position_longitude AS \"Longitude Parking\"\nFROM charging_sessions\nLEFT JOIN chargers ON charging_sessions.charger_id = chargers.id\nWHERE\n  charging_sessions.id = $id",
-          "refId": "B",
           "select": [
             [
               {
