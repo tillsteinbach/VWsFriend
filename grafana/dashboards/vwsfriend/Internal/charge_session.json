@@ -34,7 +34,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1656066125043,
+  "iteration": 1656077962186,
   "links": [
     {
       "asDropdown": false,
@@ -1066,7 +1066,7 @@
               "showLegend": true,
               "style": {
                 "color": {
-                  "fixed": "green"
+                  "fixed": "blue"
                 },
                 "opacity": 1,
                 "rotation": {
@@ -1081,7 +1081,7 @@
                   "min": 2
                 },
                 "symbol": {
-                  "fixed": "img/icons/marker/circle.svg",
+                  "fixed": "img/icons/parking.svg",
                   "mode": "fixed"
                 },
                 "text": {
@@ -1112,9 +1112,9 @@
               "showLegend": true,
               "style": {
                 "color": {
-                  "fixed": "blue"
+                  "fixed": "#ffffff"
                 },
-                "opacity": 0.8,
+                "opacity": 1,
                 "rotation": {
                   "fixed": 0,
                   "max": 360,
@@ -1122,12 +1122,12 @@
                   "mode": "mod"
                 },
                 "size": {
-                  "fixed": 7,
+                  "fixed": 10,
                   "max": 15,
                   "min": 2
                 },
                 "symbol": {
-                  "fixed": "img/icons/marker/square.svg",
+                  "fixed": "img/icons/charger.svg",
                   "mode": "fixed"
                 },
                 "text": {
