@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654775173757,
+  "iteration": 1656079676508,
   "links": [
     {
       "asDropdown": false,
@@ -68,51 +68,57 @@
   "liveNow": false,
   "panels": [
     {
-      "autoPanLabels": true,
-      "autoWidthLabels": true,
-      "categories": "Car Position",
-      "circleMaxSize": "1",
-      "circleMinSize": "1",
-      "circleOptions": {
-        "strokeEnabled": true,
-        "strokeWeight": "15"
-      },
-      "circleSizeAbsoluteEnabled": true,
-      "circleSizeAbsoluteFactor": 1,
-      "clickthroughOptions": {},
-      "clickthroughUrl": "",
-      "colorMode": "categories",
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "#73BF69"
-      ],
-      "customAttribution": false,
       "datasource": {
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "decimals": 1,
       "description": "Location of the car when refueling (green) and the detected gas station (red). If no location is shown you can add the location data using the edit button.",
-      "doubleClickZoom": true,
-      "dragging": true,
-      "enableOverlay": false,
-      "enableReloadOverlay": false,
-      "esMetric": "Count",
-      "formatOmitEmptyValue": false,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "degree"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Amount"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "litre"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 20,
         "w": 12,
         "x": 0,
         "y": 0
       },
-      "hideEmpty": false,
-      "hideTimepickerNavigation": false,
-      "hideZero": false,
       "id": 11,
-      "ignoreEmptyGeohashValues": false,
-      "ignoreEscapeKey": false,
-      "ignoreInvalidGeohashValues": false,
-      "initialZoom": 1,
       "links": [
         {
           "targetBlank": true,
@@ -120,30 +126,112 @@
           "url": "${vwsfriend_url:raw}/database/refuel-session/edit?id=${id}"
         }
       ],
-      "locationData": "table",
-      "mapCenter": "(0°, 0°)",
-      "mapCenterLatitude": 0,
-      "mapCenterLongitude": 0,
-      "mapFitData": true,
       "maxDataPoints": 500,
-      "mouseWheelZoom": false,
-      "overlayOpacity": 0.5,
-      "overlayRangeLatitude": "0,10",
-      "overlayRangeLongitude": "0,20",
-      "overlayUrl": "",
-      "pluginVersion": "8.1.0",
-      "showAttribution": true,
-      "showLegend": true,
-      "showZoomControl": true,
-      "stickyLabels": false,
-      "tableQueryOptions": {
-        "geohashField": "geohash",
-        "labelField": "label",
-        "latitudeField": "latitude",
-        "longitudeField": "longitude",
-        "metricField": "metric",
-        "queryType": "coordinates"
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "fixed": "blue"
+                },
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/parking.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "Latitude Parking",
+              "longitude": "Longitude Parking",
+              "mode": "coords"
+            },
+            "name": "Parking position",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "fixed": "#c34e4e"
+                },
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 8,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/gas.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "Latitude Station",
+              "longitude": "Longitude Station",
+              "mode": "coords"
+            },
+            "name": "Gas station",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "view": {
+          "id": "fit",
+          "lat": 0,
+          "lon": 0,
+          "zoom": 18
+        }
       },
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -154,7 +242,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Refueling dashboard';\nEND IF;\nEND $$;\n(SELECT\n  position_latitude AS latitude,\n  position_longitude AS longitude,\n  \"realRefueled_l\" AS metric,\n  'Car Position' AS label\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nWHERE\n  refuel_sessions.id = $id)\nUNION\n(SELECT\n  latitude AS latitude,\n  longitude AS longitude,\n  \"realRefueled_l\" AS metric,\n  display_name AS label\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nWHERE\n  refuel_sessions.id = $id)",
+          "rawSql": "DO $$ \nBEGIN\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Refueling dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  position_latitude AS \"Latitude Parking\",\n  position_longitude AS \"Longitude Parking\",\n  latitude AS \"Latitude Station\",\n  longitude AS \"Longitude Station\",\n  COALESCE(\"realRefueled_l\",(\"endSOC_pct\" - \"startSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC / 100::NUMERIC)) AS \"Amount\"\nFROM refuel_sessions\nLEFT JOIN locations ON refuel_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  refuel_sessions.id = $id",
           "refId": "A",
           "select": [
             [
@@ -178,12 +266,8 @@
           ]
         }
       ],
-      "thresholds": "0,10",
       "title": "Gas Station Location",
-      "type": "panodata-map-panel",
-      "unitPlural": "l",
-      "unitSingular": "l",
-      "valueName": "total"
+      "type": "geomap"
     },
     {
       "datasource": {
@@ -240,7 +324,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -406,7 +490,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -499,7 +583,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.0",
       "targets": [
         {
           "datasource": {
@@ -603,6 +687,10 @@
         "type": "query"
       }
     ]
+  },
+  "time": {
+    "from": "now",
+    "to": "now"
   },
   "timepicker": {
     "hidden": true
