@@ -24,5 +24,6 @@ ENV GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH="/var/lib/grafana-static/dashboard
 
 COPY ./config/grafana/provisioning/ /etc/grafana/provisioning/
 COPY ./dashboards/ /var/lib/grafana-static/dashboards/
+COPY ./public/img/ /usr/share/grafana/public/img/
 
 EXPOSE 3000
