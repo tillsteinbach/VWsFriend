@@ -1,8 +1,22 @@
-CHANGELOG.md# Changelog
+# Changelog
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
+
+## [0.19.2] - 2022-06-28
+### Added
+- Added ChargingState: DISCHARGING and ChargeMode: HOME_STORAGE_CHARGING, IMMEDIATE_DISCHARGING
+- Added plug led and externalPower state to live dashbaord
+
+### Fixed
+- Fix (again) continuation of charging session with auto unlock
+- Removed unnecessary save dialog in grafana
+
+### Changed
+- Maps are using build in dashboard panels again
+- Updated API to 0.44.0
+- Updated Grafana to 9.0.1
 
 ## [0.19.1] - 2022-06-23
 ### Added
@@ -441,7 +455,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.19.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.19.2...HEAD
+[0.19.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.2
 [0.19.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.1
 [0.19.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.0
 [0.18.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.18.2
