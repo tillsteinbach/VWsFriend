@@ -2272,6 +2272,11 @@
                   "color": "#3d3d3d",
                   "index": 15,
                   "text": "unsupported"
+                },
+                "DISCHARGING": {
+                  "color": "yellow",
+                  "index": 16,
+                  "text": "discharging"
                 }
               },
               "type": "value"
