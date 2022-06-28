@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Maps are using build in dashboard panels again
-- Updated API to 0.44.0
+- Updated API to 0.44.1
 - Updated Grafana to 9.0.1
 
 ## [0.19.1] - 2022-06-23
