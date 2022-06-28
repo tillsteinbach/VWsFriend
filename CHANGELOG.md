@@ -12,10 +12,11 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fix (again) continuation of charging session with auto unlock
 - Removed unnecessary save dialog in grafana
+- Fixed error with warning light icon
 
 ### Changed
 - Maps are using build in dashboard panels again
-- Updated API to 0.44.1
+- Updated API to 0.44.2
 - Updated Grafana to 9.0.1
 
 ## [0.19.1] - 2022-06-23
