@@ -1,0 +1,105 @@
+{
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=access,automation,userCapabilities,charging,climatisation,fuelStatus,vehicleLights,lvBattery,readiness,vehicleHealthInspection,vehicleHealthWarnings,oilLevel,measurements,batterySupport": [
+        {
+            "userCapabilities": {
+                "capabilitiesStatus": {
+                    "value": [{
+                        "id": "parkingPosition",
+                        "expirationDate": "2051-05-12T11:53:00Z",
+                        "userDisablingAllowed": false
+                    }]
+                }
+            },
+            "charging": {
+                "batteryStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(+1800)",
+                        "currentSOC_pct": 99,
+                        "cruisingRangeElectric_km": 50
+                    }
+                },
+                "chargingStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(+1800)",
+                        "remainingChargingTimeToComplete_min": 15,
+                        "chargingState": "off",
+                        "chargeMode": "invalid",
+                        "chargePower_kW": 0
+                    }
+                },
+                "chargingSettings": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(-5)",
+                        "maxChargeCurrentAC": "maximum"
+                    }
+                },
+                "plugStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(+1800)",
+                        "plugConnectionState": "disconnected",
+                        "plugLockState": "unlocked"
+                    }
+                }
+            },
+            "fuelStatus": {
+                "rangeStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(-5)",
+                        "carType": "hybrid",
+                        "primaryEngine": {
+                            "type": "gasoline",
+                            "currentSOC_pct": 100,
+                            "remainingRange_km": 500
+                        },
+                        "secondaryEngine": {
+                            "type": "electric",
+                            "currentSOC_pct": 71,
+                            "remainingRange_km": 30
+                        },
+                        "totalRange_km": 530
+                    }
+                }
+            },
+            "measurements": {
+                "odometerStatus": {
+                    "value": {
+                        "carCapturedTimestamp": "demodate(-300)",
+                        "odometer": 4166
+                    }
+                }
+            }
+        },
+        "now(+0)"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
+        {
+            "data": {
+                "lat": 53.64895,
+                "lon": 10.16238,
+                "carCapturedTimestamp": "demodate(-300)"
+            }
+        },
+        "now(+0)"
+    ],
+    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+        {
+            "data": [
+                {
+                    "vin": "AAABBBCCCDDD12345",
+                    "role": "PRIMARY_USER",
+                    "enrollmentStatus": "COMPLETED",
+                    "model": "Demo Test Vehicle",
+                    "nickname": "Test Vehicle",
+                    "capabilities": [{
+                        "id": "parkingPosition",
+                        "expirationDate": "2051-05-12T11:53:00Z",
+                        "userDisablingAllowed": false
+                    }],
+                    "images": {},
+                    "coUsers": []
+                }
+            ]
+        },
+        "now(+0)"
+    ]
+}
