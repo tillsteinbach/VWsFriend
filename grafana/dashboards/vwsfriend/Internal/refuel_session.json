@@ -131,7 +131,7 @@
         "basemap": {
           "config": {},
           "name": "Layer 0",
-          "type": "default"
+          "type": "osm-standard"
         },
         "controls": {
           "mouseWheelZoom": true,
@@ -156,7 +156,7 @@
                   "mode": "mod"
                 },
                 "size": {
-                  "fixed": 5,
+                  "fixed": 8,
                   "max": 15,
                   "min": 2
                 },
@@ -197,7 +197,7 @@
                   "mode": "mod"
                 },
                 "size": {
-                  "fixed": 8,
+                  "fixed": 10,
                   "max": 15,
                   "min": 2
                 },
