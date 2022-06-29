@@ -5,6 +5,7 @@ ENV GF_SECURITY_ADMIN_PASSWORD=admin
 ENV GF_USERS_ALLOW_SIGN_UP=false
 ENV GF_INSTALL_PLUGINS="marcusolsson-json-datasource,pr0ps-trackmap-panel,natel-plotly-panel,gapit-htmlgraphics-panel"
 ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=panodata-map-panel
+ENV GF_PLUGINS_ENABLE_ALPHA=true
 ENV GF_SERVER_ENABLE_GZIP=true
 ENV DB_USER=admin
 ENV DB_PASSWORD=secret
