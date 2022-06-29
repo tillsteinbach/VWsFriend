@@ -1056,7 +1056,7 @@
         "basemap": {
           "config": {},
           "name": "Layer 0",
-          "type": "default"
+          "type": "osm-standard"
         },
         "controls": {
           "mouseWheelZoom": true,
@@ -1081,7 +1081,7 @@
                   "mode": "mod"
                 },
                 "size": {
-                  "fixed": 7,
+                  "fixed": 10,
                   "max": 15,
                   "min": 2
                 },
@@ -1117,7 +1117,7 @@
               "showLegend": true,
               "style": {
                 "color": {
-                  "fixed": "#ffffff"
+                  "fixed": "#318e24"
                 },
                 "opacity": 1,
                 "rotation": {
