@@ -74,6 +74,10 @@ In macvlan mode you reach VWsFriends UI on the configured IP at port 4000
 
 Macvlan mode is not supported on macOS! See also [Known Issues](#known-issues).
 
+## VWsFriend with MQTT support (Experimental)
+VWsFriend now includes [WeConnect-MQTT](https://github.com/tillsteinbach/WeConnect-mqtt). This enables to use the data from the servers at the same time inside VWsFriend and with MQTT and thus saves additional requests and load on the server.
+If you want to know how to configure MQTT, see here: [WeConnect-MQTT Readme](https://github.com/tillsteinbach/WeConnect-mqtt/blob/main/README.md)
+
 ## Automated Updates
 As there are continuously updates to the WeConnect API VWsFriend my stop unexpectedly working. I try to push updates in this case as fast as possible. You can configure to get these updates automatically by adding watchtower to your docker-compose.yml file:
 ```bash

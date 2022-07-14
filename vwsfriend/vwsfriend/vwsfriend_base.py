@@ -27,6 +27,16 @@ from vwsfriend.homekit.custom_characteristics import CUSTOM_CHARACTERISTICS
 
 from .__version import __version__
 
+SUPPORT_MQTT = False
+try:
+    from dateutil import tz
+    import ssl
+
+    from weconnect_mqtt. weconnect_mqtt_base import PictureFormat, WeConnectMQTTClient  # type: ignore
+    from weconnect_mqtt.__version import __version__ as __weconnect_mqtt_version__
+    SUPPORT_MQTT = True
+except ImportError:
+    pass
 
 LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 DEFAULT_LOG_LEVEL = "ERROR"
@@ -64,8 +74,12 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     parser = argparse.ArgumentParser(
         prog='vwsfriend',
         description='TBD')
-    parser.add_argument('--version', action='version',
-                        version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__})')
+    if SUPPORT_MQTT:
+        parser.add_argument('--version', action='version',
+                            version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__}, WeConnect-mqtt{__weconnect_mqtt_version__})')
+    else:
+        parser.add_argument('--version', action='version',
+                            version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__})')
     parser.add_argument('-u', '--username', help='Username of VWsFriend UI', required=False)
     parser.add_argument('-p', '--password', help='Password of VWsFriend UI', required=False)
     parser.add_argument('--host', help='Host of VWsFriend UI', type=str, required=False, default='0.0.0.0')  # nosec
@@ -121,6 +135,57 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     loggingMailGroup.add_argument('--logging-mail-notls', dest='loggingMailnotls', help='Mail do not use TLS', required=False, action='store_true')
     loggingMailGroup.add_argument('--logging-mail-testmail', dest='loggingMailTestmail', help='Try to send Testmail at startup', required=False,
                                   action='store_true')
+
+    if SUPPORT_MQTT:
+        mqttGroup = parser.add_argument_group('MQTT', description='MQTT Support in VWsFriend is EXPERIMENTAL,'
+                                              ' if you need stable MQTT support please see https://github.com/tillsteinbach/WeConnect-mqtt')
+        mqttGroup.add_argument('--with-mqtt', dest='withMqtt', help='Provide MQTT functionality', action='store_true')
+
+        mqttGroup.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=True)
+        mqttGroup.add_argument('--mqttport', type=NumberRangeArgument(1, 65535), help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
+                               required=False, default=None)
+        mqttGroup.add_argument('--mqttclientid', required=False, default=None, help='Id of the client. Default is a random id')
+        mqttGroup.add_argument('--prefix', help='MQTT topic prefix (default is weconnect/0)', type=str, required=False, default='weconnect/0')
+        mqttGroup.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60, help='Time between keep-alive messages')
+        mqttGroup.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername', help='Username for MQTT broker', required=False)
+        mqttGroup.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword', help='Password for MQTT broker', required=False)
+        mqttGroup.add_argument('--transport', required=False, default='tcp', choices=["tcp", 'websockets'],
+                               help='EXPERIMENTAL support for websockets transport')
+        mqttGroup.add_argument('-s', '--use-tls', action='store_true', help='EXPERIMENTAL')
+        mqttGroup.add_argument('--insecure', action='store_true', help='EXPERIMENTAL')
+        mqttGroup.add_argument('--cacerts', required=False, default=None, help='EXPERIMENTAL path to the Certificate Authority'
+                               ' certificate files that are to be treated as trusted by this client')
+        mqttGroup.add_argument('--cert', required=False, default=None, help='EXPERIMENTAL PEM encoded client certificate')
+        mqttGroup.add_argument('--key', required=False, default=None, help='EXPERIMENTAL PEM encoded client private key')
+        mqttGroup.add_argument('--tls-version', required=False, default=None, choices=['tlsv1.2', 'tlsv1.1', 'tlsv1'],
+                               help='EXPERIMENTAL TLS protocol version')
+        mqttGroup.add_argument('--ignore-for', dest='ignore', help='Ignore messages for first IGNORE seconds after subscribe to aviod '
+                               'retained messages from the broker to make changes to the car (default is 5s) if you don\'t want this behavious set to 0',
+                               type=int, required=False, default=5)
+        mqttGroup.add_argument('--republish-on-update', dest='republishOnUpdate', action='store_true',
+                               help='Republish all topics on every update, not just when the value changes.')
+        mqttGroup.add_argument('--list-topics', dest='listTopics', help='List new topics when created the first time', action='store_true')
+        mqttGroup.add_argument('--topic-filter-regex', dest='topicFilterRegexString', type=str,
+                               default='<PREFIX>/vehicles/[0-9A-Z]+/domains/[a-zA-Z]+/[a-zA-Z]+/request/.*',
+                               help='Filter topics by regex. Default is: "<PREFIX>/vehicles/[0-9A-Z]+/domains/[a-zA-Z]+/[a-zA-Z]+/request/.*"')
+
+        mqttGroup.add_argument('--convert-times', dest='convertTimes',
+                               help='Convert all times from UTC to timezone, e.g. --convert-times \'Europe/Berlin\', leave empty to use system timezone',
+                               nargs='?', const='', default=None, type=str)
+        mqttGroup.add_argument('--timeformat', dest='timeFormat',
+                               help='Convert times using the timeformat provided default is ISO format, leave argument empty to use system default',
+                               nargs='?', const='', default=None, type=str)
+        mqttGroup.add_argument('--locale',
+                               help='Use specified locale, leave argument empty to use system default', default='', type=str)
+        mqttGroup.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
+        mqttGroup.add_argument('--picture-format', dest='pictureFormat', help='Format of the picture topics', default=PictureFormat.TXT, required=False,
+                               type=PictureFormat, choices=list(PictureFormat))
+        mqttGroup.add_argument('--with-raw-json-topic', dest='withRawJsonTopic', help='Adds topic <PREFIX>/rawjson with all information in one json string.'
+                               ' Topic is updated on change only', action='store_true')
+        mqttGroup.add_argument('-l', '--chargingLocation', nargs=2, metavar=('latitude', 'longitude'), type=float,
+                                help='If set charging locations will be added to the result around the given coordinates')
+        mqttGroup.add_argument('--chargingLocationRadius', type=NumberRangeArgument(0, 100000),
+                                help='Radius in meters around the chargingLocation to search for chargers')
 
     args = parser.parse_args()
 
@@ -215,7 +280,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         tokenfile = args.tokenfile
 
     weConnect = None
-    try:
+    try:  # pylint: disable=too-many-nested-blocks
         weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400)
 
@@ -241,6 +306,116 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
 
             # Enable status tracking:
             weConnect.enableTracker()
+
+        if SUPPORT_MQTT and args.withMqtt:
+            usetls = args.use_tls
+            if args.cacerts:
+                usetls = True
+
+            if args.mqttport is None:
+                if usetls:
+                    args.mqttport = 8883
+                else:
+                    args.mqttport = 1883
+
+            mqttusername = None
+            mqttpassword = None
+            if args.mqttusername is not None:
+                mqttusername = args.mqttusername
+            if args.mqttpassword is not None:
+                mqttpassword = args.mqttpassword
+
+            if mqttusername is None and mqttpassword is None:
+                if args.netrc is not None:
+                    netRcFilename = args.netrc
+                else:
+                    netRcFilename = defaultNetRc
+                try:
+                    secrets = netrc.netrc(file=args.netrc)
+                    authenticator = secrets.authenticators(args.mqttbroker)
+                    if authenticator is not None:
+                        mqttusername, _, mqttpassword = authenticator
+                except FileNotFoundError:
+                    if args.netrc is not None:
+                        LOG.error('%s netrc-file was not found. Create it or provide at least a username with --username',
+                                  netRcFilename)
+                        sys.exit(1)
+
+            try:
+                topicFilterRegexString = args.topicFilterRegexString
+                topicFilterRegexString.replace('<PREFIX>', args.prefix)
+                topicFilterRegex = re.compile(args.topicFilterRegexString)
+            except re.error as err:
+                LOG.error('Problem with provided regex %s: %s', topicFilterRegexString, err)
+                sys.exit(1)
+
+            convertTimezone = None
+            if args.convertTimes is not None:
+                if args.convertTimes == '':
+                    convertTimezone = datetime.now().astimezone().tzinfo
+                else:
+                    convertTimezone = tz.gettz(args.convertTimes)
+
+            if args.chargingLocation is not None:
+                latitude, longitude = args.chargingLocation
+                if latitude < -90 or latitude > 90:
+                    LOG.error('latitude must be between -90 and 90')
+                    sys.exit(1)
+                if longitude < -180 or longitude > 180:
+                    LOG.error('longitude must be between -180 and 180')
+                    sys.exit(1)
+                weConnect.latitude = latitude
+                weConnect.longitude = longitude
+                weConnect.searchRadius = args.chargingLocationRadius
+            
+            mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
+                                             prefix=args.prefix, ignore=args.ignore, updatePictures=args.pictures, listNewTopics=args.listTopics,
+                                             republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
+                                             convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic)
+            mqttCLient.enable_logger()
+
+            if usetls:
+                if args.tls_version == "tlsv1.2":
+                    tlsVersion = ssl.PROTOCOL_TLSv1_2
+                elif args.tls_version == "tlsv1.1":
+                    tlsVersion = ssl.PROTOCOL_TLSv1_1
+                elif args.tls_version == "tlsv1":
+                    tlsVersion = ssl.PROTOCOL_TLSv1
+                elif args.tls_version is None:
+                    tlsVersion = None
+                else:
+                    LOG.warning('Unknown TLS version %s - ignoring', args.tls_version)
+                    tlsVersion = None
+
+                if not args.insecure:
+                    certRequired = ssl.CERT_REQUIRED
+                else:
+                    certRequired = ssl.CERT_NONE
+
+                mqttCLient.tls_set(ca_certs=args.cacerts, certfile=args.cert, keyfile=args.key, cert_reqs=certRequired,
+                                   tls_version=tlsVersion)
+                if args.insecure:
+                    mqttCLient.tls_insecure_set(True)
+
+            if mqttusername is not None:
+                mqttCLient.username_pw_set(username=mqttusername, password=mqttpassword)
+
+            mqttCLient.connectWeConnect(weConnect)
+
+            def mqttWorker():
+                while True:
+                    try:
+                        mqttCLient.connect(args.mqttbroker, args.mqttport, args.mqttkeepalive)
+                        break
+                    except ConnectionRefusedError as e:
+                        LOG.error('Could not connect to MQTT-Server: %s, will retry in 10 seconds', e)
+                        time.sleep(10)
+                # blocking run
+                mqttCLient.run()
+                mqttCLient.disconnect()
+
+            mqttThread = threading.Thread(target=mqttWorker)
+            mqttThread.start()
 
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl, configDir=args.configDir, username=username,
                          password=password)

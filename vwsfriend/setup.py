@@ -8,6 +8,7 @@ README = (HERE / "README.md").read_text()
 INSTALL_REQUIRED = (HERE / "requirements.txt").read_text()
 SETUP_REQUIRED = (HERE / "setup_requirements.txt").read_text()
 TEST_REQUIRED = (HERE / "test_requirements.txt").read_text()
+MQTT_EXTRA_REQUIRED = (HERE / "mqtt_extra_requirements.txt").read_text()
 
 setup(
     name='vwsfriend',
@@ -26,6 +27,9 @@ setup(
     },
     license='MIT',
     install_requires=INSTALL_REQUIRED,
+    extras_require={
+        "MQTT": MQTT_EXTRA_REQUIRED,
+    },
     entry_points={
         'console_scripts': [
             'vwsfriend = vwsfriend.vwsfriend_base:main',
