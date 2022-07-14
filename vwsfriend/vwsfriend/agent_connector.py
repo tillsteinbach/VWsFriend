@@ -4,7 +4,7 @@ import subprocess  # nosec
 import logging
 
 from sqlalchemy import create_engine, text, inspect
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
 from weconnect.elements import vehicle
@@ -49,7 +49,9 @@ class AgentConnector():
                     os.remove(configDir + '/provisioning/database.vwsfrienddbbackup')
 
             engine = create_engine(dbUrl, pool_pre_ping=True)
-            self.session = Session(engine)
+            sessionFactory = sessionmaker(bind=engine)
+            Session = scoped_session(sessionFactory)
+            self.session = Session()
 
             while True:
                 try:
