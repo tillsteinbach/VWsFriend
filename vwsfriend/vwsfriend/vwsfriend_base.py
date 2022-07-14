@@ -137,10 +137,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                   action='store_true')
 
     if SUPPORT_MQTT:
-        mqttGroup = parser.add_argument_group('MQTT', description='MQTT Support in VWsFriend is EXPERIMENTAL,'
-                                              ' if you need stable MQTT support please see https://github.com/tillsteinbach/WeConnect-mqtt')
-        mqttGroup.add_argument('--with-mqtt', dest='withMqtt', help='Provide MQTT functionality', action='store_true')
-
+        mqttGroup = parser.add_argument_group('MQTT', description='MQTT support in VWsFriend is EXPERIMENTAL,'
+                                              ' if you need stable MQTT support please see https://github.com/tillsteinbach/WeConnect-mqtt'
+                                              ' --mqttbroker option must be set to enable MQTT')
         mqttGroup.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=False)
         mqttGroup.add_argument('--mqttport', type=NumberRangeArgument(1, 65535), help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
                                required=False, default=None)
@@ -188,9 +187,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                help='Radius in meters around the chargingLocation to search for chargers')
 
     args = parser.parse_args()
-    if SUPPORT_MQTT:
-        if args.withMqtt and args.mqttbroker is None:
-            parser.error("--with-mqtt requires --mqttbroker.")
 
     logLevel = LOG_LEVELS.index(DEFAULT_LOG_LEVEL)
     for adjustment in args.verbose or ():
@@ -310,7 +306,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             # Enable status tracking:
             weConnect.enableTracker()
 
-        if SUPPORT_MQTT and args.withMqtt:
+        if SUPPORT_MQTT and args.mqttbroker:
+            LOG.info('Starting up MQTT')
             usetls = args.use_tls
             if args.cacerts:
                 usetls = True
