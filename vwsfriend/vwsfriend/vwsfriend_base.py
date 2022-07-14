@@ -367,7 +367,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 weConnect.latitude = latitude
                 weConnect.longitude = longitude
                 weConnect.searchRadius = args.chargingLocationRadius
-            
+
             mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                              prefix=args.prefix, ignore=args.ignore, updatePictures=args.pictures, listNewTopics=args.listTopics,
                                              republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
