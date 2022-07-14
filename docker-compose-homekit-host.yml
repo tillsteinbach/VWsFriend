@@ -18,7 +18,7 @@ services:
       - WECONNECT_PASSWORD
       - WECONNECT_INTERVAL
       - DATABASE_URL=postgresql://${DB_USER-admin}:${DB_PASSWORD-secret}@${DB_HOSTNAME-postgresdbbackend}:${DB_PORT-5432}/${DB_NAME-vwsfriend}
-      - ADDITIONAL_PARAMETERS=--with-database --with-abrp --with-homekit -vv
+      - ADDITIONAL_PARAMETERS=--with-database --with-abrp --with-homekit ${ADDITIONAL_PARAMETERS}
     depends_on:
       postgresdb:
         condition: service_healthy
