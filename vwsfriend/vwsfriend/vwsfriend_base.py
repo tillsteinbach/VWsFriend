@@ -183,9 +183,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         mqttGroup.add_argument('--with-raw-json-topic', dest='withRawJsonTopic', help='Adds topic <PREFIX>/rawjson with all information in one json string.'
                                ' Topic is updated on change only', action='store_true')
         mqttGroup.add_argument('-l', '--chargingLocation', nargs=2, metavar=('latitude', 'longitude'), type=float,
-                                help='If set charging locations will be added to the result around the given coordinates')
+                               help='If set charging locations will be added to the result around the given coordinates')
         mqttGroup.add_argument('--chargingLocationRadius', type=NumberRangeArgument(0, 100000),
-                                help='Radius in meters around the chargingLocation to search for chargers')
+                               help='Radius in meters around the chargingLocation to search for chargers')
 
     args = parser.parse_args()
 
