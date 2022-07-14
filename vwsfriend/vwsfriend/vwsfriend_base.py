@@ -141,7 +141,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                               ' if you need stable MQTT support please see https://github.com/tillsteinbach/WeConnect-mqtt')
         mqttGroup.add_argument('--with-mqtt', dest='withMqtt', help='Provide MQTT functionality', action='store_true')
 
-        mqttGroup.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=True)
+        mqttGroup.add_argument('--mqttbroker', type=str, help='Address of MQTT Broker to connect to', required=False)
         mqttGroup.add_argument('--mqttport', type=NumberRangeArgument(1, 65535), help='Port of MQTT Broker. Default is 1883 (8883 for TLS)',
                                required=False, default=None)
         mqttGroup.add_argument('--mqttclientid', required=False, default=None, help='Id of the client. Default is a random id')
@@ -188,6 +188,9 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                help='Radius in meters around the chargingLocation to search for chargers')
 
     args = parser.parse_args()
+    if SUPPORT_MQTT:
+        if args.withMqtt and args.mqttbroker is None:
+            parser.error("--with-mqtt requires --mqttbroker.")
 
     logLevel = LOG_LEVELS.index(DEFAULT_LOG_LEVEL)
     for adjustment in args.verbose or ():
