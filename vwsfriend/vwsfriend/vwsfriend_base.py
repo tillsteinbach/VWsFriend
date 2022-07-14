@@ -371,7 +371,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
                                              prefix=args.prefix, ignore=args.ignore, updatePictures=args.pictures, listNewTopics=args.listTopics,
                                              republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
-                                             convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic)
+                                             convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic,
+                                             passive=True)
             mqttCLient.enable_logger()
 
             if usetls:
