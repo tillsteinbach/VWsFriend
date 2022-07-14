@@ -401,7 +401,21 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 mqttCLient.username_pw_set(username=mqttusername, password=mqttpassword)
 
             mqttCLient.connectWeConnect(weConnect)
-            mqttCLient.loop_start()
+
+            def mqttWorker():
+                while True:
+                    try:
+                        mqttCLient.connect(args.mqttbroker, args.mqttport, args.mqttkeepalive)
+                        break
+                    except ConnectionRefusedError as e:
+                        LOG.error('Could not connect to MQTT-Server: %s, will retry in 10 seconds', e)
+                        time.sleep(10)
+                # blocking run
+                mqttCLient.loop_forever(retry_first_connection=True)
+                mqttCLient.disconnect()
+
+            mqttThread = threading.Thread(target=mqttWorker)
+            mqttThread.start()
 
         ui = VWsFriendUI(weConnect=weConnect, connector=connector, homekitDriver=driver, dbUrl=args.dbUrl, configDir=args.configDir, username=username,
                          password=password)
@@ -463,7 +477,5 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         LOG.critical('There was a problem when communicating with WeConnect.'
                      ' If this problem persists please open a bug report: %s', e)
     finally:
-        if SUPPORT_MQTT and args.mqttbroker:
-            mqttCLient.loop_stop()
         if weConnect is not None:
             weConnect.disconnect()
