@@ -2,7 +2,7 @@
 Volkswagen WeConnect© API visualization and control (HomeKit) inspired by TeslaMate https://docs.teslamate.org/
 
 ## What it looks like
-<img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/id3.png" width="100%">
+<img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/teaser.gif" width="100%">
 
 ## Requirements
 You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/)
