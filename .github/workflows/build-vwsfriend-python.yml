@@ -21,6 +21,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9]
+        with-mqtt: [true, false]
 
     steps:
     - uses: actions/checkout@v3
@@ -35,6 +36,11 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f setup_requirements.txt ]; then pip install -r setup_requirements.txt; fi
         if [ -f test_requirements.txt ]; then pip install -r test_requirements.txt; fi
+        if [ -f mqtt_extra_requirements.txt ]; then pip install -r mqtt_extra_requirements.txt; fi
+    - name: Install mqtt dependencies
+      working-directory: vwsfriend
+      if: ${{ matrix.with-mqtt }} == true
+      run: |
         if [ -f mqtt_extra_requirements.txt ]; then pip install -r mqtt_extra_requirements.txt; fi
     - name: Lint
       working-directory: vwsfriend
