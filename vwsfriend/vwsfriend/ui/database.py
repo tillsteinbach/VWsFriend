@@ -468,10 +468,10 @@ def chargingSessionEdit():  # noqa: C901
             choices = [(None, 'unknown')]
             for charger in chargers:
                 label = f'{charger.name.value}'
-                if charger.num_spots.enabled and charger.num_spots.value is not None and charger.num_spots.value > 0:
-                    label += f', {charger.num_spots.value} spots'
-                if charger.max_power.enabled and charger.max_power.value is not None and charger.max_power.value > 0:
-                    label += f', max. {charger.num_spots.value} kW'
+                if charger.chargingSpots.enabled and len(charger.chargingSpots) > 0:
+                    label += f', {len(charger.chargingSpots)} spots'
+                if charger.chargingPower.enabled and charger.chargingPower.value is not None and charger.chargingPower.value > 0:
+                    label += f', max. {charger.chargingPower.value} kW'
                 label += f' ({round(charger.distance.value)} m away)'
                 choices.append((charger.id.value, label))
 
