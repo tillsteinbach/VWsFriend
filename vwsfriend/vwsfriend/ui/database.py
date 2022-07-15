@@ -467,7 +467,12 @@ def chargingSessionEdit():  # noqa: C901
                               key=lambda station: station.distance.value)
             choices = [(None, 'unknown')]
             for charger in chargers:
-                label = f'{charger.name.value} ({round(charger.distance.value)} m away)'
+                label = f'{charger.name.value}'
+                if charger.num_spots.enabled and charger.num_spots.value is not None and charger.num_spots.value > 0:
+                    label += f', {charger.num_spots.value} spots'
+                if charger.max_power.enabled and charger.max_power.value is not None and charger.max_power.value > 0:
+                    label += f', max. {charger.num_spots.value} kW'
+                label += f' ({round(charger.distance.value)} m away)'
                 choices.append((charger.id.value, label))
 
             customChargers = current_app.db.session.query(Charger).filter(Charger.custom).all()
