@@ -90,6 +90,9 @@ class TripAgent():
                         plugStatus.plugConnectionState.addObserver(self.__onPlugConnectionStateChanged, AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                    onUpdateComplete=True)
 
+            if self.mode == TripAgent.Mode.NONE:
+                LOG.info(f'Vehicle {self.vehicle.vin} currently cannot record trips. This may change in the future.')
+
     def __onStatusesChange(self, element, flags):
         if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
             # only add if not in list of observers
@@ -279,25 +282,28 @@ class TripAgent():
 
                 LOG.info(f'Vehicle {self.vehicle.vin} ended a trip (car was connected to charger)')
         elif element.value == PlugStatus.PlugConnectionState.DISCONNECTED:
-            if self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].connectionState.isActive.value:
-                if self.trip is None:
-                    if plugStatus.carCapturedTimestamp.enabled:
-                        time = plugStatus.carCapturedTimestamp.value
-                    else:
-                        time = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0) - timedelta(seconds=self.updateInterval)
-                    self.trip = Trip(self.vehicle, time, None, None, None, None)
-                    if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
-                            and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
-                        odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
-                        if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
-                            self.trip.start_mileage_km = odometerMeasurement.odometer.value
-                    try:
-                        with self.session.begin_nested():
-                            self.session.add(self.trip)
-                        self.session.commit()
-                    except IntegrityError as err:
-                        LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                    LOG.info(f'Vehicle {self.vehicle.vin} started a trip (car was disconnected from charger)')
+            if self.vehicle.weConnectVehicle.statusExists('readiness', 'readinessStatus'):
+                readinessStatus = self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus']
+                if readinessStatus.connectionState is not None and readinessStatus.connectionState.enabled \
+                        and readinessStatus.connectionState.isActive.enabled and readinessStatus.connectionState.isActive.value is not None:
+                    if self.trip is None:
+                        if plugStatus.carCapturedTimestamp.enabled:
+                            time = plugStatus.carCapturedTimestamp.value
+                        else:
+                            time = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0) - timedelta(seconds=self.updateInterval)
+                        self.trip = Trip(self.vehicle, time, None, None, None, None)
+                        if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+                                and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
+                            odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
+                            if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
+                                self.trip.start_mileage_km = odometerMeasurement.odometer.value
+                        try:
+                            with self.session.begin_nested():
+                                self.session.add(self.trip)
+                            self.session.commit()
+                        except IntegrityError as err:
+                            LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                        LOG.info(f'Vehicle {self.vehicle.vin} started a trip (car was disconnected from charger)')
 
     def commit(self):
         pass
