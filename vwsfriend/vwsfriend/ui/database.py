@@ -106,7 +106,7 @@ class ChargingSessionEditForm(FlaskForm):
                                    render_kw={"step": "1"})
     locked = DateTimeLocalField('Plug Locked Date and Time (UTC)', validators=[Optional()], format=['%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M'],
                                 render_kw={"step": "1"})
-    started = DateTimeLocalField('Charging Start Date and Time (UTC)', validators=[DataRequired()], format=['%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M'],
+    started = DateTimeLocalField('Charging Start Date and Time (UTC)', validators=[Optional()], format=['%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M'],
                                  render_kw={"step": "1"})
     ended = DateTimeLocalField('Charging End Date and Time (UTC)', validators=[Optional()], format=['%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M'],
                                render_kw={"step": "1"})
