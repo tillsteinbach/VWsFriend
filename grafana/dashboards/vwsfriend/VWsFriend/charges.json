@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1654773957210,
+  "iteration": 1658692777221,
   "links": [
     {
       "asDropdown": false,
@@ -173,7 +173,8 @@
                 "value": 95
               },
               {
-                "id": "decimals"
+                "id": "decimals",
+                "value": 1
               }
             ]
           },
@@ -235,7 +236,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 90
+                "value": 75
               }
             ]
           },
@@ -319,7 +320,7 @@
               },
               {
                 "id": "decimals",
-                "value": 2
+                "value": 1
               }
             ]
           },
@@ -435,7 +436,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -446,7 +447,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"start_date\" AS \"Date\",\n  \"Location\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  \"Avg. Power\",\n  \"AC/DC\",\n  \"% Start\",\n  \"% End\",\n  \"Amount\",\n  \"✓\",\n  \"Cost\",\n  \"Odometer\",\n  (\"Amount\"\n    - (\"endSOC_pct\" - lag(\"endSOC_pct\") over (order by start_date)) * (\"vehicle_capacity\" / 100::NUMERIC)) / NULLIF(((\"Odometer\" - lag(\"Odometer\") over (order by start_date)) / 100::NUMERIC), 0) AS \"Consumption\",\n  \"Edit\",\n  \"id\",\n  (round(extract(epoch FROM start_date) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM end_date) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM\n  (SELECT DISTINCT\n    COALESCE (started, COALESCE (locked, connected)) AS start_date,\n    COALESCE (ended, COALESCE (unlocked, disconnected)) AS end_date,\n    COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n    EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n    \"maximumChargePower_kW\",\n    (COALESCE(\"realCharged_kWh\",(\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC))) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n    acdc AS \"AC/DC\",\n    \"startSOC_pct\" AS \"% Start\",\n    \"endSOC_pct\" AS \"% End\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount\",\n    CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n         ELSE NULL\n    END AS \"✓\",\n    \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n    \"mileage_km\" AS \"Odometer\",\n    '⚙' AS \"Edit\",\n    id,\n    \"endSOC_pct\",\n    (CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END) AS \"vehicle_capacity\"\n  FROM charging_sessions\n  LEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}\n ) AS result\nORDER BY 1 DESC",
+          "rawSql": "SELECT\n  \"start_date\" AS \"Date\",\n  \"Location\",\n  \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  \"Avg. Power\",\n  \"AC/DC\",\n  \"% Start\",\n  \"% End\",\n  \"Amount\",\n  \"✓\",\n  \"Cost\",\n  \"Odometer\",\n  (\"Amount\"\n    - (\"endSOC_pct\" - lag(\"endSOC_pct\") over (order by start_date)) * (\"vehicle_capacity\" / 100::NUMERIC)) / NULLIF(((\"Odometer\" - lag(\"Odometer\") over (order by start_date)) / 100::NUMERIC), 0) AS \"Consumption\",\n  \"Edit\",\n  \"id\",\n  (round(extract(epoch FROM start_date) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM end_date) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM\n  (SELECT DISTINCT\n    COALESCE (started, COALESCE (locked, connected)) AS start_date,\n    COALESCE (ended, COALESCE (unlocked, disconnected)) AS end_date,\n    (ended - started) AS duration,\n    COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n    EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n    \"maximumChargePower_kW\",\n    (COALESCE(\"realCharged_kWh\",(\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC))) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n    acdc AS \"AC/DC\",\n    \"startSOC_pct\" AS \"% Start\",\n    \"endSOC_pct\" AS \"% End\",\n    COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n           ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)) AS \"Amount\",\n    CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n         ELSE NULL\n    END AS \"✓\",\n    \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n    \"mileage_km\" AS \"Odometer\",\n    '⚙' AS \"Edit\",\n    id,\n    \"endSOC_pct\",\n    (CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END) AS \"vehicle_capacity\"\n  FROM charging_sessions\n  LEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  LEFT JOIN charging_tag ON charging_sessions.id = charging_tag.charging_sessions_id\n  WHERE\n    ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n    charging_sessions.vehicle_vin = '$VIN' ${tag_sql:raw}\n ) AS result\nORDER BY 1 DESC",
           "refId": "A",
           "select": [
             [
@@ -554,7 +555,7 @@
         "frameIndex": 1,
         "showHeader": true
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -672,7 +673,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
