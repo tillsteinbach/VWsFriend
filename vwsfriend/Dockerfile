@@ -6,7 +6,8 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
 ARG VERSION
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
+RUN apt-get update && apt-get install --no-install-recommends software-properties-common -y && add-apt-repository ppa:deadsnakes/ppa -y && apt-get update && \
+    apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
     apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev rustc cargo libjpeg-dev zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -31,7 +32,8 @@ ENV WECONNECT_INTERVAL=300
 ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3-venv wget && \
+RUN apt-get update && apt-get install --no-install-recommends software-properties-common -y && add-apt-repository ppa:deadsnakes/ppa -y && apt-get update && \
+    apt-get install --no-install-recommends -y python3.9 python3-venv wget && \
     apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
