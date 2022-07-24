@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:experimental
 # Here is the build image
-FROM ubuntu:21.10 as builder
+FROM ubuntu:22.04 as builder
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
@@ -20,7 +20,7 @@ RUN pip3 install --no-cache-dir wheel
 RUN pip3 install --no-cache-dir vwsfriend[MQTT]==${VERSION}
 
 
-FROM ubuntu:21.10 AS runner-image
+FROM ubuntu:22.04 AS runner-image
 
 ENV VWSFRIEND_USERNAME=
 ENV VWSFRIEND_PASSWORD=
