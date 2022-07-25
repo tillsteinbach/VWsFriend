@@ -76,7 +76,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         description='TBD')
     if SUPPORT_MQTT:
         parser.add_argument('--version', action='version',
-                            version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__}, WeConnect-mqtt{__weconnect_mqtt_version__})')
+                            version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__}, WeConnect-mqtt {__weconnect_mqtt_version__})')
     else:
         parser.add_argument('--version', action='version',
                             version=f'%(prog)s {__version__} (using WeConnect-python {__weconnect_version__})')
@@ -214,6 +214,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             smtpHandler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-5s %(message)s"))
             LOG.addHandler(smtpHandler)
             if args.loggingMailTestmail:
+                if SUPPORT_MQTT:
+                    msg = f'vwsfriend {__version__} (using WeConnect-python {__weconnect_version__}, WeConnect-mqtt {__weconnect_mqtt_version__})'
+                else:
+                    msg = f'vwsfriend {__version__} (using WeConnect-python {__weconnect_version__})'
                 msg = f'vwsfriend {__version__} (using WeConnect-python {__weconnect_version__})'
                 smtpHandler.emit(logging.LogRecord('VWsFriend', logging.INFO, pathname=None, lineno=None, msg=msg, args=None, exc_info=None))
             smtpHandler.setLevel(logging.ERROR)
@@ -221,7 +225,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             LOG.error('You need to provide all --logging-mail options to make mail work')
             sys.exit(1)
 
-    LOG.info('vwsfriend %s (using WeConnect-python %s)', __version__, __weconnect_version__)
+    if SUPPORT_MQTT:
+        LOG.info('vwsfriend %s (using WeConnect-python %s, WeConnect-mqtt %s)', __version__, __weconnect_version__, __weconnect_mqtt_version__)
+    else:
+        LOG.info('vwsfriend %s (using WeConnect-python %s)', __version__, __weconnect_version__)
 
     username = None
     password = None
