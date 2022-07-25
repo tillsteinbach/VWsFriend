@@ -218,7 +218,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                     msg = f'vwsfriend {__version__} (using WeConnect-python {__weconnect_version__}, WeConnect-mqtt {__weconnect_mqtt_version__})'
                 else:
                     msg = f'vwsfriend {__version__} (using WeConnect-python {__weconnect_version__})'
-                msg = f'vwsfriend {__version__} (using WeConnect-python {__weconnect_version__})'
                 smtpHandler.emit(logging.LogRecord('VWsFriend', logging.INFO, pathname=None, lineno=None, msg=msg, args=None, exc_info=None))
             smtpHandler.setLevel(logging.ERROR)
         else:
