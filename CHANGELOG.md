@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 - No unreleased changes so far
 
 ## [0.20.0] - in testing
+### Added
+- Weconnect-mqtt is now included in VWsFriend
+- New icons on maps
+
+### Fixed
+- Trip recording fixed
+- Make start date optional in charging session edit form
+
+### Changed
+- Updated API to 0.45.1
+- Updated Grafana to 9.0.4
+- Ubuntu updated from 21.10 to 22.04
+- Python from 3.9 to 3.10
+- ADDITIONAL_PARAMETERS can now be chaged from .env file
+- Line interpolation changed to step for a lot of plots
+- Tooltip-Mode changed from single to all
 
 ## [0.19.2] - 2022-06-28
 ### Added
