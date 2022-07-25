@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
-## [0.20.0] - in testing
+## [0.20.0] - 2022-07-25
 ### Added
 - Weconnect-mqtt is now included in VWsFriend
 - New icons on maps
@@ -21,6 +21,9 @@ All notable changes to this project will be documented in this file.
 - ADDITIONAL_PARAMETERS can now be chaged from .env file
 - Line interpolation changed to step for a lot of plots
 - Tooltip-Mode changed from single to all
+
+### Thank you!
+Special thanks to user @thgau for sponsoring this release!
 
 ## [0.19.2] - 2022-06-28
 ### Added
