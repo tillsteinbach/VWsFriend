@@ -25,7 +25,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1658692777221,
   "links": [
     {
       "asDropdown": false,
@@ -237,6 +236,10 @@
               {
                 "id": "custom.width",
                 "value": 75
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
               }
             ]
           },
@@ -269,6 +272,10 @@
               {
                 "id": "custom.filterable",
                 "value": true
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
               }
             ]
           },
@@ -300,7 +307,7 @@
               },
               {
                 "id": "decimals",
-                "value": 2
+                "value": 1
               }
             ]
           },
@@ -436,7 +443,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.0.2",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -555,7 +562,7 @@
         "frameIndex": 1,
         "showHeader": true
       },
-      "pluginVersion": "9.0.2",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -673,7 +680,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.0.2",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
