@@ -24,7 +24,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654775432637,
   "links": [
     {
       "asDropdown": false,
@@ -90,7 +89,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "stepAfter",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -359,7 +358,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -556,7 +555,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -656,7 +655,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
