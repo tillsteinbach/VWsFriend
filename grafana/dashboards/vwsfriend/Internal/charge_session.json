@@ -34,7 +34,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1656077962186,
   "links": [
     {
       "asDropdown": false,
@@ -102,7 +101,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "stepAfter",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -329,7 +328,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -585,6 +584,10 @@
               {
                 "id": "unit",
                 "value": "kwatt"
+              },
+              {
+                "id": "decimals",
+                "value": 1
               }
             ]
           },
@@ -609,6 +612,10 @@
               {
                 "id": "unit",
                 "value": "kwatt"
+              },
+              {
+                "id": "decimals",
+                "value": 1
               }
             ]
           },
@@ -633,6 +640,10 @@
               {
                 "id": "unit",
                 "value": "kwatth"
+              },
+              {
+                "id": "decimals",
+                "value": 1
               }
             ]
           },
@@ -686,7 +697,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -956,7 +967,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -1166,7 +1177,7 @@
           "zoom": 18
         }
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
@@ -1259,7 +1270,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "datasource": {
