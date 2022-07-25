@@ -37,7 +37,7 @@ ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
 
 RUN apt-get update && apt-get install --no-install-recommends -y python3.10 python3.10-venv wget && \
-    apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g postgresql-client-13 && \
+    apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/venv /opt/venv
