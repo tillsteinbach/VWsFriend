@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y python3.10 pyth
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
-RUN python3.9 -m venv /opt/venv
+RUN python3.10 -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip3 install --no-cache-dir wheel
