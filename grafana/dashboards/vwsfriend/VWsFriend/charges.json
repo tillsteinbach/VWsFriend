@@ -232,7 +232,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "dtdhms"
+                "value": "dthms"
               },
               {
                 "id": "custom.width",
