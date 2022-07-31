@@ -59,7 +59,7 @@ def vehicleStatusImg(vin, conversion, badge=False):
 @bp.route('/vehicles/<string:vin>-status-badge.png', defaults={'conversion': None}, methods=['GET'])
 @bp.route('/vehicles/<string:vin>-status-badge.png<string:conversion>', methods=['GET'])
 def vehicleStatusBadgeImg(vin, conversion):
-    return vehicleStatusImg(vin, badge=True)
+    return vehicleStatusImg(vin, conversion, badge=True)
 
 
 @bp.route('/vehicles/<string:vin>-car.png', defaults={'conversion': None}, methods=['GET'])
@@ -97,7 +97,7 @@ def vehicleImg(vin, conversion, badge=False):
 @bp.route('/vehicles/<string:vin>-car-badge.png', defaults={'conversion': None}, methods=['GET'])
 @bp.route('/vehicles/<string:vin>-car-badge.png<string:conversion>', methods=['GET'])
 def vehicleImgBadge(vin, conversion):
-    return vehicleImg(vin, badge=True)
+    return vehicleImg(vin, conversion, badge=True)
 
 
 @bp.route('/vehicles/<string:vin>-status_or_car.png', defaults={'conversion': None}, methods=['GET'])
@@ -112,14 +112,14 @@ def vehicleStatusOrImg(vin, conversion, badge=False):
 
     if vehicles[vin].statusExists('access', 'accessStatus') \
             and vehicles[vin].domains['access']['accessStatus'].carCapturedTimestamp.enabled:
-        return vehicleStatusImg(vin, badge)
+        return vehicleStatusImg(vin, conversion, badge)
     return vehicleImg(vin, badge)
 
 
 @bp.route('/vehicles/<string:vin>-status_or_car-badge.png', defaults={'conversion': None}, methods=['GET'])
 @bp.route('/vehicles/<string:vin>-status_or_car-badge.png<string:conversion>', methods=['GET'])
-def vehicleStatusOrImgBadge(vin, conversion, badge=False):
-    return vehicleStatusOrImg(vin, badge=True)
+def vehicleStatusOrImgBadge(vin, conversion):
+    return vehicleStatusOrImg(vin, conversion, badge=True)
 
 
 @bp.route('/json', methods=['GET'])
