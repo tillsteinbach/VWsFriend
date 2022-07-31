@@ -1,4 +1,5 @@
 from io import BytesIO
+from base64 import b64encode
 from flask import Blueprint, Response, render_template, current_app, abort, send_file, request, redirect, url_for
 from flask_login import login_required
 
@@ -23,12 +24,16 @@ def vehicle(vin):
     return render_template('status/vehicle.html', vehicle=vehicles[vin], current_app=current_app)
 
 
-@bp.route('/vehicles/<string:vin>-status.png', methods=['GET'])
-def vehicleStatusImg(vin, badge=False):
+@bp.route('/vehicles/<string:vin>-status.png', defaults={'conversion': None}, methods=['GET'])
+@bp.route('/vehicles/<string:vin>-status.png<string:conversion>', methods=['GET'])
+def vehicleStatusImg(vin, conversion, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
         if 'fallback' in request.args:
-            return redirect(url_for('static', filename=request.args.get('fallback')))
+            if conversion == '.json':
+                pass
+            else:
+                return redirect(url_for('static', filename=request.args.get('fallback')))
         else:
             abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     pictures = vehicles[vin].pictures
@@ -44,16 +49,25 @@ def vehicleStatusImg(vin, badge=False):
         else:
             pictures['status'].value.save(img_io, 'PNG')
         img_io.seek(0)
-    return send_file(img_io, mimetype='image/png')
+    if conversion == '.json':
+        img_ioencoded = BytesIO()
+        img_ioencoded.write(b'data:image/png;base64,')
+        img_ioencoded.write(b64encode(img_io.read()))
+        img_ioencoded.seek(0)
+        return send_file(img_ioencoded, mimetype='application/json')
+    else:
+        return send_file(img_io, mimetype='image/png')
 
 
-@bp.route('/vehicles/<string:vin>-status-badge.png', methods=['GET'])
-def vehicleStatusBadgeImg(vin):
+@bp.route('/vehicles/<string:vin>-status-badge.png', defaults={'conversion': None}, methods=['GET'])
+@bp.route('/vehicles/<string:vin>-status-badge.png<string:conversion>', methods=['GET'])
+def vehicleStatusBadgeImg(vin, conversion):
     return vehicleStatusImg(vin, badge=True)
 
 
-@bp.route('/vehicles/<string:vin>-car.png', methods=['GET'])
-def vehicleImg(vin, badge=False):
+@bp.route('/vehicles/<string:vin>-car.png', defaults={'conversion': None}, methods=['GET'])
+@bp.route('/vehicles/<string:vin>-car.png<string:conversion>', methods=['GET'])
+def vehicleImg(vin, conversion, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
         if 'fallback' in request.args:
@@ -73,16 +87,25 @@ def vehicleImg(vin, badge=False):
         else:
             pictures['car'].value.save(img_io, 'PNG')
         img_io.seek(0)
-    return send_file(img_io, mimetype='image/png')
+        if conversion == '.json':
+            img_ioencoded = BytesIO()
+            img_ioencoded.write(b'data:image/png;base64,')
+            img_ioencoded.write(b64encode(img_io.read()))
+            img_ioencoded.seek(0)
+            return send_file(img_ioencoded, mimetype='application/json')
+        else:
+            return send_file(img_io, mimetype='image/png')
 
 
-@bp.route('/vehicles/<string:vin>-car-badge.png', methods=['GET'])
-def vehicleImgBadge(vin):
+@bp.route('/vehicles/<string:vin>-car-badge.png', defaults={'conversion': None}, methods=['GET'])
+@bp.route('/vehicles/<string:vin>-car-badge.png<string:conversion>', methods=['GET'])
+def vehicleImgBadge(vin, conversion):
     return vehicleImg(vin, badge=True)
 
 
-@bp.route('/vehicles/<string:vin>-status_or_car.png', methods=['GET'])
-def vehicleStatusOrImg(vin, badge=False):
+@bp.route('/vehicles/<string:vin>-status_or_car.png', defaults={'conversion': None}, methods=['GET'])
+@bp.route('/vehicles/<string:vin>-status_or_car.png<string:conversion>', methods=['GET'])
+def vehicleStatusOrImg(vin, conversion, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
         if 'fallback' in request.args:
@@ -96,8 +119,9 @@ def vehicleStatusOrImg(vin, badge=False):
     return vehicleImg(vin, badge)
 
 
-@bp.route('/vehicles/<string:vin>-status_or_car-badge.png', methods=['GET'])
-def vehicleStatusOrImgBadge(vin, badge=False):
+@bp.route('/vehicles/<string:vin>-status_or_car-badge.png', defaults={'conversion': None}, methods=['GET'])
+@bp.route('/vehicles/<string:vin>-status_or_car-badge.png<string:conversion>', methods=['GET'])
+def vehicleStatusOrImgBadge(vin, conversion, badge=False):
     return vehicleStatusOrImg(vin, badge=True)
 
 
