@@ -2,6 +2,7 @@ import logging
 import json
 from requests import Session, codes
 from requests.structures import CaseInsensitiveDict
+from requests.adapters import HTTPAdapter, Retry
 from requests import RequestException
 
 from weconnect.elements.vehicle import Vehicle
@@ -25,6 +26,8 @@ class ABRPAgent():
         self.weConnectVehicle = weConnectVehicle
         self.__session: Session = Session()
         self.__session.headers = HEADER
+        retries = Retry(total=3, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+        self.__session.mount('https://api.iternio.com', HTTPAdapter(max_retries=retries))
         self.__userTokens: list[tuple[str, str]] = []
 
         self.telemetryData: dict = {}
