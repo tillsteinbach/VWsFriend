@@ -48,8 +48,9 @@ def vehicleStatusImg(vin, conversion, badge=False):
         img_io.seek(0)
     if conversion == '.json':
         img_ioencoded = BytesIO()
-        img_ioencoded.write(b'data:image/png;base64,')
+        img_ioencoded.write(b'"data:image/png;base64,')
         img_ioencoded.write(b64encode(img_io.read()))
+        img_ioencoded.write(b'"')
         img_ioencoded.seek(0)
         return send_file(img_ioencoded, mimetype='application/json')
     else:
@@ -86,8 +87,9 @@ def vehicleImg(vin, conversion, badge=False):
         img_io.seek(0)
         if conversion == '.json':
             img_ioencoded = BytesIO()
-            img_ioencoded.write(b'data:image/png;base64,')
+            img_ioencoded.write(b'"data:image/png;base64,')
             img_ioencoded.write(b64encode(img_io.read()))
+            img_ioencoded.write(b'"')
             img_ioencoded.seek(0)
             return send_file(img_ioencoded, mimetype='application/json')
         else:
