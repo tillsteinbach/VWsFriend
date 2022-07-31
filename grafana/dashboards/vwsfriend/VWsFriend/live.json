@@ -117,7 +117,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         }
       ],
       "title": "$VIN",
@@ -191,7 +191,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         }
       ],
       "title": "Last Data From Car",
@@ -344,7 +344,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         }
       ],
       "title": "Parking Position",
@@ -590,7 +590,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         }
       ],
       "title": "Live Status",
@@ -667,7 +667,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         }
       ],
       "title": "Odometer",
@@ -741,7 +741,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         }
       ],
       "title": "Battery",
@@ -819,7 +819,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         },
         {
           "datasource": {
@@ -958,7 +958,7 @@
           "method": "GET",
           "queryParams": "",
           "refId": "A",
-          "urlPath": ""
+          "urlPath": "/status/json"
         }
       ],
       "title": "Remaining Climatization Time",
