@@ -30,10 +30,7 @@ def vehicleStatusImg(vin, conversion, badge=False):
     vehicles = current_app.weConnect.vehicles
     if vin not in vehicles:
         if 'fallback' in request.args:
-            if conversion == '.json':
-                pass
-            else:
-                return redirect(url_for('static', filename=request.args.get('fallback')))
+            return redirect(url_for('static', filename=request.args.get('fallback')))
         else:
             abort(404, f"Vehicle with VIN {vin} doesn't exist.")
     pictures = vehicles[vin].pictures
