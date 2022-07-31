@@ -11,7 +11,7 @@ datasources:
     uid: P36D08C1A0297C737
     type: marcusolsson-json-datasource
     access: proxy
-    url: http://$VWSFRIEND_HOSTNAME:$VWSFRIEND_PORT/status/json
+    url: http://$VWSFRIEND_HOSTNAME:$VWSFRIEND_PORT
     basicAuthUser: $VWSFRIEND_USERNAME
     secureJsonData:
       basicAuthPassword: $VWSFRIEND_PASSWORD
