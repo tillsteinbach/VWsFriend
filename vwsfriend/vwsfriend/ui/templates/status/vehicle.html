@@ -69,6 +69,7 @@
     <ul>
       <li><a href="#tabs-status">Status</a></li>
       <li><a href="#tabs-capabilities">Capabilities</a></li>
+      <li><a href="#tabs-info">Information</a></li>
     </ul>
     <div id="tabs-status">
       {% if vehicle.statusExists('vehicleHealthWarnings', 'warningLights') and vehicle.domains['vehicleHealthWarnings']['warningLights'].enabled and vehicle.domains['vehicleHealthWarnings']['warningLights'].warningLights|length > 0 %}
@@ -437,6 +438,52 @@
       </p>
     </div>
     {% endif %}
+    <div id="tabs-info">
+      <p>
+      <h2>Vehicle Information</h2>
+      <ul>
+        {% if vehicle.statusExists('parking', 'parkingPosition') and vehicle.domains['parking']['parkingPosition'].enabled and not vehicle.domains['parking']['parkingPosition'].hasError() %}
+      <p>
+      <ul>
+        {% if vehicle.vin.enabled %}
+        <li> VIN: {{vehicle.vin.value}}</li>
+        {% endif %}
+        {% if vehicle.role.enabled %}
+        <li> User Role: {{vehicle.role.value.value}}</li>
+        {% endif %}
+        {% if vehicle.enrollmentStatus.enabled %}
+        <li> Enrollment Status: {{vehicle.enrollmentStatus.value.value}}</li>
+        {% endif %}
+        {% if vehicle.userRoleStatus.enabled %}
+        <li> User Status: {{vehicle.userRoleStatus.value.value}}</li>
+        {% endif %}
+        {% if vehicle.model.enabled %}
+        <li> Model: {{vehicle.model.value}}</li>
+        {% endif %}
+        {% if vehicle.devicePlatform.enabled %}
+        <li> Device Platform: {{vehicle.devicePlatform.value.value}}</li>
+        {% endif %}
+        {% if vehicle.nickname.enabled %}
+        <li> Nickname: {{vehicle.nickname.value}}</li>
+        {% endif %}
+        {% if vehicle.brandCode.enabled %}
+        <li> Brand Code: {{vehicle.brandCode.value.value}}</li>
+        {% endif %}
+        {% if vehicle.coUsers.enabled and len(vehicle.coUsers) > 0 %}
+        <li> Co Users:
+          <ul>
+            {% for user in vehicle.coUsers %}
+            <li> {{user}}</li>
+            {% endfor %}
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+      </p>
+      {% endif %}
+      </ul>
+      </p>
+    </div>
   </div>
 </div>
 {% endblock %}
