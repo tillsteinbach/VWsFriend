@@ -1,5 +1,6 @@
 from io import BytesIO
 from base64 import b64encode
+import json
 from flask import Blueprint, Response, render_template, current_app, abort, send_file, request, redirect, url_for
 from flask_login import login_required
 
@@ -47,12 +48,11 @@ def vehicleStatusImg(vin, conversion, badge=False):
             pictures['status'].value.save(img_io, 'PNG')
         img_io.seek(0)
     if conversion == '.json':
-        img_ioencoded = BytesIO()
-        img_ioencoded.write(b'"data:image/png;base64,')
-        img_ioencoded.write(b64encode(img_io.read()))
-        img_ioencoded.write(b'"')
-        img_ioencoded.seek(0)
-        return send_file(img_ioencoded, mimetype='application/json')
+        jsonMap = {}
+        jsonMap['type'] = 'image/png'
+        jsonMap['encoding'] = 'base64'
+        jsonMap['data'] = b64encode(img_io.read()).decode()
+        return Response(json.dumps(jsonMap), mimetype='application/json')
     else:
         return send_file(img_io, mimetype='image/png')
 
@@ -86,12 +86,11 @@ def vehicleImg(vin, conversion, badge=False):
             pictures['car'].value.save(img_io, 'PNG')
         img_io.seek(0)
         if conversion == '.json':
-            img_ioencoded = BytesIO()
-            img_ioencoded.write(b'"data:image/png;base64,')
-            img_ioencoded.write(b64encode(img_io.read()))
-            img_ioencoded.write(b'"')
-            img_ioencoded.seek(0)
-            return send_file(img_ioencoded, mimetype='application/json')
+            jsonMap = {}
+            jsonMap['type'] = 'image/png'
+            jsonMap['encoding'] = 'base64'
+            jsonMap['data'] = b64encode(img_io.read()).decode()
+            return Response(json.dumps(jsonMap), mimetype='application/json')
         else:
             return send_file(img_io, mimetype='image/png')
 
@@ -115,7 +114,7 @@ def vehicleStatusOrImg(vin, conversion, badge=False):
     if vehicles[vin].statusExists('access', 'accessStatus') \
             and vehicles[vin].domains['access']['accessStatus'].carCapturedTimestamp.enabled:
         return vehicleStatusImg(vin, conversion, badge)
-    return vehicleImg(vin, badge)
+    return vehicleImg(vin, conversion, badge)
 
 
 @bp.route('/vehicles/<string:vin>-status_or_car-badge.png', defaults={'conversion': None}, methods=['GET'])
@@ -127,7 +126,7 @@ def vehicleStatusOrImgBadge(vin, conversion):
 @bp.route('/json', methods=['GET'])
 @cache.cached(timeout=5)
 @login_required
-def json():
+def jsonStatus():
     json = current_app.weConnect.toJSON()
     response = Response(json, mimetype="text/json")
     response.cache_control.max_age = 5
