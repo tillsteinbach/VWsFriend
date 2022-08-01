@@ -442,9 +442,6 @@
       <p>
       <h2>Vehicle Information</h2>
       <ul>
-        {% if vehicle.statusExists('parking', 'parkingPosition') and vehicle.domains['parking']['parkingPosition'].enabled and not vehicle.domains['parking']['parkingPosition'].hasError() %}
-      <p>
-      <ul>
         {% if vehicle.vin.enabled %}
         <li> VIN: {{vehicle.vin.value}}</li>
         {% endif %}
@@ -478,9 +475,6 @@
           </ul>
         </li>
         {% endif %}
-      </ul>
-      </p>
-      {% endif %}
       </ul>
       </p>
     </div>
