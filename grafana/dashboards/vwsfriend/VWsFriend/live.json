@@ -103,7 +103,7 @@
       "pluginVersion": "8.3.6",
       "targets": [
         {
-          "cacheDurationSeconds": 300,
+          "cacheDurationSeconds": 30,
           "datasource": {
             "type": "marcusolsson-json-datasource",
             "uid": "P36D08C1A0297C737"
@@ -823,7 +823,7 @@
       "pluginVersion": "9.0.4",
       "targets": [
         {
-          "cacheDurationSeconds": 300,
+          "cacheDurationSeconds": 30,
           "datasource": {
             "uid": "P36D08C1A0297C737"
           },
@@ -962,7 +962,7 @@
       "pluginVersion": "9.0.4",
       "targets": [
         {
-          "cacheDurationSeconds": 300,
+          "cacheDurationSeconds": 30,
           "datasource": {
             "type": "marcusolsson-json-datasource",
             "uid": "P36D08C1A0297C737"
