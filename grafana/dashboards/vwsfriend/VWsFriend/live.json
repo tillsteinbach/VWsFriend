@@ -594,7 +594,7 @@
           "urlPath": "/status/json"
         },
         {
-          "cacheDurationSeconds": 300,
+          "cacheDurationSeconds": 30,
           "datasource": {
             "type": "marcusolsson-json-datasource",
             "uid": "P36D08C1A0297C737"
