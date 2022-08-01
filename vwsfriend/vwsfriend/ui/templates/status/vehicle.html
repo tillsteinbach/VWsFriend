@@ -469,7 +469,7 @@
         {% if vehicle.brandCode.enabled %}
         <li> Brand Code: {{vehicle.brandCode.value.value}}</li>
         {% endif %}
-        {% if vehicle.coUsers.enabled and len(vehicle.coUsers) > 0 %}
+        {% if vehicle.coUsers.enabled and vehicle.coUsers|length > 0 %}
         <li> Co Users:
           <ul>
             {% for user in vehicle.coUsers %}
