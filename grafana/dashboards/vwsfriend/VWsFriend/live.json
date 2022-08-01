@@ -592,6 +592,23 @@
           "queryParams": "",
           "refId": "A",
           "urlPath": "/status/json"
+        },
+        {
+          "cacheDurationSeconds": 300,
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "P36D08C1A0297C737"
+          },
+          "fields": [
+            {
+              "jsonPath": "$"
+            }
+          ],
+          "hide": false,
+          "method": "GET",
+          "queryParams": "",
+          "refId": "B",
+          "urlPath": "/status/vehicles/$VIN-status.png.json"
         }
       ],
       "title": "Live Status",
