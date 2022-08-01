@@ -58,7 +58,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1655974717893,
   "links": [
     {
       "asDropdown": false,
@@ -91,9 +90,32 @@
   "panels": [
     {
       "datasource": {
-        "uid": ""
+        "type": "marcusolsson-json-datasource",
+        "uid": "P36D08C1A0297C737"
       },
       "description": "Current status of the car ${VIN:text} with VIN ${VIN:raw}. To receive reasonable results you have to make settings for your car.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 3,
@@ -109,12 +131,67 @@
         }
       ],
       "options": {
-        "content": "<a href=\"${vwsfriend_url:raw}/status/vehicle/${VIN}/\">\n<img src=\"${vwsfriend_url:raw}/status/vehicles/${VIN}-status_or_car-badge.png\"/>\n</a>\n",
-        "mode": "html"
+        "SVGBaseFix": true,
+        "add100Percentage": false,
+        "calcsMutation": "standard",
+        "centerAlignContent": true,
+        "codeData": "{\n  \"text\": \"Random text\"\n}",
+        "css": "",
+        "dynamicData": false,
+        "dynamicFieldDisplayValues": false,
+        "dynamicHtmlGraphics": true,
+        "dynamicProps": false,
+        "html": "<a id='carlink' target=”_blank”>\n<img src=\"\" id='carimage' style='max-height: 100%; max-width: 100%'/>\n</a>",
+        "onInit": "// Sets the text from customProperties\nconst htmlgraphicsText = htmlNode.getElementById('htmlgraphics-text');\n\nif (htmlgraphicsText) {\n  htmlgraphicsText.textContent = customProperties.text;\n\n  // Change the text color based on the theme\n  if (theme.isDark) {\n    htmlgraphicsText.style.color = 'green';\n  } else {\n    htmlgraphicsText.style.color = 'red';\n  }\n}\n",
+        "onInitOnResize": false,
+        "onRender": "const vin = getTemplateSrv().replace(`$VIN`);\nconst vwsfriend_url = getTemplateSrv().replace(`$vwsfriend_url`);\nconst carimage = htmlNode.querySelector('#carimage');\nconst carlink = htmlNode.querySelector('#carlink');\n\nconst filteredSeriesImage = data.series.filter((series) => series.name == 'A');\njsonImage = null;\nif(filteredSeriesImage.length > 0 && filteredSeriesImage[0].fields != null && filteredSeriesImage[0].fields.length > 0){\n  jsonImage = filteredSeriesImage[0].fields[0].values.get(0);\n  const vehicleImage = JSON.parse(jsonImage);\n  carimage.src = \"data:\"+vehicleImage.type+\";\"+vehicleImage.encoding+\",\"+vehicleImage.data\n}\nelse {\n  carimage.src = vwsfriend_url+'/status/vehicles/'+vin+'-status_or_car-badge.png';\n}\n\n\ncarlink.href = vwsfriend_url+'/status/vehicle/'+vin+'/';",
+        "overflow": "visible",
+        "panelupdateOnMount": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull",
+            "last",
+            "firstNotNull",
+            "first",
+            "min",
+            "max",
+            "mean",
+            "sum",
+            "count",
+            "range",
+            "delta",
+            "step",
+            "diff",
+            "logmin",
+            "allIsZero",
+            "allIsNull",
+            "diffperc"
+          ]
+        },
+        "renderOnMount": true,
+        "rootCSS": ""
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
+      "targets": [
+        {
+          "cacheDurationSeconds": 300,
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "P36D08C1A0297C737"
+          },
+          "fields": [
+            {
+              "jsonPath": "$"
+            }
+          ],
+          "method": "GET",
+          "queryParams": "",
+          "refId": "A",
+          "urlPath": "/status/vehicles/$VIN-status_or_car-badge.png.json"
+        }
+      ],
       "title": "$VIN",
-      "type": "text"
+      "type": "gapit-htmlgraphics-panel"
     },
     {
       "datasource": {
@@ -167,7 +244,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "format": "table",
@@ -476,7 +553,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "alias": "Car is online",
@@ -559,7 +636,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "alias": "Last connection",
@@ -654,7 +731,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "format": "table",
@@ -752,7 +829,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "format": "table",
@@ -1356,7 +1433,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "format": "table",
@@ -1442,7 +1519,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.4",
       "targets": [
         {
           "format": "table",
@@ -1779,8 +1856,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2064,8 +2140,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2220,6 +2295,11 @@
                   "index": 5,
                   "text": "cooling"
                 },
+                "DISCHARGING": {
+                  "color": "yellow",
+                  "index": 16,
+                  "text": "discharging"
+                },
                 "ERROR": {
                   "color": "red",
                   "index": 8,
@@ -2255,6 +2335,11 @@
                   "index": 7,
                   "text": "ready for charging"
                 },
+                "UNSUPPORTED": {
+                  "color": "#3d3d3d",
+                  "index": 15,
+                  "text": "unsupported"
+                },
                 "VENTILATION": {
                   "color": "purple",
                   "index": 6,
@@ -2267,16 +2352,6 @@
                 "online": {
                   "color": "green",
                   "index": 0
-                },
-                "UNSUPPORTED": {
-                  "color": "#3d3d3d",
-                  "index": 15,
-                  "text": "unsupported"
-                },
-                "DISCHARGING": {
-                  "color": "yellow",
-                  "index": 16,
-                  "text": "discharging"
                 }
               },
               "type": "value"
@@ -2286,8 +2361,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
