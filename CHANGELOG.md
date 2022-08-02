@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
-## [0.20.1] - in testing (Celebrating 100 stars on GitHub!)
+## [0.20.1] - 2022-08-02 (Celebrating 100 stars on GitHub!)
 ### Added
 - Attributes for diesel cars
 - New status departureTimersStatus & chargingProfilesStatus
