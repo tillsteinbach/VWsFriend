@@ -74,4 +74,9 @@ class LockingSystem(GenericAccessory):
                     self.charLockTargetState.set_value(0)
                 self.setStatusFault(1, timeout=120)
         else:
-            LOG.error('Locking cannot be controled')
+            LOG.error('Locking cannot be controlled')
+            if self.charLockCurrentState.value in [1, 3]:
+                self.charLockTargetState.set_value(1)
+            else:
+                self.charLockTargetState.set_value(0)
+            self.setStatusFault(1, timeout=120)
