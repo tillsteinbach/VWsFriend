@@ -283,7 +283,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         netRcFilename)
 
     weConnectSpin = None
-    if args.spin is not None:
+    if args.weConnectSpin is not None:
         weConnectSpin = args.weConnectSpin
     else:
         if args.netrc is not None:
