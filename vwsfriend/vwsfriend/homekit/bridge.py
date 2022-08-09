@@ -149,8 +149,14 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
             if vehicle.statusExists('access', 'accessStatus') and vehicle.domains['access']['accessStatus'].carCapturedTimestamp.enabled:
                 accessStatus = vehicle.domains['access']['accessStatus']
 
+                if vehicle.controls.accessControl is not None and vehicle.controls.accessControl.enabled:
+                    accessControl = vehicle.controls.accessControl
+                else:
+                    accessControl = None
+
+
                 lockingSystemAccessory = LockingSystem(driver=self.driver, bridge=self, aid=self.selectAID('LockingSystem', vin), id='LockingSystem', vin=vin,
-                                                       displayName=f'{nickname} Locking System', accessStatus=accessStatus)
+                                                       displayName=f'{nickname} Locking System', accessStatus=accessStatus, accessControl=accessControl)
                 lockingSystemAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-locking_system')
                 self.setConfigItem(lockingSystemAccessory.id, lockingSystemAccessory.vin, 'category', lockingSystemAccessory.category)
                 self.setConfigItem(lockingSystemAccessory.id, lockingSystemAccessory.vin, 'services',
