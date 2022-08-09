@@ -154,7 +154,6 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 else:
                     accessControl = None
 
-
                 lockingSystemAccessory = LockingSystem(driver=self.driver, bridge=self, aid=self.selectAID('LockingSystem', vin), id='LockingSystem', vin=vin,
                                                        displayName=f'{nickname} Locking System', accessStatus=accessStatus, accessControl=accessControl)
                 lockingSystemAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-locking_system')
