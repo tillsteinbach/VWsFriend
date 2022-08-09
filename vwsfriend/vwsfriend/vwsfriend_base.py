@@ -87,6 +87,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     weConnectGroup = parser.add_argument_group('WeConnect')
     weConnectGroup.add_argument('--weconnect-username', dest='weConnectUsername', help='Username of Volkswagen id', required=False)
     weConnectGroup.add_argument('--weconnect-password', dest='weConnectPassword', help='Password of Volkswagen id', required=False)
+    weConnectGroup.add_argument('--weconnect-spin', dest='weConnectSpin', help='S-PIN of Volkswagen id, required for selected commands in Homekit',
+                                required=False, nargs='?', action='store', default=None, const=True)
     defaultNetRc = os.path.join(os.path.expanduser("~"), ".netrc")
     weConnectGroup.add_argument('--netrc', help=f'File in netrc syntax providing login (default: {defaultNetRc}).'
                                 ' Netrc is only used when username and password are not provided  as arguments',
@@ -280,13 +282,37 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             LOG.warning('%s netrc-file was not found. Create it or provide a username with --weconnect-username and a password with --weconnect-password',
                         netRcFilename)
 
+    weConnectSpin = None
+    if args.spin is not None:
+        weConnectSpin = args.weConnectSpin
+    else:
+        if args.netrc is not None:
+            netRcFilename = args.netrc
+        else:
+            netRcFilename = defaultNetRc
+        try:
+            secrets = netrc.netrc(file=args.netrc)
+            _, account, _ = secrets.authenticators("volkswagen.de")
+            if account is not None:
+                weConnectSpin = account
+        except netrc.NetrcParseError as err:
+            LOG.error('Authentification using .netrc failed: %s', err)
+            sys.exit(1)
+        except TypeError:
+            pass
+        except FileNotFoundError:
+            pass
+    if weConnectSpin is not None and type(weConnectSpin) != bool and not re.match(r"^\d{4}$", weConnectSpin):
+        LOG.error('S-PIN: %s needs to be a four digit number', weConnectSpin)
+        sys.exit(1)
+
     tokenfile = None
     if not args.noTokenStorage:
         tokenfile = args.tokenfile
 
     weConnect = None
     try:  # pylint: disable=too-many-nested-blocks
-        weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, tokenfile=tokenfile,
+        weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, spin=weConnectSpin, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400)
 
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
