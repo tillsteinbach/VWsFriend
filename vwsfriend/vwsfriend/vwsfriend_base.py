@@ -302,9 +302,12 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             pass
         except FileNotFoundError:
             pass
-    if weConnectSpin is not None and isinstance(weConnectSpin, bool) and not re.match(r"^\d{4}$", weConnectSpin):
-        LOG.error('S-PIN: %s needs to be a four digit number', weConnectSpin)
-        sys.exit(1)
+    if weConnectSpin is not None and not isinstance(weConnectSpin, bool):
+        if len(weConnectSpin) == 0:
+            weConnectSpin = None
+        elif not re.match(r"^\d{4}$", weConnectSpin):
+            LOG.error('S-PIN: %s needs to be a four digit number', weConnectSpin)
+            sys.exit(1)
 
     tokenfile = None
     if not args.noTokenStorage:
