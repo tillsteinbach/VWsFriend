@@ -26,7 +26,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1656062473561,
   "links": [
     {
       "asDropdown": false,
@@ -127,7 +126,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.6",
       "targets": [
         {
           "datasource": {
@@ -219,7 +218,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.6",
       "targets": [
         {
           "datasource": {
@@ -373,6 +372,9 @@
             "type": "markers"
           }
         ],
+        "tooltip": {
+          "mode": "details"
+        },
         "view": {
           "id": "fit",
           "lat": 53.638576,
@@ -381,7 +383,7 @@
           "zoom": 15
         }
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.6",
       "targets": [
         {
           "datasource": {
@@ -466,7 +468,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.6",
       "targets": [
         {
           "datasource": {
@@ -553,7 +555,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.6",
       "targets": [
         {
           "datasource": {
@@ -639,7 +641,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.0.6",
       "targets": [
         {
           "datasource": {
@@ -1051,7 +1053,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n width_bucket(\"chargePower_kW\",-5,205,21) AS power,\n (((width_bucket(\"chargePower_kW\",-5,205,21)-1.5)*(210/21)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-5,205,21)-0.5)*(210/21)))::TEXT || 'kW' AS metric,\n ((width_bucket(\"chargePower_kW\",-5,205,21)::decimal-1)*(210/21)) AS middle,\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS Amount\nFROM charges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY power, metric, middle\nORDER BY 1",
+          "rawSql": "(SELECT\r\n width_bucket(\"chargePower_kW\",-1,15,16) AS power,\r\n (((width_bucket(\"chargePower_kW\",-1,15,16)-1.5)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-1,15,16)-0.5)))::TEXT || 'kW' AS metric,\r\n ((width_bucket(\"chargePower_kW\",-1,15,16)::decimal-1)) AS middle,\r\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS Amount\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  \"chargePower_kW\" < 15 AND\r\n  charges.\"chargingState\" = 'CHARGING' AND\r\n  charges.vehicle_vin = '$VIN'\r\nGROUP BY power, metric, middle\r\nORDER BY 1)\r\n\r\nUNION\r\n(SELECT\r\n width_bucket(\"chargePower_kW\",15,205,19) AS power,\r\n (((width_bucket(\"chargePower_kW\",-5,205,21)-1.5)*(210/21)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-5,205,21)-0.5)*(210/21)))::TEXT || 'kW' AS metric,\r\n ((width_bucket(\"chargePower_kW\",-5,205,21)::decimal-1)*(210/21)) AS middle,\r\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS Amount\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  \"chargePower_kW\" > 15 AND\r\n  charges.\"chargingState\" = 'CHARGING' AND\r\n  charges.vehicle_vin = '$VIN'\r\nGROUP BY power, metric, middle\r\nORDER BY 1)\r\nORDER BY middle",
           "refId": "A",
           "select": [
             [
