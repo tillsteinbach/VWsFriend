@@ -24,7 +24,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654769146163,
   "links": [
     {
       "asDropdown": false,
@@ -56,13 +55,41 @@
   "liveNow": false,
   "panels": [
     {
-      "autoZoom": true,
       "datasource": {
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "defaultLayer": "OpenStreetMap",
       "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "degree"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 13,
         "w": 12,
@@ -70,23 +97,180 @@
         "y": 0
       },
       "id": 13,
-      "lineColor": "red",
       "links": [],
       "maxDataPoints": 500,
-      "pointColor": "royalblue",
-      "scrollWheelZoom": false,
-      "showLayerChanger": true,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "osm-standard"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "style": {
+                "color": {
+                  "fixed": "#F2495C"
+                },
+                "lineWidth": 3,
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "latitude": "latitude",
+              "longitude": "longitude",
+              "mode": "coords"
+            },
+            "name": "Trip",
+            "tooltip": true,
+            "type": "route"
+          },
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "orange"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "location": {
+              "latitude": "latitude",
+              "longitude": "longitude",
+              "mode": "coords"
+            },
+            "name": "Start",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "C"
+            },
+            "location": {
+              "latitude": "latitude",
+              "longitude": "longitude",
+              "mode": "coords"
+            },
+            "name": "Destination",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "id": "fit",
+          "lat": 0,
+          "lon": 0,
+          "zoom": 18
+        }
+      },
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P2EF847825A020B66"
           },
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  latitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  latitude,\n  longitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  latitude,\n  longitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
           "refId": "A",
           "select": [
             [
@@ -114,13 +298,46 @@
             "type": "postgres",
             "uid": "P2EF847825A020B66"
           },
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  0 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $start_location\nUNION\nSELECT\n  1 AS \"time\",\n  longitude\nFROM locations\nWHERE\n  osm_id = $destination_location",
+          "rawSql": "SELECT\n  latitude,\n  longitude,\n  COALESCE(\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', name, amenity), nullif(CONCAT_WS(' ', road, house_number), '')), neighbourhood, city, postcode, country)) AS \"Location\"\nFROM locations\nWHERE\n  osm_id = $start_location",
           "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "charging_sessions",
+          "timeColumn": "connected",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  latitude,\n  longitude,\n  COALESCE(\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', name, amenity), nullif(CONCAT_WS(' ', road, house_number), '')), neighbourhood, city, postcode, country)) AS \"Location\"\nFROM locations\nWHERE\n  osm_id = $destination_location",
+          "refId": "C",
           "select": [
             [
               {
@@ -144,7 +361,7 @@
         }
       ],
       "title": "Trip",
-      "type": "pr0ps-trackmap-panel"
+      "type": "geomap"
     },
     {
       "datasource": {
@@ -237,7 +454,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "datasource": {
@@ -321,8 +538,9 @@
         "combine": false,
         "legend": {
           "calcs": [],
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         }
       },
       "targets": [
@@ -526,7 +744,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "datasource": {
@@ -939,7 +1157,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -977,7 +1196,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.3",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "datasource": {
@@ -1032,7 +1251,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1070,7 +1290,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "8.5.3",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "datasource": {
@@ -1110,7 +1330,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1157,7 +1377,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "none",
           "value": "none"
         },
@@ -1200,7 +1420,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "none",
           "value": "none"
         },
