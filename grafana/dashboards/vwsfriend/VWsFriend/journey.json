@@ -25,7 +25,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1655975092731,
   "links": [
     {
       "asDropdown": false,
@@ -81,13 +80,41 @@
   "liveNow": true,
   "panels": [
     {
-      "autoZoom": true,
       "datasource": {
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "defaultLayer": "OpenStreetMap",
       "description": "Complete journey with all stops.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "degree"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 15,
         "w": 12,
@@ -95,48 +122,139 @@
         "y": 0
       },
       "id": 4,
-      "lineColor": "red",
       "maxDataPoints": 500,
-      "pointColor": "royalblue",
-      "scrollWheelZoom": false,
-      "showLayerChanger": true,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "osm-standard"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "text": {
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "latitude": "latitude",
+              "longitude": "longitude",
+              "mode": "coords"
+            },
+            "name": "Locations",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "style": {
+                "color": {
+                  "fixed": "#F2495C"
+                },
+                "lineWidth": 2,
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "latitude": "latitude",
+              "longitude": "longitude",
+              "mode": "coords"
+            },
+            "name": "Route",
+            "tooltip": true,
+            "type": "route"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "id": "fit",
+          "lat": 0,
+          "lon": 0,
+          "zoom": 18
+        }
+      },
+      "pluginVersion": "9.1.0",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "(SELECT\n  $__time(\"startDate\"),\n  trips.start_position_latitude AS latitude\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  trips.vehicle_vin = '$VIN'\nUNION\nSELECT\n  $__time(\"endDate\"),\n  trips.destination_position_latitude AS latitude\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\n)\nORDER BY 1",
+          "rawSql": "(SELECT\n  $__time(\"startDate\"),\n  trips.start_position_latitude AS latitude,\n  trips.start_position_longitude AS longitude\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  trips.vehicle_vin = '$VIN'\nUNION\nSELECT\n  $__time(\"endDate\"),\n  trips.destination_position_latitude AS latitude,\n  trips.destination_position_longitude AS longitude\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\n)\nORDER BY 1",
           "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "position_latitude"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "charging_sessions",
-          "timeColumn": "connected",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "(SELECT\n  $__time(\"startDate\"),\n  trips.start_position_longitude AS longitude\nFROM trips\nWHERE\n  $__timeFilter(\"startDate\") AND\n  trips.vehicle_vin = '$VIN'\nUNION\nSELECT\n  $__time(\"endDate\"),\n  trips.destination_position_longitude AS longitude\nFROM trips\nWHERE\n  $__timeFilter(\"endDate\") AND\n  trips.vehicle_vin = '$VIN'\n  )\nORDER BY 1",
-          "refId": "B",
           "select": [
             [
               {
@@ -160,7 +278,7 @@
         }
       ],
       "title": "Map",
-      "type": "pr0ps-trackmap-panel"
+      "type": "geomap"
     },
     {
       "datasource": {
@@ -265,7 +383,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "format": "table",
@@ -438,7 +556,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "format": "table",
@@ -511,8 +629,9 @@
           "percent"
         ],
         "legend": {
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
         "pieType": "pie",
         "reduceOptions": {
@@ -648,8 +767,9 @@
       "options": {
         "alignValue": "center",
         "legend": {
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
         "mergeValues": true,
         "rowHeight": 0.9,
@@ -717,6 +837,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "SoC",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -794,7 +916,8 @@
             "min"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1044,7 +1167,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "datasource": {
@@ -1406,7 +1529,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.1.0",
       "targets": [
         {
           "datasource": {
@@ -1467,8 +1590,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -1742,7 +1864,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "vwsfriend"
