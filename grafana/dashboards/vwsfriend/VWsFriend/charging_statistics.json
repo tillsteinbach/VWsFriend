@@ -946,7 +946,7 @@
         "type": "postgres",
         "uid": "P2EF847825A020B66"
       },
-      "description": "Distribution of the power used for charging.",
+      "description": "Distribution of the power used for charging (percentage by time).",
       "gridPos": {
         "h": 8,
         "w": 11,
