@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.21.0] - 2022-08-19
+### Added
+- Support for S-PIN
+- Locking support in HomeKit (only selected cars), experimental!
+
+### Changed
+- Replaced trackmaps plugin with geomaps plugin for all track dashboards
+- Charging statistics with smaller binning below 15kW
+- Updated API to 0.47.0
+- Updated Grafana to 9.1.0
+
+
 ## [0.20.1] - 2022-08-02 (Celebrating 100 stars on GitHub!)
 ### Added
 - Attributes for diesel cars
@@ -488,9 +500,10 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.20.1...HEAD
-[0.20.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.20.1
-[0.20.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.20.0
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.21.0...HEAD
+[0.21.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.21.0
+[0.20.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0120.1
+[0.20.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.100
 [0.19.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.2
 [0.19.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.1
 [0.19.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.0
