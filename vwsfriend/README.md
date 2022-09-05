@@ -49,6 +49,7 @@ vwsfriend --with-homekit
 ## VWsFriend with MQTT support (Experimental)
 VWsFriend now includes [WeConnect-MQTT](https://github.com/tillsteinbach/WeConnect-mqtt). This enables to use the data from the servers at the same time inside VWsFriend and with MQTT and thus saves additional requests and load on the server.
 If you want to know how to configure MQTT, see here: [WeConnect-MQTT Readme](https://github.com/tillsteinbach/WeConnect-mqtt/blob/main/README.md)
+VWsFriend is using the same options as WeConnect-MQTT. Just select the options as described in WeConnect-MQTT and add those to VWsFriend when starting.
 
 ## Related projects
 - [WeConnect-cli](https://github.com/tillsteinbach/WeConnect-cli): A commandline interface to interact with WeConnect
