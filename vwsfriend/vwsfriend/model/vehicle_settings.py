@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
@@ -17,6 +17,8 @@ class VehicleSettings(Base):
     secondary_capacity_total = Column(Integer)
     secondary_wltp_range = Column(Integer)
     timezone = Column(String(256))
+    sorting_order = Column(Integer)
+    hide = Column(Boolean)
 
     def __init__(self, vehicle):
         self.vehicle = vehicle

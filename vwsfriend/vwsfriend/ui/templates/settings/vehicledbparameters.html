@@ -93,6 +93,30 @@
         {% endif %}
       </fieldset>
 
+      <fieldset class="form-field">
+        {{ form.sorting_order.label }}
+        {{ form.sorting_order }}
+        {% if form.sorting_order.errors %}
+          <ul class="errors">
+            {% for error in form.sorting_order.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.hide.label }}
+        {{ form.hide }}
+        {% if form.hide.errors %}
+          <ul class="errors">
+            {% for error in form.hide.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+
       {{ form.save }}
 
   </form>
