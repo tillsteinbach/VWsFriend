@@ -656,7 +656,7 @@
           "type": "postgres",
           "uid": "P2EF847825A020B66"
         },
-        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles WHERE vehicles.\"carType\" != 'ELECTRIC'",
+        "definition": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles LEFT JOIN vehicle_settings ON vehicles.VIN = vehicle_settings.vehicle_vin WHERE vehicle_settings.hide IS NOT True ORDER BY vehicle_settings.sorting_order ASC",
         "description": "Select Car if you have multiple cars in your account",
         "hide": 0,
         "includeAll": false,
@@ -664,7 +664,7 @@
         "multi": false,
         "name": "VIN",
         "options": [],
-        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles WHERE vehicles.\"carType\" != 'ELECTRIC'",
+        "query": "SELECT \"vin\" || ':' || \"nickname\" || ' (' || \"model\" || ' - ' || \"carType\" || ')' FROM vehicles LEFT JOIN vehicle_settings ON vehicles.VIN = vehicle_settings.vehicle_vin WHERE vehicle_settings.hide IS NOT True ORDER BY vehicle_settings.sorting_order ASC",
         "refresh": 1,
         "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
