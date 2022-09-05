@@ -1352,7 +1352,7 @@
         "refresh": 1,
         "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
-        "sort": 1,
+        "sort": 0,
         "type": "query"
       },
       {
