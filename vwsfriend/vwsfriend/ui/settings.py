@@ -6,7 +6,7 @@ from pyqrcode import pyqrcode
 from flask import Blueprint, render_template, current_app, abort, redirect, url_for, request, send_file, flash
 from flask_login import login_required
 from flask_wtf import FlaskForm
-from wtforms import FieldList, FormField, StringField, IntegerField, SubmitField, HiddenField, SelectField
+from wtforms import FieldList, FormField, StringField, IntegerField, SubmitField, HiddenField, SelectField, BooleanField
 from wtforms.validators import DataRequired, NumberRange, Optional, Length, Regexp, ValidationError
 
 from weconnect.elements.range_status import RangeStatus
@@ -27,6 +27,8 @@ class VehicleSettingsForm(FlaskForm):
     secondary_capacity_total = IntegerField('Secondary Capacity Total', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
     secondary_wltp_range = IntegerField('Secondary WLTP Range', validators=[Optional(), NumberRange(min=1, max=1000)], filters=[lambda x: x or None])
     timezone = SelectField("Timezone", validators=[DataRequired()])
+    sorting_order = IntegerField('Add number to define sorting order in list (lowest number first)', validators=[Optional()])
+    hide = BooleanField("Hide vehicle", validators=[Optional()])
     save = SubmitField('Save')
 
 
@@ -128,6 +130,8 @@ def vehicleDBParameters(vin):
         form.secondary_capacity_total.data = dbVehicle.settings.secondary_capacity_total
         form.secondary_wltp_range.data = dbVehicle.settings.secondary_wltp_range
         form.timezone.data = dbVehicle.settings.timezone
+        form.sorting_order = dbVehicle.settings.sorting_order
+        form.hide = dbVehicle.settings.hide
     elif form.validate_on_submit():
         dbVehicle.settings.primary_capacity = form.primary_capacity.data
         dbVehicle.settings.primary_capacity_total = form.primary_capacity_total.data
@@ -136,6 +140,8 @@ def vehicleDBParameters(vin):
         dbVehicle.settings.secondary_capacity_total = form.secondary_capacity_total.data
         dbVehicle.settings.secondary_wltp_range = form.secondary_wltp_range.data
         dbVehicle.settings.timezone = form.timezone.data
+        dbVehicle.settings.sorting_order = form.sorting_order.data
+        dbVehicle.settings.hide = form.hide.data
         current_app.db.session.commit()
 
         return redirect(url_for("settings.vehicle", vin=vin))
