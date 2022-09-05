@@ -27,7 +27,7 @@ class VehicleSettingsForm(FlaskForm):
     secondary_capacity_total = IntegerField('Secondary Capacity Total', validators=[Optional(), NumberRange(min=1, max=500)], filters=[lambda x: x or None])
     secondary_wltp_range = IntegerField('Secondary WLTP Range', validators=[Optional(), NumberRange(min=1, max=1000)], filters=[lambda x: x or None])
     timezone = SelectField("Timezone", validators=[DataRequired()])
-    sorting_order = IntegerField('Add number to define sorting order in list (lowest number first)', validators=[Optional()])
+    sorting_order = IntegerField("Add number to define sorting order in list (lowest number first)", validators=[Optional()])
     hide = BooleanField("Hide vehicle", validators=[Optional()])
     save = SubmitField('Save')
 
@@ -130,8 +130,8 @@ def vehicleDBParameters(vin):
         form.secondary_capacity_total.data = dbVehicle.settings.secondary_capacity_total
         form.secondary_wltp_range.data = dbVehicle.settings.secondary_wltp_range
         form.timezone.data = dbVehicle.settings.timezone
-        form.sorting_order = dbVehicle.settings.sorting_order
-        form.hide = dbVehicle.settings.hide
+        form.sorting_order.data = dbVehicle.settings.sorting_order
+        form.hide.data = dbVehicle.settings.hide
     elif form.validate_on_submit():
         dbVehicle.settings.primary_capacity = form.primary_capacity.data
         dbVehicle.settings.primary_capacity_total = form.primary_capacity_total.data
