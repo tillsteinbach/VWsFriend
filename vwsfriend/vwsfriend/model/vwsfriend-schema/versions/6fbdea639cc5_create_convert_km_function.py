@@ -17,7 +17,21 @@ depends_on = None
 
 
 def upgrade():
-    op.execute("CREATE FUNCTION convert_km(n double precision, unit text) RETURNS double precision AS $$ SELECT CASE WHEN $2 = 'km' THEN $1 WHEN $2 = 'mi' THEN $1 / 1.60934 END; $$ LANGUAGE SQL IMMUTABLE RETURNS NULL ON NULL INPUT;")
+    if op.get_context().dialect.name == 'postgresql':
+	    op.execute("""
+	    CREATE FUNCTION convert_km(n double precision, unit text)
+	    RETURNS double precision
+	    AS $$
+	      SELECT
+	        CASE WHEN $2 = 'km' THEN $1
+        	     WHEN $2 = 'mi' THEN $1 / 1.60934
+	        END;
+	    $$
+	    LANGUAGE SQL
+	    IMMUTABLE
+	    RETURNS NULL ON NULL INPUT;
+	    """)
 
 def downgrade():
-    op.execute("DROP FUNCTION convert_km;")
+    if op.get_context().dialect.name == 'postgresql':
+	    op.execute("DROP FUNCTION convert_km;")
