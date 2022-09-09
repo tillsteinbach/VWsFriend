@@ -23,8 +23,8 @@ def upgrade():
 	    RETURNS double precision
 	    AS $$
 	      SELECT
-	        CASE WHEN $2 = 'km' THEN $1
-        	     WHEN $2 = 'mi' THEN $1 / 1.60934
+	        CASE WHEN $2 = 'KM' THEN $1
+        	     WHEN $2 = 'MI' THEN $1 / 1.60934
 	        END;
 	    $$
 	    LANGUAGE SQL
