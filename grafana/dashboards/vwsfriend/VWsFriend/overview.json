@@ -356,7 +356,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*Range/"
+              "options": ".*_KM$"
             },
             "properties": [
               {
@@ -366,6 +366,30 @@
               {
                 "id": "custom.axisLabel",
                 "value": "Range"
+              },
+              {
+                "id": "displayName",
+                "value": "Electric Range"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*_MI$"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "lengthmi"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Range"
+              },
+              {
+                "id": "displayName",
+                "value": "Electric Range"
               }
             ]
           }
@@ -462,7 +486,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"cruisingRangeElectric_km\" AS \"Electric Range\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  convert_km(\"cruisingRangeElectric_km\",'${length_unit.value}') AS \"Electric Range_${length_unit.value}\"\nFROM battery\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
           "refId": "1",
           "select": [
             [
@@ -709,7 +733,20 @@
           },
           "unit": "lengthkm"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*_MI$"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "lengthmi"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -744,7 +781,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(SELECT\n  to_timestamp(0) AS \"time\",\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"Electric Range\"\nFROM vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN')\nUNION\n(SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"cruisingRangeElectric_km\" AS \"Electric Range\"\nFROM battery\nWHERE\n  battery.vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1)",
+          "rawSql": "(SELECT\n  to_timestamp(0) AS \"time\",\n  convert_km(CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END,'${length_unit.value}') AS \"Electric Range_${length_unit.value}\"\nFROM vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN')\nUNION\n(SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  convert_km(\"cruisingRangeElectric_km\",'${length_unit.value}') AS \"Electric Range_${length_unit.value}\"\nFROM battery\nWHERE\n  battery.vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -929,7 +966,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*Range/"
+              "options": "/.*KM/"
             },
             "properties": [
               {
@@ -939,6 +976,58 @@
               {
                 "id": "custom.axisLabel",
                 "value": "Range"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*MI/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "lengthmi"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Range"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/Primary Engine Range.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Primary Engine Range"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/Total Range.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Range"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/Secondary Engine Range.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Secondary Engine Range"
               }
             ]
           }
@@ -1035,7 +1124,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"totalRange_km\" AS \"Total Range\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1  ",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  convert_km(\"totalRange_km\",'${length_unit.value}') AS \"Total Range_${length_unit.value}\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
           "refId": "1",
           "select": [
             [
@@ -1080,7 +1169,7 @@
           "policy": "default",
           "query": "",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"primary_remainingRange_km\" AS \"Primary Engine Range\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  convert_km(\"primary_remainingRange_km\",'${length_unit.value}') AS \"Primary Engine Range_${length_unit.value}\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
           "refId": "3",
           "resultFormat": "time_series",
           "select": [
@@ -1199,7 +1288,7 @@
           "policy": "default",
           "query": "",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"secondary_remainingRange_km\" AS \"Secondary Engine Range\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
+          "rawSql": "SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  convert_km(\"secondary_remainingRange_km\",'${length_unit.value}') AS \"Secondary Engine Range_${length_unit.value}\"\nFROM ranges\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  vehicle_vin = '$VIN'\nORDER BY 1",
           "refId": "5",
           "resultFormat": "time_series",
           "select": [
@@ -1618,19 +1707,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "WLTP"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "km"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Calculated consumption"
+              "options": "Calculated consumption_Metric"
             },
             "properties": [
               {
@@ -1640,13 +1717,53 @@
               {
                 "id": "custom.axisLabel",
                 "value": "Calculated consumption"
+              },
+              {
+                "id": "displayName",
+                "value": "Calculated Consumption"
               }
             ]
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "WLTP"
+              "id": "byRegexp",
+              "options": "/.*_KM/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "lengthkm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_MI/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "lengthmi"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/Current Range at 100.%*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Current Range at 100%"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/WLTP.*/"
             },
             "properties": [
               {
@@ -1663,8 +1780,32 @@
               {
                 "id": "custom.lineWidth",
                 "value": 0
+              },
+              {
+                "id": "displayName",
+                "value": "WLTP"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Calculated consumption_Imperial"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "mi/kWh"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Calculated consumption"
+              },
+              {
+                "id": "displayName",
+                "value": "Calculated Consumption"
+              }
+			]
           }
         ]
       },
@@ -1724,7 +1865,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  CASE WHEN \"currentSOC_pct\"::NUMERIC > 0 THEN \"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC END AS \"Current Range at 100%\",\n  CASE WHEN \"currentSOC_pct\"::NUMERIC = 0 OR \"cruisingRangeElectric_km\"::NUMERIC = 0 THEN NULL\n  ELSE\n       CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n       ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END / (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) * 100::NUMERIC END AS \"Calculated consumption\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\nORDER BY 1",
+          "rawSql": "SELECT\n  $__time(\"carCapturedTimestamp\"),\n  CASE WHEN \"currentSOC_pct\"::NUMERIC > 0 THEN convert_km(\"cruisingRangeElectric_km\"::NUMERIC,'${length_unit.value}') / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC END AS \"Current Range at 100%_${length_unit.value}\",\n  CASE WHEN \"currentSOC_pct\"::NUMERIC = 0 OR \"cruisingRangeElectric_km\"::NUMERIC = 0 THEN NULL\n  ELSE\n      CASE WHEN '$length_unit' = 'MI' THEN\n        (convert_km(\"cruisingRangeElectric_km\"::NUMERIC,'${length_unit.value}') / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) / CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\nELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END\n      ELSE\n       CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n       ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END / (\"cruisingRangeElectric_km\"::NUMERIC / \"currentSOC_pct\"::NUMERIC * 100::NUMERIC) * 100::NUMERIC\n       END\n   END AS \"Calculated consumption_${length_unit:text}\"\nFROM\n  battery\nLEFT JOIN vehicles ON battery.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\nORDER BY 1",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1781,7 +1922,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"WLTP\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'\nORDER BY 1",
+          "rawSql": "SELECT\n  unnest(ARRAY[to_timestamp(${__from}/1000), to_timestamp(${__to}/1000)]) AS time,\n  convert_km(CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END,'${length_unit.value}') AS \"WLTP_${length_unit.value}\"\nFROM\n  vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'\nORDER BY 1",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -2153,8 +2294,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Charge Rate"
+              "id": "byRegexp",
+              "options": "/.*KM/"
             },
             "properties": [
               {
@@ -2163,6 +2304,30 @@
               },
               {
                 "id": "custom.axisLabel",
+                "value": "Charge Rate"
+              },
+              {
+                "id": "displayName",
+                "value": "Charge Rate"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*MI/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "velocitymph"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Charge Rate"
+              },
+              {
+                "id": "displayName",
                 "value": "Charge Rate"
               }
             ]
@@ -2220,7 +2385,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(SELECT\r\n  \"carCapturedTimestamp\" AS \"time\",\r\n  \"chargePower_kW\" AS \"Charge Power\",\r\n  \"chargeRate_kmph\" AS \"Charge Rate\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN'\r\nORDER BY \"carCapturedTimestamp\")\r\nUNION ALL\r\n(SELECT\r\n  \"carCapturedTimestamp\" AS \"time\",\r\n  CASE WHEN \"chargingState\" = 'CHARGING' THEN \"delta\"::decimal*( CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\r\n  ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END::decimal/100::decimal) / (EXTRACT(epoch FROM \"timedelta\") / 3600)\r\n  ELSE NULL END AS \"Charge Power\",\r\n  CASE WHEN \"chargingState\" = 'CHARGING' THEN \"deltakm\"::decimal / (EXTRACT(epoch FROM \"timedelta\") / 3600)\r\n  ELSE NULL END AS \"Charge Rate\"\r\nFROM\r\n  (SELECT *,\r\n  DATE_TRUNC('minute', \"carCapturedTimestamp\") AS \"batteryTime\",\r\n  (\"carCapturedTimestamp\" - LAG(\"carCapturedTimestamp\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"timedelta\",\r\n  (\"currentSOC_pct\" - LAG(\"currentSOC_pct\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"delta\",\r\n  (\"cruisingRangeElectric_km\" - LAG(\"cruisingRangeElectric_km\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"deltakm\"\r\nFROM\r\n  battery\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN'\r\nORDER BY \"carCapturedTimestamp\") AS delta\r\nLEFT JOIN\r\n(\r\nSELECT\r\n\"chargingState\",\r\nDATE_TRUNC('minute', charges.\"carCapturedTimestamp\") AS \"chargeTime\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN') as charging ON \"chargeTime\" = \"batteryTime\"\r\nLEFT JOIN vehicles ON delta.vehicle_vin = vehicles.vin\r\nLEFT JOIN vehicle_settings ON delta.vehicle_vin = vehicle_settings.vehicle_vin\r\nWHERE\r\n  \"delta\" > 0 AND\r\n  NOT EXISTS (SELECT 1 FROM charges WHERE \"chargePower_kW\" IS NOT NULL AND \"chargeRate_kmph\" IS NOT NULL AND $__timeFilter(\"carCapturedTimestamp\") AND vehicle_vin = '$VIN' LIMIT 1)\r\nORDER BY \"carCapturedTimestamp\")",
+          "rawSql": "(SELECT\r\n  \"carCapturedTimestamp\" AS \"time\",\r\n  \"chargePower_kW\" AS \"Charge Power\",\r\n  convert_km(\"chargeRate_kmph\",'${length_unit.value}') AS \"Charge Rate_${length_unit.value}\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN'\r\nORDER BY \"carCapturedTimestamp\")\r\nUNION ALL\r\n(SELECT\r\n  \"carCapturedTimestamp\" AS \"time\",\r\n  CASE WHEN \"chargingState\" = 'CHARGING' THEN \"delta\"::decimal*( CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\r\n  ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC END::decimal/100::decimal) / (EXTRACT(epoch FROM \"timedelta\") / 3600)\r\n  ELSE NULL END AS \"Charge Power\",\r\n  CASE WHEN \"chargingState\" = 'CHARGING' THEN \"deltakm\"::decimal / (EXTRACT(epoch FROM \"timedelta\") / 3600)\r\n  ELSE NULL END AS \"Charge Rate\"\r\nFROM\r\n  (SELECT *,\r\n  DATE_TRUNC('minute', \"carCapturedTimestamp\") AS \"batteryTime\",\r\n  (\"carCapturedTimestamp\" - LAG(\"carCapturedTimestamp\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"timedelta\",\r\n  (\"currentSOC_pct\" - LAG(\"currentSOC_pct\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"delta\",\r\n  (\"cruisingRangeElectric_km\" - LAG(\"cruisingRangeElectric_km\") OVER (ORDER BY \"carCapturedTimestamp\")) AS \"deltakm\"\r\nFROM\r\n  battery\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN'\r\nORDER BY \"carCapturedTimestamp\") AS delta\r\nLEFT JOIN\r\n(\r\nSELECT\r\n\"chargingState\",\r\nDATE_TRUNC('minute', charges.\"carCapturedTimestamp\") AS \"chargeTime\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  vehicle_vin = '$VIN') as charging ON \"chargeTime\" = \"batteryTime\"\r\nLEFT JOIN vehicles ON delta.vehicle_vin = vehicles.vin\r\nLEFT JOIN vehicle_settings ON delta.vehicle_vin = vehicle_settings.vehicle_vin\r\nWHERE\r\n  \"delta\" > 0 AND\r\n  NOT EXISTS (SELECT 1 FROM charges WHERE \"chargePower_kW\" IS NOT NULL AND \"chargeRate_kmph\" IS NOT NULL AND $__timeFilter(\"carCapturedTimestamp\") AND vehicle_vin = '$VIN' LIMIT 1)\r\nORDER BY \"carCapturedTimestamp\")",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2555,6 +2720,22 @@
         "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+        },
+        "definition": "SELECT u.unnest|| ':' || CASE u.unnest WHEN 'KM' THEN 'Metric'  WHEN 'MI' THEN 'Imperial' END\nFROM (SELECT unnest(enum_range(NULL::unitoflength))) u \nLEFT JOIN settings ON settings.unit_of_length = u.unnest \nORDER BY coalesce(settings.id,0) DESC",
+        "hide": 1,
+        "includeAll": false,
+        "multi": false,
+        "name": "length_unit",
+        "options": [],
+        "query": "SELECT u.unnest|| ':' || CASE u.unnest WHEN 'KM' THEN 'Metric'  WHEN 'MI' THEN 'Imperial' END\nFROM (SELECT unnest(enum_range(NULL::unitoflength))) u \nLEFT JOIN settings ON settings.unit_of_length = u.unnest \nORDER BY coalesce(settings.id,0) DESC",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
