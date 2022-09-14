@@ -842,7 +842,7 @@
           },
           "fields": [
             {
-              "jsonPath": "$.vehicles.$VIN.domains.charging.batteryStatus.cruisingRangeElectric_km","jsonPath": "$.$lookup(vehicles,$VIN[0]).domains.charging.batteryStatus.cruisingRangeElectric_km/($length_unit[0]=\"MI\"?1.609:1)",
+              "jsonPath": "$.$lookup(vehicles,$VIN[0]).domains.charging.batteryStatus.cruisingRangeElectric_km/($length_unit[0]=\"MI\"?1.609:1)",
 			  "language": "jsonata",
               "name": "Electric Range_$length_unit"
             }
