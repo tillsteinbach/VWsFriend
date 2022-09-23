@@ -13,8 +13,6 @@ All notable changes to this project will be documented in this file.
 - Bug with honk and flash endpoint
 
 ### Changed
-- Replaced trackmaps plugin with geomaps plugin for all track dashboards
-- Charging statistics with smaller binning below 15kW
 - Updated API to 0.48.1
 - Updated Grafana to 9.1.6
 
