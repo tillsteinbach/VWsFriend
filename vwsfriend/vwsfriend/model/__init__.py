@@ -18,3 +18,4 @@ from .weconnect_responsetime import WeConnectResponsetime
 from .tag import Tag
 from .warning_light import WarningLight
 from .maintenance import Maintenance
+from .helper_functions import ConvertKM
