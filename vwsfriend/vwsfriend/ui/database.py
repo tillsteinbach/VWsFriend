@@ -36,7 +36,7 @@ bp = Blueprint('database', __name__, url_prefix='/database')
 
 class SettingsEditForm(FlaskForm):
     id = HiddenField('id', validators=[Optional()])
-    unit_of_length = HiddenField('unit_of_length', validators=[Optional()])
+    unit_of_length = SelectField('Unit of Length used in Grafana', validators=[DataRequired()])
     unit_of_temperature = HiddenField('unit_of_temperature', validators=[Optional()])
     grafana_url = StringField('URL where the Grafana installation is reachable', validators=[DataRequired()])
     vwsfriend_url = StringField('URL where the VWsFriend installation is reachable', validators=[DataRequired()])
@@ -230,8 +230,14 @@ def settingsEdit():
         requestHost = request.headers.get('Host')
         grafanaHost = requestHost.replace("4000", "3000")
         settings = Settings(grafana_url=f'http://{grafanaHost}', vwsfriend_url=f'http://{requestHost}')
+    	
+    form = SettingsEditForm()    
 
-    form = SettingsEditForm()
+    unit_of_length_choices = []
+    result = current_app.db.session.execute('SELECT unnest(enum_range(NULL::unitoflength))')
+    for row in result:
+            unit_of_length_choices.append((row[0].lower(), row[0]))
+    form.unit_of_length.choices = unit_of_length_choices
 
     if form.validate_on_submit():
         with current_app.db.session.begin_nested():
