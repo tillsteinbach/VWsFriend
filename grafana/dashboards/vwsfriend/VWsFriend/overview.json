@@ -1532,7 +1532,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "(SELECT\n  to_timestamp(0) AS \"time\",\n  MAX(\"remainingChargingTimeToComplete_min\")\nFROM charges\nWHERE\n  vehicle_vin = '$VIN')\nUNION\n(SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  \"remainingChargingTimeToComplete_min\"\nFROM charges\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1)",
+          "rawSql": "(SELECT\n  to_timestamp(0) AS \"time\",\n  MAX(\"remainingChargingTimeToComplete_min\")\nFROM charges\nWHERE\n  vehicle_vin = '$VIN')\nUNION\n(SELECT\n  \"carCapturedTimestamp\" AS \"time\",\n  coalesce(\"remainingChargingTimeToComplete_min\",0)\nFROM charges\nWHERE\n  vehicle_vin = '$VIN'\nORDER BY \"time\" DESC\nLIMIT 1)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
