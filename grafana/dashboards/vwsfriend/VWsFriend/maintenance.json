@@ -24,7 +24,7 @@
     "description": "Overview over maintenance related data",
     "editable": true,
     "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
+    "graphTooltip": 1,
     "id": 19,
     "iteration": 1654774928260,
     "links": [
