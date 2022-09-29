@@ -24,7 +24,7 @@
   "description": "Overview over all charging sessions",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "iteration": 1658692777221,
   "links": [
     {
