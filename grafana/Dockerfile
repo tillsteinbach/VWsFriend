@@ -1,4 +1,4 @@
-FROM grafana/grafana:9.1.6
+FROM grafana/grafana:9.1.7
 
 ENV GF_SECURITY_ADMIN_USER=admin
 ENV GF_SECURITY_ADMIN_PASSWORD=admin
