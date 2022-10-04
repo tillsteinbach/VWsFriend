@@ -487,6 +487,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         else:
             starttime = time.time()
             permanentErrors = 0
+            sleeptime = args.interval
             while True:
                 try:
                     LOG.info('Updating data from WeConnect')
