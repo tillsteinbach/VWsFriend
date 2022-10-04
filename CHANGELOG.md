@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.22.0] - 2022-09-23
+### Added
+- Allow to hide and sort vehicles in the grafana select box through vehicle settings
+- Tire warning light category
+
+### Fixed
+- Bug with honk and flash endpoint
+
+### Changed
+- Updated API to 0.48.1
+- Updated Grafana to 9.1.6
+
 ## [0.21.0] - 2022-08-19
 ### Added
 - Support for S-PIN
@@ -500,9 +512,10 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.21.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.22.0...HEAD
+[0.22.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.0
 [0.21.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.21.0
-[0.20.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0120.1
+[0.20.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.20.1
 [0.20.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.100
 [0.19.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.2
 [0.19.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.19.1
