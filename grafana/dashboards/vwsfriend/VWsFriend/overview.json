@@ -169,7 +169,8 @@
           ]
         },
         "renderOnMount": true,
-        "rootCSS": ""
+        "rootCSS": "",
+        "useGrafanaScrollbar": true
       },
       "pluginVersion": "9.0.4",
       "targets": [
@@ -244,7 +245,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "format": "table",
@@ -308,6 +309,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "SoC",
             "axisPlacement": "auto",
             "axisSoftMax": 100,
@@ -412,7 +415,8 @@
             "min"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -577,7 +581,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.0.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "Car is online",
@@ -660,7 +664,7 @@
         "text": {},
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "alias": "Last connection",
@@ -759,7 +763,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -768,7 +772,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "format": "table",
@@ -857,7 +861,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -866,7 +870,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "format": "table",
@@ -918,6 +922,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "SoC",
             "axisPlacement": "auto",
             "axisSoftMax": 100,
@@ -1050,7 +1056,8 @@
             "min"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1383,7 +1390,8 @@
           "calcs": []
         },
         "renderOnMount": true,
-        "rootCSS": ""
+        "rootCSS": "",
+        "useGrafanaScrollbar": true
       },
       "pluginVersion": "8.3.6",
       "targets": [
@@ -1522,9 +1530,13 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "groupBy": [],
@@ -1599,7 +1611,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1608,7 +1620,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.0.4",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "format": "table",
@@ -1660,6 +1672,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Extrapolated range at 100% SoC",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1826,7 +1840,8 @@
             "min"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1965,6 +1980,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Efficiency",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1997,7 +2014,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2084,7 +2102,8 @@
             "min"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2233,7 +2252,7 @@
         "content": "VWsFriend version: [develop](https://github.com/tillsteinbach/VWsFriend/)",
         "mode": "markdown"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.1.6",
       "title": "Version",
       "type": "text"
     },
@@ -2249,6 +2268,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Charge Power",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2281,7 +2302,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2351,7 +2373,8 @@
             "min"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2526,7 +2549,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           },
@@ -2545,8 +2569,9 @@
       "options": {
         "alignValue": "center",
         "legend": {
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
         "mergeValues": true,
         "rowHeight": 0.9,
@@ -2676,7 +2701,7 @@
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "vwsfriend"

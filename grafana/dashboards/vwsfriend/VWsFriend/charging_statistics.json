@@ -126,7 +126,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.6",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -218,7 +218,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.6",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -319,6 +319,7 @@
           "mouseWheelZoom": true,
           "showAttribution": true,
           "showDebug": false,
+          "showMeasure": false,
           "showScale": false,
           "showZoom": true
         },
@@ -383,7 +384,7 @@
           "zoom": 15
         }
       },
-      "pluginVersion": "9.0.6",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -468,7 +469,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.6",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -555,7 +556,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.6",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -641,7 +642,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.6",
+      "pluginVersion": "9.1.6",
       "targets": [
         {
           "datasource": {
@@ -692,6 +693,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -747,7 +750,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -794,7 +798,8 @@
         ],
         "legend": {
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "pieType": "donut",
         "reduceOptions": {
@@ -886,6 +891,7 @@
         "legend": {
           "displayMode": "list",
           "placement": "bottom",
+          "showLegend": true,
           "values": [
             "percent"
           ]
@@ -947,6 +953,66 @@
         "uid": "P2EF847825A020B66"
       },
       "description": "Distribution of the power used for charging (percentage by time).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Power [kW]",
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "line": "linear",
+            "lineWidth": 1,
+            "point": "auto",
+            "pointSize": {
+              "fixed": 5
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Proportion"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Proportion of charging [%]"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 11,
@@ -954,93 +1020,31 @@
         "y": 20
       },
       "id": 13,
-      "pconfig": {
-        "fixScale": "",
-        "layout": {
-          "dragmode": "zoom",
-          "font": {
-            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-          },
-          "hovermode": "closest",
-          "legend": {
-            "orientation": "h"
-          },
-          "showlegend": false,
-          "xaxis": {
-            "range": [
-              0,
-              null
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "Power [kW]",
-            "type": "linear",
-            "zeroline": true
-          },
-          "yaxis": {
-            "range": [
-              0,
-              null
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "%",
-            "type": "linear",
-            "zeroline": true
-          },
-          "zaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "type": "linear",
-            "zeroline": false
-          }
+      "options": {
+        "dims": {
+          "x": "middle"
         },
-        "loadFromCDN": false,
-        "settings": {
-          "displayModeBar": false,
-          "type": "scatter"
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
-        "showAnnotations": true,
-        "traces": [
+        "mode": "xy",
+        "series": [
           {
-            "mapping": {
-              "color": "Number",
-              "text": "metric",
-              "x": "middle",
-              "y": "amount"
-            },
-            "name": "Distribution",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#005f81",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 6
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
+            "pointColor": {},
+            "pointSize": {
+              "fixed": 5,
+              "max": 50,
+              "min": 1
             }
           }
-        ]
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
@@ -1053,7 +1057,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "(SELECT\r\n width_bucket(\"chargePower_kW\",-1,15,16) AS power,\r\n (((width_bucket(\"chargePower_kW\",-1,15,16)-1.5)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-1,15,16)-0.5)))::TEXT || 'kW' AS metric,\r\n ((width_bucket(\"chargePower_kW\",-1,15,16)::decimal-1)) AS middle,\r\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS Amount\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  \"chargePower_kW\" < 15 AND\r\n  charges.\"chargingState\" = 'CHARGING' AND\r\n  charges.vehicle_vin = '$VIN'\r\nGROUP BY power, metric, middle\r\nORDER BY 1)\r\n\r\nUNION\r\n(SELECT\r\n width_bucket(\"chargePower_kW\",15,205,19) AS power,\r\n (((width_bucket(\"chargePower_kW\",-5,205,21)-1.5)*(210/21)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-5,205,21)-0.5)*(210/21)))::TEXT || 'kW' AS metric,\r\n ((width_bucket(\"chargePower_kW\",-5,205,21)::decimal-1)*(210/21)) AS middle,\r\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS Amount\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  \"chargePower_kW\" > 15 AND\r\n  charges.\"chargingState\" = 'CHARGING' AND\r\n  charges.vehicle_vin = '$VIN'\r\nGROUP BY power, metric, middle\r\nORDER BY 1)\r\nORDER BY middle",
+          "rawSql": "(SELECT\r\n width_bucket(\"chargePower_kW\",-1,15,16) AS power,\r\n ((width_bucket(\"chargePower_kW\",-1,15,16)::decimal-1)) AS \"Center of bucket\",\r\n (((width_bucket(\"chargePower_kW\",-1,15,16)-1.5)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-1,15,16)-0.5)))::TEXT || 'kW' AS \"Bucket\",\r\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS \"Proportion\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  \"chargePower_kW\" < 15 AND\r\n  charges.\"chargingState\" = 'CHARGING' AND\r\n  charges.vehicle_vin = '$VIN'\r\nGROUP BY power, \"Bucket\", \"Center of bucket\"\r\nORDER BY 1)\r\n\r\nUNION\r\n(SELECT\r\n width_bucket(\"chargePower_kW\",15,205,19) AS power,\r\n ((width_bucket(\"chargePower_kW\",-5,205,21)::decimal-1)*(210/21)) AS \"Center of bucket\",\r\n (((width_bucket(\"chargePower_kW\",-5,205,21)-1.5)*(210/21)))::TEXT || 'kW to ' || (((width_bucket(\"chargePower_kW\",-5,205,21)-0.5)*(210/21)))::TEXT || 'kW' AS \"Bucket\",\r\n SUM(\"chargePower_kW\") / (SELECT SUM(\"chargePower_kW\") FROM charges) * 100 AS \"Proportion\"\r\nFROM charges\r\nWHERE\r\n  $__timeFilter(\"carCapturedTimestamp\") AND\r\n  \"chargePower_kW\" > 15 AND\r\n  charges.\"chargingState\" = 'CHARGING' AND\r\n  charges.vehicle_vin = '$VIN'\r\nGROUP BY power, \"Bucket\", \"Center of bucket\"\r\nORDER BY 1)\r\nORDER BY \"Center of bucket\"",
           "refId": "A",
           "select": [
             [
@@ -1078,9 +1082,19 @@
         }
       ],
       "title": "Power distribution",
-      "transformations": [],
-      "type": "natel-plotly-panel",
-      "version": 1
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "power": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "xychart"
     },
     {
       "datasource": {
@@ -1088,6 +1102,66 @@
         "uid": "P2EF847825A020B66"
       },
       "description": "Distribution of the charging time over the day.\nFor meaningful values wait until a significant number of charging sessions were recorded. Change timezone in vehicle settings.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Hour",
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "line": "linear",
+            "lineWidth": 1,
+            "point": "auto",
+            "pointSize": {
+              "fixed": 5
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "h"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Proportion"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Proportion of charging [%]"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 10,
@@ -1095,93 +1169,31 @@
         "y": 20
       },
       "id": 6,
-      "pconfig": {
-        "fixScale": "",
-        "layout": {
-          "dragmode": "lasso",
-          "font": {
-            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-          },
-          "hovermode": "closest",
-          "legend": {
-            "orientation": "h"
-          },
-          "showlegend": false,
-          "xaxis": {
-            "range": [
-              0,
-              24
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "Hour",
-            "type": "linear",
-            "zeroline": true
-          },
-          "yaxis": {
-            "range": [
-              0,
-              null
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "%",
-            "type": "linear",
-            "zeroline": true
-          },
-          "zaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "type": "linear",
-            "zeroline": false
-          }
+      "options": {
+        "dims": {
+          "x": "Hour"
         },
-        "loadFromCDN": false,
-        "settings": {
-          "displayModeBar": false,
-          "type": "scatter"
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
-        "showAnnotations": true,
-        "traces": [
+        "mode": "xy",
+        "series": [
           {
-            "mapping": {
-              "color": "Number",
-              "text": "Text",
-              "x": "Hour",
-              "y": "Number"
-            },
-            "name": "Distribution",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#005f81",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 6
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
+            "pointColor": {},
+            "pointSize": {
+              "fixed": 5,
+              "max": 50,
+              "min": 1
             }
           }
-        ]
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
@@ -1194,7 +1206,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n EXTRACT(HOUR FROM ((\"carCapturedTimestamp\"::timestamp AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC'))) AS \"Hour\",\n (COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100) AS \"Number\",\n ROUND((COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100))::TEXT || '% of charging time' AS \"Text\"\nFROM charges\nLEFT JOIN vehicle_settings ON charges.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n EXTRACT(HOUR FROM ((\"carCapturedTimestamp\"::timestamp AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC'))) AS \"Hour\",\n (COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100) AS \"Proportion\",\n ROUND((COUNT(*) / CAST( SUM(COUNT(*)) over () as FLOAT) * 100))::TEXT || '% of charging time' AS \"Text\"\nFROM charges\nLEFT JOIN vehicle_settings ON charges.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  charges.\"chargingState\" = 'CHARGING' AND\n  charges.vehicle_vin = '$VIN'\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -1220,8 +1232,7 @@
       ],
       "title": "Hourly distribution in timezone $car_timezone",
       "transformations": [],
-      "type": "natel-plotly-panel",
-      "version": 1
+      "type": "xychart"
     },
     {
       "datasource": {
@@ -1229,6 +1240,111 @@
         "uid": "P2EF847825A020B66"
       },
       "description": "Charging speeds at different SoC.\nFor meaningful values wait until a significant number of charging sessions were recorded. Only DC charging sessions are considered.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "SoC [%]",
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "line": "linear",
+            "lineWidth": 1,
+            "point": "auto",
+            "pointSize": {
+              "fixed": 5
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "kW"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Avg"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 11,
@@ -1236,165 +1352,29 @@
         "y": 28
       },
       "id": 8,
-      "pconfig": {
-        "fixScale": "",
-        "layout": {
-          "dragmode": "lasso",
-          "font": {
-            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-          },
-          "hovermode": "closest",
-          "legend": {
-            "orientation": "h"
-          },
-          "showlegend": true,
-          "xaxis": {
-            "range": [
-              0,
-              100
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "SoC%",
-            "type": "linear",
-            "zeroline": true
-          },
-          "yaxis": {
-            "rangemode": "tozero",
-            "showgrid": true,
-            "title": "Power kW",
-            "type": "linear",
-            "zeroline": true
-          },
-          "zaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "type": "linear",
-            "zeroline": false
-          }
+      "options": {
+        "dims": {},
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "loadFromCDN": false,
-        "settings": {
-          "displayModeBar": false,
-          "type": "scatter"
-        },
-        "showAnnotations": true,
-        "traces": [
+        "mode": "xy",
+        "series": [
           {
-            "mapping": {
-              "color": "soc",
-              "text": "maxText",
-              "x": "soc",
-              "y": "max"
-            },
-            "name": "Max",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#F2495C",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 1
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": false
-            }
-          },
-          {
-            "mapping": {
-              "color": "soc",
-              "text": "avgText",
-              "x": "soc",
-              "y": "avg"
-            },
-            "name": "Average",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#FADE2A",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 1
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": false
-            }
-          },
-          {
-            "mapping": {
-              "color": "soc",
-              "text": "minText",
-              "x": "soc",
-              "y": "min"
-            },
-            "name": "Min",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#73BF69",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 1
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": false
+            "pointColor": {},
+            "pointSize": {
+              "fixed": 5,
+              "max": 50,
+              "min": 1
             }
           }
-        ]
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "pluginVersion": "8.1.0",
       "targets": [
@@ -1408,7 +1388,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  battery.\"currentSOC_pct\" AS \"soc\",\n  MAX(charges.\"chargePower_kW\") AS \"max\",\n  AVG(charges.\"chargePower_kW\") AS \"avg\",\n  MIN(charges.\"chargePower_kW\") AS \"min\",\n  'max. ' || MAX(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"maxText\",\n  'avg. ' || ROUND(AVG(charges.\"chargePower_kW\")::DECIMAL,2)::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"avgText\",\n  'min. ' || MIN(charges.\"chargePower_kW\")::TEXT || 'kW from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"minText\"\nFROM\n  charges\nINNER JOIN charging_sessions ON charges.\"carCapturedTimestamp\" > charging_sessions.started AND charges.\"carCapturedTimestamp\" < charging_sessions.ended\nINNER JOIN battery ON battery.\"carCapturedTimestamp\" = (SELECT battery.\"carCapturedTimestamp\" FROM battery WHERE battery.\"carCapturedTimestamp\" > charges.\"carCapturedTimestamp\" - interval '120 SECONDS' AND battery.\"carCapturedTimestamp\" < charges.\"carCapturedTimestamp\" + interval '120 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (battery.\"carCapturedTimestamp\" - charges.\"carCapturedTimestamp\"))) ASC LIMIT 1)\nWHERE\n    charging_sessions.acdc = 'DC' AND\n    charges.\"chargePower_kW\" > 0 AND\n    $__timeFilter(charges.\"carCapturedTimestamp\") AND\n    charges.vehicle_vin = '$VIN'\nGROUP BY soc\nORDER by soc ASC",
+          "rawSql": "SELECT\n  battery.\"currentSOC_pct\" AS \"SoC\",\n  MAX(charges.\"chargePower_kW\") AS \"Max\",\n  AVG(charges.\"chargePower_kW\") AS \"Avg\",\n  MIN(charges.\"chargePower_kW\") AS \"Min\",\n  'Metrics calculated from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"Values\"\nFROM\n  charges\nINNER JOIN charging_sessions ON charges.\"carCapturedTimestamp\" > charging_sessions.started AND charges.\"carCapturedTimestamp\" < charging_sessions.ended\nINNER JOIN battery ON battery.\"carCapturedTimestamp\" = (SELECT battery.\"carCapturedTimestamp\" FROM battery WHERE battery.\"carCapturedTimestamp\" > charges.\"carCapturedTimestamp\" - interval '120 SECONDS' AND battery.\"carCapturedTimestamp\" < charges.\"carCapturedTimestamp\" + interval '120 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (battery.\"carCapturedTimestamp\" - charges.\"carCapturedTimestamp\"))) ASC LIMIT 1)\nWHERE\n    charging_sessions.acdc = 'DC' AND\n    charges.\"chargePower_kW\" > 0 AND\n    $__timeFilter(charges.\"carCapturedTimestamp\") AND\n    charges.vehicle_vin = '$VIN'\nGROUP BY \"SoC\"\nORDER by \"SoC\" ASC",
           "refId": "A",
           "select": [
             [
@@ -1446,8 +1426,7 @@
           }
         }
       ],
-      "type": "natel-plotly-panel",
-      "version": 1
+      "type": "xychart"
     },
     {
       "datasource": {
@@ -1455,6 +1434,62 @@
         "uid": "P2EF847825A020B66"
       },
       "description": "Distribution of the time remaining in a specific SoC.\nFor meaningful values wait until a significant number ofvalues were recorded.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "SoC [%]",
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "line": "linear",
+            "lineWidth": 1,
+            "point": "auto",
+            "pointSize": {
+              "fixed": 5
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Proportion"
+            },
+            "properties": [
+              {
+                "id": "custom.axisLabel",
+                "value": "Proportion of time [%]"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 10,
@@ -1462,85 +1497,31 @@
         "y": 28
       },
       "id": 20,
-      "pconfig": {
-        "fixScale": "",
-        "layout": {
-          "dragmode": "lasso",
-          "font": {
-            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-          },
-          "hovermode": "closest",
-          "legend": {
-            "orientation": "h"
-          },
-          "showlegend": false,
-          "xaxis": {
-            "rangemode": "tozero",
-            "showgrid": true,
-            "title": "SoC %",
-            "type": "linear",
-            "zeroline": true
-          },
-          "yaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "title": "%",
-            "type": "linear",
-            "zeroline": true
-          },
-          "zaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "type": "linear",
-            "zeroline": false
-          }
+      "options": {
+        "dims": {
+          "x": "SoC"
         },
-        "loadFromCDN": false,
-        "settings": {
-          "displayModeBar": false,
-          "type": "scatter"
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
-        "showAnnotations": true,
-        "traces": [
+        "mode": "xy",
+        "series": [
           {
-            "mapping": {
-              "color": "Number",
-              "text": "Text",
-              "x": "SoC_pct",
-              "y": "Time"
-            },
-            "name": "Distribution",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#005f81",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 6
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
+            "pointColor": {},
+            "pointSize": {
+              "fixed": 5,
+              "max": 50,
+              "min": 1
             }
           }
-        ]
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
@@ -1553,7 +1534,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n \"SoC_pct\",\n \"Time\"/ SUM(\"Time\") OVER () * 100 AS \"Time\",\n ROUND((\"Time\"/ SUM(\"Time\") OVER () * 100)::numeric, 2)::TEXT || '% of time' AS \"Text\"\nFROM\n(\nSELECT\n \"SoC_pct\",\n SUM(\"Duration\") AS \"Time\"\nFROM\n(SELECT\nfloor(\"currentSOC_pct\" / 5) * 5 AS \"SoC_pct\",\nEXTRACT(epoch FROM (\"carCapturedTimestamp\" - lag(battery.\"carCapturedTimestamp\") over (order by \"carCapturedTimestamp\"))) AS \"Duration\"\nFROM battery\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\nORDER BY 1) AS data\nGROUP BY \"SoC_pct\") AS data2",
+          "rawSql": "SELECT\n \"SoC_pct\" AS \"SoC\",\n \"Time\"/ SUM(\"Time\") OVER () * 100 AS \"Proportion\",\n ROUND((\"Time\"/ SUM(\"Time\") OVER () * 100)::numeric, 2)::TEXT || '% of time' AS \"Text\"\nFROM\n(\nSELECT\n \"SoC_pct\",\n SUM(\"Duration\") AS \"Time\"\nFROM\n(SELECT\nfloor(\"currentSOC_pct\" / 5) * 5 AS \"SoC_pct\",\nEXTRACT(epoch FROM (\"carCapturedTimestamp\" - lag(battery.\"carCapturedTimestamp\") over (order by \"carCapturedTimestamp\"))) AS \"Duration\"\nFROM battery\nLEFT JOIN vehicle_settings ON battery.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"carCapturedTimestamp\") AND\n  battery.vehicle_vin = '$VIN'\nORDER BY 1) AS data\nGROUP BY \"SoC_pct\") AS data2",
           "refId": "A",
           "select": [
             [
@@ -1579,12 +1560,11 @@
       ],
       "title": "Distribution of time remaining in SoC",
       "transformations": [],
-      "type": "natel-plotly-panel",
-      "version": 1
+      "type": "xychart"
     }
   ],
   "refresh": false,
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "vwsfriend"

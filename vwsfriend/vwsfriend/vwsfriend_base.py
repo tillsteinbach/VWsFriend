@@ -316,7 +316,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     weConnect = None
     try:  # pylint: disable=too-many-nested-blocks
         weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, spin=weConnectSpin, tokenfile=tokenfile,
-                                        updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400)
+                                        updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400, forceReloginAfter=21600)
 
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
                                    configDir=args.configDir, privacy=args.privacy)
@@ -487,6 +487,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         else:
             starttime = time.time()
             permanentErrors = 0
+            sleeptime = args.interval
             while True:
                 try:
                     LOG.info('Updating data from WeConnect')

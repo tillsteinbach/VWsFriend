@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.22.1] - 2022-10-04
+### Added
+- Add invalid door lock state
+- Graph and routes on map now sync with each other
+
+### Fixed
+- Bug with honk and flash endpoint
+- Bug where VWsFriend crashed when no location could be retrieved
+- Bug when no data could be retrieved on startup
+
+### Changed
+- Updated API to 0.48.2
+- Updated Grafana to 9.1.7
+- Removed Plotly plugin and use native grafana XY plot now
+
 ## [0.22.0] - 2022-09-23
 ### Added
 - Allow to hide and sort vehicles in the grafana select box through vehicle settings
@@ -512,7 +527,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.22.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.22.1...HEAD
+[0.22.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.1
 [0.22.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.0
 [0.21.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.21.0
 [0.20.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.20.1
