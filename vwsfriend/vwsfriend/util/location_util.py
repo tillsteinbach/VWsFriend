@@ -141,7 +141,8 @@ def addCharger(session, weConnectCharger):
     if weConnectCharger.chargingSpots.enabled:
         charger.num_spots = len(weConnectCharger.chargingSpots)
 
-    charger.operator = Operator(id=weConnectCharger.operator.id.value, name=weConnectCharger.operator.name.value,
-                                phone=weConnectCharger.operator.phoneNumber.value)
+    if weConnectCharger.operator is not None and weConnectCharger.operator.enabled:
+        charger.operator = Operator(id=weConnectCharger.operator.id.value, name=weConnectCharger.operator.name.value,
+                                    phone=weConnectCharger.operator.phoneNumber.value)
 
     return session.merge(charger)
