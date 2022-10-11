@@ -75,6 +75,8 @@ class TripAgent():
                             and self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].connectionState.enabled:
                         self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].connectionState.isActive \
                             .addObserver(self.__onIsActiveChanged, AddressableLeaf.ObserverEvent.VALUE_CHANGED, onUpdateComplete=True)
+                        self.vehicle.weConnectVehicle.domains['readiness']['readinessStatus'].connectionState.isActive \
+                            .addObserver(self.__onIsActiveDisabled, AddressableLeaf.ObserverEvent.DISABLED, onUpdateComplete=True)
                         LOG.info(f'Vehicle {self.vehicle.vin} provides isActive flag in readinessStatus and thus allows to record trips with several minutes'
                                  ' inaccuracy')
                         self.mode = TripAgent.Mode.READINESS_STATUS
@@ -255,6 +257,36 @@ class TripAgent():
                 else:
                     if flags is not None:
                         LOG.info(f'Vehicle {self.vehicle.vin} reports to be inactive, but no trip was started (this is ok during startup)')
+
+    def __onIsActiveDisabled(self, element, flags):  # noqa: C901
+        if self.trip is not None:
+            try:
+                self.session.refresh(self.trip)
+            except ObjectDeletedError:
+                LOG.warning('Last trip entry was deleted')
+                self.trip = None
+
+        if self.mode == TripAgent.Mode.READINESS_STATUS:
+            if self.vehicle.weConnectVehicle.statusExists('charging', 'plugStatus'):
+                plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
+                if plugStatus.enabled and plugStatus.plugConnectionState.enabled \
+                        and plugStatus.plugConnectionState.value == PlugStatus.PlugConnectionState.CONNECTED:
+                    return
+            if self.trip is not None:
+                self.trip.endDate = datetime.utcnow().replace(tzinfo=timezone.utc, microsecond=0)
+                if self.vehicle.weConnectVehicle.statusExists('measurements', 'odometerStatus') \
+                        and self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus'].enabled:
+                    odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
+                    if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
+                        self.trip.end_mileage_km = odometerMeasurement.odometer.value
+
+                self.session.commit()
+                self.trip = None
+
+                LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
+            else:
+                if flags is not None:
+                    LOG.info(f'Vehicle {self.vehicle.vin} reports to be inactive, but no trip was started (this is ok during startup)')
 
     def __onPlugConnectionStateChanged(self, element, flags):  # noqa: C901
         if self.trip is not None:
