@@ -109,6 +109,7 @@
           "mouseWheelZoom": true,
           "showAttribution": true,
           "showDebug": false,
+          "showMeasure": false,
           "showScale": false,
           "showZoom": true
         },
@@ -253,13 +254,14 @@
           "mode": "details"
         },
         "view": {
+          "allLayers": true,
           "id": "fit",
           "lat": 0,
           "lon": 0,
           "zoom": 18
         }
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -454,7 +456,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -744,7 +746,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -788,6 +790,61 @@
         "uid": "P2EF847825A020B66"
       },
       "description": "Distribution of the trip occurrences over the day.\nFor meaningful values wait until a significant number of trips were recorded. Change timezone in vehicle settings.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "pointSize": {
+              "fixed": 5
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "show": "points+lines"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Hour"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "h"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -795,93 +852,22 @@
         "y": 19
       },
       "id": 22,
-      "pconfig": {
-        "fixScale": "",
-        "layout": {
-          "dragmode": "lasso",
-          "font": {
-            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-          },
-          "hovermode": "closest",
-          "legend": {
-            "orientation": "h"
-          },
-          "showlegend": false,
-          "xaxis": {
-            "range": [
-              0,
-              24
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "Hour",
-            "type": "linear",
-            "zeroline": true
-          },
-          "yaxis": {
-            "range": [
-              0,
-              null
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "%",
-            "type": "linear",
-            "zeroline": true
-          },
-          "zaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "type": "linear",
-            "zeroline": false
-          }
+      "options": {
+        "dims": {
+          "x": "Hour"
         },
-        "loadFromCDN": false,
-        "settings": {
-          "displayModeBar": false,
-          "type": "scatter"
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
-        "showAnnotations": true,
-        "traces": [
-          {
-            "mapping": {
-              "color": "Number",
-              "text": "Text",
-              "x": "Hour",
-              "y": "Number"
-            },
-            "name": "Distribution",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#005f81",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 6
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 15,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
-            }
-          }
-        ]
+        "series": [],
+        "seriesMapping": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
@@ -894,7 +880,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC')))\n  + (ROUND((EXTRACT(MINUTE FROM \"startDate\")/30)::numeric)/2) AS \"Hour\",\n (SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100) AS \"Number\",\n ROUND((SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100))::TEXT || '% of total time on this route' AS \"Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1\n",
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC')))\n  + (ROUND((EXTRACT(MINUTE FROM \"startDate\")/30)::numeric)/2) AS \"Hour\",\n (SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100) AS \"Percentage of Trips\",\n ROUND((SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\"))) / CAST( SUM(SUM(EXTRACT(EPOCH FROM(\"endDate\"-\"startDate\")))) over () as FLOAT) * 100))::TEXT || '% of total time on this route' AS \"Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1\n",
           "refId": "A",
           "select": [
             [
@@ -920,8 +906,7 @@
       ],
       "title": "Hourly distribution in timezone $car_timezone",
       "transformations": [],
-      "type": "natel-plotly-panel",
-      "version": 1
+      "type": "xychart"
     },
     {
       "datasource": {
@@ -929,6 +914,110 @@
         "uid": "P2EF847825A020B66"
       },
       "description": "Duration of the trip occurrences over the day.\nFor meaningful values wait until a significant number of trips were recorded. Change timezone in vehicle settings.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Duration",
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "pointSize": {
+              "fixed": 5
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "show": "points+lines"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dtdurations"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Hour"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "h"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Hour"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Maximum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Minimum"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Average"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -936,169 +1025,25 @@
         "y": 26
       },
       "id": 23,
-      "pconfig": {
-        "fixScale": "",
-        "layout": {
-          "dragmode": "lasso",
-          "font": {
-            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-          },
-          "hovermode": "closest",
-          "legend": {
-            "orientation": "h"
-          },
-          "showlegend": true,
-          "xaxis": {
-            "range": [
-              null,
-              null
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "Hour",
-            "type": "linear",
-            "zeroline": true
-          },
-          "yaxis": {
-            "range": [
-              0,
-              null
-            ],
-            "rangemode": "between",
-            "showgrid": true,
-            "title": "Duration [m]",
-            "type": "linear",
-            "zeroline": true
-          },
-          "zaxis": {
-            "rangemode": "normal",
-            "showgrid": true,
-            "type": "linear",
-            "zeroline": false
-          }
+      "options": {
+        "dims": {
+          "exclude": [
+            "Samples"
+          ],
+          "x": "Hour"
         },
-        "loadFromCDN": false,
-        "settings": {
-          "displayModeBar": false,
-          "type": "scatter"
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showAnnotations": true,
-        "traces": [
-          {
-            "mapping": {
-              "color": "Number",
-              "text": "Max. Text",
-              "x": "Hour",
-              "y": "Average"
-            },
-            "name": "Average duration",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#005f81",
-                "dash": "solid",
-                "shape": "linear",
-                "width": 3
-              },
-              "marker": {
-                "color": "#33B5E5",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 10,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "circle"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
-            }
-          },
-          {
-            "mapping": {
-              "color": "Number",
-              "text": "Max. Text",
-              "x": "Hour",
-              "y": "Maximum"
-            },
-            "name": "Maximum duration",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#F2495C",
-                "dash": "dot",
-                "shape": "linear",
-                "width": 3
-              },
-              "marker": {
-                "color": "#F2495C",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 10,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "diamond"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
-            }
-          },
-          {
-            "mapping": {
-              "color": "Number",
-              "text": "Max. Text",
-              "x": "Hour",
-              "y": "Minimum"
-            },
-            "name": "Minimum duration",
-            "settings": {
-              "color_option": "solid",
-              "line": {
-                "color": "#73BF69",
-                "dash": "dashdot",
-                "shape": "linear",
-                "width": 3
-              },
-              "marker": {
-                "color": "#73BF69",
-                "colorscale": "YlOrRd",
-                "line": {
-                  "color": "#DDD",
-                  "width": 0
-                },
-                "showscale": false,
-                "size": 10,
-                "sizemin": 3,
-                "sizemode": "diameter",
-                "sizeref": 0.2,
-                "symbol": "diamond"
-              },
-              "textposition": ""
-            },
-            "show": {
-              "line": true,
-              "lines": true,
-              "markers": true
-            }
-          }
-        ]
+        "series": [],
+        "seriesMapping": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
@@ -1111,7 +1056,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT * FROM (\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC')))\n  + (ROUND(EXTRACT(MINUTE FROM \"startDate\" AT TIME ZONE 'UTC')/10)/6) AS \"Hour\",\n  MIN(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Minimum\",\n  MAX(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Maximum\",\n  AVG(extract('epoch' from \"endDate\"-\"startDate\"))/60 AS \"Average\",\n  COUNT(*) AS \"Samples\",\n  'Based on ' || COUNT(*) || ' samples' AS \"Max. Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1) AS result\nWHERE\n  \"Samples\" > 1\n",
+          "rawSql": "DO $$ \nBEGIN\nIF ${start_location:singlequote} = 'none' OR ${destination_location:singlequote} = 'none'THEN\n  RAISE EXCEPTION 'No start or destination location was given, you have to navigate to this dashboard using a link from Trips dashboard';\nEND IF;\nEND $$;\n\nSELECT * FROM (\nSELECT\n  EXTRACT(HOUR FROM ((\"startDate\" AT TIME ZONE 'UTC') AT TIME ZONE COALESCE(vehicle_settings.timezone, 'UTC')))\n  + (ROUND(EXTRACT(MINUTE FROM \"startDate\" AT TIME ZONE 'UTC')/10)/6) AS \"Hour\",\n  MAX(extract('epoch' from \"endDate\"-\"startDate\")) AS \"Maximum\",\n  AVG(extract('epoch' from \"endDate\"-\"startDate\")) AS \"Average\",\n  MIN(extract('epoch' from \"endDate\"-\"startDate\")) AS \"Minimum\",\n  COUNT(*) AS \"Samples\",\n  'Based on ' || COUNT(*) || ' samples' AS \"Max. Text\"\nFROM trips\nLEFT JOIN locations start_locations ON trips.\"start_location_id\" = start_locations.osm_id\nLEFT JOIN locations destination_location ON trips.\"destination_location_id\" = destination_location.osm_id\nLEFT JOIN trip_tag ON trips.id = trip_tag.trips_id\nLEFT JOIN vehicle_settings ON trips.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n  start_location_id = $start_location AND\n  destination_location_id = $destination_location AND\n  trips.vehicle_vin = '$VIN'\nGROUP BY \"Hour\"\nORDER BY 1) AS result\nWHERE\n  \"Samples\" > 1\n",
           "refId": "A",
           "select": [
             [
@@ -1137,8 +1082,7 @@
       ],
       "title": "Duration by time in timezone $car_timezone",
       "transformations": [],
-      "type": "natel-plotly-panel",
-      "version": 1
+      "type": "xychart"
     },
     {
       "datasource": {
@@ -1196,7 +1140,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -1290,7 +1234,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
