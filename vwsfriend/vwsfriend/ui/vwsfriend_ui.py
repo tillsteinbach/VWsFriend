@@ -89,7 +89,8 @@ class VWsFriendUI:
 
             #  engine = create_engine(dbUrl)
             #  self.app.session = Session(engine)
-            Base.metadata.create_all(self.app.db.get_engine())
+            with self.app.app_context():
+                Base.metadata.create_all(self.app.db.get_engine())
 
         @self.app.before_request
         def before_request_callback():
