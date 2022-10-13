@@ -975,7 +975,8 @@
             },
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "show": "points+lines"
           },
           "mappings": [],
           "thresholds": {
@@ -1040,6 +1041,7 @@
             }
           }
         ],
+        "seriesMapping": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
