@@ -1,5 +1,5 @@
 pytest-runner~=6.0.0
 mccabe~=0.7.0
 flake8~=5.0.4
-pylint~=2.15.3
+pylint~=2.15.4
 bandit~=1.7.4

@@ -1,1 +1,1 @@
-weconnect-mqtt~=0.40.2
+weconnect-mqtt~=0.40.3
