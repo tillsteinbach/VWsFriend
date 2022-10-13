@@ -126,7 +126,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -218,7 +218,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -377,6 +377,7 @@
           "mode": "details"
         },
         "view": {
+          "allLayers": true,
           "id": "fit",
           "lat": 53.638576,
           "lon": 10.063363,
@@ -384,7 +385,7 @@
           "zoom": 15
         }
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -469,7 +470,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -556,7 +557,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -642,7 +643,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "9.2.0",
       "targets": [
         {
           "datasource": {
@@ -968,15 +969,14 @@
               "tooltip": false,
               "viz": false
             },
-            "line": "linear",
             "lineWidth": 1,
-            "point": "auto",
             "pointSize": {
               "fixed": 5
             },
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "show": "points+lines"
           },
           "mappings": [],
           "thresholds": {
@@ -1041,6 +1041,7 @@
             }
           }
         ],
+        "seriesMapping": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
@@ -1117,15 +1118,14 @@
               "tooltip": false,
               "viz": false
             },
-            "line": "linear",
             "lineWidth": 1,
-            "point": "auto",
             "pointSize": {
               "fixed": 5
             },
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "show": "points+lines"
           },
           "mappings": [],
           "thresholds": {
@@ -1190,6 +1190,7 @@
             }
           }
         ],
+        "seriesMapping": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
@@ -1255,15 +1256,14 @@
               "tooltip": false,
               "viz": false
             },
-            "line": "linear",
             "lineWidth": 1,
-            "point": "auto",
             "pointSize": {
               "fixed": 5
             },
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "show": "points+lines"
           },
           "mappings": [],
           "thresholds": {
@@ -1371,6 +1371,7 @@
             }
           }
         ],
+        "seriesMapping": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
@@ -1449,15 +1450,14 @@
               "tooltip": false,
               "viz": false
             },
-            "line": "linear",
             "lineWidth": 1,
-            "point": "auto",
             "pointSize": {
               "fixed": 5
             },
             "scaleDistribution": {
               "type": "linear"
-            }
+            },
+            "show": "points+lines"
           },
           "mappings": [],
           "thresholds": {
@@ -1518,6 +1518,7 @@
             }
           }
         ],
+        "seriesMapping": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
