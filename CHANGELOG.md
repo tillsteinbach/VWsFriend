@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.22.2] - 2022-10-17
+### Fixed
+- Bug with warning lights for tire pressure
+- Bug for charging stations that don't have an operator
+
+### Changed
+- Updated API to 0.48.3
+- Updated MQTT-API to 0.40.3
+- Updated Grafana to 9.2.0
+- Removed Plotly plugin and use native grafana XY plot now
+
 ## [0.22.1] - 2022-10-04
 ### Added
 - Add invalid door lock state
@@ -527,7 +538,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.22.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.22.2...HEAD
+[0.22.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.2
 [0.22.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.1
 [0.22.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.0
 [0.21.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.21.0
