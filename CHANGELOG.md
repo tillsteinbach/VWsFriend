@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.22.3] - 2022-10-18
 ### Fixed
-- Bug on settings page
+- Bug on settings page fixed
 
 ## [0.22.2] - 2022-10-17
 ### Fixed
