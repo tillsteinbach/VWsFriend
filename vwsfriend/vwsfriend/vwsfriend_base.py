@@ -14,7 +14,7 @@ import threading
 from pyhap.accessory_driver import AccessoryDriver
 
 from weconnect import weconnect
-from weconnect.errors import APICompatibilityError, AuthentificationError
+from weconnect.errors import APICompatibilityError, AuthentificationError, TemporaryAuthentificationError
 from weconnect.util import DuplicateFilter
 from weconnect.__version import __version__ as __weconnect_version__
 
@@ -316,7 +316,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     weConnect = None
     try:  # pylint: disable=too-many-nested-blocks
         weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, spin=weConnectSpin, tokenfile=tokenfile,
-                                        updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400, forceReloginAfter=21600)
+                                        updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400, forceReloginAfter=21600, numRetries=5)
 
         connector = AgentConnector(weConnect=weConnect, dbUrl=args.dbUrl, interval=args.interval, withDB=args.withDatabase, withABRP=args.withABRP,
                                    configDir=args.configDir, privacy=args.privacy)
@@ -500,6 +500,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                     permanentErrors = 0
                 except weconnect.RetrievalError:
                     LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
+                except TemporaryAuthentificationError:
+                    LOG.error('Temporary error during reauthentification. Will try again after configured interval of %ds', args.interval)
                 except APICompatibilityError as e:
                     sleeptime = min((args.interval * pow(2, permanentErrors)), 86400)
                     LOG.critical('There was a problem when communicating with WeConnect. If this problem persists please open a bug report: %s,'
