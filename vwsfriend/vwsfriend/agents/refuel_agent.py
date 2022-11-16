@@ -31,7 +31,7 @@ class RefuelAgent():
                 self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
                                                                                                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                                     onUpdateComplete=True)
-                self.__onCarCapturedTimestampChange(None, None)
+                self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carCapturedTimestamp, None)
             if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition') \
                     and self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].enabled:
                 self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(
