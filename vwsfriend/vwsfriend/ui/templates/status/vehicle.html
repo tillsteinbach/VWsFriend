@@ -251,7 +251,7 @@
       </p>
       {% endif %}
 
-      {% if vehicle.statusExists('automation', 'climatisationTimer') and vehicle.domains['automation']['climatisationTimer'].enabled and not vehicle.domains['automation']['climatisationTimer'].hasError() and vehicle.domains['automation']['climatisationTimer'].carCapturedTimestamp.value is not None%}
+      {% if vehicle.statusExists('automation', 'climatisationTimer') and vehicle.domains['automation']['climatisationTimer'].enabled and not vehicle.domains['automation']['climatisationTimer'].hasError() and vehicle.domains['automation']['climatisationTimer'].carCapturedTimestamp.value is not none %}
       <p>
       <h2>Climatization Timer (From {{vehicle.domains['automation']['climatisationTimer'].carCapturedTimestamp.value.isoformat()}})
       </h2>
@@ -283,7 +283,7 @@
       </p>
       {% endif %}
 
-      {% if vehicle.statusExists('measurements', 'odometerStatus') and vehicle.domains['measurements']['odometerStatus'].enabled and not vehicle.domains['measurements']['odometerStatus'].hasError() and vehicle.domains['measurements']['odometerStatus'].carCapturedTimestamp.value is not None%}
+      {% if vehicle.statusExists('measurements', 'odometerStatus') and vehicle.domains['measurements']['odometerStatus'].enabled and not vehicle.domains['measurements']['odometerStatus'].hasError() and vehicle.domains['measurements']['odometerStatus'].carCapturedTimestamp.value is not none %}
       <p>
       <h2>Odometer status (From {{vehicle.domains['measurements']['odometerStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
       <ul>
@@ -332,7 +332,7 @@
       </p>
       {% endif %}
 
-      {% if vehicle.statusExists('vehicleHealthInspection', 'maintenanceStatus') and vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].enabled and not vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].hasError() and vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].carCapturedTimestamp.value is not None%}
+      {% if vehicle.statusExists('vehicleHealthInspection', 'maintenanceStatus') and vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].enabled and not vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].hasError() and vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].carCapturedTimestamp.value is not none %}
       <p>
       <h2>Maintenance Status (From {{vehicle.domains['vehicleHealthInspection']['maintenanceStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
       <ul>
@@ -355,7 +355,7 @@
       </p>
       {% endif %}
 
-      {% if vehicle.statusExists('access', 'accessStatus') and vehicle.domains['access']['accessStatus'].enabled and not vehicle.domains['access']['accessStatus'].hasError() and vehicle.domains['access']['accessStatus'].carCapturedTimestamp.value is not None%}
+      {% if vehicle.statusExists('access', 'accessStatus') and vehicle.domains['access']['accessStatus'].enabled and not vehicle.domains['access']['accessStatus'].hasError() and vehicle.domains['access']['accessStatus'].carCapturedTimestamp.value is not none %}
       <p>
       <h2>Access Status (From {{vehicle.domains['access']['accessStatus'].carCapturedTimestamp.value.isoformat()}})</h2>
       <ul>
