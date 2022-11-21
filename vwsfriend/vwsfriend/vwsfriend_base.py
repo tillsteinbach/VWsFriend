@@ -137,6 +137,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     loggingMailGroup.add_argument('--logging-mail-notls', dest='loggingMailnotls', help='Mail do not use TLS', required=False, action='store_true')
     loggingMailGroup.add_argument('--logging-mail-testmail', dest='loggingMailTestmail', help='Try to send Testmail at startup', required=False,
                                   action='store_true')
+    loggingMailGroup.add_argument('--logging-mail-filter-duplicates', dest='loggingMailFilterDuplicates', help='Filter duplicated messages out', required=False,
+                                  action='store_true')
+    loggingMailGroup.add_argument('--logging-mail-filter-reset', dest='loggingMailFilterReset', help='Reset duplicate filter after number of seconds', type=int,
+                                  required=False, default=0)
 
     if SUPPORT_MQTT:
         mqttGroup = parser.add_argument_group('MQTT', description='MQTT support in VWsFriend is EXPERIMENTAL,'
@@ -214,6 +218,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                                        secure=secure)
             smtpHandler.setLevel(logging.INFO)
             smtpHandler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-5s %(message)s"))
+            if args.loggingMailFilterDuplicates:
+                smtpHandler.addFilter(DuplicateFilter(filterResetSeconds=args.loggingMailFilterReset))
             LOG.addHandler(smtpHandler)
             if args.loggingMailTestmail:
                 if SUPPORT_MQTT:
