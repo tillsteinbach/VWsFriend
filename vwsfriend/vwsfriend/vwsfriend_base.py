@@ -486,6 +486,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             LOG.info('Demo completed')
         else:
             starttime = time.time()
+            subsequentErrors = 0
             permanentErrors = 0
             sleeptime = args.interval
             while True:
@@ -498,14 +499,28 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         bridge.update()
                     sleeptime = args.interval - ((time.time() - starttime) % args.interval)
                     permanentErrors = 0
+                    subsequentErrors = 0
                 except weconnect.RetrievalError:
-                    LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
+                    if subsequentErrors > 0:
+                        LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
+                    else:
+                        LOG.warning('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
+                    subsequentErrors += 1
                 except TemporaryAuthentificationError:
-                    LOG.error('Temporary error during reauthentification. Will try again after configured interval of %ds', args.interval)
+                    if subsequentErrors > 0:
+                        LOG.error('Temporary error during reauthentification. Will try again after configured interval of %ds', args.interval)
+                    else:
+                        LOG.warning('Temporary error during reauthentification. Will try again after configured interval of %ds', args.interval)
+                    subsequentErrors += 1
                 except APICompatibilityError as e:
                     sleeptime = min((args.interval * pow(2, permanentErrors)), 86400)
-                    LOG.critical('There was a problem when communicating with WeConnect. If this problem persists please open a bug report: %s,'
-                                 ' will retry after %ds', e, sleeptime)
+                    if subsequentErrors > 0:
+                        LOG.critical('There was a problem when communicating with WeConnect. If this problem persists please open a bug report: %s,'
+                                     ' will retry after %ds', e, sleeptime)
+                    else:
+                        LOG.warning('There was a problem when communicating with WeConnect. If this problem persists please open a bug report: %s,'
+                                    ' will retry after %ds', e, sleeptime)
+                    subsequentErrors += 1
                     permanentErrors += 1
                 #  Execute exactly every interval but if it misses its deadline only after the next interval
                 time.sleep(sleeptime)
