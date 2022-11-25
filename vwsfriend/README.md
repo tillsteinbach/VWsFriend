@@ -5,7 +5,7 @@ Volkswagen WeConnect© API visualization and control (HomeKit) inspired by Tesla
 <img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/teaser.gif" width="100%">
 
 ## Requirements
-You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/)
+You need to install python 3 on your system: [How to install python](https://realpython.com/installing-python/). Minimum python version required is 3.8
 
 To make use of all features you have to install and configure several depending projects (grafana, postgresql, ...) most users use the preconfigured docker images at: https://github.com/tillsteinbach/VWsFriend/
 If you still want to setup everything on your own, please continue reading.
