@@ -24,7 +24,7 @@ class BatteryAgent():
                 self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
                                                                                                                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                                     onUpdateComplete=True)
-                self.__onCarCapturedTimestampChange(None, None)
+                self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].carCapturedTimestamp, None)
 
     def __onCarCapturedTimestampChange(self, element, flags):
         if element is not None and element.value is not None:

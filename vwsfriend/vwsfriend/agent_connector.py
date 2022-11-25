@@ -47,8 +47,10 @@ class AgentConnector():
                             LOG.info('It looks like the backup could be successfully restored')
                 finally:
                     os.remove(configDir + '/provisioning/database.vwsfrienddbbackup')
-
-            engine = create_engine(dbUrl, pool_pre_ping=True)
+            connectArgs = {}
+            if 'postgresql' in dbUrl:
+                connectArgs['options'] = '-c timezone=utc'
+            engine = create_engine(dbUrl, pool_pre_ping=True, connect_args=connectArgs)
             sessionFactory = sessionmaker(bind=engine)
             Session = scoped_session(sessionFactory)
             self.session = Session()
