@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.23.0] - 2022-11-25
+### Added
+- Support for python 3.11
+- Add new currentFuelLevel_pct attribut
+- Add invalid door lock state
+- Tire warning light category
+
+### Fixed
+- Bug with times on self hosted postgres databases that do not have UTC as a default timezone
+- Bug where database was not updated after restart of the container
+- Bug on status page when timestamp was not set
+- Bug where updates became stuck after a temporary authentification error
+
+### Changed
+- Default python version used now is 3.11
+- Relogin if the refresh token expired
+- Don't store cookies in between requests
+- No cache header added
+- First failed contact with vw servers will trigger warning not error
+- Updated API to 0.50.0
+- Updated MQTT-API to 0.41.0
+- Updated Grafana to 9.2.6
+
+### Removed
+- Support for python 3.7
+
+
 ## [0.22.3] - 2022-10-18
 ### Fixed
 - Bug on settings page fixed
@@ -542,7 +569,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.22.3...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.0
 [0.22.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.3
 [0.22.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.2
 [0.22.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.1
