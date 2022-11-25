@@ -29,6 +29,7 @@ class ABRPAgent():
         retries = Retry(total=3, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
         self.__session.mount('https://api.iternio.com', HTTPAdapter(max_retries=retries))
         self.__userTokens: list[tuple[str, str]] = []
+        self.subsequentErrors = 0
 
         self.telemetryData: dict = {}
         self.tokenfile: str = tokenfile
@@ -74,13 +75,21 @@ class ABRPAgent():
                     data = response.json()
                     if 'status' in data:
                         if data['status'] != 'ok':
-                            LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed')
+                            if self.subsequentErrors > 0:
+                                LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed')
+                            else:
+                                LOG.warning(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed')
+                        else:
+                            self.subsequentErrors = 0
                         if 'missing' in data:
                             LOG.info(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account}: {data["missing"]}')
                     else:
                         LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} returned unexpected data')
             except RequestException as e:
-                LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after next interval')
+                if self.subsequentErrors > 0:
+                    LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after next interval')
+                else:
+                    LOG.warning(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after next interval')
 
     def commit(self):  # noqa: C901
         if self.weConnectVehicle.statusExists('charging', 'batteryStatus'):
