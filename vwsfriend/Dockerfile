@@ -6,12 +6,13 @@ ARG DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
 ARG VERSION
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.10 python3.10-dev python3.10-venv python3-pip python3-wheel build-essential && \
+RUN apt-get update && apt-get install --no-install-recommends -y gpg gpg-agent software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
+    apt-get install --no-install-recommends -y python3.11 python3.11-dev python3.11-venv python3-pip python3-wheel build-essential && \
     apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev rustc cargo libjpeg-dev zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
-RUN python3.10 -m venv /opt/venv
+RUN python3.11 -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip3 install --no-cache-dir wheel
@@ -34,7 +35,8 @@ ENV WECONNECT_INTERVAL=300
 ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.10 python3.10-venv wget && \
+RUN apt-get update && apt-get install --no-install-recommends -y gpg gpg-agent software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
+    apt-get install --no-install-recommends -y python3.11 python3.11-venv wget && \
     apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
