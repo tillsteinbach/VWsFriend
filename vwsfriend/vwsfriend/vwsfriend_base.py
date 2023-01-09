@@ -182,7 +182,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                nargs='?', const='', default=None, type=str)
         mqttGroup.add_argument('--locale',
                                help='Use specified locale, leave argument empty to use system default', default='', type=str)
-        mqttGroup.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
         mqttGroup.add_argument('--picture-format', dest='pictureFormat', help='Format of the picture topics', default=PictureFormat.TXT, required=False,
                                type=PictureFormat, choices=list(PictureFormat))
         mqttGroup.add_argument('--with-raw-json-topic', dest='withRawJsonTopic', help='Adds topic <PREFIX>/rawjson with all information in one json string.'
@@ -410,10 +409,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 weConnect.searchRadius = args.chargingLocationRadius
 
             mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
-                                             prefix=args.prefix, ignore=args.ignore, updatePictures=args.pictures, listNewTopics=args.listTopics,
-                                             republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
-                                             convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic,
-                                             passive=True)
+                                             prefix=args.prefix, ignore=args.ignore, updateCapabilities=True, updatePictures=True,
+                                             listNewTopics=args.listTopics, republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat,
+                                             topicFilterRegex=topicFilterRegex, convertTimezone=convertTimezone, timeFormat=args.timeFormat,
+                                             withRawJsonTopic=args.withRawJsonTopic, passive=True)
             mqttCLient.enable_logger()
 
             if usetls:
