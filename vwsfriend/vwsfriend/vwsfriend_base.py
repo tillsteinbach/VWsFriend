@@ -412,7 +412,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                              prefix=args.prefix, ignore=args.ignore, updateCapabilities=True, updatePictures=True,
                                              listNewTopics=args.listTopics, republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat,
                                              topicFilterRegex=topicFilterRegex, convertTimezone=convertTimezone, timeFormat=args.timeFormat,
-                                             withRawJsonTopic=args.withRawJsonTopic, passive=True)
+                                             withRawJsonTopic=args.withRawJsonTopic, passive=False)
             mqttCLient.enable_logger()
 
             if usetls:
@@ -496,10 +496,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             sleeptime = args.interval
             while True:
                 try:
-                    LOG.info('Updating data from WeConnect')
                     if SUPPORT_MQTT and args.mqttbroker:
                         mqttCLient.updateWeConnect(reraise=True)
                     else:
+                        LOG.info('Updating data from WeConnect')
                         weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
                     connector.commit()
                     if args.withHomekit and not weConnectBridgeInitialized:
