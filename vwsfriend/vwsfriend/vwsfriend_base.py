@@ -498,7 +498,10 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             while True:
                 try:
                     LOG.info('Updating data from WeConnect')
-                    weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
+                    if SUPPORT_MQTT and args.mqttbroker:
+                        mqttCLient.updateWeConnect(reraise=True)
+                    else:
+                        weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
                     connector.commit()
                     if args.withHomekit and not weConnectBridgeInitialized:
                         weConnectBridgeInitialized = True
@@ -539,3 +542,5 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     finally:
         if weConnect is not None:
             weConnect.disconnect()
+        if SUPPORT_MQTT and args.mqttbroker:
+            mqttCLient.disconnect()
