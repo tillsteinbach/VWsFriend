@@ -21,7 +21,7 @@ class LockingSystem(GenericAccessory):
         super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
 
         self.accessControl = accessControl
-        self.service = self.add_preload_service('LockMechanism', ['Name', 'ConfiguredName', 'LockCurrentState', 'LockTargetState'])
+        self.service = self.add_preload_service('LockMechanism', ['Name', 'ConfiguredName', 'LockCurrentState', 'LockTargetState'], unique_id=(aid*100))
 
         if accessStatus is not None and accessStatus.overallStatus.enabled:
             accessStatus.overallStatus.addObserver(self.onOverallStatusChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)

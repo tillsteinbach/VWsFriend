@@ -27,8 +27,8 @@ class Climatization(GenericAccessory):
         self.climatizationSettings = climatizationSettings
         self.climatizationStatus = climatizationStatus
         self.service = self.add_preload_service('Thermostat', ['Name', 'ConfiguredName', 'CurrentHeatingCoolingState', 'TargetHeatingCoolingState',
-                                                'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration', 'StatusFault'])
-        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
+                                                'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration', 'StatusFault'], unique_id=(aid*100))
+        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'], unique_id=((aid*100)+1))
         self.service.add_linked_service(self.batteryService)
 
         if climatizationStatus.climatisationState.enabled:
