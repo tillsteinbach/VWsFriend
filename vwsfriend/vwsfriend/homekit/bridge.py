@@ -40,13 +40,13 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 displayName = accessory['ConfiguredName']
             else:
                 displayName = identifier
-            placeholderAccessory = DummyAccessory(driver=driver, displayName=displayName, aid=accessory['aid'])
-            if 'category' in accessory:
-                placeholderAccessory.category = accessory['category']
-            if 'services' in accessory:
-                for service in accessory['services']:
-                    placeholderAccessory.add_preload_service(service, chars=None)
-            self.add_accessory(placeholderAccessory)
+            #placeholderAccessory = DummyAccessory(driver=driver, displayName=displayName, aid=accessory['aid'])
+            #if 'category' in accessory:
+            #    placeholderAccessory.category = accessory['category']
+            #if 'services' in accessory:
+            #    for service in accessory['services']:
+            #        placeholderAccessory.add_preload_service(service, chars=None)
+            #self.add_accessory(placeholderAccessory)
 
     def persistConfig(self):
         if self.accessoryConfigFile:
