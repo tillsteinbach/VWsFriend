@@ -23,8 +23,9 @@ class Charging(GenericAccessory):
 
         self.chargingControl = chargingControl
 
-        self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration', 'Consumption', 'StatusFault'])
-        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'])
+        self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration', 'Consumption', 'StatusFault'],
+                                                unique_id=(aid * 100))
+        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'], unique_id=((aid * 100) + 1))
         self.service.add_linked_service(self.batteryService)
 
         if chargingStatus is not None and chargingStatus.chargingState.enabled:
