@@ -34,6 +34,7 @@ try:
 
     from weconnect_mqtt. weconnect_mqtt_base import PictureFormat, WeConnectMQTTClient  # type: ignore
     from weconnect_mqtt.__version import __version__ as __weconnect_mqtt_version__
+    import paho.mqtt.client
     SUPPORT_MQTT = True
 except ImportError:
     pass
@@ -154,6 +155,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         mqttGroup.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60, help='Time between keep-alive messages')
         mqttGroup.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername', help='Username for MQTT broker', required=False)
         mqttGroup.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword', help='Password for MQTT broker', required=False)
+        mqttGroup.add_argument('-mv', '--mqtt-version', type=str, dest='mqttversion', help='MQTT protocol version used', required=False,
+                               choices=['3.1', '3.1.1', '5'], default='3.1.1')
         mqttGroup.add_argument('--transport', required=False, default='tcp', choices=["tcp", 'websockets'],
                                help='EXPERIMENTAL support for websockets transport')
         mqttGroup.add_argument('-s', '--use-tls', action='store_true', help='EXPERIMENTAL')
@@ -408,7 +411,14 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 weConnect.longitude = longitude
                 weConnect.searchRadius = args.chargingLocationRadius
 
-            mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
+            if args.mqttversion == '3.1':
+                mqttVersion = paho.mqtt.client.MQTTv31
+            elif args.mqttversion == '5':
+                mqttVersion = paho.mqtt.client.MQTTv5
+            else:
+                mqttVersion = paho.mqtt.client.MQTTv311
+
+            mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, protocol=mqttVersion, transport=args.transport, interval=args.interval,
                                              prefix=args.prefix, ignore=args.ignore, updateCapabilities=True, updatePictures=True,
                                              listNewTopics=args.listTopics, republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat,
                                              topicFilterRegex=topicFilterRegex, convertTimezone=convertTimezone, timeFormat=args.timeFormat,
