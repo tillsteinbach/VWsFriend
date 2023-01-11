@@ -199,7 +199,7 @@ class TripAgent():
                             if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                                 self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
-                        self.session.commit()   
+                        self.session.commit()
                         self.trip = None
 
                         LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
