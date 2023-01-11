@@ -18,14 +18,14 @@ class Charging(GenericAccessory):
 
     category = pyhap.const.CATEGORY_OUTLET
 
-    def __init__(self, driver, bridge, aid, id, vin, displayName, chargingStatus, plugStatus=None, batteryStatus=None, chargingControl=None):
-        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
+    def __init__(self, driver, bridge, aid, iid_manager, id, vin, displayName, chargingStatus, plugStatus=None, batteryStatus=None, chargingControl=None):
+        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id, iid_manager=iid_manager)
 
         self.chargingControl = chargingControl
 
         self.service = self.add_preload_service('Outlet', ['Name', 'ConfiguredName', 'On', 'OutletInUse', 'RemainingDuration', 'Consumption', 'StatusFault'],
-                                                unique_id=(aid * 100))
-        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'], unique_id=((aid * 100) + 1))
+                                                unique_id=((aid * 100) + 1))
+        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'], unique_id=((aid * 100) + 2))
         self.service.add_linked_service(self.batteryService)
 
         if chargingStatus is not None and chargingStatus.chargingState.enabled:

@@ -17,11 +17,11 @@ class LockingSystem(GenericAccessory):
 
     category = pyhap.const.CATEGORY_DOOR_LOCK
 
-    def __init__(self, driver, bridge, aid, id, vin, displayName, accessStatus, accessControl):
-        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
+    def __init__(self, driver, bridge, aid, iid_manager, id, vin, displayName, accessStatus, accessControl):
+        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id, iid_manager=iid_manager)
 
         self.accessControl = accessControl
-        self.service = self.add_preload_service('LockMechanism', ['Name', 'ConfiguredName', 'LockCurrentState', 'LockTargetState'], unique_id=(aid * 100))
+        self.service = self.add_preload_service('LockMechanism', ['Name', 'ConfiguredName', 'LockCurrentState', 'LockTargetState'], unique_id=((aid * 100) + 1))
 
         if accessStatus is not None and accessStatus.overallStatus.enabled:
             accessStatus.overallStatus.addObserver(self.onOverallStatusChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)

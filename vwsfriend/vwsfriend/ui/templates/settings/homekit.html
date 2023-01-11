@@ -19,7 +19,7 @@
   <p>
     <ul>
     {% for accessory in current_app.homekitDriver.accessory.accessories.values() %}
-      <li><strong>{{ accessory.display_name }}</strong> (AID: {{ accessory.aid }}) Services: {% for service in accessory.services %}{{service.display_name}} (IID: {{service.unique_id}}), {% endfor %}</li>
+      <li><strong>{{ accessory.display_name }}</strong> (AID: {{ accessory.aid }}) Services: {% for service in accessory.services %}{{service.display_name}} (IID: {{service.broker.iid_manager.get_iid(service)}}), {% endfor %}</li>
     {% endfor %}
     </ul>
   </p>

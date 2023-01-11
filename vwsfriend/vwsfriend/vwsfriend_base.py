@@ -454,6 +454,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 # blocking run
                 mqttCLient.loop_forever(retry_first_connection=True)
                 mqttCLient.disconnect()
+                LOG.error('MQTT Connection failed')
 
             mqttThread = threading.Thread(target=mqttWorker)
             mqttThread.start()

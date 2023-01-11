@@ -19,16 +19,17 @@ class Climatization(GenericAccessory):
 
     category = pyhap.const.CATEGORY_AIR_CONDITIONER
 
-    def __init__(self, driver, bridge, aid, id, vin, displayName, climatizationStatus: ClimatizationStatus, climatizationSettings=None,
+    def __init__(self, driver, bridge, aid, iid_manager, id, vin, displayName, climatizationStatus: ClimatizationStatus, climatizationSettings=None,
                  batteryStatus=None, chargingStatus=None, climatizationControl=None):
-        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
+        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id, iid_manager=iid_manager)
 
         self.climatizationControl = climatizationControl
         self.climatizationSettings = climatizationSettings
         self.climatizationStatus = climatizationStatus
         self.service = self.add_preload_service('Thermostat', ['Name', 'ConfiguredName', 'CurrentHeatingCoolingState', 'TargetHeatingCoolingState',
-                                                'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration', 'StatusFault'], unique_id=(aid * 100))
-        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'], unique_id=((aid * 100) + 1))
+                                                'TargetTemperature', 'TemperatureDisplayUnits', 'RemainingDuration', 'StatusFault'],
+                                                unique_id=((aid * 100) + 1))
+        self.batteryService = self.add_preload_service('BatteryService', ['BatteryLevel', 'StatusLowBattery', 'ChargingState'], unique_id=((aid * 100) + 2))
         self.service.add_linked_service(self.batteryService)
 
         if climatizationStatus.climatisationState.enabled:
