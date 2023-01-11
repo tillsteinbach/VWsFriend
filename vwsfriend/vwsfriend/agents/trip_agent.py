@@ -152,6 +152,7 @@ class TripAgent():
                 self.session.commit()
             except IntegrityError as err:
                 LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.trip = None
             LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
 
     def __onCarCapturedTimestampChanged(self, element, flags):
@@ -198,7 +199,7 @@ class TripAgent():
                             if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                                 self.trip.end_mileage_km = odometerMeasurement.odometer.value
 
-                        self.session.commit()
+                        self.session.commit()   
                         self.trip = None
 
                         LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
@@ -241,6 +242,7 @@ class TripAgent():
                         self.session.commit()
                     except IntegrityError as err:
                         LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                        self.trip = None
                     LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
             else:
                 if self.trip is not None:
@@ -288,6 +290,7 @@ class TripAgent():
                         self.session.commit()
                     except IntegrityError as err:
                         LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                        self.trip = None
                     LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
             elif (flags & AddressableLeaf.ObserverEvent.DISABLED):
                 if self.trip is not None:
@@ -353,6 +356,7 @@ class TripAgent():
                             self.session.commit()
                         except IntegrityError as err:
                             LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                            self.trip = None
                         LOG.info(f'Vehicle {self.vehicle.vin} started a trip (car was disconnected from charger)')
 
     def commit(self):

@@ -67,6 +67,9 @@ class RangeAgent():
                         self.session.add(self.range)
                 except IntegrityError as err:
                     LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    self.range = self.session.query(Range).filter(and_(Range.vehicle == self.vehicle,
+                                                                       Range.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Range.carCapturedTimestamp.desc()).first()
 
     def commit(self):
         pass
