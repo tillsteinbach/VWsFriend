@@ -15,11 +15,11 @@ class Battery(GenericAccessory):
 
     category = pyhap.const.CATEGORY_OTHER
 
-    def __init__(self, driver, bridge, aid, id, vin, displayName, batteryStatus, chargingStatus=None):
-        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
+    def __init__(self, driver, bridge, aid, iid_manager, id, vin, displayName, batteryStatus, chargingStatus=None):
+        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id, iid_manager=iid_manager)
 
         self.service = self.add_preload_service('BatteryService', ['Name', 'ConfiguredName', 'BatteryLevel', 'StatusLowBattery', 'ChargingState'],
-                                                unique_id=(aid * 100))
+                                                unique_id=((aid * 100) + 1))
 
         if batteryStatus.currentSOC_pct.enabled:
             batteryStatus.currentSOC_pct.addObserver(self.onCurrentSOCChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)

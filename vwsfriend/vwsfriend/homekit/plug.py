@@ -15,10 +15,10 @@ class Plug(GenericAccessory):
 
     category = pyhap.const.CATEGORY_SENSOR
 
-    def __init__(self, driver, bridge, aid, id, vin, displayName, plugStatus):
-        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id)
+    def __init__(self, driver, bridge, aid, iid_manager, id, vin, displayName, plugStatus):
+        super().__init__(driver=driver, bridge=bridge, displayName=displayName, aid=aid, vin=vin, id=id, iid_manager=iid_manager)
 
-        self.service = self.add_preload_service('ContactSensor', ['Name', 'ConfiguredName', 'ContactSensorState', 'StatusFault'], unique_id=(aid * 100))
+        self.service = self.add_preload_service('ContactSensor', ['Name', 'ConfiguredName', 'ContactSensorState', 'StatusFault'], unique_id=((aid * 100) + 1))
 
         if plugStatus is not None and plugStatus.plugConnectionState.enabled:
             plugStatus.plugConnectionState.addObserver(self.onplugConnectionStateChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
