@@ -1,6 +1,6 @@
 import logging
 import json
-# from vwsfriend.homekit.dummy_accessory import DummyAccessory
+from vwsfriend.homekit.dummy_accessory import DummyAccessory
 import pyhap
 
 from weconnect.weconnect import WeConnect
@@ -10,7 +10,6 @@ from .climatization import Climatization
 from .charging import Charging
 from .plug import Plug
 from .locking_system import LockingSystem
-from .custom_iid_manager import CustomIIDManager
 
 from vwsfriend.__version import __version__
 
@@ -31,7 +30,6 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
         self.accessoryConfigFile = accessoryConfigFile
         self.__accessoryConfig = {}
         self.nextAID = 100
-        self.iidManager = CustomIIDManager()
         try:
             self.readConfig()
         except FileNotFoundError:
@@ -42,13 +40,13 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 displayName = accessory['ConfiguredName']
             else:
                 displayName = identifier
-            # placeholderAccessory = DummyAccessory(driver=driver, displayName=displayName, aid=accessory['aid'])
-            # if 'category' in accessory:
-            #     placeholderAccessory.category = accessory['category']
-            # if 'services' in accessory:
-            #     for service in accessory['services']:
-            #         placeholderAccessory.add_preload_service(service, chars=None)
-            # self.add_accessory(placeholderAccessory)
+            placeholderAccessory = DummyAccessory(driver=driver, displayName=displayName, aid=accessory['aid'])
+            if 'category' in accessory:
+                placeholderAccessory.category = accessory['category']
+            if 'services' in accessory:
+                for service in accessory['services']:
+                    placeholderAccessory.add_preload_service(service, chars=None)
+            self.add_accessory(placeholderAccessory)
 
     def persistConfig(self):
         if self.accessoryConfigFile:
@@ -95,8 +93,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 else:
                     chargingStatus = None
 
-                climatizationAccessory = Climatization(driver=self.driver, bridge=self, aid=self.selectAID('Climatization', vin), iid_manager=self.iidManager,
-                                                       id='Climatization', vin=vin,
+                climatizationAccessory = Climatization(driver=self.driver, bridge=self, aid=self.selectAID('Climatization', vin), id='Climatization', vin=vin,
                                                        displayName=f'{nickname} Climatization', climatizationStatus=climatizationStatus,
                                                        climatizationSettings=climatizationSettings, batteryStatus=batteryStatus, chargingStatus=chargingStatus,
                                                        climatizationControl=vehicle.controls.climatizationControl)
@@ -123,8 +120,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 else:
                     batteryStatus = None
 
-                chargingAccessory = Charging(driver=self.driver, bridge=self, aid=self.selectAID('Charging', vin), iid_manager=self.iidManager,
-                                             id='Charging', vin=vin,
+                chargingAccessory = Charging(driver=self.driver, bridge=self, aid=self.selectAID('Charging', vin), id='Charging', vin=vin,
                                              displayName=f'{nickname} Charging', chargingStatus=chargingStatus, plugStatus=plugStatus,
                                              batteryStatus=batteryStatus, chargingControl=vehicle.controls.chargingControl)
                 chargingAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-charging')
@@ -139,8 +135,8 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
             if vehicle.statusExists('charging', 'plugStatus'):
                 plugStatus = vehicle.domains['charging']['plugStatus']
 
-                plugAccessory = Plug(driver=self.driver, bridge=self, aid=self.selectAID('ChargingPlug', vin), iid_manager=self.iidManager,
-                                     id='ChargingPlug', vin=vin, displayName=f'{nickname} Charging Plug', plugStatus=plugStatus)
+                plugAccessory = Plug(driver=self.driver, bridge=self, aid=self.selectAID('ChargingPlug', vin), id='ChargingPlug', vin=vin,
+                                     displayName=f'{nickname} Charging Plug', plugStatus=plugStatus)
                 plugAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-charging_plug')
                 self.setConfigItem(plugAccessory.id, plugAccessory.vin, 'category', plugAccessory.category)
                 self.setConfigItem(plugAccessory.id, plugAccessory.vin, 'services', [service.display_name for service in plugAccessory.services])
@@ -158,8 +154,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 else:
                     accessControl = None
 
-                lockingSystemAccessory = LockingSystem(driver=self.driver, bridge=self, aid=self.selectAID('LockingSystem', vin), iid_manager=self.iidManager,
-                                                       id='LockingSystem', vin=vin,
+                lockingSystemAccessory = LockingSystem(driver=self.driver, bridge=self, aid=self.selectAID('LockingSystem', vin), id='LockingSystem', vin=vin,
                                                        displayName=f'{nickname} Locking System', accessStatus=accessStatus, accessControl=accessControl)
                 lockingSystemAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-locking_system')
                 self.setConfigItem(lockingSystemAccessory.id, lockingSystemAccessory.vin, 'category', lockingSystemAccessory.category)

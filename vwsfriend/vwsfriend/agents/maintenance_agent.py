@@ -60,9 +60,6 @@ class MaintenanceAgent():
                         self.session.commit()
                     except IntegrityError as err:
                         LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                        self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                           Maintenance.date.is_(None),
-                                                                                           Maintenance.type == MaintenanceType.INSPECTION)).first()
                 elif self.inspectionEntry.due_in_days is None:
                     self.inspectionEntry.due_in_days = maintenanceStatus.inspectionDue_days.value
                     self.session.commit()
@@ -81,9 +78,6 @@ class MaintenanceAgent():
                             self.session.commit()
                         except IntegrityError as err:
                             LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                            self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                               Maintenance.date.is_(None),
-                                                                                               Maintenance.type == MaintenanceType.INSPECTION)).first()
                     else:
                         self.inspectionEntry.due_in_days = maintenanceStatus.inspectionDue_days.value
                         self.session.commit()
@@ -97,9 +91,6 @@ class MaintenanceAgent():
                         self.session.commit()
                     except IntegrityError as err:
                         LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                        self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                           Maintenance.date.is_(None),
-                                                                                           Maintenance.type == MaintenanceType.INSPECTION)).first()
                 elif self.inspectionEntry.due_in_km is None:
                     self.inspectionEntry.due_in_km = maintenanceStatus.inspectionDue_km.value
                     self.session.commit()
@@ -118,9 +109,6 @@ class MaintenanceAgent():
                             self.session.commit()
                         except IntegrityError as err:
                             LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                            self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                               Maintenance.date.is_(None),
-                                                                                               Maintenance.type == MaintenanceType.INSPECTION)).first()
                     else:
                         self.inspectionEntry.due_in_km = maintenanceStatus.inspectionDue_km.value
                         self.session.commit()
@@ -134,9 +122,6 @@ class MaintenanceAgent():
                         self.session.commit()
                     except IntegrityError as err:
                         LOG.warning('Could not add oil service entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                        self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                           Maintenance.date.is_(None),
-                                                                                           Maintenance.type == MaintenanceType.OIL_SERVICE)).first()
                 elif self.oilServiceEntry.due_in_days is None:
                     self.oilServiceEntry.due_in_days = maintenanceStatus.oilServiceDue_days.value
                     self.session.commit()
@@ -155,9 +140,6 @@ class MaintenanceAgent():
                             self.session.commit()
                         except IntegrityError as err:
                             LOG.warning('Could not add oil service entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                            self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                               Maintenance.date.is_(None),
-                                                                                               Maintenance.type == MaintenanceType.OIL_SERVICE)).first()
                     else:
                         self.oilServiceEntry.due_in_days = maintenanceStatus.oilServiceDue_days.value
                         self.session.commit()
@@ -171,9 +153,6 @@ class MaintenanceAgent():
                         self.session.commit()
                     except IntegrityError as err:
                         LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                        self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                           Maintenance.date.is_(None),
-                                                                                           Maintenance.type == MaintenanceType.OIL_SERVICE)).first()
                 elif self.oilServiceEntry.due_in_km is None:
                     self.oilServiceEntry.due_in_km = maintenanceStatus.oilServiceDue_km.value
                     self.session.commit()
@@ -192,9 +171,6 @@ class MaintenanceAgent():
                             self.session.commit()
                         except IntegrityError as err:
                             LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                            self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
-                                                                                               Maintenance.date.is_(None),
-                                                                                               Maintenance.type == MaintenanceType.OIL_SERVICE)).first()
                     else:
                         self.oilServiceEntry.due_in_km = maintenanceStatus.oilServiceDue_km.value
                         self.session.commit()

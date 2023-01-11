@@ -59,9 +59,6 @@ class ClimatizationAgent():
                     self.session.commit()
                 except IntegrityError as err:
                     LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                    self.climate = self.session.query(Climatization).filter(and_(Climatization.vehicle == self.vehicle,
-                                                                                 Climatization.carCapturedTimestamp.isnot(None))) \
-                        .order_by(Climatization.carCapturedTimestamp.desc()).first()
 
     def commit(self):
         pass

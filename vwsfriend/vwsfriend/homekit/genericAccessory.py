@@ -9,8 +9,8 @@ LOG = logging.getLogger("VWsFriend")
 
 
 class GenericAccessory(pyhap.accessory.Accessory):
-    def __init__(self, driver, bridge, aid, id, vin, displayName, iid_manager=None):
-        super().__init__(driver=driver, display_name=displayName, aid=aid, iid_manager=iid_manager)
+    def __init__(self, driver, bridge, aid, id, vin, displayName):
+        super().__init__(driver=driver, display_name=displayName, aid=aid)
 
         self.driver = driver
         self.bridge = bridge

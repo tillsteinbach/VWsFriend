@@ -85,8 +85,6 @@ class StateAgent():
                     self.session.commit()
                 except IntegrityError as err:
                     LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                    self.online = self.session.query(Online).filter(and_(Online.vehicle == self.vehicle,
-                                                                         Online.onlineTime.isnot(None))).order_by(Online.onlineTime.desc()).first()
                 self.earliestCarCapturedTimestampInInterval = None
 
     def commit(self):

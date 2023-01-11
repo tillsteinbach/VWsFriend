@@ -34,7 +34,6 @@ try:
 
     from weconnect_mqtt. weconnect_mqtt_base import PictureFormat, WeConnectMQTTClient  # type: ignore
     from weconnect_mqtt.__version import __version__ as __weconnect_mqtt_version__
-    import paho.mqtt.client
     SUPPORT_MQTT = True
 except ImportError:
     pass
@@ -155,8 +154,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         mqttGroup.add_argument('-k', '--mqttkeepalive', required=False, type=int, default=60, help='Time between keep-alive messages')
         mqttGroup.add_argument('-mu', '--mqtt-username', type=str, dest='mqttusername', help='Username for MQTT broker', required=False)
         mqttGroup.add_argument('-mp', '--mqtt-password', type=str, dest='mqttpassword', help='Password for MQTT broker', required=False)
-        mqttGroup.add_argument('-mv', '--mqtt-version', type=str, dest='mqttversion', help='MQTT protocol version used', required=False,
-                               choices=['3.1', '3.1.1', '5'], default='3.1.1')
         mqttGroup.add_argument('--transport', required=False, default='tcp', choices=["tcp", 'websockets'],
                                help='EXPERIMENTAL support for websockets transport')
         mqttGroup.add_argument('-s', '--use-tls', action='store_true', help='EXPERIMENTAL')
@@ -185,6 +182,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                nargs='?', const='', default=None, type=str)
         mqttGroup.add_argument('--locale',
                                help='Use specified locale, leave argument empty to use system default', default='', type=str)
+        mqttGroup.add_argument('--pictures', help='Add ASCII art pictures', action='store_true')
         mqttGroup.add_argument('--picture-format', dest='pictureFormat', help='Format of the picture topics', default=PictureFormat.TXT, required=False,
                                type=PictureFormat, choices=list(PictureFormat))
         mqttGroup.add_argument('--with-raw-json-topic', dest='withRawJsonTopic', help='Adds topic <PREFIX>/rawjson with all information in one json string.'
@@ -411,18 +409,11 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 weConnect.longitude = longitude
                 weConnect.searchRadius = args.chargingLocationRadius
 
-            if args.mqttversion == '3.1':
-                mqttVersion = paho.mqtt.client.MQTTv31
-            elif args.mqttversion == '5':
-                mqttVersion = paho.mqtt.client.MQTTv5
-            else:
-                mqttVersion = paho.mqtt.client.MQTTv311
-
-            mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, protocol=mqttVersion, transport=args.transport, interval=args.interval,
-                                             prefix=args.prefix, ignore=args.ignore, updateCapabilities=True, updatePictures=True,
-                                             listNewTopics=args.listTopics, republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat,
-                                             topicFilterRegex=topicFilterRegex, convertTimezone=convertTimezone, timeFormat=args.timeFormat,
-                                             withRawJsonTopic=args.withRawJsonTopic, passive=False)
+            mqttCLient = WeConnectMQTTClient(clientId=args.mqttclientid, transport=args.transport, interval=args.interval,
+                                             prefix=args.prefix, ignore=args.ignore, updatePictures=args.pictures, listNewTopics=args.listTopics,
+                                             republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat, topicFilterRegex=topicFilterRegex,
+                                             convertTimezone=convertTimezone, timeFormat=args.timeFormat, withRawJsonTopic=args.withRawJsonTopic,
+                                             passive=True)
             mqttCLient.enable_logger()
 
             if usetls:
@@ -464,7 +455,6 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                 # blocking run
                 mqttCLient.loop_forever(retry_first_connection=True)
                 mqttCLient.disconnect()
-                LOG.error('MQTT Connection failed')
 
             mqttThread = threading.Thread(target=mqttWorker)
             mqttThread.start()
@@ -507,11 +497,8 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             sleeptime = args.interval
             while True:
                 try:
-                    if SUPPORT_MQTT and args.mqttbroker:
-                        mqttCLient.updateWeConnect(reraise=True)
-                    else:
-                        LOG.info('Updating data from WeConnect')
-                        weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
+                    LOG.info('Updating data from WeConnect')
+                    weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
                     connector.commit()
                     if args.withHomekit and not weConnectBridgeInitialized:
                         weConnectBridgeInitialized = True
@@ -552,5 +539,3 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
     finally:
         if weConnect is not None:
             weConnect.disconnect()
-        if SUPPORT_MQTT and args.mqttbroker:
-            mqttCLient.disconnect()

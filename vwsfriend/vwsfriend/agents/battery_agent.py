@@ -56,9 +56,6 @@ class BatteryAgent():
                     self.session.commit()
                 except IntegrityError as err:
                     LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                    self.battery = self.session.query(Battery).filter(and_(Battery.vehicle == self.vehicle,
-                                                                           Battery.carCapturedTimestamp.isnot(None)))\
-                        .order_by(Battery.carCapturedTimestamp.desc()).first()
 
     def commit(self):
         pass

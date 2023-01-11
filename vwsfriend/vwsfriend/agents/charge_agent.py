@@ -106,8 +106,6 @@ class ChargeAgent():
                     self.session.commit()
                 except IntegrityError as err:
                     LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                    self.charge = self.session.query(Charge).filter(and_(Charge.vehicle == self.vehicle, Charge.carCapturedTimestamp.isnot(None))) \
-                        .order_by(Charge.carCapturedTimestamp.desc()).first()
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
@@ -143,8 +141,6 @@ class ChargeAgent():
                         self.session.commit()
                     except IntegrityError:
                         LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
-                        chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
-                            .order_by(ChargingSession.started.desc()).first()
             if not self.chargingSession.wasStarted():
                 self.chargingSession.started = chargeStatus.carCapturedTimestamp.value
             # also write start SoC
@@ -222,8 +218,6 @@ class ChargeAgent():
                     self.session.commit()
                 except IntegrityError as err:
                     LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-                    chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
-                        .order_by(ChargingSession.started.desc()).first()
             if self.chargingSession.connected is None:
                 self.chargingSession.connected = plugStatus.carCapturedTimestamp.value
             # also write position if available
