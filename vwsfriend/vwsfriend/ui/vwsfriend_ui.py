@@ -109,14 +109,14 @@ class VWsFriendUI:
         @self.app.route('/versions', methods=['GET'])
         def versions():
             if flask.current_app.connector.withDB:
-                result = self.app.db.session.execute('SELECT version_num FROM alembic_version LIMIT 1;').fetchone()
+                result = self.app.db.session.execute(sqlalchemy.text('SELECT version_num FROM alembic_version LIMIT 1;')).fetchone()
                 if result is not None and result:
                     flask.g.versions['Database Schema'] = result[0]
                 else:
                     flask.g.versions['Database Schema'] = 'unknown'
 
                 try:
-                    result = self.app.db.session.execute('SELECT version();').fetchone()
+                    result = self.app.db.session.execute(sqlalchemy.text('SELECT version();')).fetchone()
                     if result is not None and result:
                         flask.g.versions['Database'] = result[0]
                     else:
