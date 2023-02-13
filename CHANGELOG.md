@@ -4,10 +4,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+
+## [0.23.3] - 2023-02-11
+### fixed
+- Error when trying to change vehicle settings
+
+## [0.23.2] - 2023-02-03
+### Changed
+- Updated API to 0.51.1
+- Updated various dependencies
+
 ## [0.23.1] - 2022-11-30
 ### Fixed
-- Fixed bug where trips were not recorded anymore for cars with firmware <3.0
-
+- Fixed bug where trips were not recorded anymore for cars with firmware <u
 ### Changed
 - Updated API to 0.50.1
 
@@ -576,7 +585,9 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.1...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.3...HEAD
+[0.23.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.3
+[0.23.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.2
 [0.23.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.1
 [0.23.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.0
 [0.22.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.22.3
