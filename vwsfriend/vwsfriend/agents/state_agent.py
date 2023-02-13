@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 import logging
 
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.online import Online
@@ -56,6 +56,10 @@ class StateAgent():
                 self.session.refresh(self.online)
             except ObjectDeletedError:
                 LOG.warning('Last online entry was deleted')
+                self.online = self.session.query(Online).filter(and_(Online.vehicle == self.vehicle,
+                                                                     Online.onlineTime.isnot(None))).order_by(Online.onlineTime.desc()).first()
+            except InvalidRequestError:
+                LOG.warning('Last online entry was not persisted')
                 self.online = self.session.query(Online).filter(and_(Online.vehicle == self.vehicle,
                                                                      Online.onlineTime.isnot(None))).order_by(Online.onlineTime.desc()).first()
         if self.onlineState == StateAgent.OnlineState.ONLINE:

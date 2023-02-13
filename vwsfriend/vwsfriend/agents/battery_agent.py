@@ -34,7 +34,7 @@ class BatteryAgent():
 
             if self.battery is not None:
                 try:
-                    self.session.refresh(self.battery)
+                    (self.battery)
                 except ObjectDeletedError:
                     LOG.warning('Last battery entry was deleted')
                     self.battery = self.session.query(Battery).filter(and_(Battery.vehicle == self.vehicle,

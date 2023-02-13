@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import logging
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.refuel_session import RefuelSession
@@ -62,6 +62,9 @@ class RefuelAgent():
                 self.session.refresh(self.previousRefuelSession)
             except ObjectDeletedError:
                 LOG.warning('Last refuel session was deleted')
+                self.previousRefuelSession = None
+            except InvalidRequestError:
+                LOG.warning('Last refuel session was not persisted')
                 self.previousRefuelSession = None
 
         if element is not None and element.value is not None:
