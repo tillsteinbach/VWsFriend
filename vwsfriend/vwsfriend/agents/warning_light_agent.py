@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.warning_light import WarningLight
@@ -33,6 +33,10 @@ class WarningLightAgent():
                     self.session.refresh(enabledLight)
             except ObjectDeletedError:
                 LOG.warning('Last warning light entry was deleted')
+                self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
+                                                                                  WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
+            except InvalidRequestError:
+                LOG.warning('Last warning light entry was not persisted')
                 self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
                                                                                   WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
 
