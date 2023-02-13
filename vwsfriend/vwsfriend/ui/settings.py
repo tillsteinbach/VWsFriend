@@ -3,6 +3,8 @@ from collections import namedtuple
 from io import BytesIO
 from pyqrcode import pyqrcode
 
+from sqlalchemy import text
+
 from flask import Blueprint, render_template, current_app, abort, redirect, url_for, request, send_file, flash
 from flask_login import login_required
 from flask_wtf import FlaskForm
@@ -113,9 +115,9 @@ def vehicleDBParameters(vin):
 
     choices = [(None, 'unknown')]
     if current_app.db.session.get_bind().dialect.name == 'postgresql':
-        result = current_app.db.session.execute('SELECT name FROM pg_timezone_names'
-                                                ' WHERE name !~ \'posix\' AND name !~ \'Etc\' AND name !~ \'SystemV\''
-                                                ' ORDER BY name asc;')
+        result = current_app.db.session.execute(text('SELECT name FROM pg_timezone_names'
+                                                     ' WHERE name !~ \'posix\' AND name !~ \'Etc\''
+                                                     ' AND name !~ \'SystemV\' ORDER BY name asc;'))
         for row in result:
             choices.append((row[0], row[0]))
     else:

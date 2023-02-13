@@ -51,9 +51,9 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.2.1
+        uses: docker/setup-buildx-action@v2.4.1
       - name: Cache Docker layers
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v3.2.5
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-vwsfriend-grafana-${{ github.sha }}
@@ -72,7 +72,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v4.0.0
         with:
           context: grafana
           push: ${{ github.event_name != 'pull_request' }}
