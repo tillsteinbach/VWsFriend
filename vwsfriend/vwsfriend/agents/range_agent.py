@@ -27,7 +27,7 @@ class RangeAgent():
                                                                                                                     onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carCapturedTimestamp, None)
 
-    def __onCarCapturedTimestampChange(self, element, flags):
+    def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
         # Check that the data to add is not too old
         if element is not None and element.value is not None and element.value > (datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=7)):
             rangeStatus = self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus']

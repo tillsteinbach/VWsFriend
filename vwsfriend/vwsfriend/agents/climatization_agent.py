@@ -28,7 +28,7 @@ class ClimatizationAgent():
                     onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['climatisation']['climatisationStatus'].carCapturedTimestamp, None)
 
-    def __onCarCapturedTimestampChange(self, element, flags):
+    def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
         if element is not None and element.value is not None:
             climateStatus = self.vehicle.weConnectVehicle.domains['climatisation']['climatisationStatus']
             current_remainingClimatisationTime_min = None
