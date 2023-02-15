@@ -95,8 +95,6 @@ class ChargeAgent():
                     self.charge = self.session.query(Charge).filter(and_(Charge.vehicle == self.vehicle, Charge.carCapturedTimestamp.isnot(None))) \
                         .order_by(Charge.carCapturedTimestamp.desc()).first()
 
-
-
             if self.charge is None or (self.charge.carCapturedTimestamp != chargeStatus.carCapturedTimestamp.value and (
                     self.charge.remainingChargingTimeToComplete_min != current_remainingChargingTimeToComplete_min
                     or self.charge.chargingState != current_chargingState
