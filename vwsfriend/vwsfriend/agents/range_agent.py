@@ -1,7 +1,7 @@
 from datetime import datetime, timezone, timedelta
 import logging
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.range import Range
@@ -48,6 +48,11 @@ class RangeAgent():
                     self.session.refresh(self.range)
                 except ObjectDeletedError:
                     LOG.warning('Last range entry was deleted')
+                    self.range = self.session.query(Range).filter(and_(Range.vehicle == self.vehicle,
+                                                                       Range.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Range.carCapturedTimestamp.desc()).first()
+                except InvalidRequestError:
+                    LOG.warning('Last range entry was not persisted')
                     self.range = self.session.query(Range).filter(and_(Range.vehicle == self.vehicle,
                                                                        Range.carCapturedTimestamp.isnot(None))) \
                         .order_by(Range.carCapturedTimestamp.desc()).first()
