@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.climatization import Climatization
@@ -43,6 +43,11 @@ class ClimatizationAgent():
                     self.session.refresh(self.climate)
                 except ObjectDeletedError:
                     LOG.warning('Last climatisation entry was deleted')
+                    self.climate = self.session.query(Climatization).filter(and_(Climatization.vehicle == self.vehicle,
+                                                                                 Climatization.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Climatization.carCapturedTimestamp.desc()).first()
+                except InvalidRequestError:
+                    LOG.warning('Last climatisation entry was not persisted')
                     self.climate = self.session.query(Climatization).filter(and_(Climatization.vehicle == self.vehicle,
                                                                                  Climatization.carCapturedTimestamp.isnot(None))) \
                         .order_by(Climatization.carCapturedTimestamp.desc()).first()

@@ -1,7 +1,7 @@
 import logging
 from datetime import timedelta
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.charge import Charge
@@ -90,6 +90,12 @@ class ChargeAgent():
                     LOG.warning('Last charge entry was deleted')
                     self.charge = self.session.query(Charge).filter(and_(Charge.vehicle == self.vehicle, Charge.carCapturedTimestamp.isnot(None))) \
                         .order_by(Charge.carCapturedTimestamp.desc()).first()
+                except InvalidRequestError:
+                    LOG.warning('Last charge entry was not persisted')
+                    self.charge = self.session.query(Charge).filter(and_(Charge.vehicle == self.vehicle, Charge.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Charge.carCapturedTimestamp.desc()).first()
+
+
 
             if self.charge is None or (self.charge.carCapturedTimestamp != chargeStatus.carCapturedTimestamp.value and (
                     self.charge.remainingChargingTimeToComplete_min != current_remainingChargingTimeToComplete_min
@@ -116,6 +122,14 @@ class ChargeAgent():
             except ObjectDeletedError:
                 LOG.warning('Open charging session was deleted')
                 self.previousChargingSession = None
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
+            except InvalidRequestError:
+                LOG.warning('Last charging session was not persisted')
                 chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
                     .order_by(ChargingSession.started.desc()).first()
                 if chargingSession is not None and not chargingSession.isClosed():
@@ -207,6 +221,14 @@ class ChargeAgent():
                     self.chargingSession = chargingSession
                 else:
                     self.chargingSession = None
+            except InvalidRequestError:
+                LOG.warning('Last charging session was not persisted')
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
 
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
             if self.chargingSession is None or self.chargingSession.isClosed():
@@ -245,6 +267,14 @@ class ChargeAgent():
             except ObjectDeletedError:
                 LOG.warning('Open charging session was deleted')
                 self.previousChargingSession = None
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
+            except InvalidRequestError:
+                LOG.warning('Last charging session was not persisted')
                 chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
                     .order_by(ChargingSession.started.desc()).first()
                 if chargingSession is not None and not chargingSession.isClosed():
@@ -290,6 +320,14 @@ class ChargeAgent():
             except ObjectDeletedError:
                 LOG.warning('Open charging session was deleted')
                 self.previousChargingSession = None
+                chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
+                    .order_by(ChargingSession.started.desc()).first()
+                if chargingSession is not None and not chargingSession.isClosed():
+                    self.chargingSession = chargingSession
+                else:
+                    self.chargingSession = None
+            except InvalidRequestError:
+                LOG.warning('Last charging session was not persisted')
                 chargingSession = self.session.query(ChargingSession).filter(ChargingSession.vehicle == self.vehicle) \
                     .order_by(ChargingSession.started.desc()).first()
                 if chargingSession is not None and not chargingSession.isClosed():
