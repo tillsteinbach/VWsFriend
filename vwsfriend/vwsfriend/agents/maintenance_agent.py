@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.maintenance import Maintenance, MaintenanceType
@@ -39,11 +39,21 @@ class MaintenanceAgent():
                 self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
                                                                                    Maintenance.date.is_(None),
                                                                                    Maintenance.type == MaintenanceType.INSPECTION)).first()
+            except InvalidRequestError:
+                LOG.warning('Lastinspection entry was not persisted')
+                self.inspectionEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
+                                                                                   Maintenance.date.is_(None),
+                                                                                   Maintenance.type == MaintenanceType.INSPECTION)).first()
         if self.oilServiceEntry is not None:
             try:
                 self.session.refresh(self.oilServiceEntry)
             except ObjectDeletedError:
                 LOG.warning('Last oil service entry was deleted')
+                self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
+                                                                                   Maintenance.date.is_(None),
+                                                                                   Maintenance.type == MaintenanceType.OIL_SERVICE)).first()
+            except InvalidRequestError:
+                LOG.warning('Last oil service entry was not persisted')
                 self.oilServiceEntry = self.session.query(Maintenance).filter(and_(Maintenance.vehicle == self.vehicle,
                                                                                    Maintenance.date.is_(None),
                                                                                    Maintenance.type == MaintenanceType.OIL_SERVICE)).first()

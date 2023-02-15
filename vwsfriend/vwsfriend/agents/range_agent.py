@@ -1,7 +1,7 @@
 from datetime import datetime, timezone, timedelta
 import logging
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.range import Range
@@ -27,7 +27,7 @@ class RangeAgent():
                                                                                                                     onUpdateComplete=True)
                 self.__onCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus'].carCapturedTimestamp, None)
 
-    def __onCarCapturedTimestampChange(self, element, flags):
+    def __onCarCapturedTimestampChange(self, element, flags):  # noqa: C901
         # Check that the data to add is not too old
         if element is not None and element.value is not None and element.value > (datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=7)):
             rangeStatus = self.vehicle.weConnectVehicle.domains['fuelStatus']['rangeStatus']
@@ -48,6 +48,11 @@ class RangeAgent():
                     self.session.refresh(self.range)
                 except ObjectDeletedError:
                     LOG.warning('Last range entry was deleted')
+                    self.range = self.session.query(Range).filter(and_(Range.vehicle == self.vehicle,
+                                                                       Range.carCapturedTimestamp.isnot(None))) \
+                        .order_by(Range.carCapturedTimestamp.desc()).first()
+                except InvalidRequestError:
+                    LOG.warning('Last range entry was not persisted')
                     self.range = self.session.query(Range).filter(and_(Range.vehicle == self.vehicle,
                                                                        Range.carCapturedTimestamp.isnot(None))) \
                         .order_by(Range.carCapturedTimestamp.desc()).first()

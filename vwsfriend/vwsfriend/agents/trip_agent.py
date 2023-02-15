@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from vwsfriend.model.trip import Trip
@@ -121,6 +121,9 @@ class TripAgent():
             except ObjectDeletedError:
                 LOG.warning('Last trip entry was deleted')
                 self.trip = None
+            except InvalidRequestError:
+                LOG.warning('Last trip entry was not persisted')
+                self.trip = None
 
         if self.mode == TripAgent.Mode.PARKING_POSITION:
             if element.parent.error.enabled:
@@ -167,7 +170,7 @@ class TripAgent():
     def __onCarCapturedTimestampEnabled(self, element, flags):  # noqa: C901
         if self.trip is not None:
             try:
-                self.session.refresh(self.trip)
+                (self.trip)
             except ObjectDeletedError:
                 LOG.warning('Last trip entry was deleted')
                 self.trip = None
@@ -219,6 +222,8 @@ class TripAgent():
             except ObjectDeletedError:
                 LOG.warning('Last trip entry was deleted')
                 self.trip = None
+            except InvalidRequestError:
+                LOG.warning('Last trip entry was not persisted')
 
         if self.mode == TripAgent.Mode.READINESS_STATUS:
             if self.vehicle.weConnectVehicle.statusExists('charging', 'plugStatus'):
@@ -266,6 +271,8 @@ class TripAgent():
             except ObjectDeletedError:
                 LOG.warning('Last trip entry was deleted')
                 self.trip = None
+            except InvalidRequestError:
+                LOG.warning('Last trip entry was not persisted')
 
         if self.mode == TripAgent.Mode.READINESS_STATUS:
             if self.vehicle.weConnectVehicle.statusExists('charging', 'plugStatus'):
@@ -313,6 +320,8 @@ class TripAgent():
             except ObjectDeletedError:
                 LOG.warning('Last trip entry was deleted')
                 self.trip = None
+            except InvalidRequestError:
+                LOG.warning('Last trip entry was not persisted')
 
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
