@@ -13,7 +13,7 @@ LOG = logging.getLogger("VWsFriend")
 class BatteryAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.battery = session.query(Battery).filter(and_(Battery.vehicle == vehicle,
                                                           Battery.carCapturedTimestamp.isnot(None))).order_by(Battery.carCapturedTimestamp.desc()).first()
 

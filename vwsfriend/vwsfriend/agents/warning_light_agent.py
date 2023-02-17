@@ -13,7 +13,7 @@ LOG = logging.getLogger("VWsFriend")
 class WarningLightAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.enabledLights = session.query(WarningLight).filter(and_(WarningLight.vehicle == vehicle,
                                                                      WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
         LOG.info(f'Vehicle {self.vehicle.vin} has still {len(self.enabledLights)} warning lights on in the database.')

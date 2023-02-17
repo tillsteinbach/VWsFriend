@@ -16,7 +16,7 @@ LOG = logging.getLogger("VWsFriend")
 class StateAgent():
     def __init__(self, session, vehicle, updateInterval):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.onlineTimeout = (updateInterval * 2) + 30
         self.offlineTimeout = (updateInterval * 2) + 30
         # The offline timeout must be at least 10 minutes plus 30 seconds as this is the update frequency of data for some cars.
