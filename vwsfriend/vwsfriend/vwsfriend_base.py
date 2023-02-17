@@ -423,7 +423,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                                              prefix=args.prefix, ignore=args.ignore, updateCapabilities=True, updatePictures=True,
                                              listNewTopics=args.listTopics, republishOnUpdate=args.republishOnUpdate, pictureFormat=args.pictureFormat,
                                              topicFilterRegex=topicFilterRegex, convertTimezone=convertTimezone, timeFormat=args.timeFormat,
-                                             withRawJsonTopic=args.withRawJsonTopic, passive=False)
+                                             withRawJsonTopic=args.withRawJsonTopic, passive=False, updateOnConnect=False)
 
             mqttCLient.enable_logger()
 
