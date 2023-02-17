@@ -5,7 +5,7 @@ import logging
 
 from sqlalchemy import create_engine, text, inspect
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy.exc import OperationalError
 
 from weconnect.elements import vehicle
 from weconnect.addressable import AddressableLeaf
