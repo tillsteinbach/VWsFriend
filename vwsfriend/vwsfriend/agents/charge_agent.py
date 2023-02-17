@@ -199,7 +199,6 @@ class ChargeAgent():
                 # also write milage if available
                 self.updateMileage()
 
-
     def __onPlugConnectionStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
 
@@ -247,7 +246,6 @@ class ChargeAgent():
             self.updatePosition()
             # also write milage if available
             self.updateMileage()
-
 
     def __onPlugLockStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
@@ -299,7 +297,6 @@ class ChargeAgent():
             self.updatePosition()
             # also write milage if available
             self.updateMileage()
-
 
     def __onChargePowerChange(self, element, flags):
         if self.chargingSession is not None:
