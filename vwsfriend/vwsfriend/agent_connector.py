@@ -51,7 +51,8 @@ class AgentConnector():
             if 'postgresql' in dbUrl:
                 connectArgs['options'] = '-c timezone=utc'
             engine = create_engine(dbUrl, pool_pre_ping=True, connect_args=connectArgs)
-            sessionFactory = sessionmaker(bind=engine)
+            autocommitEngine = engine.execution_options(isolation_level="AUTOCOMMIT")
+            sessionFactory = sessionmaker(bind=autocommitEngine)
             Session = scoped_session(sessionFactory)
             self.session = Session()
 
@@ -108,7 +109,6 @@ class AgentConnector():
                     foundVehicle = Vehicle(element.vin.value)
                     with self.session.begin_nested():
                         self.session.add(foundVehicle)
-                    self.session.commit()
                 foundVehicle.connect(element)
 
                 self.agents[element.vin.value].append(RangeAgent(self.session, foundVehicle))
@@ -130,9 +130,3 @@ class AgentConnector():
         for vehicleAgents in self.agents.values():
             for agent in vehicleAgents:
                 agent.commit()
-        if self.withDB:
-            try:
-                self.session.commit()
-            except SQLAlchemyError as err:
-                LOG.error('There was a problem when commiting changes to the database: %s', err)
-                self.session.rollback()
