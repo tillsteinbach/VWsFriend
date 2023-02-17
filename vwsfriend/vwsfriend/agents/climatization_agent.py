@@ -61,7 +61,6 @@ class ClimatizationAgent():
                 try:
                     with self.session.begin_nested():
                         self.session.add(self.climate)
-                    self.session.commit()
                 except IntegrityError as err:
                     LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 

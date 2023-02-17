@@ -60,7 +60,6 @@ class WarningLightAgent():
                     try:
                         with self.session.begin_nested():
                             self.session.add(warningLightEntry)
-                        self.session.commit()
                     except IntegrityError as err:
                         LOG.warning('Could not add warning light entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
             for enabledLight in self.enabledLights:
@@ -71,7 +70,6 @@ class WarningLightAgent():
                         enabledLight.end_mileage = warningLightsStatus.mileage_km.value
                     LOG.info(f'Warning light {enabledLight.messageId} in vehicle {self.vehicle.vin} turned off')
 
-            self.session.commit()
             self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
                                                                               WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
 
