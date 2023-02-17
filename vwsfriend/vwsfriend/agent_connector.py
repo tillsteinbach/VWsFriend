@@ -54,7 +54,7 @@ class AgentConnector():
             autocommitEngine = engine.execution_options(isolation_level="AUTOCOMMIT")
             sessionSessionFactory = sessionmaker(bind=autocommitEngine)
             self.AutocommitSession = scoped_session(sessionSessionFactory)
-            
+            self.session = self.AutocommitSession()
 
             while True:
                 try:
