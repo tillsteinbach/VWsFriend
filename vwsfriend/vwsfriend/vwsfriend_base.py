@@ -556,4 +556,4 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             weConnect.disconnect()
         if SUPPORT_MQTT and args.mqttbroker:
             if mqttCLient is not None:
-                 mqttCLient.disconnect()
+                mqttCLient.disconnect()
