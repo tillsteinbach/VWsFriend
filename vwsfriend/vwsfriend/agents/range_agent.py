@@ -14,7 +14,7 @@ LOG = logging.getLogger("VWsFriend")
 class RangeAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.range = session.query(Range).filter(and_(Range.vehicle == vehicle,
                                                       Range.carCapturedTimestamp.isnot(None))).order_by(Range.carCapturedTimestamp.desc()).first()
 

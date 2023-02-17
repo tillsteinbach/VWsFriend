@@ -13,7 +13,7 @@ LOG = logging.getLogger("VWsFriend")
 class MaintenanceAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.inspectionEntry = session.query(Maintenance).filter(and_(Maintenance.vehicle == vehicle,
                                                                       Maintenance.date.is_(None),
                                                                       Maintenance.type == MaintenanceType.INSPECTION)).first()

@@ -25,7 +25,7 @@ class TripAgent():
     def __init__(self, session, vehicle, updateInterval, privacy):  # noqa: C901
         self.mode = TripAgent.Mode.NONE
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.privacy = privacy
         if Privacy.NO_LOCATIONS in self.privacy:
             LOG.info(f'Privacy option \'no-locations\' is set. Vehicle {self.vehicle.vin} will not record start and destination location')
