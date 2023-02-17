@@ -149,8 +149,7 @@ class TripAgent():
                 if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                     self.trip.start_mileage_km = odometerMeasurement.odometer.value
             try:
-                with self.session.begin_nested():
-                    self.session.add(self.trip)
+                self.session.add(self.trip)
             except IntegrityError as err:
                 LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
             LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
@@ -203,8 +202,7 @@ class TripAgent():
 
                         LOG.info(f'Vehicle {self.vehicle.vin} ended a trip')
                     else:
-                        with self.session.begin_nested():
-                            self.session.delete(self.trip)
+                        self.session.delete(self.trip)
                         self.trip = None
                         LOG.info(f'Previously started trip for {self.vehicle.vin} was invalid. Deleting it now.')
             else:
@@ -237,8 +235,7 @@ class TripAgent():
                         if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                             self.trip.start_mileage_km = odometerMeasurement.odometer.value
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(self.trip)
+                        self.session.add(self.trip)
                     except IntegrityError as err:
                         LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
@@ -284,8 +281,7 @@ class TripAgent():
                         if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                             self.trip.start_mileage_km = odometerMeasurement.odometer.value
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(self.trip)
+                        self.session.add(self.trip)
                     except IntegrityError as err:
                         LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
@@ -348,8 +344,7 @@ class TripAgent():
                             if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                                 self.trip.start_mileage_km = odometerMeasurement.odometer.value
                         try:
-                            with self.session.begin_nested():
-                                self.session.add(self.trip)
+                            self.session.add(self.trip)
                         except IntegrityError as err:
                             LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
                         LOG.info(f'Vehicle {self.vehicle.vin} started a trip (car was disconnected from charger)')

@@ -84,8 +84,7 @@ class StateAgent():
                     self.vehicle.lastChange = self.lastCarCapturedTimestamp
                 self.online = Online(self.vehicle, onlineTime=self.earliestCarCapturedTimestampInInterval, offlineTime=None)
                 try:
-                    with self.session.begin_nested():
-                        self.session.add(self.online)
+                    self.session.add(self.online)
                 except IntegrityError as err:
                     LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 self.earliestCarCapturedTimestampInInterval = None
