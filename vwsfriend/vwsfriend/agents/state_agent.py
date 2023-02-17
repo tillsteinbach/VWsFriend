@@ -68,7 +68,8 @@ class StateAgent():
                 LOG.info(f'Vehicle {self.vehicle.vin} went offline')
                 self.onlineState = StateAgent.OnlineState.OFFLINE
                 self.vehicle.online = False
-                self.online.offlineTime = self.lastCarCapturedTimestamp
+                with self.session.begin():
+                    self.online.offlineTime = self.lastCarCapturedTimestamp
                 self.online = None
                 self.lastCarCapturedTimestamp = None
             else:
@@ -79,19 +80,22 @@ class StateAgent():
             if self.online is None and self.earliestCarCapturedTimestampInInterval is not None:
                 LOG.info(f'Vehicle {self.vehicle.vin} went online')
                 self.onlineState = StateAgent.OnlineState.ONLINE
-                self.vehicle.online = True
-                if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
-                    self.vehicle.lastChange = self.lastCarCapturedTimestamp
+                with self.session.begin():
+                    self.vehicle.online = True
+                    if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
+                        self.vehicle.lastChange = self.lastCarCapturedTimestamp
                 self.online = Online(self.vehicle, onlineTime=self.earliestCarCapturedTimestampInInterval, offlineTime=None)
-                try:
-                    self.session.add(self.online)
-                except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                with self.session.begin():
+                    try:
+                        self.session.add(self.online)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 self.earliestCarCapturedTimestampInInterval = None
 
     def commit(self):
         self.checkOnlineOffline()
-        self.vehicle.lastUpdate = datetime.utcnow().replace(tzinfo=timezone.utc)
+        with self.session.begin():
+            self.vehicle.lastUpdate = datetime.utcnow().replace(tzinfo=timezone.utc)
 
     class OnlineState(Enum):
         ONLINE = auto()

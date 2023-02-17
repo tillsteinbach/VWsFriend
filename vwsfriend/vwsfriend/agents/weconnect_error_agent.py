@@ -21,10 +21,11 @@ class WeconnectErrorAgent():
 
     def __onError(self, element, errortype, detail, message):
         error = WeConnectError(datetime.utcnow().replace(tzinfo=timezone.utc), errortype, detail)
-        try:
-            self.session.add(error)
-        except IntegrityError:
-            LOG.warning('Could not add error entry to the database')
+        with self.session.begin():
+            try:
+                self.session.add(error)
+            except IntegrityError:
+                LOG.warning('Could not add error entry to the database')
 
     def commit(self):
         min = self.weconnect.getMinElapsed()
@@ -40,7 +41,8 @@ class WeconnectErrorAgent():
         if total is not None:
             total /= timedelta(microseconds=1)
         responsetime = WeConnectResponsetime(datetime.utcnow().replace(tzinfo=timezone.utc), min, avg, max, total)
-        try:
-            self.session.add(responsetime)
-        except IntegrityError:
-            LOG.warning('Could not add responsetime entry to the database')
+        with self.session.begin():
+            try:
+                self.session.add(responsetime)
+            except IntegrityError:
+                LOG.warning('Could not add responsetime entry to the database')

@@ -104,10 +104,11 @@ class ChargeAgent():
 
                 self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
                                      current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
-                try:
-                    self.session.add(self.charge)
-                except IntegrityError as err:
-                    LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                with self.session.begin():
+                    try:
+                        self.session.add(self.charge)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
@@ -135,67 +136,69 @@ class ChargeAgent():
 
         if element.value in [ChargingStatus.ChargingState.CHARGING, ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION,
                              ChargingStatus.ChargingState.CONSERVATION]:
-            if self.chargingSession is None or self.chargingSession.isClosed():
-                # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
-                if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
-                        and (self.chargingSession.ended is None or chargeStatus.carCapturedTimestamp.value is None
-                             or self.chargingSession.ended > (chargeStatus.carCapturedTimestamp.value - timedelta(hours=24))):
-                    self.chargingSession.ended = None
-                    self.chargingSession.endSOC_pct = None
-                else:
-                    self.previousChargingSession = self.chargingSession
-                    self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                    try:
-                        self.session.add(self.chargingSession)
-                    except IntegrityError:
-                        LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
-            if not self.chargingSession.wasStarted():
-                self.chargingSession.started = chargeStatus.carCapturedTimestamp.value
-            # also write start SoC
-            if self.chargingSession is not None and self.chargingSession.startSOC_pct is None \
-                    and self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus'):
-                batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
-                if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
-                    self.chargingSession.startSOC_pct = batteryStatus.currentSOC_pct.value
-            # also write start charge type if available and not already set
-            if self.chargingSession is not None and self.chargingSession.acdc is None \
-                    and chargeStatus.chargeType.enabled:
-                if chargeStatus.chargeType.value == ChargingStatus.ChargeType.AC:
-                    self.chargingSession.acdc = ACDC.AC
-                elif chargeStatus.chargeType.value == ChargingStatus.ChargeType.DC:
-                    self.chargingSession.acdc = ACDC.DC
-
-            # also write position if available
-            self.updatePosition()
-
-            # also write milage if available
-            self.updateMileage()
-
-        elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING,
-                               ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING,
-                               ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
-                               ChargingStatus.ChargingState.ERROR]:
-            if self.chargingSession is not None and self.chargingSession.isChargingState():
-                self.chargingSession.ended = chargeStatus.carCapturedTimestamp.value
-
-                # also write start charge type if not already set before
-                if self.chargingSession.maximumChargePower_kW is not None:
-                    if self.chargingSession.maximumChargePower_kW > 11:
-                        self.chargingSession.acdc = ACDC.DC
+            with self.session.begin():
+                if self.chargingSession is None or self.chargingSession.isClosed():
+                    # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
+                    if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
+                            and (self.chargingSession.ended is None or chargeStatus.carCapturedTimestamp.value is None
+                                or self.chargingSession.ended > (chargeStatus.carCapturedTimestamp.value - timedelta(hours=24))):
+                        self.chargingSession.ended = None
+                        self.chargingSession.endSOC_pct = None
                     else:
-                        self.chargingSession.acdc = ACDC.AC
-                # also write end SoC
-                if self.chargingSession is not None and self.chargingSession.endSOC_pct is None \
+                        self.previousChargingSession = self.chargingSession
+                        self.chargingSession = ChargingSession(vehicle=self.vehicle)
+                        try:
+                            self.session.add(self.chargingSession)
+                        except IntegrityError:
+                            LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
+                if not self.chargingSession.wasStarted():
+                    self.chargingSession.started = chargeStatus.carCapturedTimestamp.value
+                # also write start SoC
+                if self.chargingSession is not None and self.chargingSession.startSOC_pct is None \
                         and self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus'):
                     batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
                     if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
-                        self.chargingSession.endSOC_pct = batteryStatus.currentSOC_pct.value
+                        self.chargingSession.startSOC_pct = batteryStatus.currentSOC_pct.value
+                # also write start charge type if available and not already set
+                if self.chargingSession is not None and self.chargingSession.acdc is None \
+                        and chargeStatus.chargeType.enabled:
+                    if chargeStatus.chargeType.value == ChargingStatus.ChargeType.AC:
+                        self.chargingSession.acdc = ACDC.AC
+                    elif chargeStatus.chargeType.value == ChargingStatus.ChargeType.DC:
+                        self.chargingSession.acdc = ACDC.DC
 
                 # also write position if available
                 self.updatePosition()
 
                 # also write milage if available
                 self.updateMileage()
+
+        elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING,
+                               ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING,
+                               ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
+                               ChargingStatus.ChargingState.ERROR]:
+            with self.session.begin():
+                if self.chargingSession is not None and self.chargingSession.isChargingState():
+                    self.chargingSession.ended = chargeStatus.carCapturedTimestamp.value
+
+                    # also write start charge type if not already set before
+                    if self.chargingSession.maximumChargePower_kW is not None:
+                        if self.chargingSession.maximumChargePower_kW > 11:
+                            self.chargingSession.acdc = ACDC.DC
+                        else:
+                            self.chargingSession.acdc = ACDC.AC
+                    # also write end SoC
+                    if self.chargingSession is not None and self.chargingSession.endSOC_pct is None \
+                            and self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus'):
+                        batteryStatus = self.vehicle.weConnectVehicle.domains['charging']['batteryStatus']
+                        if batteryStatus.enabled and batteryStatus.currentSOC_pct.enabled:
+                            self.chargingSession.endSOC_pct = batteryStatus.currentSOC_pct.value
+
+                    # also write position if available
+                    self.updatePosition()
+
+                    # also write milage if available
+                    self.updateMileage()
 
     def __onPlugConnectionStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
@@ -222,27 +225,29 @@ class ChargeAgent():
                     self.chargingSession = None
 
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
-            if self.chargingSession is None or self.chargingSession.isClosed():
-                self.previousChargingSession = self.chargingSession
-                self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                try:
-                    self.session.add(self.chargingSession)
-                except IntegrityError as err:
-                    LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-            if self.chargingSession.connected is None:
-                self.chargingSession.connected = plugStatus.carCapturedTimestamp.value
-            # also write position if available
-            self.updatePosition()
-            # also write milage if available
-            self.updateMileage()
+            with self.session.begin():
+                if self.chargingSession is None or self.chargingSession.isClosed():
+                    self.previousChargingSession = self.chargingSession
+                    self.chargingSession = ChargingSession(vehicle=self.vehicle)
+                    try:
+                        self.session.add(self.chargingSession)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                if self.chargingSession.connected is None:
+                    self.chargingSession.connected = plugStatus.carCapturedTimestamp.value
+                # also write position if available
+                self.updatePosition()
+                # also write milage if available
+                self.updateMileage()
 
         elif element.value == PlugStatus.PlugConnectionState.DISCONNECTED:
-            if self.chargingSession is not None and self.chargingSession.isConnectedState():
-                self.chargingSession.disconnected = plugStatus.carCapturedTimestamp.value
-            # also write position if available
-            self.updatePosition()
-            # also write milage if available
-            self.updateMileage()
+            with self.session.begin():
+                if self.chargingSession is not None and self.chargingSession.isConnectedState():
+                    self.chargingSession.disconnected = plugStatus.carCapturedTimestamp.value
+                # also write position if available
+                self.updatePosition()
+                # also write milage if available
+                self.updateMileage()
 
     def __onPlugLockStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
@@ -269,30 +274,32 @@ class ChargeAgent():
                     self.chargingSession = None
 
         if element.value == PlugStatus.PlugLockState.LOCKED:
-            if self.chargingSession is None or self.chargingSession.isClosed():
-                # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
-                if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
-                        and (self.chargingSession.unlocked is None or plugStatus.carCapturedTimestamp.value is None
-                             or self.chargingSession.unlocked > (plugStatus.carCapturedTimestamp.value - timedelta(hours=24))):
-                    self.chargingSession.unlocked = None
-                else:
-                    self.previousChargingSession = self.chargingSession
-                    self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                    self.session.add(self.chargingSession)
-            if self.chargingSession.locked is None:
-                self.chargingSession.locked = plugStatus.carCapturedTimestamp.value
-            # also write position if available
-            self.updatePosition()
-            # also write milage if available
-            self.updateMileage()
+            with self.session.begin():
+                if self.chargingSession is None or self.chargingSession.isClosed():
+                    # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
+                    if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
+                            and (self.chargingSession.unlocked is None or plugStatus.carCapturedTimestamp.value is None
+                                or self.chargingSession.unlocked > (plugStatus.carCapturedTimestamp.value - timedelta(hours=24))):
+                        self.chargingSession.unlocked = None
+                    else:
+                        self.previousChargingSession = self.chargingSession
+                        self.chargingSession = ChargingSession(vehicle=self.vehicle)
+                        self.session.add(self.chargingSession)
+                if self.chargingSession.locked is None:
+                    self.chargingSession.locked = plugStatus.carCapturedTimestamp.value
+                # also write position if available
+                self.updatePosition()
+                # also write milage if available
+                self.updateMileage()
 
         elif element.value == PlugStatus.PlugLockState.UNLOCKED:
-            if self.chargingSession is not None and self.chargingSession.isLockedState():
-                self.chargingSession.unlocked = plugStatus.carCapturedTimestamp.value
-            # also write position if available
-            self.updatePosition()
-            # also write milage if available
-            self.updateMileage()
+            with self.session.begin():
+                if self.chargingSession is not None and self.chargingSession.isLockedState():
+                    self.chargingSession.unlocked = plugStatus.carCapturedTimestamp.value
+                # also write position if available
+                self.updatePosition()
+                # also write milage if available
+                self.updateMileage()
 
     def __onChargePowerChange(self, element, flags):
         if self.chargingSession is not None:
@@ -318,7 +325,8 @@ class ChargeAgent():
 
         if self.chargingSession is not None and self.chargingSession.isChargingState()\
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
-            self.chargingSession.maximumChargePower_kW = element.value
+            with self.session.begin():
+                self.chargingSession.maximumChargePower_kW = element.value
 
     def updatePosition(self):
         if Privacy.NO_LOCATIONS not in self.privacy:

@@ -50,10 +50,11 @@ class BatteryAgent():
                                 element.value, self.battery.carCapturedTimestamp)
 
                 self.battery = Battery(self.vehicle, batteryStatus.carCapturedTimestamp.value, current_currentSOC_pct, current_cruisingRangeElectric_km)
-                try:
-                    self.session.add(self.battery)
-                except IntegrityError as err:
-                    LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                with self.session.begin():
+                    try:
+                        self.session.add(self.battery)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def commit(self):
         pass
