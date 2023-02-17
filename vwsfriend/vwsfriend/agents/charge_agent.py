@@ -141,7 +141,7 @@ class ChargeAgent():
                     # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
                     if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
                             and (self.chargingSession.ended is None or chargeStatus.carCapturedTimestamp.value is None
-                                or self.chargingSession.ended > (chargeStatus.carCapturedTimestamp.value - timedelta(hours=24))):
+                                 or self.chargingSession.ended > (chargeStatus.carCapturedTimestamp.value - timedelta(hours=24))):
                         self.chargingSession.ended = None
                         self.chargingSession.endSOC_pct = None
                     else:
@@ -279,7 +279,7 @@ class ChargeAgent():
                     # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
                     if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
                             and (self.chargingSession.unlocked is None or plugStatus.carCapturedTimestamp.value is None
-                                or self.chargingSession.unlocked > (plugStatus.carCapturedTimestamp.value - timedelta(hours=24))):
+                                 or self.chargingSession.unlocked > (plugStatus.carCapturedTimestamp.value - timedelta(hours=24))):
                         self.chargingSession.unlocked = None
                     else:
                         self.previousChargingSession = self.chargingSession
