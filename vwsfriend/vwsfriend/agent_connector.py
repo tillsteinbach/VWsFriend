@@ -52,8 +52,8 @@ class AgentConnector():
                 connectArgs['options'] = '-c timezone=utc'
             engine = create_engine(dbUrl, pool_pre_ping=True, connect_args=connectArgs)
             autocommitEngine = engine.execution_options(isolation_level="AUTOCOMMIT")
-            sessionSessionFactory = sessionmaker(bind=autocommitEngine)
-            self.AutocommitSession = scoped_session(sessionSessionFactory)
+            autocommitSessionFactory = sessionmaker(bind=autocommitEngine)
+            self.AutocommitSession = scoped_session(autocommitSessionFactory)
             self.session = self.AutocommitSession()
 
             while True:
