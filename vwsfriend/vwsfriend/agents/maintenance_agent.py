@@ -65,8 +65,7 @@ class MaintenanceAgent():
                 if self.inspectionEntry is None:
                     self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, maintenanceStatus.inspectionDue_days.value, None)
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(self.inspectionEntry)
+                        self.session.add(self.inspectionEntry)
                     except IntegrityError as err:
                         LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 elif self.inspectionEntry.due_in_days is None:
@@ -80,8 +79,7 @@ class MaintenanceAgent():
                         self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, maintenanceStatus.inspectionDue_days.value,
                                                            None)
                         try:
-                            with self.session.begin_nested():
-                                self.session.add(self.inspectionEntry)
+                            self.session.add(self.inspectionEntry)
                         except IntegrityError as err:
                             LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     else:
@@ -91,8 +89,7 @@ class MaintenanceAgent():
                 if self.inspectionEntry is None:
                     self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, None, maintenanceStatus.inspectionDue_km.value)
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(self.inspectionEntry)
+                        self.session.add(self.inspectionEntry)
                     except IntegrityError as err:
                         LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 elif self.inspectionEntry.due_in_km is None:
@@ -106,8 +103,7 @@ class MaintenanceAgent():
                         self.inspectionEntry = Maintenance(self.vehicle, None, None, MaintenanceType.INSPECTION, None,
                                                            maintenanceStatus.inspectionDue_km.value)
                         try:
-                            with self.session.begin_nested():
-                                self.session.add(self.inspectionEntry)
+                            self.session.add(self.inspectionEntry)
                         except IntegrityError as err:
                             LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     else:
@@ -117,8 +113,7 @@ class MaintenanceAgent():
                 if self.oilServiceEntry is None:
                     self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, maintenanceStatus.oilServiceDue_days.value, None)
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(self.oilServiceEntry)
+                        self.session.add(self.oilServiceEntry)
                     except IntegrityError as err:
                         LOG.warning('Could not add oil service entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 elif self.oilServiceEntry.due_in_days is None:
@@ -132,8 +127,7 @@ class MaintenanceAgent():
                         self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, maintenanceStatus.oilServiceDue_days.value,
                                                            None)
                         try:
-                            with self.session.begin_nested():
-                                self.session.add(self.oilServiceEntry)
+                            self.session.add(self.oilServiceEntry)
                         except IntegrityError as err:
                             LOG.warning('Could not add oil service entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     else:
@@ -143,8 +137,7 @@ class MaintenanceAgent():
                 if self.oilServiceEntry is None:
                     self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, None, maintenanceStatus.oilServiceDue_km.value)
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(self.oilServiceEntry)
+                        self.session.add(self.oilServiceEntry)
                     except IntegrityError as err:
                         LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                 elif self.oilServiceEntry.due_in_km is None:
@@ -158,8 +151,7 @@ class MaintenanceAgent():
                         self.oilServiceEntry = Maintenance(self.vehicle, None, None, MaintenanceType.OIL_SERVICE, None,
                                                            maintenanceStatus.oilServiceDue_km.value)
                         try:
-                            with self.session.begin_nested():
-                                self.session.add(self.oilServiceEntry)
+                            self.session.add(self.oilServiceEntry)
                         except IntegrityError as err:
                             LOG.warning('Could not add inspection entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     else:

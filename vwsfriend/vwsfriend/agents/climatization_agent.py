@@ -59,8 +59,7 @@ class ClimatizationAgent():
                 self.climate = Climatization(self.vehicle, climateStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
                                              current_climatisationState)
                 try:
-                    with self.session.begin_nested():
-                        self.session.add(self.climate)
+                    self.session.add(self.climate)
                 except IntegrityError as err:
                     LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 

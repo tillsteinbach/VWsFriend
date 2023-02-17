@@ -104,9 +104,8 @@ class RefuelAgent():
                         refuelSession = RefuelSession(self.vehicle, element.value, self.primary_currentSOC_pct, current_primary_currentSOC_pct, mileage_km,
                                                       position_latitude, position_longitude, location)
                         try:
-                            with self.session.begin_nested():
-                                self.session.add(refuelSession)
-                                self.previousRefuelSession = refuelSession
+                            self.session.add(refuelSession)
+                            self.previousRefuelSession = refuelSession
                         except IntegrityError as err:
                             LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     else:

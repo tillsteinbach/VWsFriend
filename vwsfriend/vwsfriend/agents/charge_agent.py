@@ -105,8 +105,7 @@ class ChargeAgent():
                 self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
                                      current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
                 try:
-                    with self.session.begin_nested():
-                        self.session.add(self.charge)
+                    self.session.add(self.charge)
                 except IntegrityError as err:
                     LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
@@ -147,8 +146,7 @@ class ChargeAgent():
                     self.previousChargingSession = self.chargingSession
                     self.chargingSession = ChargingSession(vehicle=self.vehicle)
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(self.chargingSession)
+                        self.session.add(self.chargingSession)
                     except IntegrityError:
                         LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
             if not self.chargingSession.wasStarted():
@@ -228,8 +226,7 @@ class ChargeAgent():
                 self.previousChargingSession = self.chargingSession
                 self.chargingSession = ChargingSession(vehicle=self.vehicle)
                 try:
-                    with self.session.begin_nested():
-                        self.session.add(self.chargingSession)
+                    self.session.add(self.chargingSession)
                 except IntegrityError as err:
                     LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
             if self.chargingSession.connected is None:
@@ -281,8 +278,7 @@ class ChargeAgent():
                 else:
                     self.previousChargingSession = self.chargingSession
                     self.chargingSession = ChargingSession(vehicle=self.vehicle)
-                    with self.session.begin_nested():
-                        self.session.add(self.chargingSession)
+                    self.session.add(self.chargingSession)
             if self.chargingSession.locked is None:
                 self.chargingSession.locked = plugStatus.carCapturedTimestamp.value
             # also write position if available

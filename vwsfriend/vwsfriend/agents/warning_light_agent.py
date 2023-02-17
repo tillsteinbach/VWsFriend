@@ -58,8 +58,7 @@ class WarningLightAgent():
                         warningLightEntry.priority = warningLight.priority.value
 
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(warningLightEntry)
+                        self.session.add(warningLightEntry)
                     except IntegrityError as err:
                         LOG.warning('Could not add warning light entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
             for enabledLight in self.enabledLights:
