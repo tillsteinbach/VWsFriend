@@ -24,7 +24,6 @@ class WeconnectErrorAgent():
         try:
             with self.session.begin_nested():
                 self.session.add(error)
-            self.session.commit()
         except IntegrityError:
             LOG.warning('Could not add error entry to the database')
 
@@ -45,6 +44,5 @@ class WeconnectErrorAgent():
         try:
             with self.session.begin_nested():
                 self.session.add(responsetime)
-            self.session.commit()
         except IntegrityError:
             LOG.warning('Could not add responsetime entry to the database')
