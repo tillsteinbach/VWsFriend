@@ -103,21 +103,23 @@ class RefuelAgent():
                                  current_primary_currentSOC_pct)
                         refuelSession = RefuelSession(self.vehicle, element.value, self.primary_currentSOC_pct, current_primary_currentSOC_pct, mileage_km,
                                                       position_latitude, position_longitude, location)
-                        try:
-                            self.session.add(refuelSession)
-                            self.previousRefuelSession = refuelSession
-                        except IntegrityError as err:
-                            LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                        with self.session.begin():
+                            try:
+                                self.session.add(refuelSession)
+                                self.previousRefuelSession = refuelSession
+                            except IntegrityError as err:
+                                LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
                     else:
                         LOG.info('Vehicle %s refueled from %d percent to %d percent. It looks like this session is continueing the previous refuel session',
                                  self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
-                        self.previousRefuelSession.endSOC_pct = current_primary_currentSOC_pct
-                        if self.previousRefuelSession.mileage_km is None:
-                            self.previousRefuelSession.mileage_km = mileage_km
-                        if self.previousRefuelSession.position_latitude is None or self.previousRefuelSession.position_longitude is None:
-                            self.previousRefuelSession.position_latitude = position_latitude
-                            self.previousRefuelSession.position_longitude = position_longitude
-                            self.previousRefuelSession.location = location
+                        with self.session.begin():
+                            self.previousRefuelSession.endSOC_pct = current_primary_currentSOC_pct
+                            if self.previousRefuelSession.mileage_km is None:
+                                self.previousRefuelSession.mileage_km = mileage_km
+                            if self.previousRefuelSession.position_latitude is None or self.previousRefuelSession.position_longitude is None:
+                                self.previousRefuelSession.position_latitude = position_latitude
+                                self.previousRefuelSession.position_longitude = position_longitude
+                                self.previousRefuelSession.location = location
                     self.primary_currentSOC_pct = current_primary_currentSOC_pct
                 # SoC decreased, normal usage
                 elif self.primary_currentSOC_pct is None or current_primary_currentSOC_pct < self.primary_currentSOC_pct:

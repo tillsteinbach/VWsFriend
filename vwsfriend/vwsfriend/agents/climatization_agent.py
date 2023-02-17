@@ -58,10 +58,11 @@ class ClimatizationAgent():
 
                 self.climate = Climatization(self.vehicle, climateStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
                                              current_climatisationState)
-                try:
-                    self.session.add(self.climate)
-                except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                with self.session.begin():
+                    try:
+                        self.session.add(self.climate)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def commit(self):
         pass
