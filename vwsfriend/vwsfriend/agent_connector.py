@@ -91,7 +91,7 @@ class AgentConnector():
 
         self.agents["none"] = []
         if self.withDB:
-            self.agents["none"].append(WeconnectErrorAgent(self.session, weConnect))
+            self.agents["none"].append(WeconnectErrorAgent(session=self.AutocommitSession(), weConnect=weConnect))
 
     def onEnable(self, element, flags):
         if (flags & AddressableLeaf.ObserverEvent.ENABLED) and isinstance(element, vehicle.Vehicle):
