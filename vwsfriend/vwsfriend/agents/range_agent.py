@@ -67,11 +67,11 @@ class RangeAgent():
 
                 self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
                                    current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
-                with self.session.begin():
+                with self.session.begin_nested():
                     try:
                         self.session.add(self.range)
                     except IntegrityError as err:
                         LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
 
     def commit(self):
-        pass
+        self.session.commit()

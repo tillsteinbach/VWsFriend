@@ -61,7 +61,7 @@ class WarningLightAgent():
                         self.session.add(warningLightEntry)
                     except IntegrityError as err:
                         LOG.warning('Could not add warning light entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-            with self.session.begin():
+            with self.session.begin_nested():
                 for enabledLight in self.enabledLights:
                     if enabledLight.messageId not in warningLightsStatus.warningLights:
                         enabledLight.end = element.value
@@ -74,4 +74,4 @@ class WarningLightAgent():
                                                                               WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
 
     def commit(self):
-        pass
+        self.session.commit()

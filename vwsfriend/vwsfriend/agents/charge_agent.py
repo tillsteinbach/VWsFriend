@@ -104,7 +104,7 @@ class ChargeAgent():
 
                 self.charge = Charge(self.vehicle, chargeStatus.carCapturedTimestamp.value, current_remainingChargingTimeToComplete_min, current_chargingState,
                                      current_chargeMode, current_chargePower_kW, current_chargeRate_kmph)
-                with self.session.begin():
+                with self.session.begin_nested():
                     try:
                         self.session.add(self.charge)
                     except IntegrityError as err:
@@ -136,7 +136,7 @@ class ChargeAgent():
 
         if element.value in [ChargingStatus.ChargingState.CHARGING, ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION,
                              ChargingStatus.ChargingState.CONSERVATION]:
-            with self.session.begin():
+            with self.session.begin_nested():
                 if self.chargingSession is None or self.chargingSession.isClosed():
                     # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
                     if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
@@ -177,7 +177,7 @@ class ChargeAgent():
                                ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING,
                                ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
                                ChargingStatus.ChargingState.ERROR]:
-            with self.session.begin():
+            with self.session.begin_nested():
                 if self.chargingSession is not None and self.chargingSession.isChargingState():
                     self.chargingSession.ended = chargeStatus.carCapturedTimestamp.value
 
@@ -225,7 +225,7 @@ class ChargeAgent():
                     self.chargingSession = None
 
         if element.value == PlugStatus.PlugConnectionState.CONNECTED:
-            with self.session.begin():
+            with self.session.begin_nested():
                 if self.chargingSession is None or self.chargingSession.isClosed():
                     self.previousChargingSession = self.chargingSession
                     self.chargingSession = ChargingSession(vehicle=self.vehicle)
@@ -241,7 +241,7 @@ class ChargeAgent():
                 self.updateMileage()
 
         elif element.value == PlugStatus.PlugConnectionState.DISCONNECTED:
-            with self.session.begin():
+            with self.session.begin_nested():
                 if self.chargingSession is not None and self.chargingSession.isConnectedState():
                     self.chargingSession.disconnected = plugStatus.carCapturedTimestamp.value
                 # also write position if available
@@ -274,7 +274,7 @@ class ChargeAgent():
                     self.chargingSession = None
 
         if element.value == PlugStatus.PlugLockState.LOCKED:
-            with self.session.begin():
+            with self.session.begin_nested():
                 if self.chargingSession is None or self.chargingSession.isClosed():
                     # In case this was an interrupted charging session (interrupt no longer than 24hours), continue by erasing end time
                     if self.chargingSession is not None and not self.chargingSession.wasDisconnected() \
@@ -293,7 +293,7 @@ class ChargeAgent():
                 self.updateMileage()
 
         elif element.value == PlugStatus.PlugLockState.UNLOCKED:
-            with self.session.begin():
+            with self.session.begin_nested():
                 if self.chargingSession is not None and self.chargingSession.isLockedState():
                     self.chargingSession.unlocked = plugStatus.carCapturedTimestamp.value
                 # also write position if available
@@ -325,7 +325,7 @@ class ChargeAgent():
 
         if self.chargingSession is not None and self.chargingSession.isChargingState()\
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
-            with self.session.begin():
+            with self.session.begin_nested():
                 self.chargingSession.maximumChargePower_kW = element.value
 
     def updatePosition(self):
@@ -351,4 +351,4 @@ class ChargeAgent():
                 self.chargingSession.mileage_km = odometerMeasurement.odometer.value
 
     def commit(self):
-        pass
+        self.session.commit()
