@@ -130,3 +130,5 @@ class AgentConnector():
         for vehicleAgents in self.agents.values():
             for agent in vehicleAgents:
                 agent.commit()
+        if self.withDB:
+            self.session.commit()

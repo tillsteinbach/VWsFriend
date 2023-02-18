@@ -68,7 +68,7 @@ class StateAgent():
                 LOG.info(f'Vehicle {self.vehicle.vin} went offline')
                 self.onlineState = StateAgent.OnlineState.OFFLINE
                 self.vehicle.online = False
-                with self.session.begin():
+                with self.session.begin_nested():
                     self.online.offlineTime = self.lastCarCapturedTimestamp
                 self.online = None
                 self.lastCarCapturedTimestamp = None
@@ -80,12 +80,12 @@ class StateAgent():
             if self.online is None and self.earliestCarCapturedTimestampInInterval is not None:
                 LOG.info(f'Vehicle {self.vehicle.vin} went online')
                 self.onlineState = StateAgent.OnlineState.ONLINE
-                with self.session.begin():
+                with self.session.begin_nested():
                     self.vehicle.online = True
                     if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
                         self.vehicle.lastChange = self.lastCarCapturedTimestamp
                 self.online = Online(self.vehicle, onlineTime=self.earliestCarCapturedTimestampInInterval, offlineTime=None)
-                with self.session.begin():
+                with self.session.begin_nested():
                     try:
                         self.session.add(self.online)
                     except IntegrityError as err:
@@ -94,8 +94,9 @@ class StateAgent():
 
     def commit(self):
         self.checkOnlineOffline()
-        with self.session.begin():
+        with self.session.begin_nested():
             self.vehicle.lastUpdate = datetime.utcnow().replace(tzinfo=timezone.utc)
+        self.session.commit()
 
     class OnlineState(Enum):
         ONLINE = auto()

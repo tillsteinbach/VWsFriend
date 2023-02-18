@@ -103,7 +103,7 @@ class RefuelAgent():
                                  current_primary_currentSOC_pct)
                         refuelSession = RefuelSession(self.vehicle, element.value, self.primary_currentSOC_pct, current_primary_currentSOC_pct, mileage_km,
                                                       position_latitude, position_longitude, location)
-                        with self.session.begin():
+                        with self.session.begin_nested():
                             try:
                                 self.session.add(refuelSession)
                                 self.previousRefuelSession = refuelSession
@@ -112,7 +112,7 @@ class RefuelAgent():
                     else:
                         LOG.info('Vehicle %s refueled from %d percent to %d percent. It looks like this session is continueing the previous refuel session',
                                  self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
-                        with self.session.begin():
+                        with self.session.begin_nested():
                             self.previousRefuelSession.endSOC_pct = current_primary_currentSOC_pct
                             if self.previousRefuelSession.mileage_km is None:
                                 self.previousRefuelSession.mileage_km = mileage_km
@@ -140,4 +140,4 @@ class RefuelAgent():
             self.lastPosition = None
 
     def commit(self):
-        pass
+        self.session.commit()
