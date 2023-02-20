@@ -69,6 +69,7 @@ class WarningLightAgent():
                         if warningLightsStatus.mileage_km.enabled:
                             enabledLight.end_mileage = warningLightsStatus.mileage_km.value
                         LOG.info(f'Warning light {enabledLight.messageId} in vehicle {self.vehicle.vin} turned off')
+            self.session.commit()
 
             self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
                                                                               WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()

@@ -55,6 +55,7 @@ class BatteryAgent():
                         self.session.add(self.battery)
                     except IntegrityError as err:
                         LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.session.commit()
 
     def commit(self):
         self.session.commit()

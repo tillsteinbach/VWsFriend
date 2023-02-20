@@ -109,6 +109,7 @@ class RefuelAgent():
                                 self.previousRefuelSession = refuelSession
                             except IntegrityError as err:
                                 LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                        self.session.commit()
                     else:
                         LOG.info('Vehicle %s refueled from %d percent to %d percent. It looks like this session is continueing the previous refuel session',
                                  self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
@@ -120,6 +121,7 @@ class RefuelAgent():
                                 self.previousRefuelSession.position_latitude = position_latitude
                                 self.previousRefuelSession.position_longitude = position_longitude
                                 self.previousRefuelSession.location = location
+                        self.session.commit()
                     self.primary_currentSOC_pct = current_primary_currentSOC_pct
                 # SoC decreased, normal usage
                 elif self.primary_currentSOC_pct is None or current_primary_currentSOC_pct < self.primary_currentSOC_pct:
