@@ -34,7 +34,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1656077962186,
   "links": [
     {
       "asDropdown": false,
@@ -89,6 +88,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "SoC",
             "axisPlacement": "auto",
             "axisSoftMax": 100,
@@ -175,7 +176,8 @@
             "min"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -329,7 +331,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -379,6 +381,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "Charge Power",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -457,7 +461,8 @@
             "min"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -686,18 +691,19 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P2EF847825A020B66"
           },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  (COALESCE(\"realCharged_kWh\", (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount (estimated)\",\n  \"realCharged_kWh\" AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\",\n  string_agg(charging_tag.tag_name, ', ') AS \"Tags\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN charging_tag on charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\nid = $id\nGROUP BY ended, unlocked, disconnected, started, locked, connected, \"maxChargeCurrentACSetting\", \"targetSOCSetting_pct\", \"maximumChargePower_kW\", \"endSOC_pct\", \"startSOC_pct\", \"carType\", \"primary_capacity\", \"secondary_capacity\", acdc, \"realCharged_kWh\", \"realCost_ct\", \"mileage_km\"",
+          "rawSql": "DO $$ \nbegin\nIF ${id:singlequote} = 'none' THEN\n  RAISE EXCEPTION 'No id was given, you have to navigate to this dashboard using a link from Charges dashboard';\nEND IF;\nEND $$;\nSELECT\n  EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n  \"maxChargeCurrentACSetting\" AS \"Maximum AC Power Setting\",\n  \"targetSOCSetting_pct\" AS \"Target SoC Setting\",\n  \"maximumChargePower_kW\" AS \"Maximum Charge Power\",\n  (COALESCE(\"realCharged_kWh\", COALESCE((\"meterEnd_kWh\" - \"meterStart_kWh\"), (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)))) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Average Charge Power\",\n  \"acdc\" AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC) AS \"Amount (estimated)\",\n  COALESCE(\"realCharged_kWh\", (\"meterEnd_kWh\" - \"meterStart_kWh\")) AS \"Amount (real)\",\n  \"realCost_ct\"::NUMERIC/100::NUMERIC AS \"Cost (real)\",\n  \"mileage_km\" AS \"Odometer\",\n  string_agg(charging_tag.tag_name, ', ') AS \"Tags\"\nFROM charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nLEFT JOIN charging_tag on charging_sessions.id = charging_tag.charging_sessions_id\nWHERE\nid = $id\nGROUP BY ended, unlocked, disconnected, started, locked, connected, \"maxChargeCurrentACSetting\", \"targetSOCSetting_pct\", \"maximumChargePower_kW\", \"endSOC_pct\", \"startSOC_pct\", \"carType\", \"primary_capacity\", \"secondary_capacity\", acdc, \"realCharged_kWh\", \"meterEnd_kWh\", \"meterStart_kWh\", \"realCost_ct\", \"mileage_km\"",
           "refId": "A",
           "select": [
             [
@@ -709,6 +715,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "charging_sessions",
           "timeColumn": "connected",
           "timeColumnType": "timestamp",
@@ -763,6 +786,11 @@
                   "index": 8,
                   "text": "conservation"
                 },
+                "DISCHARGING": {
+                  "color": "yellow",
+                  "index": 11,
+                  "text": "discharging"
+                },
                 "ERROR": {
                   "color": "red",
                   "index": 3,
@@ -797,11 +825,6 @@
                   "color": "#3d3d3d",
                   "index": 10,
                   "text": "unsupported"
-                },
-                "DISCHARGING": {
-                  "color": "yellow",
-                  "index": 11,
-                  "text": "discharging"
                 }
               },
               "type": "value"
@@ -831,8 +854,9 @@
       "options": {
         "alignValue": "center",
         "legend": {
-          "displayMode": "hidden",
-          "placement": "bottom"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
         },
         "mergeValues": true,
         "rowHeight": 0.9,
@@ -956,7 +980,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1062,6 +1086,7 @@
           "mouseWheelZoom": true,
           "showAttribution": true,
           "showDebug": false,
+          "showMeasure": false,
           "showScale": false,
           "showZoom": true
         },
@@ -1159,14 +1184,18 @@
             "type": "markers"
           }
         ],
+        "tooltip": {
+          "mode": "details"
+        },
         "view": {
+          "allLayers": true,
           "id": "fit",
           "lat": 0,
           "lon": 0,
           "zoom": 18
         }
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1259,7 +1288,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1299,7 +1328,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "internal"
