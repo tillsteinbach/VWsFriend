@@ -210,6 +210,72 @@
       </fieldset>
 
       <fieldset class="form-field">
+        {{ form.meterStart_kWh.label }}
+        {{ form.meterStart_kWh }}
+        {% if form.meterStart_kWh.errors %}
+          <ul class="errors">
+            {% for error in form.meterStart_kWh.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        Add new chargers <a href="{{ url_for('database.chargerEdit') }}">here</a>
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.meterEnd_kWh.label }}
+        {{ form.meterEnd_kWh }}
+        {% if form.meterEnd_kWh.errors %}
+          <ul class="errors">
+            {% for error in form.meterEnd_kWh.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        Add new chargers <a href="{{ url_for('database.chargerEdit') }}">here</a>
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.pricePerKwh_ct.label }}
+        {{ form.pricePerKwh_ct }}
+        {% if form.pricePerKwh_ct.errors %}
+          <ul class="errors">
+            {% for error in form.pricePerKwh_ct.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        Add new chargers <a href="{{ url_for('database.chargerEdit') }}">here</a>
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.pricePerMinute_ct.label }}
+        {{ form.pricePerMinute_ct }}
+        {% if form.pricePerMinute_ct.errors %}
+          <ul class="errors">
+            {% for error in form.pricePerMinute_ct.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        Add new chargers <a href="{{ url_for('database.chargerEdit') }}">here</a>
+      </fieldset>
+
+      <fieldset class="form-field">
+        {{ form.pricePerSession_ct.label }}
+        {{ form.pricePerSession_ct }}
+        {% if form.pricePerSession_ct.errors %}
+          <ul class="errors">
+            {% for error in form.pricePerSession_ct.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        Add new chargers <a href="{{ url_for('database.chargerEdit') }}">here</a>
+      </fieldset>
+
+
+      <fieldset class="form-field">
         {{ form.realCharged_kWh.label }}
         {{ form.realCharged_kWh }}
         {% if form.realCharged_kWh.errors %}
