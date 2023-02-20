@@ -72,6 +72,7 @@ class RangeAgent():
                         self.session.add(self.range)
                     except IntegrityError as err:
                         LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.session.commit()
 
     def commit(self):
         self.session.commit()

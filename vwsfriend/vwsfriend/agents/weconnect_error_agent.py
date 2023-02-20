@@ -26,6 +26,7 @@ class WeconnectErrorAgent():
                 self.session.add(error)
             except IntegrityError:
                 LOG.warning('Could not add error entry to the database')
+        self.session.commit()
 
     def commit(self):
         min = self.weconnect.getMinElapsed()

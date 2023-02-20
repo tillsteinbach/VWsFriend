@@ -153,6 +153,7 @@ class TripAgent():
                     self.session.add(self.trip)
                 except IntegrityError as err:
                     LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+            self.session.commit()
             LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
 
     def __onCarCapturedTimestampChanged(self, element, flags):
@@ -207,6 +208,7 @@ class TripAgent():
                             self.session.delete(self.trip)
                             self.trip = None
                             LOG.info(f'Previously started trip for {self.vehicle.vin} was invalid. Deleting it now.')
+                    self.session.commit()
             else:
                 if flags is not None:
                     LOG.info(f'Vehicle {self.vehicle.vin} provides a parking position, but no trip was started (this is ok during startup)')
@@ -241,6 +243,7 @@ class TripAgent():
                             self.session.add(self.trip)
                         except IntegrityError as err:
                             LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    self.session.commit()
                     LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
             else:
                 if self.trip is not None:
@@ -251,6 +254,7 @@ class TripAgent():
                             odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                             if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                                 self.trip.end_mileage_km = odometerMeasurement.odometer.value
+                    self.session.commit()
 
                     self.trip = None
 
@@ -289,6 +293,7 @@ class TripAgent():
                             self.session.add(self.trip)
                         except IntegrityError as err:
                             LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    self.session.commit()
                     LOG.info(f'Vehicle {self.vehicle.vin} started a trip')
             elif (flags & AddressableLeaf.ObserverEvent.DISABLED):
                 if self.trip is not None:
@@ -299,6 +304,7 @@ class TripAgent():
                             odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                             if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                                 self.trip.end_mileage_km = odometerMeasurement.odometer.value
+                    self.session.commit()
 
                     self.trip = None
 
@@ -330,6 +336,7 @@ class TripAgent():
                         odometerMeasurement = self.vehicle.weConnectVehicle.domains['measurements']['odometerStatus']
                         if odometerMeasurement.odometer.enabled and odometerMeasurement.odometer is not None:
                             self.trip.end_mileage_km = odometerMeasurement.odometer.value
+                self.session.commit()
 
                 self.trip = None
 
@@ -355,6 +362,7 @@ class TripAgent():
                                 self.session.add(self.trip)
                             except IntegrityError as err:
                                 LOG.warning('Could not add trip to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                        self.session.commit()
                         LOG.info(f'Vehicle {self.vehicle.vin} started a trip (car was disconnected from charger)')
 
     def commit(self):

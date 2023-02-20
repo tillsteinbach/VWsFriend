@@ -109,6 +109,7 @@ class ChargeAgent():
                         self.session.add(self.charge)
                     except IntegrityError as err:
                         LOG.warning('Could not add charge entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.session.commit()
 
     def __onChargingStateChange(self, element, flags):  # noqa: C901
         chargeStatus = self.vehicle.weConnectVehicle.domains['charging']['chargingStatus']
@@ -172,6 +173,7 @@ class ChargeAgent():
 
                 # also write milage if available
                 self.updateMileage()
+            self.session.commit()
 
         elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING,
                                ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING,
@@ -199,6 +201,7 @@ class ChargeAgent():
 
                     # also write milage if available
                     self.updateMileage()
+            self.session.commit()
 
     def __onPlugConnectionStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
@@ -239,6 +242,7 @@ class ChargeAgent():
                 self.updatePosition()
                 # also write milage if available
                 self.updateMileage()
+            self.session.commit()
 
         elif element.value == PlugStatus.PlugConnectionState.DISCONNECTED:
             with self.session.begin_nested():
@@ -248,6 +252,7 @@ class ChargeAgent():
                 self.updatePosition()
                 # also write milage if available
                 self.updateMileage()
+            self.session.commit()
 
     def __onPlugLockStateChange(self, element, flags):  # noqa: C901
         plugStatus = self.vehicle.weConnectVehicle.domains['charging']['plugStatus']
@@ -291,6 +296,7 @@ class ChargeAgent():
                 self.updatePosition()
                 # also write milage if available
                 self.updateMileage()
+            self.session.commit()
 
         elif element.value == PlugStatus.PlugLockState.UNLOCKED:
             with self.session.begin_nested():
@@ -300,6 +306,7 @@ class ChargeAgent():
                 self.updatePosition()
                 # also write milage if available
                 self.updateMileage()
+            self.session.commit()
 
     def __onChargePowerChange(self, element, flags):
         if self.chargingSession is not None:
@@ -327,6 +334,7 @@ class ChargeAgent():
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
             with self.session.begin_nested():
                 self.chargingSession.maximumChargePower_kW = element.value
+            self.session.commit()
 
     def updatePosition(self):
         if Privacy.NO_LOCATIONS not in self.privacy:
