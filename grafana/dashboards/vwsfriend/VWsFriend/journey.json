@@ -133,6 +133,7 @@
           "mouseWheelZoom": true,
           "showAttribution": true,
           "showDebug": false,
+          "showMeasure": false,
           "showScale": false,
           "showZoom": true
         },
@@ -236,13 +237,14 @@
           "mode": "details"
         },
         "view": {
+          "allLayers": true,
           "id": "fit",
           "lat": 0,
           "lon": 0,
           "zoom": 18
         }
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -383,7 +385,7 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "format": "table",
@@ -556,15 +558,20 @@
         },
         "textMode": "value_and_name"
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH dates AS\n(\n  SELECT\n    vehicle_vin,\n    FIRST_VALUE(\"startDate\") OVER sd AS \"Start\",\n    LAST_VALUE(\"endDate\") OVER sd AS \"End\"\n  FROM trips\n  WHERE\n    ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n    trips.vehicle_vin = '$VIN'\n  WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n  LIMIT 1\n),\nenergy_charged AS\n(\n  SELECT\n    SUM(COALESCE(\"realCharged_kWh\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE\n        WHEN\n          vehicles.\"carType\" = 'ELECTRIC'\n        THEN\n          vehicle_settings.\"primary_capacity\"::NUMERIC\n        ELSE\n          vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC))) AS \"Energy Charged\"\n  FROM \n    charging_sessions\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  WHERE\n    $__timeFilter(\"started\") AND\n    charging_sessions.vehicle_vin = '$VIN'  \n),\nrefueled AS\n(\n  SELECT\n    SUM(COALESCE(\"realRefueled_l\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * ( \n      vehicle_settings.\"primary_capacity\"::NUMERIC\n      / 100::NUMERIC))) AS \"Refueled\"\n  FROM \n    refuel_sessions\n  LEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  WHERE\n    $__timeFilter(\"date\") AND\n    refuel_sessions.vehicle_vin = '$VIN'  \n)\n\nSELECT\n  *,\n  \"Energy used (estimated)\" / \"Length\" * 100 AS \"Energy consumption / 100km\",\n  \"Gasoline used (estimated)\" / \"Length\" * 100 AS \"Gasoline consumption / 100km\"\nFROM\n  (\n    SELECT\n      FIRST_VALUE(\"startDate\") OVER sd AS \"Start\",\n      LAST_VALUE(\"endDate\") OVER sd AS \"End\",\n      FIRST_VALUE(\"start_mileage_km\") OVER sd AS \"Start Mileage\",\n      LAST_VALUE(\"end_mileage_km\") OVER sd AS \"End Mileage\",\n      (LAST_VALUE(\"end_mileage_km\") OVER sd)-(FIRST_VALUE(\"start_mileage_km\") OVER sd) AS \"Length\",\n      (\n        SELECT\n          (startbattery.\"currentSOC_pct\" - endbattery.\"currentSOC_pct\") * (\n            CASE\n              WHEN\n                vehicles.\"carType\" = 'ELECTRIC'\n              THEN\n                vehicle_settings.\"primary_capacity\"::NUMERIC\n              ELSE\n                vehicle_settings.\"secondary_capacity\"::NUMERIC\n            END\n            / 100::NUMERIC) + (\n              SELECT COALESCE(\"Energy Charged\",0) FROM energy_charged\n            ) AS \"Energy used (estimated)\"\n        FROM\n          dates\n        LEFT JOIN vehicles ON dates.vehicle_vin = vehicles.vin\n        LEFT JOIN vehicle_settings ON dates.vehicle_vin = vehicle_settings.vehicle_vin\n        JOIN battery AS startbattery ON startbattery.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM battery WHERE \"carCapturedTimestamp\" > \"Start\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"Start\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"Start\"))) ASC LIMIT 1)\n        JOIN battery AS endbattery ON endbattery.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM battery WHERE \"carCapturedTimestamp\" > \"End\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"End\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"End\"))) ASC LIMIT 1)\n      ) AS \"Energy used (estimated)\",\n      (\n        SELECT\n          CASE\n            WHEN\n              vehicles.\"carType\" != 'ELECTRIC'\n            THEN\n              (startranges.\"primary_currentSOC_pct\" - endranges.\"primary_currentSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC\n                / 100::NUMERIC) + (\n                  SELECT COALESCE(\"Refueled\",0) FROM refueled\n                )\n            ELSE\n              NULL\n            END AS \"Gasoline used (estimated)\"\n        FROM\n          dates\n        LEFT JOIN vehicles ON dates.vehicle_vin = vehicles.vin\n        LEFT JOIN vehicle_settings ON dates.vehicle_vin = vehicle_settings.vehicle_vin\n        JOIN ranges AS startranges ON startranges.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM ranges WHERE \"carCapturedTimestamp\" > \"Start\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"Start\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"Start\"))) ASC LIMIT 1)\n        JOIN ranges AS endranges ON endranges.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM ranges WHERE \"carCapturedTimestamp\" > \"End\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"End\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"End\"))) ASC LIMIT 1)\n      ) AS \"Gasoline used (estimated)\"\n    FROM trips\n    WHERE\n      ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n      trips.vehicle_vin = '$VIN'\n    WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n    LIMIT 1\n  ) AS precalc",
+          "rawSql": "WITH dates AS\n(\n  SELECT\n    vehicle_vin,\n    FIRST_VALUE(\"startDate\") OVER sd AS \"Start\",\n    LAST_VALUE(\"endDate\") OVER sd AS \"End\"\n  FROM trips\n  WHERE\n    ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n    trips.vehicle_vin = '$VIN'\n  WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n  LIMIT 1\n),\nenergy_charged AS\n(\n  SELECT\n    SUM(COALESCE(\"realCharged_kWh\", COALESCE((\"meterEnd_kWh\"-\"meterStart_kWh\"),\n    (\"endSOC_pct\" - \"startSOC_pct\") * (\n      CASE\n        WHEN\n          vehicles.\"carType\" = 'ELECTRIC'\n        THEN\n          vehicle_settings.\"primary_capacity\"::NUMERIC\n        ELSE\n          vehicle_settings.\"secondary_capacity\"::NUMERIC\n      END\n      / 100::NUMERIC)))) AS \"Energy Charged\"\n  FROM \n    charging_sessions\n  LEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  WHERE\n    $__timeFilter(\"started\") AND\n    charging_sessions.vehicle_vin = '$VIN'  \n),\nrefueled AS\n(\n  SELECT\n    SUM(COALESCE(\"realRefueled_l\",\n    (\"endSOC_pct\" - \"startSOC_pct\") * ( \n      vehicle_settings.\"primary_capacity\"::NUMERIC\n      / 100::NUMERIC))) AS \"Refueled\"\n  FROM \n    refuel_sessions\n  LEFT JOIN vehicles ON refuel_sessions.vehicle_vin = vehicles.vin\n  LEFT JOIN vehicle_settings ON refuel_sessions.vehicle_vin = vehicle_settings.vehicle_vin\n  WHERE\n    $__timeFilter(\"date\") AND\n    refuel_sessions.vehicle_vin = '$VIN'  \n)\n\nSELECT\n  *,\n  \"Energy used (estimated)\" / \"Length\" * 100 AS \"Energy consumption / 100km\",\n  \"Gasoline used (estimated)\" / \"Length\" * 100 AS \"Gasoline consumption / 100km\"\nFROM\n  (\n    SELECT\n      FIRST_VALUE(\"startDate\") OVER sd AS \"Start\",\n      LAST_VALUE(\"endDate\") OVER sd AS \"End\",\n      FIRST_VALUE(\"start_mileage_km\") OVER sd AS \"Start Mileage\",\n      LAST_VALUE(\"end_mileage_km\") OVER sd AS \"End Mileage\",\n      (LAST_VALUE(\"end_mileage_km\") OVER sd)-(FIRST_VALUE(\"start_mileage_km\") OVER sd) AS \"Length\",\n      (\n        SELECT\n          (startbattery.\"currentSOC_pct\" - endbattery.\"currentSOC_pct\") * (\n            CASE\n              WHEN\n                vehicles.\"carType\" = 'ELECTRIC'\n              THEN\n                vehicle_settings.\"primary_capacity\"::NUMERIC\n              ELSE\n                vehicle_settings.\"secondary_capacity\"::NUMERIC\n            END\n            / 100::NUMERIC) + (\n              SELECT COALESCE(\"Energy Charged\",0) FROM energy_charged\n            ) AS \"Energy used (estimated)\"\n        FROM\n          dates\n        LEFT JOIN vehicles ON dates.vehicle_vin = vehicles.vin\n        LEFT JOIN vehicle_settings ON dates.vehicle_vin = vehicle_settings.vehicle_vin\n        JOIN battery AS startbattery ON startbattery.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM battery WHERE \"carCapturedTimestamp\" > \"Start\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"Start\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"Start\"))) ASC LIMIT 1)\n        JOIN battery AS endbattery ON endbattery.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM battery WHERE \"carCapturedTimestamp\" > \"End\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"End\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"End\"))) ASC LIMIT 1)\n      ) AS \"Energy used (estimated)\",\n      (\n        SELECT\n          CASE\n            WHEN\n              vehicles.\"carType\" != 'ELECTRIC'\n            THEN\n              (startranges.\"primary_currentSOC_pct\" - endranges.\"primary_currentSOC_pct\") * (vehicle_settings.\"primary_capacity\"::NUMERIC\n                / 100::NUMERIC) + (\n                  SELECT COALESCE(\"Refueled\",0) FROM refueled\n                )\n            ELSE\n              NULL\n            END AS \"Gasoline used (estimated)\"\n        FROM\n          dates\n        LEFT JOIN vehicles ON dates.vehicle_vin = vehicles.vin\n        LEFT JOIN vehicle_settings ON dates.vehicle_vin = vehicle_settings.vehicle_vin\n        JOIN ranges AS startranges ON startranges.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM ranges WHERE \"carCapturedTimestamp\" > \"Start\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"Start\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"Start\"))) ASC LIMIT 1)\n        JOIN ranges AS endranges ON endranges.\"carCapturedTimestamp\" = (SELECT \"carCapturedTimestamp\" FROM ranges WHERE \"carCapturedTimestamp\" > \"End\" - interval '600 SECONDS' AND \"carCapturedTimestamp\" < \"End\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (\"carCapturedTimestamp\" - \"End\"))) ASC LIMIT 1)\n      ) AS \"Gasoline used (estimated)\"\n    FROM trips\n    WHERE\n      ($__timeFilter(\"startDate\") OR $__timeFilter(\"endDate\")) AND\n      trips.vehicle_vin = '$VIN'\n    WINDOW sd as (ORDER BY \"startDate\" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n    LIMIT 1\n  ) AS precalc",
           "refId": "A",
           "select": [
             [
@@ -576,6 +583,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "charging_sessions",
           "timeColumn": "connected",
           "timeColumnType": "timestamp",
@@ -714,6 +738,11 @@
                   "index": 3,
                   "text": "charging"
                 },
+                "CONSERVATION": {
+                  "color": "blue",
+                  "index": 7,
+                  "text": "conservation"
+                },
                 "DRIVING": {
                   "color": "green",
                   "index": 0,
@@ -787,6 +816,7 @@
             "type": "postgres",
             "uid": "P2EF847825A020B66"
           },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "groupBy": [],
@@ -811,6 +841,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "tags": [],
           "timeColumn": "time",
           "where": [
@@ -1167,13 +1214,14 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P2EF847825A020B66"
           },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "metricColumn": "none",
@@ -1190,6 +1238,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "charging_sessions",
           "timeColumn": "connected",
           "timeColumnType": "timestamp",
@@ -1529,18 +1594,19 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.1.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
             "type": "postgres",
             "uid": "P2EF847825A020B66"
           },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE (started, COALESCE (locked, connected)) AS \"Date\",\n  COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n  EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) AS \"Amount\",\n  CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM COALESCE (started, COALESCE (locked, connected))) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM COALESCE (ended, COALESCE (unlocked, disconnected))) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nORDER BY 1 ASC",
+          "rawSql": "SELECT\n  COALESCE (started, COALESCE (locked, connected)) AS \"Date\",\n  COALESCE(locations.\"display_name\", CONCAT_WS(', ', COALESCE(CONCAT_WS(', ', locations.name, locations.amenity), nullif(CONCAT_WS(' ', locations.road, locations.house_number), '')), locations.neighbourhood, locations.city, locations.postcode, locations.country)) AS \"Location\",\n  EXTRACT('epoch' FROM (COALESCE (ended, COALESCE (unlocked, disconnected)) - COALESCE (started, COALESCE (locked, connected)))) AS \"Duration\",\n  \"maximumChargePower_kW\" AS \"Max. Power\",\n  ((\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)) / (EXTRACT(epoch FROM (COALESCE(ended, COALESCE(unlocked, disconnected)) - COALESCE(started, COALESCE (locked, connected))))::NUMERIC / 3600::NUMERIC) AS \"Avg. Power\",\n  acdc AS \"AC/DC\",\n  \"startSOC_pct\" AS \"% Start\",\n  \"endSOC_pct\" AS \"% End\",\n  COALESCE(\"realCharged_kWh\", COALESCE((\"meterEnd_kWh\"-\"meterStart_kWh\"),\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Amount\",\n  CASE WHEN \"realCharged_kWh\" IS NOT NULL THEN '✓'\n       WHEN (\"meterEnd_kWh\"-\"meterStart_kWh\") IS NOT NULL THEN '✓'\n       ELSE NULL\n  END AS \"✓\",\n  \"realCost_ct\"::NUMERIC/ 100 AS \"Cost\",\n  \"mileage_km\" AS \"Odometer\",\n  '⚙' AS \"Edit\",\n  id,\n  (round(extract(epoch FROM COALESCE (started, COALESCE (locked, connected))) - 10) * 1000) AS start_date_ts,\n  COALESCE((round(extract(epoch FROM COALESCE (ended, COALESCE (unlocked, disconnected))) - 10) * 1000)::TEXT,'now') AS end_date_ts\nFROM charging_sessions\nLEFT JOIN locations ON charging_sessions.location_id = locations.osm_id\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  ($__timeFilter(started) OR $__timeFilter(connected) OR $__timeFilter(locked)) AND\n  charging_sessions.vehicle_vin = '$VIN'\nORDER BY 1 ASC",
           "refId": "A",
           "select": [
             [
@@ -1552,6 +1618,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "charging_sessions",
           "timeColumn": "connected",
           "timeColumnType": "timestamp",
@@ -1590,7 +1673,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -1823,7 +1907,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.0.0",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
