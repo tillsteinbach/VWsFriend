@@ -25,7 +25,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1654775256784,
   "links": [
     {
       "asDropdown": true,
@@ -303,9 +302,14 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.5.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "hide": false,
@@ -323,6 +327,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "refuel_sessions",
           "timeColumn": "date",
           "timeColumnType": "timestamp",
@@ -335,12 +356,17 @@
           ]
         },
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(date_trunc('month', \"started\" AT TIME ZONE '${__to:date:Z}'), 'YYYY Month')\n    WHEN 'year' THEN to_char(date_trunc('year', \"started\" AT TIME ZONE '${__to:date:Z}'), 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(date_trunc('week', \"started\" AT TIME ZONE '${__to:date:Z}'), 'WW') || ' starting ' || to_char(date_trunc('week', \"started\" AT TIME ZONE '${__to:date:Z}'), 'YYYY-MM-DD')\n    ELSE to_char(\"started\" AT TIME ZONE '${__to:date:Z}', 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Charges\",\n  EXTRACT(EPOCH FROM SUM(\"ended\"-\"started\")) AS \"Time charging\",\n  EXTRACT(EPOCH FROM AVG(\"ended\"-\"started\")) AS \"Avg. charging\",\n  SUM(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Energy Charged\",\n  AVG(COALESCE(\"realCharged_kWh\",\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC))) AS \"Avg. Charged\",\n  SUM(\"realCost_ct\"::NUMERIC / 100::NUMERIC) AS \"Cost\"\nFROM \n  charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"started\") AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to\nORDER BY \"date_from\" DESC",
+          "rawSql": "SELECT\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\"))*1000 AS date_from,\n  EXTRACT(EPOCH FROM date_trunc('$period', \"started\" + ('1 ' || '$period')::INTERVAL))*1000 AS date_to,\n  CASE '$period'\n    WHEN 'month' THEN to_char(date_trunc('month', \"started\" AT TIME ZONE '${__to:date:Z}'), 'YYYY Month')\n    WHEN 'year' THEN to_char(date_trunc('year', \"started\" AT TIME ZONE '${__to:date:Z}'), 'YYYY')\n    WHEN 'week' THEN 'week ' || to_char(date_trunc('week', \"started\" AT TIME ZONE '${__to:date:Z}'), 'WW') || ' starting ' || to_char(date_trunc('week', \"started\" AT TIME ZONE '${__to:date:Z}'), 'YYYY-MM-DD')\n    ELSE to_char(\"started\" AT TIME ZONE '${__to:date:Z}', 'YYYY-MM-DD')\n  END AS \"Period\",\n  COUNT(*) AS \"# Charges\",\n  EXTRACT(EPOCH FROM SUM(\"ended\"-\"started\")) AS \"Time charging\",\n  EXTRACT(EPOCH FROM AVG(\"ended\"-\"started\")) AS \"Avg. charging\",\n  SUM(COALESCE(\"realCharged_kWh\", COALESCE((\"meterEnd_kWh\"-\"meterStart_kWh\"),\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)))) AS \"Energy Charged\",\n  AVG(COALESCE(\"realCharged_kWh\", COALESCE((\"meterEnd_kWh\"-\"meterStart_kWh\"),\n  (\"endSOC_pct\" - \"startSOC_pct\") * (\n    CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_capacity\"::NUMERIC\n         ELSE vehicle_settings.\"secondary_capacity\"::NUMERIC\n    END\n    / 100::NUMERIC)))) AS \"Avg. Charged\",\n  SUM(\"realCost_ct\"::NUMERIC / 100::NUMERIC) AS \"Cost\"\nFROM \n  charging_sessions\nLEFT JOIN vehicles ON charging_sessions.vehicle_vin = vehicles.vin\nLEFT JOIN vehicle_settings ON charging_sessions.vehicle_vin = vehicle_settings.vehicle_vin\nWHERE\n  $__timeFilter(\"started\") AND\n  charging_sessions.vehicle_vin = '$VIN'\nGROUP BY \"Period\", date_from, date_to\nORDER BY \"date_from\" DESC",
           "refId": "B",
           "select": [
             [
@@ -352,6 +378,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "refuel_sessions",
           "timeColumn": "date",
           "timeColumnType": "timestamp",
@@ -364,6 +407,10 @@
           ]
         },
         {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
           "format": "table",
           "group": [],
           "hide": false,
@@ -430,7 +477,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "vwsfriend"
