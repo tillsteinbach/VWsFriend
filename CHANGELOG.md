@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 - No unreleased changes so far
 
 
+## [0.23.4] - 2023-02-21
+### fixed
+- Fix making MQTT more stable
+- Problem with missing token
+- Add new error state (Thanks to user madd0)
+- Add new timer attribute targetSOC_pct
+- Fixed bug that could make attributes disappear on certain values
+
+### Added
+- Add ENGINE category for warning lights
+
+### Changed
+- Updated API to 0.54.0
+
 ## [0.23.3] - 2023-02-11
 ### fixed
 - Error when trying to change vehicle settings
