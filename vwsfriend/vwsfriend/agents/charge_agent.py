@@ -55,7 +55,7 @@ class ChargeAgent():
                          ChargingStatus.ChargingState.DISCHARGING):
                     chargingSession = session.query(ChargingSession).filter(and_(ChargingSession.vehicle == vehicle, ChargingSession.started.isnot(None))
                                                                             ).order_by(ChargingSession.started.desc()).first()
-                    if chargingSession is not None and not chargingSession.isConnectedState():
+                    if chargingSession is not None and not chargingSession.isClosed():
                         self.chargingSession = chargingSession
                         LOG.info('Vehicle is charging and an open charging session entry was found in the database. This session will be continued.')
                     else:
@@ -75,7 +75,7 @@ class ChargeAgent():
                         == PlugStatus.PlugConnectionState.CONNECTED:
                     chargingSession = session.query(ChargingSession).filter(and_(ChargingSession.vehicle == vehicle, ChargingSession.connected.isnot(None))
                                                                             ).order_by(ChargingSession.connected.desc()).first()
-                    if chargingSession is not None and not chargingSession.isClosed():
+                    if chargingSession is not None and not chargingSession.wasDisconnected():
                         self.chargingSession = chargingSession
                         LOG.info('Vehicle is still connected and an open charging session entry was found in the database. This session will be continued.')
                     else:
