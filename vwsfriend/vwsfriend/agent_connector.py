@@ -106,8 +106,9 @@ class AgentConnector():
                 if foundVehicle is None:
                     LOG.info('Found no matching vehicle for vin %s in database, will create a new one', element.vin.value)
                     foundVehicle = Vehicle(element.vin.value)
-                    with self.session.begin():
+                    with self.session.begin_nested():
                         self.session.add(foundVehicle)
+                    self.session.commit()
                 foundVehicle.connect(element)
 
                 self.agents[element.vin.value].append(RangeAgent(session=self.Session(), vehicle=foundVehicle))
