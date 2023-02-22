@@ -116,7 +116,7 @@ def vehicleDBParameters(vin):
         form = VehicleSettingsForm()
 
     choices = [(None, 'unknown')]
-    if current_app.db.session.bind.dialect.name == 'postgresql':
+    if current_app.db.get_engine().dialect.name == 'postgresql':
         result = current_app.db.session.execute(text('SELECT name FROM pg_timezone_names'
                                                      ' WHERE name !~ \'posix\' AND name !~ \'Etc\''
                                                      ' AND name !~ \'SystemV\' ORDER BY name asc;'))
