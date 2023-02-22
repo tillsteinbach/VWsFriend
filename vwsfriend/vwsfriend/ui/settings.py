@@ -104,6 +104,8 @@ def vehicleDBParameters(vin):
         abort(404, f"Vehicle with VIN {vin} doesn't exist in the database, please try to restart VWsFriend")
     if dbVehicle.settings is None:
         dbVehicle.settings = VehicleSettings(vehicle=dbVehicle)
+        with current_app.db.session.begin_nested():
+            current_app.db.session.add(dbVehicle.settings)
         current_app.db.session.commit()
 
     if dbVehicle.carType == RangeStatus.CarType.ELECTRIC:
@@ -114,7 +116,7 @@ def vehicleDBParameters(vin):
         form = VehicleSettingsForm()
 
     choices = [(None, 'unknown')]
-    if current_app.db.session.get_bind().dialect.name == 'postgresql':
+    if current_app.db.session.bind.dialect.name == 'postgresql':
         result = current_app.db.session.execute(text('SELECT name FROM pg_timezone_names'
                                                      ' WHERE name !~ \'posix\' AND name !~ \'Etc\''
                                                      ' AND name !~ \'SystemV\' ORDER BY name asc;'))
