@@ -47,7 +47,12 @@ class ChargeAgent():
 
                 # If the vehicle is charging check if you can catch up an open charging session:
                 if self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].chargingState.enabled \
-                        and self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].chargingState.value == ChargingStatus.ChargingState.CHARGING:
+                        and self.vehicle.weConnectVehicle.domains['charging']['chargingStatus'].chargingState.value in \
+                        (ChargingStatus.ChargingState.CHARGING,
+                         ChargingStatus.ChargingState.CONSERVATION,
+                         ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_NOT_CONSERVATION_CHARGING,
+                         ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION,
+                         ChargingStatus.ChargingState.DISCHARGING):
                     chargingSession = session.query(ChargingSession).filter(ChargingSession.vehicle == vehicle).order_by(ChargingSession.started.desc()).first()
                     if chargingSession is not None and not chargingSession.isClosed():
                         self.chargingSession = chargingSession
@@ -63,6 +68,16 @@ class ChargeAgent():
                 self.vehicle.weConnectVehicle.domains['charging']['plugStatus'].plugLockState.addObserver(self.__onPlugLockStateChange,
                                                                                                           AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                                                           onUpdateComplete=True)
+
+                # If the vehicle is still connected check if you can catch up an open charging session:
+                if self.chargingSession is None and self.vehicle.weConnectVehicle.domains['charging']['plugStatus'].plugConnectionState.value \
+                        == PlugStatus.PlugConnectionState.CONNECTED:
+                    chargingSession = session.query(ChargingSession).filter(ChargingSession.vehicle == vehicle).order_by(ChargingSession.started.desc()).first()
+                    if chargingSession is not None and not chargingSession.isClosed():
+                        self.chargingSession = chargingSession
+                        LOG.info('Vehicle is still connected and an open charging session entry was found in the database. This session will be continued.')
+                    else:
+                        LOG.warning('Vehicle still connected but no open charging session entry was found in the database. This session cannot be recorded.')
 
     def __onChargingStatusCarCapturedTimestampChange(self, element, flags):  # noqa: C901
         if element is not None and element.value is not None:
