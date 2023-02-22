@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.23.6] - 2023-02-22
+### fixed
+- Fixed Timezone bug in settings form
+
 ## [0.23.5] - 2023-02-22
 ### fixed
 - Small bugfix release
@@ -602,7 +606,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.5...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.6...HEAD
+[0.23.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.6
 [0.23.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.5
 [0.23.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.4
 [0.23.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.3
