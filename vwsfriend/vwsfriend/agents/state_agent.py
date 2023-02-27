@@ -16,7 +16,7 @@ LOG = logging.getLogger("VWsFriend")
 class StateAgent():
     def __init__(self, session, vehicle, updateInterval):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.onlineTimeout = (updateInterval * 2) + 30
         self.offlineTimeout = (updateInterval * 2) + 30
         # The offline timeout must be at least 10 minutes plus 30 seconds as this is the update frequency of data for some cars.
@@ -68,7 +68,9 @@ class StateAgent():
                 LOG.info(f'Vehicle {self.vehicle.vin} went offline')
                 self.onlineState = StateAgent.OnlineState.OFFLINE
                 self.vehicle.online = False
-                self.online.offlineTime = self.lastCarCapturedTimestamp
+                with self.session.begin_nested():
+                    self.online.offlineTime = self.lastCarCapturedTimestamp
+                self.session.commit()
                 self.online = None
                 self.lastCarCapturedTimestamp = None
             else:
@@ -79,21 +81,26 @@ class StateAgent():
             if self.online is None and self.earliestCarCapturedTimestampInInterval is not None:
                 LOG.info(f'Vehicle {self.vehicle.vin} went online')
                 self.onlineState = StateAgent.OnlineState.ONLINE
-                self.vehicle.online = True
-                if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
-                    self.vehicle.lastChange = self.lastCarCapturedTimestamp
+                with self.session.begin_nested():
+                    self.vehicle.online = True
+                    if self.vehicle.lastChange is None or (self.lastCarCapturedTimestamp > self.vehicle.lastChange.replace(tzinfo=timezone.utc)):
+                        self.vehicle.lastChange = self.lastCarCapturedTimestamp
+                self.session.commit()
                 self.online = Online(self.vehicle, onlineTime=self.earliestCarCapturedTimestampInInterval, offlineTime=None)
-                try:
-                    with self.session.begin_nested():
+                with self.session.begin_nested():
+                    try:
                         self.session.add(self.online)
-                    self.session.commit()
-                except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.session.commit()
                 self.earliestCarCapturedTimestampInInterval = None
 
     def commit(self):
         self.checkOnlineOffline()
-        self.vehicle.lastUpdate = datetime.utcnow().replace(tzinfo=timezone.utc)
+        with self.session.begin_nested():
+            self.vehicle.lastUpdate = datetime.utcnow().replace(tzinfo=timezone.utc)
+        self.session.commit()
+        self.session.commit()
 
     class OnlineState(Enum):
         ONLINE = auto()

@@ -13,7 +13,7 @@ LOG = logging.getLogger("VWsFriend")
 class WarningLightAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.enabledLights = session.query(WarningLight).filter(and_(WarningLight.vehicle == vehicle,
                                                                      WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
         LOG.info(f'Vehicle {self.vehicle.vin} has still {len(self.enabledLights)} warning lights on in the database.')
@@ -58,22 +58,21 @@ class WarningLightAgent():
                         warningLightEntry.priority = warningLight.priority.value
 
                     try:
-                        with self.session.begin_nested():
-                            self.session.add(warningLightEntry)
-                        self.session.commit()
+                        self.session.add(warningLightEntry)
                     except IntegrityError as err:
                         LOG.warning('Could not add warning light entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
-            for enabledLight in self.enabledLights:
-                if enabledLight.messageId not in warningLightsStatus.warningLights:
-                    enabledLight.end = element.value
+            with self.session.begin_nested():
+                for enabledLight in self.enabledLights:
+                    if enabledLight.messageId not in warningLightsStatus.warningLights:
+                        enabledLight.end = element.value
 
-                    if warningLightsStatus.mileage_km.enabled:
-                        enabledLight.end_mileage = warningLightsStatus.mileage_km.value
-                    LOG.info(f'Warning light {enabledLight.messageId} in vehicle {self.vehicle.vin} turned off')
-
+                        if warningLightsStatus.mileage_km.enabled:
+                            enabledLight.end_mileage = warningLightsStatus.mileage_km.value
+                        LOG.info(f'Warning light {enabledLight.messageId} in vehicle {self.vehicle.vin} turned off')
             self.session.commit()
+
             self.enabledLights = self.session.query(WarningLight).filter(and_(WarningLight.vehicle == self.vehicle,
                                                                               WarningLight.end.is_(None))).order_by(WarningLight.start.desc()).all()
 
     def commit(self):
-        pass
+        self.session.commit()

@@ -16,7 +16,7 @@ LOG = logging.getLogger("VWsFriend")
 class RefuelAgent():
     def __init__(self, session, vehicle, privacy):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.privacy = privacy
         if Privacy.NO_LOCATIONS in self.privacy:
             LOG.info(f'Privacy option \'no-locations\' is set. Vehicle {self.vehicle.vin} will not record refuel locations')
@@ -103,23 +103,24 @@ class RefuelAgent():
                                  current_primary_currentSOC_pct)
                         refuelSession = RefuelSession(self.vehicle, element.value, self.primary_currentSOC_pct, current_primary_currentSOC_pct, mileage_km,
                                                       position_latitude, position_longitude, location)
-                        try:
-                            with self.session.begin_nested():
+                        with self.session.begin_nested():
+                            try:
                                 self.session.add(refuelSession)
                                 self.previousRefuelSession = refuelSession
-                            self.session.commit()
-                        except IntegrityError as err:
-                            LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                            except IntegrityError as err:
+                                LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                        self.session.commit()
                     else:
                         LOG.info('Vehicle %s refueled from %d percent to %d percent. It looks like this session is continueing the previous refuel session',
                                  self.vehicle.vin, self.primary_currentSOC_pct, current_primary_currentSOC_pct)
-                        self.previousRefuelSession.endSOC_pct = current_primary_currentSOC_pct
-                        if self.previousRefuelSession.mileage_km is None:
-                            self.previousRefuelSession.mileage_km = mileage_km
-                        if self.previousRefuelSession.position_latitude is None or self.previousRefuelSession.position_longitude is None:
-                            self.previousRefuelSession.position_latitude = position_latitude
-                            self.previousRefuelSession.position_longitude = position_longitude
-                            self.previousRefuelSession.location = location
+                        with self.session.begin_nested():
+                            self.previousRefuelSession.endSOC_pct = current_primary_currentSOC_pct
+                            if self.previousRefuelSession.mileage_km is None:
+                                self.previousRefuelSession.mileage_km = mileage_km
+                            if self.previousRefuelSession.position_latitude is None or self.previousRefuelSession.position_longitude is None:
+                                self.previousRefuelSession.position_latitude = position_latitude
+                                self.previousRefuelSession.position_longitude = position_longitude
+                                self.previousRefuelSession.location = location
                         self.session.commit()
                     self.primary_currentSOC_pct = current_primary_currentSOC_pct
                 # SoC decreased, normal usage
@@ -141,4 +142,4 @@ class RefuelAgent():
             self.lastPosition = None
 
     def commit(self):
-        pass
+        self.session.commit()

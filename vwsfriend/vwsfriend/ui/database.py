@@ -124,6 +124,11 @@ class ChargingSessionEditForm(FlaskForm):
     position_latitude = DecimalField('Position Latitude', places=10, validators=[Optional(), NumberRange(min=-90, max=90)])
     position_longitude = DecimalField('Position Longitude', places=10, validators=[Optional(), NumberRange(min=-180, max=180)])
     charger_id = SelectField("Charger", validators=[Optional()])
+    meterStart_kWh = DecimalField('Meter start value (kWh)', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
+    meterEnd_kWh = DecimalField('Meter end value (kWh)', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
+    pricePerKwh_ct = DecimalField('Price per kWh', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
+    pricePerMinute_ct = DecimalField('Price per Minute', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
+    pricePerSession_ct = DecimalField('Price per Session', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
     realCharged_kWh = DecimalField('Real kWh charged', places=4, validators=[Optional(), NumberRange(min=0, max=1000)])
     realCost_ct = IntegerField('Real cost in cents', validators=[Optional(), NumberRange(min=0)])
     tags = SelectMultipleField('Tags', validators=[Optional()])
@@ -539,7 +544,11 @@ def chargingSessionEdit():  # noqa: C901
             if chargingSession.position_latitude is not None and chargingSession.position_longitude is not None:
                 chargingSession.location = locationFromLatLonWithGeofence(current_app.db.session, chargingSession.position_latitude,
                                                                           chargingSession.position_longitude)
-
+            chargingSession.meterStart_kWh = form.meterStart_kWh.data
+            chargingSession.meterEnd_kWh = form.meterEnd_kWh.data
+            chargingSession.pricePerKwh_ct = form.pricePerKwh_ct.data
+            chargingSession.pricePerMinute_ct = form.pricePerMinute_ct.data
+            chargingSession.pricePerSession_ct = form.pricePerSession_ct.data
             chargingSession.realCharged_kWh = form.realCharged_kWh.data
             chargingSession.realCost_ct = form.realCost_ct.data
             if form.charger_id.data is None or form.charger_id.data == 'None':
@@ -602,6 +611,11 @@ def chargingSessionEdit():  # noqa: C901
                         chargerAdded = True
                 if not chargerAdded:
                     flash(message='Charger not valid anymore', category='error')
+        chargingSession.meterStart_kWh = form.meterStart_kWh.data
+        chargingSession.meterEnd_kWh = form.meterEnd_kWh.data
+        chargingSession.pricePerKwh_ct = form.pricePerKwh_ct.data
+        chargingSession.pricePerMinute_ct = form.pricePerMinute_ct.data
+        chargingSession.pricePerSession_ct = form.pricePerSession_ct.data
         chargingSession.realCharged_kWh = form.realCharged_kWh.data
         chargingSession.realCost_ct = form.realCost_ct.data
 
@@ -633,6 +647,11 @@ def chargingSessionEdit():  # noqa: C901
         form.position_longitude.data = chargingSession.position_longitude
 
         form.charger_id.data = chargingSession.charger_id
+        form.meterStart_kWh.data = chargingSession.meterStart_kWh
+        form.meterEnd_kWh.data = chargingSession.meterEnd_kWh
+        form.pricePerKwh_ct.data = chargingSession.pricePerKwh_ct
+        form.pricePerMinute_ct.data = chargingSession.pricePerMinute_ct
+        form.pricePerSession_ct.data = chargingSession.pricePerSession_ct
         form.realCharged_kWh.data = chargingSession.realCharged_kWh
         form.realCost_ct.data = chargingSession.realCost_ct
 

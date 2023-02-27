@@ -13,7 +13,7 @@ LOG = logging.getLogger("VWsFriend")
 class BatteryAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.battery = session.query(Battery).filter(and_(Battery.vehicle == vehicle,
                                                           Battery.carCapturedTimestamp.isnot(None))).order_by(Battery.carCapturedTimestamp.desc()).first()
 
@@ -34,7 +34,7 @@ class BatteryAgent():
 
             if self.battery is not None:
                 try:
-                    (self.battery)
+                    self.session.refresh(self.battery)
                 except ObjectDeletedError:
                     LOG.warning('Last battery entry was deleted')
                     self.battery = self.session.query(Battery).filter(and_(Battery.vehicle == self.vehicle,
@@ -50,12 +50,12 @@ class BatteryAgent():
                                 element.value, self.battery.carCapturedTimestamp)
 
                 self.battery = Battery(self.vehicle, batteryStatus.carCapturedTimestamp.value, current_currentSOC_pct, current_cruisingRangeElectric_km)
-                try:
-                    with self.session.begin_nested():
+                with self.session.begin_nested():
+                    try:
                         self.session.add(self.battery)
-                    self.session.commit()
-                except IntegrityError as err:
-                    LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add battery entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.session.commit()
 
     def commit(self):
-        pass
+        self.session.commit()

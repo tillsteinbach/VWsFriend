@@ -5,7 +5,7 @@ import logging
 
 from sqlalchemy import create_engine, text, inspect
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy.exc import OperationalError
 
 from weconnect.elements import vehicle
 from weconnect.addressable import AddressableLeaf
@@ -52,8 +52,8 @@ class AgentConnector():
                 connectArgs['options'] = '-c timezone=utc'
             engine = create_engine(dbUrl, pool_pre_ping=True, connect_args=connectArgs)
             sessionFactory = sessionmaker(bind=engine)
-            Session = scoped_session(sessionFactory)
-            self.session = Session()
+            self.Session = scoped_session(sessionFactory)
+            self.session = self.Session()
 
             while True:
                 try:
@@ -90,7 +90,7 @@ class AgentConnector():
 
         self.agents["none"] = []
         if self.withDB:
-            self.agents["none"].append(WeconnectErrorAgent(self.session, weConnect))
+            self.agents["none"].append(WeconnectErrorAgent(session=self.Session(), weconnect=weConnect))
 
     def onEnable(self, element, flags):
         if (flags & AddressableLeaf.ObserverEvent.ENABLED) and isinstance(element, vehicle.Vehicle):
@@ -111,15 +111,16 @@ class AgentConnector():
                     self.session.commit()
                 foundVehicle.connect(element)
 
-                self.agents[element.vin.value].append(RangeAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(BatteryAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(ChargeAgent(self.session, foundVehicle, privacy=self.privacy))
-                self.agents[element.vin.value].append(StateAgent(self.session, foundVehicle, updateInterval=self.interval))
-                self.agents[element.vin.value].append(ClimatizationAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(RefuelAgent(self.session, foundVehicle, privacy=self.privacy))
-                self.agents[element.vin.value].append(TripAgent(self.session, foundVehicle, updateInterval=self.interval, privacy=self.privacy))
-                self.agents[element.vin.value].append(WarningLightAgent(self.session, foundVehicle))
-                self.agents[element.vin.value].append(MaintenanceAgent(self.session, foundVehicle))
+                self.agents[element.vin.value].append(RangeAgent(session=self.Session(), vehicle=foundVehicle))
+                self.agents[element.vin.value].append(BatteryAgent(session=self.Session(), vehicle=foundVehicle))
+                self.agents[element.vin.value].append(ChargeAgent(session=self.Session(), vehicle=foundVehicle, privacy=self.privacy))
+                self.agents[element.vin.value].append(StateAgent(session=self.Session(), vehicle=foundVehicle, updateInterval=self.interval))
+                self.agents[element.vin.value].append(ClimatizationAgent(session=self.Session(), vehicle=foundVehicle))
+                self.agents[element.vin.value].append(RefuelAgent(session=self.Session(), vehicle=foundVehicle, privacy=self.privacy))
+                self.agents[element.vin.value].append(TripAgent(session=self.Session(), vehicle=foundVehicle, updateInterval=self.interval,
+                                                                privacy=self.privacy))
+                self.agents[element.vin.value].append(WarningLightAgent(session=self.Session(), vehicle=foundVehicle))
+                self.agents[element.vin.value].append(MaintenanceAgent(session=self.Session(), vehicle=foundVehicle))
                 if foundVehicle.carType == RangeStatus.CarType.UNKNOWN:
                     LOG.warning('Vehicle %s has an unkown carType, thus some features won\'t be available until the correct carType could be detected',
                                 foundVehicle.vin)
@@ -131,8 +132,4 @@ class AgentConnector():
             for agent in vehicleAgents:
                 agent.commit()
         if self.withDB:
-            try:
-                self.session.commit()
-            except SQLAlchemyError as err:
-                LOG.error('There was a problem when commiting changes to the database: %s', err)
-                self.session.rollback()
+            self.session.commit()

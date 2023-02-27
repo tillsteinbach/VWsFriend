@@ -14,7 +14,7 @@ LOG = logging.getLogger("VWsFriend")
 class RangeAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.range = session.query(Range).filter(and_(Range.vehicle == vehicle,
                                                       Range.carCapturedTimestamp.isnot(None))).order_by(Range.carCapturedTimestamp.desc()).first()
 
@@ -67,11 +67,12 @@ class RangeAgent():
 
                 self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
                                    current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
-                try:
-                    with self.session.begin_nested():
+                with self.session.begin_nested():
+                    try:
                         self.session.add(self.range)
-                except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.session.commit()
 
     def commit(self):
-        pass
+        self.session.commit()

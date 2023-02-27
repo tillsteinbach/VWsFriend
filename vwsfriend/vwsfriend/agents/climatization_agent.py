@@ -13,7 +13,7 @@ LOG = logging.getLogger("VWsFriend")
 class ClimatizationAgent():
     def __init__(self, session, vehicle):
         self.session = session
-        self.vehicle = vehicle
+        self.vehicle = session.merge(vehicle)
         self.climate = session.query(Climatization).filter(and_(Climatization.vehicle == vehicle,
                                                                 Climatization.carCapturedTimestamp.isnot(None))) \
                                                    .order_by(Climatization.carCapturedTimestamp.desc()).first()
@@ -58,12 +58,12 @@ class ClimatizationAgent():
 
                 self.climate = Climatization(self.vehicle, climateStatus.carCapturedTimestamp.value, current_remainingClimatisationTime_min,
                                              current_climatisationState)
-                try:
-                    with self.session.begin_nested():
+                with self.session.begin_nested():
+                    try:
                         self.session.add(self.climate)
-                    self.session.commit()
-                except IntegrityError as err:
-                    LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                    except IntegrityError as err:
+                        LOG.warning('Could not add climatization entry to the database, this is usually due to an error in the WeConnect API (%s)', err)
+                self.session.commit()
 
     def commit(self):
-        pass
+        self.session.commit()
