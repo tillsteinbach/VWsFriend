@@ -12,4 +12,4 @@ WTForms~=3.0.1
 flask_wtf~=1.1.1
 flask_sqlalchemy~=3.0.3
 alembic~=1.9.4
-haversine~=2.7.0
+haversine~=2.8.0
