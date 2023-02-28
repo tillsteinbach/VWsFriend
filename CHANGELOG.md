@@ -8,9 +8,6 @@ All notable changes to this project will be documented in this file.
 ### fixed
 - Changed URLs to the new URLs necessary to contact the backend
 
-### Added
-- Add ENGINE category for warning lights
-
 ### Changed
 - Updated API to 0.54.1
 
