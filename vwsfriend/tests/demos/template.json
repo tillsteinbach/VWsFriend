@@ -1,5 +1,5 @@
 {
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/status": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles/AAABBBCCCDDD12345/status": [
         {
             "data": {
                 "accessStatus": {
@@ -178,7 +178,7 @@
         },
         "2021-08-04 14:10:53.941458"
     ],
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles/AAABBBCCCDDD12345/parkingposition": [
         {
             "data": {
                 "lat": 53.662387,
@@ -188,7 +188,7 @@
         },
         "2021-08-04 14:10:54.463272"
     ],
-    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles": [
         {
             "data": [
                 {
