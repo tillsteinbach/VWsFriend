@@ -31,4 +31,3 @@ class Charge(Base):
         self.chargeMode = chargeMode
         self.chargePower_kW = chargePower_kW
         self.chargeRate_kmph = chargeRate_kmph
-
