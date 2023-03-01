@@ -47,7 +47,7 @@ class ChargingSession(Base):
     maxChargeCurrentACSetting = Column(Enum(MaximumChargeCurrent))
     targetSOCSetting_pct = Column(Integer)
     maximumChargePower_kW = Column(Float)
-    acdc = Column(Enum(ACDC))
+    acdc = Column(Enum(ACDC), index=True)
     startSOC_pct = Column(Integer)
     endSOC_pct = Column(Integer)
     mileage_km = Column(Integer)
