@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, Enum, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, Float, String, Enum, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 
 from vwsfriend.model.base import Base
@@ -11,6 +11,7 @@ class Charge(Base):
     __tablename__ = 'charges'
     __table_args__ = (
         UniqueConstraint('vehicle_vin', 'carCapturedTimestamp'),
+        Index("charges_idx_vehicle_vin_chargepower_kw", "vehicle_vin", "chargePower_kW"),
     )
     id = Column(Integer, primary_key=True)
     vehicle_vin = Column(String, ForeignKey('vehicles.vin'))
@@ -30,3 +31,4 @@ class Charge(Base):
         self.chargeMode = chargeMode
         self.chargePower_kW = chargePower_kW
         self.chargeRate_kmph = chargeRate_kmph
+
