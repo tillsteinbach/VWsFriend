@@ -222,7 +222,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
             smtpHandler.setLevel(logging.INFO)
             smtpHandler.setFormatter(logging.Formatter("%(asctime)s %(levelname)-5s %(message)s"))
             if args.loggingMailFilterDuplicates:
-                smtpHandler.addFilter(DuplicateFilter(filterResetSeconds=args.loggingMailFilterReset))
+                smtpHandler.addFilter(DuplicateFilter(doNotFilterAbove=logging.CRITICAL, filterResetSeconds=args.loggingMailFilterReset))
             LOG.addHandler(smtpHandler)
             if args.loggingMailTestmail:
                 if SUPPORT_MQTT:

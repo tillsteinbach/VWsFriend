@@ -1,5 +1,5 @@
 {
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=access,automation,userCapabilities,charging,climatisation,fuelStatus,vehicleLights,lvBattery,readiness,vehicleHealthInspection,vehicleHealthWarnings,oilLevel,measurements,batterySupport": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=access,automation,userCapabilities,charging,climatisation,fuelStatus,vehicleLights,lvBattery,readiness,vehicleHealthInspection,vehicleHealthWarnings,oilLevel,measurements,batterySupport": [
         {
             "userCapabilities": {
                 "capabilitiesStatus": {
@@ -71,7 +71,7 @@
         },
         "now(+0)"
     ],
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles/AAABBBCCCDDD12345/parkingposition": [
         {
             "data": {
                 "lat": 53.510883,
@@ -81,7 +81,7 @@
         },
         "now(+0)"
     ],
-    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles": [
         {
             "data": [
                 {

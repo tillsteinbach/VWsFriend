@@ -1,5 +1,5 @@
 {
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=all": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles/AAABBBCCCDDD12345/selectivestatus?jobs=all": [
         {
             "userCapabilities": {
                 "capabilitiesStatus": {
@@ -40,13 +40,13 @@
         },
         "now(+0)"
     ],
-    "https://mobileapi.apps.emea.vwapps.io/vehicles/AAABBBCCCDDD12345/parkingposition": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles/AAABBBCCCDDD12345/parkingposition": [
         {
             "data": {}
         },
         "now(+0)"
     ],
-    "https://mobileapi.apps.emea.vwapps.io/vehicles": [
+    "https://emea.bff.cariad.digital/vehicle/v1/vehicles": [
         {
             "data": [
                 {
