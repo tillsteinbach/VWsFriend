@@ -17,9 +17,9 @@ class Charge(Base):
     carCapturedTimestamp = Column(DatetimeDecorator(timezone=True), nullable=False)
     vehicle = relationship("Vehicle")
     remainingChargingTimeToComplete_min = Column(Integer)
-    chargingState = Column(Enum(ChargingStatus.ChargingState))
+    chargingState = Column(Enum(ChargingStatus.ChargingState), index=True)
     chargeMode = Column(Enum(ChargingStatus.ChargeMode))
-    chargePower_kW = Column(Float)
+    chargePower_kW = Column(Float, index=True)
     chargeRate_kmph = Column(Float)
 
     def __init__(self, vehicle, carCapturedTimestamp, remainingChargingTimeToComplete_min, chargingState, chargeMode, chargePower_kW, chargeRate_kmph):
