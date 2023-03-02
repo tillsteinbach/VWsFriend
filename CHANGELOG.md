@@ -8,8 +8,12 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fixes unknown operation error
 
+### Added
+- Add database index for several classes to improve query performance
+
 ### Changed
 - Updated API to 0.54.2
+- Updated Grafana to 9.4.2
 
 ## [0.23.7] - 2023-02-28
 ### fixed
@@ -620,7 +624,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.7...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.8...HEAD
+[0.23.8]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.8
 [0.23.7]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.7
 [0.23.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.6
 [0.23.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.5
