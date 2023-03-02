@@ -100,7 +100,6 @@ class StateAgent():
         with self.session.begin_nested():
             self.vehicle.lastUpdate = datetime.utcnow().replace(tzinfo=timezone.utc)
         self.session.commit()
-        self.session.commit()
 
     class OnlineState(Enum):
         ONLINE = auto()
