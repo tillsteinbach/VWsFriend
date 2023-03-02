@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.23.8] - 2023-03-02 
+### Fixed
+- Fixes unknown operation error
+
+### Changed
+- Updated API to 0.54.2
+
 ## [0.23.7] - 2023-02-28
 ### fixed
 - Changed URLs to the new URLs necessary to contact the backend
