@@ -1,5 +1,6 @@
-FROM grafana/grafana:9.4.1
+FROM grafana/grafana:9.4.7
 
+ENV GF_LOG_LEVEL=debug
 ENV GF_SECURITY_ADMIN_USER=admin
 ENV GF_SECURITY_ADMIN_PASSWORD=admin
 ENV GF_USERS_ALLOW_SIGN_UP=false
