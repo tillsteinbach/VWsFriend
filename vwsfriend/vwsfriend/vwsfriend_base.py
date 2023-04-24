@@ -323,6 +323,7 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
         tokenfile = args.tokenfile
 
     weConnect = None
+    mqttCLient = None
     try:  # pylint: disable=too-many-nested-blocks
         weConnect = weconnect.WeConnect(username=weConnectUsername, password=weConnectPassword, spin=weConnectSpin, tokenfile=tokenfile,
                                         updateAfterLogin=False, loginOnInit=(args.demo is None), maxAgePictures=86400, forceReloginAfter=21600, numRetries=5)
