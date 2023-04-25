@@ -81,8 +81,8 @@ class TripAgent():
                                  ' inaccuracy')
                         self.mode = TripAgent.Mode.READINESS_STATUS
                 self.vehicle.weConnectVehicle.domains.addObserver(self.__onStatusesChange,
-                                                                      AddressableLeaf.ObserverEvent.ENABLED,
-                                                                      onUpdateComplete=True)
+                                                                  AddressableLeaf.ObserverEvent.ENABLED,
+                                                                  onUpdateComplete=True)
 
             if self.mode == TripAgent.Mode.READINESS_STATUS:
                 if self.vehicle.weConnectVehicle.statusExists('charging', 'plugStatus'):
