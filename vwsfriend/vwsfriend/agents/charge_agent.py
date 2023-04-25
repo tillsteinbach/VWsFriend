@@ -269,7 +269,7 @@ class ChargeAgent():
             with self.session.begin_nested():
                 if self.chargingSession is not None and self.chargingSession.isConnectedState():
                     self.chargingSession.disconnected = plugStatus.carCapturedTimestamp.value
-                
+
                 if self.chargingSession is not None:
                     # also write position if available
                     self.updatePosition()
