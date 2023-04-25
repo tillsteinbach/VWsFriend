@@ -80,8 +80,7 @@ class TripAgent():
                         LOG.info(f'Vehicle {self.vehicle.vin} provides isActive flag in readinessStatus and thus allows to record trips with several minutes'
                                  ' inaccuracy')
                         self.mode = TripAgent.Mode.READINESS_STATUS
-                else:
-                    self.vehicle.weConnectVehicle.domains.addObserver(self.__onStatusesChange,
+                self.vehicle.weConnectVehicle.domains.addObserver(self.__onStatusesChange,
                                                                       AddressableLeaf.ObserverEvent.ENABLED,
                                                                       onUpdateComplete=True)
 
@@ -108,7 +107,7 @@ class TripAgent():
                 element.addObserver(self.__onCarCapturedTimestampDisabled,
                                     AddressableLeaf.ObserverEvent.DISABLED,
                                     onUpdateComplete=True)
-                LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips based on position')
+                LOG.info(f'Vehicle {self.vehicle.vin} now provides a parkingPosition and thus allows to record trips based on position')
                 self.mode = TripAgent.Mode.PARKING_POSITION
                 self.vehicle.weConnectVehicle.domains.removeObserver(self.__onStatusesChange)
                 self.__onCarCapturedTimestampEnabled(element, flags)
