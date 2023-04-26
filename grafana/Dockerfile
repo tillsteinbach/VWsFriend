@@ -1,4 +1,5 @@
-FROM grafana/grafana:9.4.7
+#FROM grafana/grafana:9.5.0
+FROM grafana/grafana-oss-dev:9.5.0-109172pre
 
 ENV GF_LOG_LEVEL=debug
 ENV GF_SECURITY_ADMIN_USER=admin
