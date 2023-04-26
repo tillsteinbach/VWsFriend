@@ -121,13 +121,19 @@ class ABRPAgent():
         if self.weConnectVehicle.statusExists('charging', 'chargingStatus') \
                 and self.weConnectVehicle.domains['charging']['chargingStatus'].enabled:
             chargingStatus = self.weConnectVehicle.domains['charging']['chargingStatus']
-            if chargingStatus.chargingState.enabled and chargingStatus.chargingState.value in [ChargingStatus.ChargingState.CHARGING]:
+            if chargingStatus.chargingState.enabled and chargingStatus.chargingState.value in \
+                [ChargingStatus.ChargingState.CHARGING,
+                 ChargingStatus.ChargingState.CONSERVATION,
+                 ChargingStatus.ChargingState.CHARGE_PURPOSE_REACHED_CONSERVATION]:
                 self.telemetryData['is_charging'] = True
             else:
                 self.telemetryData['is_charging'] = False
 
             if chargingStatus.chargePower_kW.enabled and chargingStatus.chargePower_kW.value is not None:
                 self.telemetryData['power'] = chargingStatus.chargePower_kW.value * -1
+            
+            if chargingStatus.chargeType.enabled and chargingStatus.chargeType.value in [ChargingStatus.ChargeType.DC]:
+                self.telemetryData['is_dcfc'] = True
 
         self.updateTelemetry()
         self.telemetryData.clear()
