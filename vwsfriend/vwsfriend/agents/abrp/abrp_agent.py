@@ -131,7 +131,7 @@ class ABRPAgent():
 
             if chargingStatus.chargePower_kW.enabled and chargingStatus.chargePower_kW.value is not None:
                 self.telemetryData['power'] = chargingStatus.chargePower_kW.value * -1
-            
+
             if chargingStatus.chargeType.enabled and chargingStatus.chargeType.value in [ChargingStatus.ChargeType.DC]:
                 self.telemetryData['is_dcfc'] = True
 
