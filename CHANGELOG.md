@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.23.10] - 2023-04-28 
+### Fixed
+- Fixes problem with stability
+
+### Changed
+- Updated API to 0.55.0
+- Upgrade Grafana to 9.5.1
+
 ## [0.23.9] - 2023-03-04 
 ### Fixed
 - Fixes problem with Tags by downgrading grafana
@@ -631,7 +639,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.9...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.23.10...HEAD
+[0.23.10]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.10
 [0.23.9]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.9
 [0.23.8]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.8
 [0.23.7]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.7
