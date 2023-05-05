@@ -170,7 +170,9 @@ class ChargeAgent():
                         except IntegrityError:
                             LOG.warning('Could not add charging session entry to the database, this is usually due to an error in the WeConnect API')
                             self.chargingSession = None
-                if self.chargingSession is not None:
+            self.session.commit()
+            if self.chargingSession is not None:
+                with self.session.begin_nested():
                     if not self.chargingSession.wasStarted():
                         self.chargingSession.started = chargeStatus.carCapturedTimestamp.value
                     # also write start SoC
@@ -192,7 +194,7 @@ class ChargeAgent():
 
                     # also write milage if available
                     self.updateMileage()
-            self.session.commit()
+                self.session.commit()
 
         elif element.value in [ChargingStatus.ChargingState.OFF, ChargingStatus.ChargingState.READY_FOR_CHARGING,
                                ChargingStatus.ChargingState.NOT_READY_FOR_CHARGING,
@@ -361,7 +363,7 @@ class ChargeAgent():
 
         if self.chargingSession is not None and self.chargingSession.isChargingState()\
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
-            with self.session.begin_nested():
+            with :
                 self.chargingSession.maximumChargePower_kW = element.value
             self.session.commit()
 
