@@ -363,7 +363,7 @@ class ChargeAgent():
 
         if self.chargingSession is not None and self.chargingSession.isChargingState()\
                 and (self.chargingSession.maximumChargePower_kW is None or element.value > self.chargingSession.maximumChargePower_kW):
-            with :
+            with self.session.begin_nested():
                 self.chargingSession.maximumChargePower_kW = element.value
             self.session.commit()
 
