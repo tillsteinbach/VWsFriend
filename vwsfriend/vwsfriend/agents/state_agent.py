@@ -19,9 +19,9 @@ class StateAgent():
         self.vehicle = session.merge(vehicle)
         self.onlineTimeout = (updateInterval * 2) + 30
         self.offlineTimeout = (updateInterval * 2) + 30
-        # The offline timeout must be at least 10 minutes plus 30 seconds as this is the update frequency of data for some cars.
-        if self.offlineTimeout < 630:
-            self.offlineTimeout = 630
+        # The offline timeout must be at least 15 minutes plus 30 seconds as this is the update frequency of data for some cars.
+        if self.offlineTimeout < 930:
+            self.offlineTimeout = 930
         self.onlineState = None
         self.online = session.query(Online).filter(and_(Online.vehicle == vehicle, Online.onlineTime.isnot(None))).order_by(Online.onlineTime.desc()).first()
         # If the last record in the database is completed we are not online right now
