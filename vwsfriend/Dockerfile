@@ -1,16 +1,17 @@
 # syntax = docker/dockerfile:experimental
 # Here is the build image
-FROM ubuntu:22.04 as builder
+FROM ubuntu:22.04 as basebuilder
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
-ARG VERSION
 
 RUN apt-get update && apt-get install --no-install-recommends -y pkg-config gpg gpg-agent software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
     apt-get install --no-install-recommends -y python3.11 python3.11-dev python3.11-venv python3-pip python3-wheel build-essential && \
     apt-get install --no-install-recommends -y libpq-dev libffi-dev libssl-dev rustc cargo libjpeg-dev zlib1g-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+FROM basebuilder as builder
+ARG VERSION
 
 RUN python3.11 -m venv /opt/venv
 # Make sure we use the virtualenv:
@@ -21,7 +22,16 @@ RUN pip3 install --no-cache-dir wheel
 RUN pip3 install --no-cache-dir vwsfriend[MQTT]==${VERSION}
 
 
-FROM ubuntu:22.04 AS runner-image
+FROM ubuntu:22.04 AS baserunner
+
+ARG DEBIAN_FRONTEND="noninteractive"
+
+RUN apt-get update && apt-get install --no-install-recommends -y gpg gpg-agent software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
+    apt-get install --no-install-recommends -y python3.11 python3.11-venv wget && \
+    apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g postgresql-client && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+FROM baserunner AS runner-image
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -34,11 +44,6 @@ ENV WECONNECT_SPIN=
 ENV WECONNECT_INTERVAL=300
 ENV ADDITIONAL_PARAMETERS=
 ENV DATABASE_URL=
-
-RUN apt-get update && apt-get install --no-install-recommends -y gpg gpg-agent software-properties-common && add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
-    apt-get install --no-install-recommends -y python3.11 python3.11-venv wget && \
-    apt-get install --no-install-recommends -y libpq5 libjpeg8 zlib1g postgresql-client && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/venv /opt/venv
 ENV VIRTUAL_ENV=/opt/venv
