@@ -40,7 +40,7 @@ jobs:
         if: startsWith( github.ref, 'refs/tags/v' )
         working-directory: grafana
         run: |
-          PLACEHOLDER="        \"content\": \"VWsFriend version: \[develop\](https://github.com/tillsteinbach/VWsFriend/)\","
+          PLACEHOLDER="        \"content\": \"VWsFriend version: \[0.0.0dev\](https://github.com/tillsteinbach/VWsFriend/)\","
           REPLACEMENT="        \"content\": \"VWsFriend version: \[${{ env.version }}\](https://github.com/tillsteinbach/VWsFriend/releases/tag/v${{ env.version }})\","
           VERSION_FILE="dashboards/vwsfriend/VWsFriend/overview.json"
           # ensure the placeholder is there. If grep doesn't find the placeholder
