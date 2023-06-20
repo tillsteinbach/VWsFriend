@@ -26,7 +26,7 @@ jobs:
       - name: Autobump version
         working-directory: vwsfriend
         run: |
-          PLACEHOLDER="__version__ = 'develop'"
+          PLACEHOLDER="__version__ = '0.0.0dev'"
           REPLACEMENT="__version__ = '${{ env.version }}'"
           VERSION_FILE="vwsfriend/__version.py"
           # ensure the placeholder is there. If grep doesn't find the placeholder
