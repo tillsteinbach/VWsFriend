@@ -10,6 +10,6 @@ flask-login~=0.6.2
 flask-caching~=2.0.2
 WTForms~=3.0.1
 flask_wtf~=1.1.1
-flask_sqlalchemy~=3.0.4
+flask_sqlalchemy~=3.0.5
 alembic~=1.11.1
 haversine~=2.8.0
