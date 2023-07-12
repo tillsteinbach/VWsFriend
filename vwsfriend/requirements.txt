@@ -1,4 +1,4 @@
-weconnect[Images]~=0.56.1
+weconnect[Images]~=0.56.2
 HAP-python[QRCode]~=4.7.0
 pypng~=0.20220715.0
 sqlalchemy~=2.0.18
