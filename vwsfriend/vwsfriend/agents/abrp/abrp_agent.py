@@ -62,7 +62,7 @@ class ABRPAgent():
             self.__userTokens = tokens
         LOG.info('Reading abrp tokenfile %s', tokenfile)
 
-    def updateTelemetry(self):
+    def updateTelemetry(self):  # noqa: C901
         for account, token in self.__userTokens:
             params = {'token': token}
             data = {'tlm': self.telemetryData}
@@ -77,22 +77,22 @@ class ABRPAgent():
                         if 'status' in data:
                             if data['status'] != 'ok':
                                 if self.subsequentErrors > 0:
-                                    LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account {account}'
-                                              ' failed')
+                                    LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                              f' {account} failed')
                                 else:
-                                    LOG.warning(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
-                                                f' {account} failed')
+                                    LOG.warning(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for'
+                                                f' account {account} failed')
                             else:
                                 self.subsequentErrors = 0
                             if 'missing' in data:
-                                LOG.info(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account {account}:'
-                                         f' {data["missing"]}')
+                                LOG.info(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                         f' {account}: {data["missing"]}')
                         else:
-                            LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account {account}'
-                                  ' returned unexpected data')
+                            LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                      f' {account} returned unexpected data')
                     else:
-                        LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account {account}'
-                                  ' returned empty data')
+                        LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                  f' {account} returned empty data')
             except RequestException as e:
                 if self.subsequentErrors > 0:
                     LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after'
