@@ -2249,7 +2249,7 @@
         }
       ],
       "options": {
-        "content": "VWsFriend version: [develop](https://github.com/tillsteinbach/VWsFriend/)",
+        "content": "VWsFriend version: [0.0.0dev](https://github.com/tillsteinbach/VWsFriend/)",
         "mode": "markdown"
       },
       "pluginVersion": "9.1.6",

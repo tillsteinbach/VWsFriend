@@ -62,34 +62,44 @@ class ABRPAgent():
             self.__userTokens = tokens
         LOG.info('Reading abrp tokenfile %s', tokenfile)
 
-    def updateTelemetry(self):
+    def updateTelemetry(self):  # noqa: C901
         for account, token in self.__userTokens:
             params = {'token': token}
             data = {'tlm': self.telemetryData}
             try:
                 response = self.__session.post(API_BASE_URL + 'tlm/send', params=params, json=data)
                 if response.status_code != codes['ok']:
-                    LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account}'
+                    LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account {account}'
                               f' failed with status code {response.status_code}')
                 else:
                     data = response.json()
-                    if 'status' in data:
-                        if data['status'] != 'ok':
-                            if self.subsequentErrors > 0:
-                                LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed')
+                    if data is not None:
+                        if 'status' in data:
+                            if data['status'] != 'ok':
+                                if self.subsequentErrors > 0:
+                                    LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                              f' {account} failed')
+                                else:
+                                    LOG.warning(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for'
+                                                f' account {account} failed')
                             else:
-                                LOG.warning(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} failed')
+                                self.subsequentErrors = 0
+                            if 'missing' in data:
+                                LOG.info(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                         f' {account}: {data["missing"]}')
                         else:
-                            self.subsequentErrors = 0
-                        if 'missing' in data:
-                            LOG.info(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account}: {data["missing"]}')
+                            LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                      f' {account} returned unexpected data')
                     else:
-                        LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} for account {account} returned unexpected data')
+                        LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} for account'
+                                  f' {account} returned empty data')
             except RequestException as e:
                 if self.subsequentErrors > 0:
-                    LOG.error(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after next interval')
+                    LOG.error(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after'
+                              ' next interval')
                 else:
-                    LOG.warning(f'ABRP send telemetry for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again after next interval')
+                    LOG.warning(f'ABRP send telemetry {str(self.telemetryData)} for vehicle {self.weConnectVehicle.vin.value} failed: {e}, will try again'
+                                ' after next interval')
 
     def commit(self):  # noqa: C901
         if self.weConnectVehicle.statusExists('charging', 'batteryStatus'):
