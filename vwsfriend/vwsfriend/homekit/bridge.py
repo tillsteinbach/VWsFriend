@@ -171,7 +171,7 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 honkAndFlashControl = vehicle.controls.honkAndFlashControl
 
                 flashingAccessory = Flashing(driver=self.driver, bridge=self, aid=self.selectAID('Flashing', vin), id='Flashing', vin=vin,
-                                             displayName=f'{nickname} Flashing',  flashControl=honkAndFlashControl)
+                                             displayName=f'{nickname} Flashing', flashControl=honkAndFlashControl)
                 flashingAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-flashing')
                 self.setConfigItem(flashingAccessory.id, flashingAccessory.vin, 'category', flashingAccessory.category)
                 self.setConfigItem(flashingAccessory.id, flashingAccessory.vin, 'services',
