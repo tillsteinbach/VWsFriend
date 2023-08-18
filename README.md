@@ -23,7 +23,7 @@ Volkswagen WeConnect© API visualization and control (HomeKit) inspired by Tesla
 * External internet access, to talk to the servers
 
 ## Login & Consent
-VWsFriend is based on the new WeConnect ID API that was introduced with the new series of ID cars. If you use another car or hybrid you probably need to agree to the terms and conditions of the WeConnect ID interface. Easiest to do so is by installing the WeConnect ID app on your smartphone and login there. If necessary you will be asked to agree to the terms and conditions.
+VWsFriend is based on the new WeConnect API that was introduced with the new series of ID cars. If you use another car or hybrid you probably need to agree to the terms and conditions of the new WeConnect interface. Easiest to do so is by installing the Volkswagen app on your smartphone and login there. If necessary you will be asked to agree to the terms and conditions.
 
 ## How to start
 * Clone or download the files [docker-compose.yml](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/docker-compose.yml) and [.env](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/.env)
