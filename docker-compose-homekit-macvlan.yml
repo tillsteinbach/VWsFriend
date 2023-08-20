@@ -67,6 +67,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
+      - GF_LOG_LEVEL=info
       - GF_SECURITY_ADMIN_USER=${VWSFRIEND_USERNAME-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${VWSFRIEND_PASSWORD-secret}
       - GF_SERVER_HTTP_PORT=${GF_SERVER_HTTP_PORT-3000}
