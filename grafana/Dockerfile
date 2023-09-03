@@ -1,4 +1,4 @@
-FROM grafana/grafana:10.0.1
+FROM grafana/grafana:10.1.1
 
 ENV GF_LOG_LEVEL=info
 ENV GF_SECURITY_ADMIN_USER=admin
