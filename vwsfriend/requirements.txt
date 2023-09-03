@@ -1,5 +1,5 @@
-weconnect[Images]~=0.57.0
-HAP-python[QRCode]~=4.7.0
+weconnect[Images]~=0.58.0
+HAP-python[QRCode]~=4.7.1
 pypng~=0.20220715.0
 sqlalchemy~=2.0.19
 psycopg2-binary~=2.9.6
@@ -11,5 +11,5 @@ flask-caching~=2.0.2
 WTForms~=3.0.1
 flask_wtf~=1.1.1
 flask_sqlalchemy~=3.0.5
-alembic~=1.11.1
+alembic~=1.12.0
 haversine~=2.8.0
