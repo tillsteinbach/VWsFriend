@@ -523,6 +523,13 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                     sleeptime = args.interval - ((time.time() - starttime) % args.interval)
                     permanentErrors = 0
                     subsequentErrors = 0
+                except weconnect.TooManyRequestsError:
+                    if subsequentErrors > 0:
+                        LOG.error('Retrieval error during update. Too many requests from your account. Will try again after 15 minutes')
+                    else:
+                        LOG.warning('Retrieval error during update. Too many requests from your account. Will try again after 15 minutes')
+                    sleeptime = 900
+                    subsequentErrors += 1
                 except weconnect.RetrievalError:
                     if subsequentErrors > 0:
                         LOG.error('Retrieval error during update. Will try again after configured interval of %ds', args.interval)
