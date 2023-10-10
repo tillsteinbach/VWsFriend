@@ -10,6 +10,7 @@ from .climatization import Climatization
 from .charging import Charging
 from .plug import Plug
 from .locking_system import LockingSystem
+from .flashing import Flashing
 
 from vwsfriend.__version import __version__
 
@@ -164,6 +165,21 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                     self.add_accessory(lockingSystemAccessory)
                 else:
                     self.accessories[lockingSystemAccessory.aid] = lockingSystemAccessory
+                configChanged = True
+
+            if vehicle.controls.honkAndFlashControl is not None and vehicle.controls.honkAndFlashControl.enabled:
+                honkAndFlashControl = vehicle.controls.honkAndFlashControl
+
+                flashingAccessory = Flashing(driver=self.driver, bridge=self, aid=self.selectAID('Flashing', vin), id='Flashing', vin=vin,
+                                             displayName=f'{nickname} Flashing', flashControl=honkAndFlashControl)
+                flashingAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-flashing')
+                self.setConfigItem(flashingAccessory.id, flashingAccessory.vin, 'category', flashingAccessory.category)
+                self.setConfigItem(flashingAccessory.id, flashingAccessory.vin, 'services',
+                                   [service.display_name for service in flashingAccessory.services])
+                if flashingAccessory.aid not in self.accessories:
+                    self.add_accessory(flashingAccessory)
+                else:
+                    self.accessories[flashingAccessory.aid] = flashingAccessory
                 configChanged = True
 
         if configChanged:
