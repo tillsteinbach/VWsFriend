@@ -43,7 +43,8 @@ class BatteryAgent():
 
             if self.battery is None or (self.battery.carCapturedTimestamp != batteryStatus.carCapturedTimestamp.value and (
                     self.battery.currentSOC_pct != current_currentSOC_pct
-                    or self.battery.cruisingRangeElectric_km != current_cruisingRangeElectric_km)):
+                    or (self.battery.cruisingRangeElectric_km != current_cruisingRangeElectric_km
+                       and round(self.battery.cruisingRangeElectric_km*0.621371) != current_cruisingRangeElectric_km)):
 
                 if self.battery is not None and self.battery.carCapturedTimestamp > element.value:
                     LOG.warning('carCapturedTimestamp (%s) provided by batteryStatus is older than previously recorded carCapturedTimestamp (%s)',
