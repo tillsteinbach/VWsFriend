@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:experimental
 # Here is the build image
-FROM ubuntu:23.04 as basebuilder
+FROM ubuntu:22.04 as basebuilder
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
@@ -22,7 +22,7 @@ RUN pip3 install --no-cache-dir wheel
 RUN pip3 install --no-cache-dir vwsfriend[MQTT]==${VERSION}
 
 
-FROM ubuntu:23.04 AS baserunner
+FROM ubuntu:22.04 AS baserunner
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
