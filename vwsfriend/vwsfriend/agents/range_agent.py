@@ -60,13 +60,13 @@ class RangeAgent():
             if self.range is None or (rangeStatus.carCapturedTimestamp.value is not None
                                       and self.range.carCapturedTimestamp != rangeStatus.carCapturedTimestamp.value
                                       and ((self.range.totalRange_km != current_totalRange_km 
-                                            and Round(self.range.totalRange_km*0.621371) != current_totalRange_km)
+                                            and round(self.range.totalRange_km*0.621371) != current_totalRange_km)
                                            or self.range.primary_currentSOC_pct != current_primary_currentSOC_pct
                                            or (self.range.primary_remainingRange_km != current_primary_remainingRange_km 
-                                               and Round(self.range.primary_remainingRange_km*0.621371) != current_primary_remainingRange_km)
+                                               and round(self.range.primary_remainingRange_km*0.621371) != current_primary_remainingRange_km)
                                            or self.range.secondary_currentSOC_pct != current_secondary_currentSOC_pct
                                            or (self.range.secondary_remainingRange_km != current_secondary_remainingRange_km 
-                                               and Round(self.range.secondary_remainingRange_km*0.621371) != current_secondary_remainingRange_km))):
+                                               and round(self.range.secondary_remainingRange_km*0.621371) != current_secondary_remainingRange_km))):
 
                 self.range = Range(self.vehicle, rangeStatus.carCapturedTimestamp.value, current_totalRange_km, current_primary_currentSOC_pct,
                                    current_primary_remainingRange_km, current_secondary_currentSOC_pct, current_secondary_remainingRange_km)
