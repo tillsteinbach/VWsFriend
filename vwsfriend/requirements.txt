@@ -13,5 +13,5 @@ flask-caching~=2.1.0
 WTForms~=3.1.0
 flask_wtf~=1.2.1
 flask_sqlalchemy~=3.1.1
-alembic~=1.12.0
+alembic~=1.12.1
 haversine~=2.8.0
