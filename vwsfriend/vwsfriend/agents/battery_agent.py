@@ -25,15 +25,16 @@ class BatteryAgent():
         if self.vehicle.weConnectVehicle is not None:
             if self.vehicle.weConnectVehicle.statusExists('charging', 'batteryStatus') \
                     and self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].enabled:
-                self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampChange,
-                                                                                                                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
-                                                                                                                    onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].carCapturedTimestamp.addObserver(
+                    self.__onBatteryStatusCarCapturedTimestampChange,
+                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                    onUpdateComplete=True)
                 self.__onBatteryStatusCarCapturedTimestampChange(self.vehicle.weConnectVehicle.domains['charging']['batteryStatus'].carCapturedTimestamp, None)
 
             if self.vehicle.weConnectVehicle.statusExists('measurements', 'temperatureBatteryStatus') \
                     and self.vehicle.weConnectVehicle.domains['measurements']['temperatureBatteryStatus'].enabled:
                 self.vehicle.weConnectVehicle.domains['measurements']['temperatureBatteryStatus'].carCapturedTimestamp.addObserver(
-                    self.__onCarCapturedTimestampChange,
+                    self.__onBatteryTemperatureStatusCarCapturedTimestampChange,
                     AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                     onUpdateComplete=True)
                 self.__onBatteryTemperatureStatusCarCapturedTimestampChange(
