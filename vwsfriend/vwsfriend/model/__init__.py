@@ -1,4 +1,5 @@
 from .battery import Battery
+from .battery_temperature import BatteryTemperature
 from .charge import Charge
 from .charging_session import ChargingSession
 from .climatization import Climatization
