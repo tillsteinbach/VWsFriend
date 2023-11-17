@@ -93,6 +93,31 @@ class TripAgent():
 
             if self.mode == TripAgent.Mode.NONE:
                 LOG.info(f'Vehicle {self.vehicle.vin} currently cannot record trips. This may change in the future.')
+                self.vehicle.weConnectVehicle.addObserver(self.__onLaterParkingEnabled,
+                                                          AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR,
+                                                          onUpdateComplete=True)
+
+    def __onLaterParkingEnabled(self, element, flags):
+        if self.vehicle.weConnectVehicle is not None:
+            if self.vehicle.weConnectVehicle.statusExists('parking', 'parkingPosition') \
+                    and self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].enabled:
+                self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampEnabled,
+                                                                                                                     AddressableLeaf.ObserverEvent.ENABLED,
+                                                                                                                     onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(
+                    self.__onCarCapturedTimestampChanged,
+                    AddressableLeaf.ObserverEvent.VALUE_CHANGED,
+                    onUpdateComplete=True)
+                self.__onCarCapturedTimestampChanged(self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp, None)
+
+                if not self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].error.enabled:
+                    LOG.info(f'Vehicle {self.vehicle.vin} provides a parkingPosition and thus allows to record trips based on position')
+                    self.mode = TripAgent.Mode.PARKING_POSITION
+
+                    self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
+                                                                                                                         AddressableLeaf.ObserverEvent.DISABLED,
+                                                                                                                         onUpdateComplete=True)
+                    self.vehicle.weConnectVehicle.removeObserver(self.__onLaterParkingEnabled, AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR)
 
     def __onStatusesChange(self, element, flags):
         if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
