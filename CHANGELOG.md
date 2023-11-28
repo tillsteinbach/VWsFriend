@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through Edge Tag)
 - No unreleased changes so far
 
+## [0.24.1] - 2023-11-28 
+### Fixed
+- Bug with Homekit Battery Temperature Sensor
+
 ## [0.24.0] - 2023-11-25 
 ### Added
 - Support for python 3.12 added
@@ -667,7 +671,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.24.0...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.24.1...HEAD
+[0.24.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.1
 [0.24.0]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.0
 [0.23.11]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.11
 [0.23.10]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.23.10
