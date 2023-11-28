@@ -21,6 +21,7 @@ class BatteryTemperature(GenericAccessory):
 
         self.service = self.add_preload_service('TemperatureSensor', ['Name', 'ConfiguredName', 'BatteryLevel', 'StatusLowBattery', 'ChargingState',
                                                                       'CurrentTemperature'])
+        self.batteryTemperatureStatus = None
 
         if batteryStatus.currentSOC_pct.enabled:
             batteryStatus.currentSOC_pct.addObserver(self.onCurrentSOCChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
@@ -36,6 +37,7 @@ class BatteryTemperature(GenericAccessory):
 
         if batteryTemperatureStatus is not None and batteryTemperatureStatus.temperatureHvBatteryMin_K.enabled \
                 and batteryTemperatureStatus.temperatureHvBatteryMax_K.enabled:
+            self.batteryTemperatureStatus = batteryTemperatureStatus
             batteryTemperatureStatus.addObserver(self.onBatteryTemperatureChange, AddressableLeaf.ObserverEvent.VALUE_CHANGED)
             self.charTemperature = self.service.configure_char('CurrentTemperature')
             if batteryTemperatureStatus.temperatureHvBatteryMin_K.enabled and batteryTemperatureStatus.temperatureHvBatteryMax_K.enabled:
@@ -89,8 +91,10 @@ class BatteryTemperature(GenericAccessory):
             LOG.debug('Unsupported event %s', flags)
 
     def onBatteryTemperatureChange(self, element, flags):
-        if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED and element.temperatureHvBatteryMin_K.enabled and element.temperatureHvBatteryMax_K.enabled:
-            self.setChargingState(element.temperatureHvBatteryMin_K.value, element.temperatureHvBatteryMax_K.value)
-            LOG.debug('Battery temperature Changed: %f to %f °C', element.temperatureHvBatteryMin_K.value, element.temperatureHvBatteryMax_K.value)
+        if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED and self.batteryTemperatureStatus is not None \
+                and self.batteryTemperatureStatus.temperatureHvBatteryMin_K.enabled and self.batteryTemperatureStatus.temperatureHvBatteryMax_K.enabled:
+            self.setChargingState(self.batteryTemperatureStatus.temperatureHvBatteryMin_K.value, self.batteryTemperatureStatus.temperatureHvBatteryMax_K.value)
+            LOG.debug('Battery temperature Changed: %f to %f °C', self.batteryTemperatureStatus.temperatureHvBatteryMin_K.value,
+                      self.batteryTemperatureStatus.temperatureHvBatteryMax_K.value)
         else:
             LOG.debug('Unsupported event %s', flags)
