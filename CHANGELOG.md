@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ## [0.24.1] - 2023-11-28 
 ### Fixed
 - Bug with Homekit Battery Temperature Sensor
+- Allow Meter values in UI with more than 1000kWh
 
 ## [0.24.0] - 2023-11-25 
 ### Added
