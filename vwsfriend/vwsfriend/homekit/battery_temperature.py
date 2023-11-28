@@ -93,7 +93,7 @@ class BatteryTemperature(GenericAccessory):
     def onBatteryTemperatureChange(self, element, flags):
         if flags & AddressableLeaf.ObserverEvent.VALUE_CHANGED and self.batteryTemperatureStatus is not None \
                 and self.batteryTemperatureStatus.temperatureHvBatteryMin_K.enabled and self.batteryTemperatureStatus.temperatureHvBatteryMax_K.enabled:
-            self.setChargingState(self.batteryTemperatureStatus.temperatureHvBatteryMin_K.value, self.batteryTemperatureStatus.temperatureHvBatteryMax_K.value)
+            self.setBatteryTemperature(self.batteryTemperatureStatus.temperatureHvBatteryMin_K.value, self.batteryTemperatureStatus.temperatureHvBatteryMax_K.value)
             LOG.debug('Battery temperature Changed: %f to %f °C', self.batteryTemperatureStatus.temperatureHvBatteryMin_K.value,
                       self.batteryTemperatureStatus.temperatureHvBatteryMax_K.value)
         else:
