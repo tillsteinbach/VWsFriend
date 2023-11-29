@@ -37,7 +37,7 @@ jobs:
           tags: |
             type=edge
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3.0.0
       - name: Login to DockerHub

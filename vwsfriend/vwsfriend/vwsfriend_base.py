@@ -17,6 +17,7 @@ from weconnect import weconnect
 from weconnect.errors import APICompatibilityError, AuthentificationError, TemporaryAuthentificationError
 from weconnect.util import DuplicateFilter
 from weconnect.__version import __version__ as __weconnect_version__
+from weconnect.domain import Domain
 
 from vwsfriend.ui.vwsfriend_ui import VWsFriendUI
 from vwsfriend.homekit.bridge import VWsFriendBridge
@@ -515,7 +516,27 @@ def main():  # noqa: C901 pylint: disable=too-many-branches, too-many-statements
                         mqttCLient.updateWeConnect(reraise=True)
                     else:
                         LOG.info('Updating data from WeConnect')
-                        weConnect.update(updateCapabilities=True, updatePictures=True, force=True)
+                        weConnect.update(updateCapabilities=True, updatePictures=True, force=True, selective=[Domain.ACCESS,
+                                                                                                              Domain.ACTIVEVENTILATION,
+                                                                                                              Domain.AUTOMATION,
+                                                                                                              Domain.AUXILIARY_HEATING,
+                                                                                                              Domain.USER_CAPABILITIES,
+                                                                                                              Domain.CHARGING,
+                                                                                                              Domain.CHARGING_PROFILES,
+                                                                                                              Domain.BATTERY_CHARGING_CARE,
+                                                                                                              Domain.CLIMATISATION,
+                                                                                                              Domain.CLIMATISATION_TIMERS,
+                                                                                                              Domain.DEPARTURE_TIMERS,
+                                                                                                              Domain.FUEL_STATUS,
+                                                                                                              Domain.VEHICLE_LIGHTS,
+                                                                                                              Domain.LV_BATTERY,
+                                                                                                              Domain.READINESS,
+                                                                                                              Domain.VEHICLE_HEALTH_INSPECTION,
+                                                                                                              Domain.VEHICLE_HEALTH_WARNINGS,
+                                                                                                              Domain.OIL_LEVEL,
+                                                                                                              Domain.MEASUREMENTS,
+                                                                                                              Domain.BATTERY_SUPPORT,
+                                                                                                              Domain.PARKING])
                     connector.commit()
                     if args.withHomekit and not weConnectBridgeInitialized:
                         weConnectBridgeInitialized = True

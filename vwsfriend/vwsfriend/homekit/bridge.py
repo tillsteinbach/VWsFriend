@@ -11,6 +11,7 @@ from .charging import Charging
 from .plug import Plug
 from .locking_system import LockingSystem
 from .flashing import Flashing
+from .battery_temperature import BatteryTemperature
 
 from vwsfriend.__version import __version__
 
@@ -181,6 +182,33 @@ class VWsFriendBridge(pyhap.accessory.Bridge):
                 else:
                     self.accessories[flashingAccessory.aid] = flashingAccessory
                 configChanged = True
+
+            if vehicle.statusExists('measurements', 'temperatureBatteryStatus') \
+                    and vehicle.domains['measurements']['temperatureBatteryStatus'].carCapturedTimestamp.enabled:
+                temperatureBatteryStatus = vehicle.domains['measurements']['temperatureBatteryStatus']
+
+                if vehicle.statusExists('charging', 'batteryStatus'):
+                    batteryStatus = vehicle.domains['charging']['batteryStatus']
+
+                    if vehicle.statusExists('charging', 'chargingStatus'):
+                        chargingStatus = vehicle.domains['charging']['chargingStatus']
+                    else:
+                        chargingStatus = None
+
+                    batteryTemperatureAccessory = BatteryTemperature(driver=self.driver, bridge=self, aid=self.selectAID('BatteryTemperature', vin),
+                                                                     id='BatteryTemperature', vin=vin, displayName=f'{nickname} Battery Temperature',
+                                                                     batteryStatus=batteryStatus, batteryTemperatureStatus=temperatureBatteryStatus,
+                                                                     chargingStatus=chargingStatus)
+
+                    batteryTemperatureAccessory.set_info_service(manufacturer=manufacturer, model=model, serial_number=f'{vin}-battery_termperature')
+                    self.setConfigItem(batteryTemperatureAccessory.id, batteryTemperatureAccessory.vin, 'category', batteryTemperatureAccessory.category)
+                    self.setConfigItem(batteryTemperatureAccessory.id, batteryTemperatureAccessory.vin, 'services',
+                                       [service.display_name for service in batteryTemperatureAccessory.services])
+                    if batteryTemperatureAccessory.aid not in self.accessories:
+                        self.add_accessory(batteryTemperatureAccessory)
+                    else:
+                        self.accessories[batteryTemperatureAccessory.aid] = batteryTemperatureAccessory
+                    configChanged = True
 
         if configChanged:
             self.driver.config_changed()
