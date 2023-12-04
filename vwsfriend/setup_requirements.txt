@@ -1,4 +1,4 @@
-pytest-runner~=6.0.0
+pytest-runner~=6.0.1
 mccabe~=0.7.0
 flake8~=6.1.0
 pylint~=3.0.2
