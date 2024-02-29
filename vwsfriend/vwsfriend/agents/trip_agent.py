@@ -90,8 +90,11 @@ class TripAgent():
                     if plugStatus.enabled and plugStatus.plugConnectionState.enabled:
                         plugStatus.plugConnectionState.addObserver(self.__onPlugConnectionStateChanged, AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                    onUpdateComplete=True)
+                self.vehicle.weConnectVehicle.addObserver(self.__onLaterParkingEnabled,
+                                                          AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR,
+                                                          onUpdateComplete=True)
 
-            if self.mode == TripAgent.Mode.NONE:
+            if self.mode in TripAgent.Mode.NONE:
                 LOG.info(f'Vehicle {self.vehicle.vin} currently cannot record trips. This may change in the future.')
                 self.vehicle.weConnectVehicle.addObserver(self.__onLaterParkingEnabled,
                                                           AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR,
