@@ -93,8 +93,7 @@ class TripAgent():
                 self.vehicle.weConnectVehicle.addObserver(self.__onLaterParkingEnabled,
                                                           AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR,
                                                           onUpdateComplete=True)
-
-            if self.mode in TripAgent.Mode.NONE:
+            elif self.mode == TripAgent.Mode.NONE:
                 LOG.info(f'Vehicle {self.vehicle.vin} currently cannot record trips. This may change in the future.')
                 self.vehicle.weConnectVehicle.addObserver(self.__onLaterParkingEnabled,
                                                           AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR,
