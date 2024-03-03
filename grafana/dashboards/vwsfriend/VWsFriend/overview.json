@@ -112,7 +112,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -221,7 +222,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -233,6 +235,8 @@
       },
       "id": 4,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -243,9 +247,10 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
+        "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "format": "table",
@@ -309,6 +314,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "SoC",
@@ -323,6 +329,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
@@ -353,7 +360,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -528,7 +536,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -551,13 +560,15 @@
           "fields": "/^online$/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 40,
           "valueSize": 40
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "alias": "Car is online",
@@ -614,7 +625,8 @@
               }
             ]
           },
-          "unit": "dateTimeAsIso"
+          "unit": "dateTimeAsIso",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -637,10 +649,12 @@
           "fields": "/.*/",
           "values": true
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "value_and_name"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "alias": "Last connection",
@@ -711,7 +725,8 @@
               }
             ]
           },
-          "unit": "lengthkm"
+          "unit": "lengthkm",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -723,6 +738,8 @@
       },
       "id": 11,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -733,9 +750,10 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
+        "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "format": "table",
@@ -809,7 +827,8 @@
               }
             ]
           },
-          "unit": "m"
+          "unit": "m",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -821,6 +840,8 @@
       },
       "id": 19,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -831,9 +852,10 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
+        "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "format": "table",
@@ -885,6 +907,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "SoC",
@@ -899,6 +922,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
@@ -929,7 +953,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1269,7 +1294,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1417,7 +1443,8 @@
               }
             ]
           },
-          "unit": "kwatt"
+          "unit": "kwatt",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1429,6 +1456,8 @@
       },
       "id": 9,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -1439,9 +1468,10 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
+        "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "datasource": {
@@ -1507,7 +1537,8 @@
               }
             ]
           },
-          "unit": "m"
+          "unit": "m",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1519,6 +1550,8 @@
       },
       "id": 20,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -1529,9 +1562,10 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
+        "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "format": "table",
@@ -1583,6 +1617,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "Extrapolated range at 100% SoC",
@@ -1596,6 +1631,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1626,7 +1662,8 @@
               }
             ]
           },
-          "unit": "km"
+          "unit": "km",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1839,6 +1876,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "Efficiency",
@@ -1852,6 +1890,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1882,7 +1921,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -2108,16 +2148,21 @@
         }
       ],
       "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "VWsFriend version: [0.0.0dev](https://github.com/tillsteinbach/VWsFriend/)",
         "mode": "markdown"
       },
-      "pluginVersion": "9.1.6",
+      "pluginVersion": "10.3.3",
       "title": "Version",
       "type": "text"
     },
     {
       "datasource": {
-        "type": "postgres",
+        "type": "grafana-postgresql-datasource",
         "uid": "P2EF847825A020B66"
       },
       "description": "Charging power and charging rate in kilometers over time.",
@@ -2127,6 +2172,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "Charge Power",
@@ -2140,6 +2186,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2170,7 +2217,8 @@
               }
             ]
           },
-          "unit": "kwatt"
+          "unit": "kwatt",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -2186,6 +2234,30 @@
               {
                 "id": "custom.axisLabel",
                 "value": "Charge Rate"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Battery Temperature"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Battery Temperature"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
               }
             ]
           }
@@ -2220,6 +2292,11 @@
       "targets": [
         {
           "alias": "Charge Power",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P2EF847825A020B66"
+          },
+          "editorMode": "code",
           "format": "table",
           "group": [],
           "groupBy": [
@@ -2260,6 +2337,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "tags": [],
           "timeColumn": "time",
           "where": [
@@ -2269,6 +2363,35 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P2EF847825A020B66"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n    \"carCapturedTimestamp\" AS \"time\",\n    (((\"temperatureHvBatteryMin_K\" + \"temperatureHvBatteryMax_K\")/2) - 273.15) AS \"Battery Temperature\"\nFROM\n    battery_temperature\nWHERE\n    $__timeFilter(\"carCapturedTimestamp\") AND\n    vehicle_vin = '$VIN'\nORDER BY\n    \"carCapturedTimestamp\" DESC",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Charging",
@@ -2287,6 +2410,12 @@
           },
           "custom": {
             "fillOpacity": 70,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineWidth": 0,
             "spanNulls": false
           },
@@ -2389,7 +2518,8 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "none",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -2536,8 +2666,7 @@
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "vwsfriend"
   ],
