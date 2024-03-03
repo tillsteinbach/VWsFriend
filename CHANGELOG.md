@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] (Available through Edge Tag)
+## [Unreleased] (Available through [edge](https://hub.docker.com/r/tillsteinbach/vwsfriend/tags?page=1&name=edge) tag)
 - No unreleased changes so far
 
 ## [0.24.3] - 2024-03-03
@@ -18,7 +18,6 @@ All notable changes to this project will be documented in this file.
 - Updated API to 0.60.2
 - Updated Grafana to 10.1.2
 - Various dependencies updated
-- Improved behaviour when 429 errors (too many requests) are reported
 
 ## [0.24.2] - 2023-11-28 
 ### Fixed
