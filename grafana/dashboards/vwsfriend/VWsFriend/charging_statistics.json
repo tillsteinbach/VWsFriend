@@ -100,7 +100,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -123,10 +124,12 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "datasource": {
@@ -192,7 +195,8 @@
                 "value": 1000
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -215,10 +219,12 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "datasource": {
@@ -284,7 +290,8 @@
               }
             ]
           },
-          "unit": "degree"
+          "unit": "degree",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -385,7 +392,7 @@
           "zoom": 15
         }
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "datasource": {
@@ -462,7 +469,8 @@
               }
             ]
           },
-          "unit": "kwatth"
+          "unit": "kwatth",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -485,10 +493,12 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "datasource": {
@@ -567,7 +577,8 @@
               }
             ]
           },
-          "unit": "currencyEUR"
+          "unit": "currencyEUR",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -590,10 +601,12 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "datasource": {
@@ -653,7 +666,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -676,10 +690,12 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.3.3",
       "targets": [
         {
           "datasource": {
@@ -748,6 +764,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -761,6 +778,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -790,7 +808,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unitScale": true
         },
         "overrides": []
       },
@@ -834,7 +853,8 @@
             }
           },
           "mappings": [],
-          "unit": "kwatth"
+          "unit": "kwatth",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -927,7 +947,8 @@
             }
           },
           "mappings": [],
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": []
       },
@@ -1032,6 +1053,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "Power [kW]",
@@ -1064,7 +1086,8 @@
               }
             ]
           },
-          "unit": "kwatt"
+          "unit": "kwatt",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1181,6 +1204,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "Hour",
@@ -1213,7 +1237,8 @@
               }
             ]
           },
-          "unit": "h"
+          "unit": "h",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1319,6 +1344,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "SoC [%]",
@@ -1351,7 +1377,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1513,6 +1540,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "SoC [%]",
@@ -1545,7 +1573,8 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percent",
+          "unitScale": true
         },
         "overrides": [
           {
@@ -1634,11 +1663,238 @@
       "title": "Distribution of time remaining in SoC",
       "transformations": [],
       "type": "xychart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P2EF847825A020B66"
+      },
+      "description": "Charging speeds at different battery temperature.\nFor meaningful values wait until a significant number of charging sessions were recorded. Only DC charging sessions are considered. Only available for selected cars.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Battery Temperature [°C]",
+            "axisPlacement": "auto",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "pointSize": {
+              "fixed": 5
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "show": "points+lines"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent",
+          "unitScale": true
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "kW"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Avg"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Battery Temperature"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 0,
+        "y": 36
+      },
+      "id": 21,
+      "options": {
+        "dims": {
+          "x": "Battery Temperature"
+        },
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "mode": "xy",
+        "series": [
+          {
+            "pointColor": {},
+            "pointSize": {
+              "fixed": 5,
+              "max": 50,
+              "min": 1
+            }
+          }
+        ],
+        "seriesMapping": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P2EF847825A020B66"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  battery_temperature.\"temperatureHvBatteryMin_K\" - 273.15 AS \"Battery Temperature\",\n  MAX(charges.\"chargePower_kW\") AS \"Max\",\n  AVG(charges.\"chargePower_kW\") AS \"Avg\",\n  MIN(charges.\"chargePower_kW\") AS \"Min\",\n  'Metrics calculated from ' || COUNT(charges.\"chargePower_kW\")::TEXT  || ' values' AS \"Values\"\nFROM\n  charges\nINNER JOIN charging_sessions ON charges.\"carCapturedTimestamp\" > charging_sessions.started AND charges.\"carCapturedTimestamp\" < charging_sessions.ended\nINNER JOIN battery_temperature ON battery_temperature.\"carCapturedTimestamp\" = (SELECT battery_temperature.\"carCapturedTimestamp\" FROM battery_temperature WHERE battery_temperature.\"carCapturedTimestamp\" > charges.\"carCapturedTimestamp\" - interval '600 SECONDS' AND battery_temperature.\"carCapturedTimestamp\" < charges.\"carCapturedTimestamp\" + interval '600 SECONDS' ORDER BY ABS(EXTRACT(epoch FROM (battery_temperature.\"carCapturedTimestamp\" - charges.\"carCapturedTimestamp\"))) ASC LIMIT 1)\nWHERE\n    charging_sessions.acdc = 'DC' AND\n    charges.\"chargePower_kW\" > 0 AND\n    $__timeFilter(charges.\"carCapturedTimestamp\") AND\n    charges.vehicle_vin = '$VIN'\nGROUP BY \"Battery Temperature\"\nORDER by \"Battery Temperature\" ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "position_latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "refuel_sessions",
+          "timeColumn": "date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "DC Charging Speed by Temperature",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Label": false,
+              "soc": false
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "xychart"
     }
   ],
-  "refresh": false,
-  "schemaVersion": 37,
-  "style": "dark",
+  "refresh": "",
+  "schemaVersion": 39,
   "tags": [
     "vwsfriend"
   ],
