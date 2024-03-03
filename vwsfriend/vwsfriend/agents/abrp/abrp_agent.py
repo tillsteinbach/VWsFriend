@@ -132,10 +132,10 @@ class ABRPAgent():
         if self.weConnectVehicle.statusExists('measurements', 'temperatureBatteryStatus') \
                 and self.weConnectVehicle.domains['measurements']['temperatureBatteryStatus'].enabled:
             temperatureBatteryStatus = self.weConnectVehicle.domains['measurements']['temperatureBatteryStatus']
-            if temperatureBatteryStatus.temperatureHvBatteryMin_K.enabled and odometerMeasurement.temperatureHvBatteryMin_K is not None \
-                    and temperatureBatteryStatus.temperatureHvBatteryMax_K.enabled and odometerMeasurement.temperatureHvBatteryMax_K is not None:
-                self.telemetryData['batt_temp'] = (kelvinToCelsius(odometerMeasurement.temperatureHvBatteryMin_K.value)
-                                                   + kelvinToCelsius(odometerMeasurement.temperatureHvBatteryMax_K.value)) / 2
+            if temperatureBatteryStatus.temperatureHvBatteryMin_K.enabled and temperatureBatteryStatus.temperatureHvBatteryMin_K is not None \
+                    and temperatureBatteryStatus.temperatureHvBatteryMax_K.enabled and temperatureBatteryStatus.temperatureHvBatteryMax_K is not None:
+                self.telemetryData['batt_temp'] = (kelvinToCelsius(temperatureBatteryStatus.temperatureHvBatteryMin_K.value)
+                                                   + kelvinToCelsius(temperatureBatteryStatus.temperatureHvBatteryMax_K.value)) / 2
 
         if self.weConnectVehicle.statusExists('charging', 'chargingStatus') \
                 and self.weConnectVehicle.domains['charging']['chargingStatus'].enabled:
