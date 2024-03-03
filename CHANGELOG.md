@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through [edge](https://hub.docker.com/r/tillsteinbach/vwsfriend/tags?page=1&name=edge) tag)
 - No unreleased changes so far
 
+## [0.24.4] - 2024-03-03
+### Fixed
+- Fixed a bug with the ABRP agent after adding battery temperature
+
 ## [0.24.3] - 2024-03-03
 ### Fixed
 - Improved behaviour where new charging sessions were created when car was conservating
@@ -691,7 +695,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.24.3...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.24.4...HEAD
+[0.24.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.4
 [0.24.3]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.3
 [0.24.2]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.2
 [0.24.1]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.1
