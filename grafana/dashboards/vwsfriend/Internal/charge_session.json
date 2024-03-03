@@ -877,7 +877,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n    \"carCapturedTimestamp\" AS \"time\",\n    (\"temperatureHvBatteryMin_K\" - 273.15) AS \"Minimum\",\n    (\"temperatureHvBatteryMin_K\" - 273.15) AS \"Maximum\"\nFROM\n    battery_temperature\nWHERE\n    $__timeFilter(\"carCapturedTimestamp\") AND\n    vehicle_vin = '$VIN'\nORDER BY\n    \"carCapturedTimestamp\" DESC",
+          "rawSql": "SELECT\n    \"carCapturedTimestamp\" AS \"time\",\n    (\"temperatureHvBatteryMin_K\" - 273.15) AS \"Minimum\",\n    (\"temperatureHvBatteryMax_K\" - 273.15) AS \"Maximum\"\nFROM\n    battery_temperature\nWHERE\n    $__timeFilter(\"carCapturedTimestamp\") AND\n    vehicle_vin = '$VIN'\nORDER BY\n    \"carCapturedTimestamp\" DESC",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
