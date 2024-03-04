@@ -22,7 +22,7 @@ jobs:
     - name: Container Status
       run: docker ps -a
     - name: Let containers run for 60s
-      uses: juliangruber/sleep-action@v1
+      uses: juliangruber/sleep-action@v2
       with:
         time: 60s
     - name: Check logs for vwsfriend
