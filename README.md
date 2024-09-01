@@ -18,7 +18,7 @@ Volkswagen WeConnect© API visualization and control (HomeKit) inspired by Tesla
 <img src="https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/teaser.gif" width="100%">
 
 ## Requirements
-* Docker 20.10.10 or later (if you are new to Docker, see [Installing Docker and Docker Compose](https://docs.docker.com/engine/install/) or for [Raspberry Pi](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl)), docker-compose needs to be at least version 1.27.0 (you can check with `docker-compose --version`)
+* Docker 20.10.10 or later (if you are new to Docker, see [Installing Docker and Docker Compose](https://docs.docker.com/engine/install/) or for [Raspberry Pi](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl)), docker-compose needs to be at least version 1.27.0 (you can check with `docker compose --version`)
 * A Machine that's always on, so VWsFriend can continually fetch data
 * External internet access, to talk to the servers
 
@@ -30,7 +30,7 @@ VWsFriend is based on the new WeConnect API that was introduced with the new ser
 * To create myconfig.env copy [.env](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/.env) file and make changes according to your needs
 * Start the stack using your configuration.
 ```bash
-docker-compose --env-file ./myconfig.env up
+docker compose --env-file ./myconfig.env up
 ```
 
 * Open a browser to use the webinterface on http://IP-ADDRESS:4000
@@ -42,8 +42,8 @@ More information can be found in the Wiki: https://github.com/tillsteinbach/VWsF
 ## Update
 * To update the running VWsFriend configuration to the latest version, run the following commands:
 ```bash
-docker-compose pull
-docker-compose --env-file ./myconfig.env up
+docker compose pull
+docker compose --env-file ./myconfig.env up
 ```
 
 ## Privacy
@@ -58,14 +58,14 @@ Connecting VWsFriend to ABRP enables you to use the current SoC, position, parki
 
 * Replace the docker-compose file by [docker-compose-homekit-host.yml](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/docker-compose-homekit-host.yml) to use the homekit override
 ```bash
-docker-compose -f docker-compose-homekit-host.yml --env-file ./myconfig.env up
+docker compose -f docker-compose-homekit-host.yml --env-file ./myconfig.env up
 ```
 This will use host mode for vwsfriend. This is necessary as the bridge mode will not forward multicast which is necessary for Homekit to work.
 Host mode is not working on macOS. The reson is that the network is still virtualized. See also [Known Issues](#known-issues).
 
 If you do not like to share the host network with vwsfriend you can use macvlan mode [docker-compose-homekit-macvlan.yml](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/docker-compose-homekit-macvlan.yml):
 ```bash
-docker-compose -f docker-compose-homekit-macvlan.yml --env-file ./myconfig.env up
+docker compose -f docker-compose-homekit-macvlan.yml --env-file ./myconfig.env up
 ```
 In macvlan mode VWsFriend will appear as a seperate computer in the network thus you also have to set HOMEKIT_IP to a free IP address in your network in the .env-file.
 HOMEKIT_MASK and HOMEKIT_GW need to be configured with the correct netmask and gateway settings for your network. 
@@ -93,6 +93,27 @@ If you want to be sure that the update only happens at a certain time of the day
     command: --schedule "0 0 2 * * *" --cleanup
 ```
 The example shifts the update time to 2:00 (UTC)
+
+## Automated Backups
+For automated backups I recommend using [docker-volume-backup](https://github.com/offen/docker-volume-backup). You just need to add an additional service to your docker-compose.yml to allow it to make regular backups.
+This example shows a configuration for daily backups on a webdav enabled NAS:
+```bash
+backup:
+  image: offen/docker-volume-backup:latest
+  restart: always
+  environment:
+    WEBDAV_URL: https://mynas:5006
+    WEBDAV_URL_INSECURE: 'true'
+    WEBDAV_PATH: /home/backup/VWsFriend
+    WEBDAV_USERNAME: backupuser
+    WEBDAV_PASSWORD: secretbackuppassword
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - postgresdb_data:/backup/postgresdb-backup:ro
+    - grafana_data:/backup/grafana-backup:ro
+    - vwsfriend_data:/backup/vwsfriend-backup:ro
+```
+docker-volume-backup supports various [backup locactions](https://offen.github.io/docker-volume-backup/recipes/) and can also enable [different retention policies](https://offen.github.io/docker-volume-backup/how-tos/define-different-retention-schedules.html).
 
 ## Known Issues
 * On Raspberry Pi the library libseccomp2 needs to be at least 2.4.4. Most current images for the Raspberry Pi still ship an outdated version. You can update it like that:
