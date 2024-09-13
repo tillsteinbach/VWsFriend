@@ -1,10 +1,10 @@
-weconnect[Images]~=0.60.4
+weconnect[Images]~=0.60.5
 HAP-python[QRCode]~=4.9.1
 pypng~=0.20220715.0
-sqlalchemy~=2.0.31
+sqlalchemy~=2.0.34
 psycopg2-binary~=2.9.9
 requests~=2.32.3
-Werkzeug~=3.0.3
+Werkzeug~=3.0.4
 Flask~=3.0.3
 flask-login~=0.6.3
 flask-caching~=2.3.0
