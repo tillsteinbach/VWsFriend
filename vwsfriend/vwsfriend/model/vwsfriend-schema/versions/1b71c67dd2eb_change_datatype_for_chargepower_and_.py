@@ -19,13 +19,13 @@ depends_on = None
 def upgrade():
     if op.get_context().dialect.name == 'postgresql':
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE chargingstate ADD VALUE 'NOT_READY_FOR_CHARGING'")
+            op.execute("ALTER TYPE chargingstate ADD VALUE IF NOT EXISTS 'NOT_READY_FOR_CHARGING'")
 
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE chargemode ADD VALUE 'TIMER'")
-            op.execute("ALTER TYPE chargemode ADD VALUE 'ONLY_OWN_CURRENT'")
-            op.execute("ALTER TYPE chargemode ADD VALUE 'PREFERRED_CHARGING_TIMES'")
-            op.execute("ALTER TYPE chargemode ADD VALUE 'TIMER_CHARGING_WITH_CLIMATISATION'")
+            op.execute("ALTER TYPE chargemode ADD VALUE IF NOT EXISTS 'TIMER'")
+            op.execute("ALTER TYPE chargemode ADD VALUE IF NOT EXISTS 'ONLY_OWN_CURRENT'")
+            op.execute("ALTER TYPE chargemode ADD VALUE IF NOT EXISTS 'PREFERRED_CHARGING_TIMES'")
+            op.execute("ALTER TYPE chargemode ADD VALUE IF NOT EXISTS 'TIMER_CHARGING_WITH_CLIMATISATION'")
 
         op.alter_column('charges', 'chargePower_kW',
                         existing_type=sa.INTEGER(),
