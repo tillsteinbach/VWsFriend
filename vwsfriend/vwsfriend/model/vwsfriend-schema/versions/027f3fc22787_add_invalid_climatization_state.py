@@ -19,7 +19,7 @@ depends_on = None
 def upgrade():
     if op.get_context().dialect.name == 'postgresql':
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE climatizationstate ADD VALUE 'INVALID'")
+            op.execute("ALTER TYPE climatizationstate ADD VALUE IF NOT EXISTS 'INVALID'")
 
 
 def downgrade():

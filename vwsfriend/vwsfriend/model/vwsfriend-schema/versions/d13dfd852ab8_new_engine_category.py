@@ -19,7 +19,7 @@ depends_on = None
 def upgrade():
     if op.get_context().dialect.name == 'postgresql':
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE category ADD VALUE 'ENGINE'")
+            op.execute("ALTER TYPE category ADD VALUE IF NOT EXISTS 'ENGINE'")
 
 def downgrade():
     if op.get_context().dialect.name == 'postgresql':

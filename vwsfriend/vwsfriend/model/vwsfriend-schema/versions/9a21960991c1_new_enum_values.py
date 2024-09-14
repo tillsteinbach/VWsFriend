@@ -19,8 +19,8 @@ depends_on = None
 def upgrade():
     if op.get_context().dialect.name == 'postgresql':
         with op.get_context().autocommit_block():
-            op.execute("ALTER TYPE chargingstate ADD VALUE 'DISCHARGING'")
-            op.execute("ALTER TYPE chargingstate ADD VALUE 'UNSUPPORTED'")
+            op.execute("ALTER TYPE chargingstate ADD VALUE IF NOT EXISTS 'DISCHARGING'")
+            op.execute("ALTER TYPE chargingstate ADD VALUE IF NOT EXISTS 'UNSUPPORTED'")
 
 
 def downgrade():
