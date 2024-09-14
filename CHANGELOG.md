@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] (Available through [edge](https://hub.docker.com/r/tillsteinbach/vwsfriend/tags?page=1&name=edge) tag)
 - No unreleased changes so far
 
+## [0.24.7] - 2024-09-14
+### Fixed
+- fix bug in database migration
+
 ## [0.24.6] - 2024-09-13
 ### Fixed
 - fix bug that lead to a crash with Unkown warning lights
@@ -715,7 +719,8 @@ This is a complete rewrite of VWsFriend using a self developed API. It drops ioB
 ## [0.1.0] - 2021-04-22
 Initial release to enable "latest" tag on dockerhub
 
-[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.24.6...HEAD
+[unreleased]: https://github.com/tillsteinbach/VWsFriend/compare/v0.24.7...HEAD
+[0.24.7]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.7
 [0.24.6]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.6
 [0.24.5]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.5
 [0.24.4]: https://github.com/tillsteinbach/VWsFriend/releases/tag/v0.24.4
