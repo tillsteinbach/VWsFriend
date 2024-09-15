@@ -137,6 +137,12 @@ class ABRPAgent():
                 self.telemetryData['batt_temp'] = (kelvinToCelsius(temperatureBatteryStatus.temperatureHvBatteryMin_K.value)
                                                    + kelvinToCelsius(temperatureBatteryStatus.temperatureHvBatteryMax_K.value)) / 2
 
+        if self.weConnectVehicle.statusExists('measurements', 'temperatureOutsideStatus') \
+                and self.weConnectVehicle.domains['measurements']['temperatureOutsideStatus'].enabled:
+            temperatureOutsideStatus = self.weConnectVehicle.domains['measurements']['temperatureOutsideStatus']
+            if temperatureOutsideStatus.temperatureOutside_K.enabled and temperatureOutsideStatus.temperatureOutside_K is not None:
+                self.telemetryData['ext_temp'] = kelvinToCelsius(temperatureOutsideStatus.temperatureOutside_K.value)
+
         if self.weConnectVehicle.statusExists('charging', 'chargingStatus') \
                 and self.weConnectVehicle.domains['charging']['chargingStatus'].enabled:
             chargingStatus = self.weConnectVehicle.domains['charging']['chargingStatus']
@@ -153,6 +159,8 @@ class ABRPAgent():
 
             if chargingStatus.chargeType.enabled and chargingStatus.chargeType.value in [ChargingStatus.ChargeType.DC]:
                 self.telemetryData['is_dcfc'] = True
+            elif chargingStatus.chargeType.enabled and chargingStatus.chargeType.value in [ChargingStatus.ChargeType.AC]:
+                self.telemetryData['is_dcfc'] = False
 
         self.updateTelemetry()
         self.telemetryData.clear()
