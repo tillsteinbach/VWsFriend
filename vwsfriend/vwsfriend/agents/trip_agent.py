@@ -91,12 +91,12 @@ class TripAgent():
                         plugStatus.plugConnectionState.addObserver(self.__onPlugConnectionStateChanged, AddressableLeaf.ObserverEvent.VALUE_CHANGED,
                                                                    onUpdateComplete=True)
                 self.vehicle.weConnectVehicle.addObserver(self.__onLaterParkingEnabled,
-                                                          AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR,
+                                                          AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER,
                                                           onUpdateComplete=True)
             elif self.mode == TripAgent.Mode.NONE:
                 LOG.info(f'Vehicle {self.vehicle.vin} currently cannot record trips. This may change in the future.')
                 self.vehicle.weConnectVehicle.addObserver(self.__onLaterParkingEnabled,
-                                                          AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR,
+                                                          AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER,
                                                           onUpdateComplete=True)
 
     def __onLaterParkingEnabled(self, element, flags):
@@ -119,7 +119,7 @@ class TripAgent():
                     self.vehicle.weConnectVehicle.domains['parking']['parkingPosition'].carCapturedTimestamp.addObserver(self.__onCarCapturedTimestampDisabled,
                                                                                                                          AddressableLeaf.ObserverEvent.DISABLED,
                                                                                                                          onUpdateComplete=True)
-                    self.vehicle.weConnectVehicle.removeObserver(self.__onLaterParkingEnabled, AddressableLeaf.ObserverEvent.UPDATED_FROM_CAR)
+                    self.vehicle.weConnectVehicle.removeObserver(self.__onLaterParkingEnabled, AddressableLeaf.ObserverEvent.UPDATED_FROM_SERVER)
 
     def __onStatusesChange(self, element, flags):
         if isinstance(element, AddressableAttribute) and element.getGlobalAddress().endswith('parkingPosition/carCapturedTimestamp'):
