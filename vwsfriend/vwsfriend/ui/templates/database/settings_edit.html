@@ -25,7 +25,6 @@
       {{ form.csrf_token }}
 
       {{ form.id }}
-      {{ form.unit_of_length }}
       {{ form.unit_of_temperature }}
       {{ form.locale }}
 
@@ -47,6 +46,18 @@
         {% if form.grafana_url.errors %}
           <ul class="errors">
             {% for error in form.grafana_url.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+        
+      <fieldset class="form-field">
+        {{ form.unit_of_length.label }}
+        {{ form.unit_of_length }}
+        {% if form.unit_of_length.errors %}
+          <ul class="errors">
+            {% for error in form.unit_of_length.errors %}
               <li>{{ error }}</li>
             {% endfor %}
           </ul>
