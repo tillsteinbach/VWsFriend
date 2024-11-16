@@ -2373,7 +2373,7 @@
           "format": "table",
           "hide": false,
           "rawQuery": true,
-          "rawSql": "SELECT\n    \"carCapturedTimestamp\" AS \"time\",\n    (((\"temperatureHvBatteryMin_K\" + \"temperatureHvBatteryMax_K\")/2) - 273.15) AS \"Battery Temperature\"\nFROM\n    battery_temperature\nWHERE\n    $__timeFilter(\"carCapturedTimestamp\") AND\n    vehicle_vin = '$VIN'\nORDER BY\n    \"carCapturedTimestamp\" DESC",
+          "rawSql": "SELECT\n    \"carCapturedTimestamp\" AS \"time\",\n    (((\"temperatureHvBatteryMin_K\" + \"temperatureHvBatteryMax_K\")/2) - 273.15) AS \"Battery Temperature\"\nFROM\n    battery_temperature\nWHERE\n    $__timeFilter(\"carCapturedTimestamp\") AND\n    vehicle_vin = '$VIN'\nORDER BY\n    \"carCapturedTimestamp\" ASC",
           "refId": "B",
           "sql": {
             "columns": [
