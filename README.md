@@ -23,8 +23,8 @@ Volkswagen WeConnect© API visualization and control (HomeKit) inspired by Tesla
 * External internet access, to talk to the servers
 
 ## To use the tool in a meaningful way, you also need:
-* A We.Connect account (by registering on your countrie's VW website)
-* A Volkswagen vehicle with a VIN that is assigned to your We.Connect account. Note that this does NOT include vehicles registered in North America, where We.Connect is not used. 
+* A We.Connect account (by registering on your country's VW website)
+* One or more Volkswagen vehicles, each with a VIN that is assigned to your We.Connect account. Note that this does NOT include vehicles registered in North America, where We.Connect is not used. 
 
 ## Login & Consent
 VWsFriend is based on the new WeConnect API that was introduced with the new series of ID cars. If you use another car or hybrid you probably need to agree to the terms and conditions of the new WeConnect interface. Easiest to do so is by installing the Volkswagen app on your smartphone and login there. If necessary you will be asked to agree to the terms and conditions.
