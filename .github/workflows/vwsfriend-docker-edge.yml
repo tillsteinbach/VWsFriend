@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v6.7.0
+        uses: docker/build-push-action@v6.10.0
         with:
           allow: security.insecure
           context: vwsfriend
