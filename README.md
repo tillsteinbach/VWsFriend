@@ -66,13 +66,13 @@ Connecting VWsFriend to ABRP enables you to use the current SoC, position, parki
 
 ## VWsFriend with Apple Homekit support
 
-![The first out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit.jpg)
+![The first out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit.jpg){width="200px"}
 
-![The second out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit2.jpg)
+![The second out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit2.jpg){width="200px"}
 
-![The third out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit3.jpg)
+![The third out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit3.jpg){width="200px"}
 
-![The fourth out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit4.jpg)
+![The fourth out of four screenshots showing the VWsFriend Homekit integration](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/screenshots/homekit4.jpg){width="200px"}
 
 * Replace the docker-compose file by [docker-compose-homekit-host.yml](https://raw.githubusercontent.com/tillsteinbach/VWsFriend/main/docker-compose-homekit-host.yml) to use the homekit override
 
