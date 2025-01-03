@@ -798,7 +798,20 @@
           },
           "unit": "lengthkm"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*_MI/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "lengthmi"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -829,8 +842,9 @@
           },
           "fields": [
             {
-              "jsonPath": "$.vehicles.$VIN.domains.charging.batteryStatus.cruisingRangeElectric_km",
-              "name": "Electric Range"
+              "jsonPath": "$.$lookup(vehicles,$VIN[0]).domains.charging.batteryStatus.cruisingRangeElectric_km/($length_unit[0]=\"MI\"?1.609:1)",
+			  "language": "jsonata",
+              "name": "Electric Range_$length_unit"
             }
           ],
           "hide": false,
@@ -855,7 +869,7 @@
           "query": "",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END AS \"Electric Range\"\nFROM vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'\n",
+          "rawSql": "SELECT\n  convert_km(CASE WHEN vehicles.\"carType\" = 'ELECTRIC' THEN vehicle_settings.\"primary_wltp_range\"::NUMERIC\n  ELSE vehicle_settings.\"secondary_wltp_range\"::NUMERIC END,'${length_unit.value}') AS \"Electric Range_${length_unit.value}\"\nFROM vehicles\nLEFT JOIN vehicle_settings ON vehicles.vin = vehicle_settings.vehicle_vin\nWHERE\n  vehicles.vin = '$VIN'\n",
           "refId": "WLTP",
           "resultFormat": "time_series",
           "select": [
@@ -897,13 +911,21 @@
           "id": "configFromData",
           "options": {
             "applyTo": {
-              "id": "byName",
-              "options": "A Electric Range"
+              "id": "byRegexp",
+              "options": "/Electric Range.*/"
             },
             "configRefId": "WLTP",
             "mappings": [
               {
                 "fieldName": "Electric Range",
+                "handlerKey": "max"
+              },
+              {
+                "fieldName": "Electric Range_MI",
+                "handlerKey": "max"
+              },
+              {
+                "fieldName": "Electric Range_KM",
                 "handlerKey": "max"
               }
             ]
@@ -1025,6 +1047,22 @@
         "query": "SELECT vwsfriend_url FROM settings LIMIT 1",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+        },
+        "definition": "SELECT u.unnest|| ':' || CASE u.unnest WHEN 'KM' THEN 'Metric'  WHEN 'MI' THEN 'Imperial' END FROM (SELECT unnest(enum_range(NULL::unitoflength))) u LEFT JOIN settings ON settings.unit_of_length = u.unnest ORDER BY coalesce(settings.id,0) DESC",
+        "hide": 1,
+        "includeAll": false,
+        "multi": false,
+        "name": "length_unit",
+        "options": [],
+        "query": "SELECT u.unnest|| ':' || CASE u.unnest WHEN 'KM' THEN 'Metric'  WHEN 'MI' THEN 'Imperial' END FROM (SELECT unnest(enum_range(NULL::unitoflength))) u LEFT JOIN settings ON settings.unit_of_length = u.unnest ORDER BY coalesce(settings.id,0) DESC",
+        "refresh": 1,
+        "regex": "/(?<value>[A-Z0-9]+):(?<text>.*)/",
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
