@@ -19,11 +19,11 @@ setup(
     long_description_content_type="text/markdown",
     author='Till Steinbach',
     keywords='weconnect, we connect, carnet, car net, volkswagen, vw, telemetry, smarthome',
-    url='https://github.com/tillsteinbach/VWsFriend',
+    url='https://github.com/micxer/VWsFriend',
     project_urls={
         'Funding': 'https://github.com/sponsors/VWsFriend',
-        'Source': 'https://github.com/tillsteinbach/VWsFriend',
-        'Bug Tracker': 'https://github.com/tillsteinbach/VWsFriend/issues'
+        'Source': 'https://github.com/micxer/VWsFriend',
+        'Bug Tracker': 'https://github.com/micxer/VWsFriend/issues'
     },
     license='MIT',
     install_requires=INSTALL_REQUIRED,

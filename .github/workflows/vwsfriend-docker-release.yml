@@ -1,0 +1,76 @@
+name: Build VWsFriend Docker Image
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  vwsfriend-docker-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@v1.0
+        with:
+          swap-size-gb: 10
+      - run: |
+           # Workaround for https://github.com/rust-lang/cargo/issues/8719
+           sudo mkdir -p /var/lib/docker
+           sudo mount -t tmpfs -o size=10G none /var/lib/docker
+           sudo systemctl restart docker
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Version from input
+        if: github.event_name != 'push'
+        run: |
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: Version from pushed tag
+        if: github.event_name == 'push'
+        run: |
+          # from refs/tags/v1.2.3 get 1.2.3
+          echo "version=$(echo $GITHUB_REF | sed 's#.*/v##')" >> $GITHUB_ENV
+      - name: Autobump version
+        working-directory: vwsfriend
+        run: |
+          PLACEHOLDER="__version__ = '0.0.0dev'"
+          REPLACEMENT="__version__ = '${{ env.version }}'"
+          VERSION_FILE="vwsfriend/__version.py"
+          # ensure the placeholder is there. If grep doesn't find the placeholder
+          # it exits with exit code 1 and github actions aborts the build.
+          grep "$PLACEHOLDER" "$VERSION_FILE"
+          sed -i "s/$PLACEHOLDER/$REPLACEMENT/g" "$VERSION_FILE"
+          grep "$REPLACEMENT" "$VERSION_FILE"
+        shell: bash
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/micxer/vwsfriend
+          tags: |
+            type=raw,value=latest
+            type=pep440,pattern={{version}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3.6.1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v6.7.0
+        with:
+          context: vwsfriend
+          file: vwsfriend/Dockerfile-edge
+          allow: security.insecure
+          push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
