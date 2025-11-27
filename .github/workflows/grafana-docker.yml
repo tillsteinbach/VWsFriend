@@ -26,8 +26,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            tillsteinbach/vwsfriend-grafana
-            ghcr.io/tillsteinbach/vwsfriend-grafana
+            ghcr.io/micxer/vwsfriend-grafana
           tags: |
             type=edge,
             type=pep440,pattern={{version}}
@@ -40,11 +39,11 @@ jobs:
         if: startsWith( github.ref, 'refs/tags/v' )
         working-directory: grafana
         run: |
-          PLACEHOLDER="        \"content\": \"VWsFriend version: \[0.0.0dev\](https://github.com/tillsteinbach/VWsFriend/)\","
-          REPLACEMENT="        \"content\": \"VWsFriend version: \[${{ env.version }}\](https://github.com/tillsteinbach/VWsFriend/releases/tag/v${{ env.version }})\","
+          PLACEHOLDER="        \"content\": \"VWsFriend version: \[0.0.0dev\](https://github.com/micxer/VWsFriend/)\","
+          REPLACEMENT="        \"content\": \"VWsFriend version: \[${{ env.version }}\](https://github.com/micxer/VWsFriend/releases/tag/v${{ env.version }})\","
           VERSION_FILE="dashboards/vwsfriend/VWsFriend/overview.json"
           # ensure the placeholder is there. If grep doesn't find the placeholder
-          # it exits with exit code 1 and github actions aborts the build. 
+          # it exits with exit code 1 and github actions aborts the build.
           grep "$PLACEHOLDER" "$VERSION_FILE"
           sed -i "s|$PLACEHOLDER|$REPLACEMENT|g" "$VERSION_FILE"
           grep "$REPLACEMENT" "$VERSION_FILE"
@@ -52,11 +51,6 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3.6.1
-      - name: Login to DockerHub
-        uses: docker/login-action@v3.3.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3.3.0
         with:

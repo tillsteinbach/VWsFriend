@@ -2144,7 +2144,7 @@
         {
           "targetBlank": true,
           "title": "VWsFriend on GitHub",
-          "url": "https://github.com/tillsteinbach/VWsFriend/"
+          "url": "https://github.com/micxer/VWsFriend/"
         }
       ],
       "options": {
@@ -2153,7 +2153,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "VWsFriend version: [0.0.0dev](https://github.com/tillsteinbach/VWsFriend/)",
+        "content": "VWsFriend version: [0.0.0dev](https://github.com/micxer/VWsFriend/)",
         "mode": "markdown"
       },
       "pluginVersion": "10.3.3",
