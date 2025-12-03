@@ -22,6 +22,60 @@
 
 {% if form %}
 <div class="form-wrapper">
+   <script>
+   $(document).ready(function() {
+    // Selektoren f  r die Input-Felder
+    const $pricePerKwh = $('#pricePerKwh_ct');
+    const $realChargedKwh = $('#realCharged_kWh');
+    const $realCost = $('#realCost_ct');
+
+    /**
+     * Berechnet die Gesamtkosten basierend auf Preis pro kWh und geladener kWh.
+     * Schreibt das Ergebnis in das Feld #realCost_ct, falls beide Werte g  ltig sind.
+     */
+    function calculateRealCost() {
+        // Bereinigen der Werte (entfernt Leerzeichen)
+        const pricePerKwhString = $pricePerKwh.val().trim();
+        const realChargedKwhString = $realChargedKwh.val().trim();
+
+        // Pr  fen, ob beide Felder nicht leer sind
+        if (pricePerKwhString === '' || realChargedKwhString === '') {
+            // Wenn eines leer ist, mache nichts (oder Sie k  nnten das Zielfeld leeren, je nach Anforderung)
+            // $realCost.val('');
+            return;
+        }
+
+        // Konvertieren in Zahlen
+        // Verwenden von parseFloat, da es Dezimalzahlen unterst  tzt
+        const price = parseFloat(pricePerKwhString);
+        const kwh = parseFloat(realChargedKwhString);
+
+        // Pr  fen, ob die konvertierten Werte g  ltige Zahlen sind (nicht NaN)
+        if (isNaN(price) || isNaN(kwh)) {
+            // Wenn die Werte keine g  ltigen Zahlen sind, mache nichts
+            // $realCost.val('');
+            return;
+        }
+
+        // Beide Werte m  ssen auch gr   ^=er oder gleich Null sein
+        if (price < 0 || kwh < 0) {
+            return;
+        }
+
+        // Multiplikation der Werte
+        const result = price * kwh;
+
+        // Das Ergebnis in das Zielfeld schreiben
+        // Verwenden von toFixed(2), um auf zwei Dezimalstellen zu runden (typisch f  r Kosten in Cent)
+        $realCost.val(result.toFixed(2));
+       }
+
+    // Event-Listener f  r beide Felder:
+    // `keyup` erfasst  ^dnderungen beim Tippen, `change` nach Verlassen des Feldes.
+    $pricePerKwh.on('keyup change', calculateRealCost);
+    $realChargedKwh.on('keyup change', calculateRealCost);
+});
+</script>
   <form method="POST">
       {{ form.csrf_token }}
 
